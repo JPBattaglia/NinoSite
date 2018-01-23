@@ -21,6 +21,7 @@ nav ul li {
     border-radius: 15px;
     border-style:double;
     margin-right: 30px;
+    
 }
 
 a:hover img {
@@ -57,6 +58,7 @@ a:visited {
 /* mouse over link */
 a:hover {
     color:aqua;
+    font-style: oblique;
 }
 
 /* selected link */
@@ -85,9 +87,7 @@ a{
     text-decoration: none;    
 }
 
-img{
-    max-width: 100%;
-}    
+
 
 h1, h2, h3, p, label, ul li{
     text-align: center;
@@ -98,7 +98,6 @@ h1, h2, h3, p, label, ul li{
 body{
     
     background-color:#004;
-    
 }
 
 header{
