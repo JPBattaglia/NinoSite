@@ -1,6 +1,7 @@
 html, body{
     min-height:100%;
     overflow:auto;
+    margin:0px;
 }
 article {
     float:left;
