@@ -1,0 +1,170 @@
+html, body{
+    min-height:100%;
+    overflow:auto;
+}
+article {
+    float:left;
+    display:inline;
+    padding: 10px;
+
+}
+nav ul li {
+    text-decoration-color: aliceblue;
+    font-family:inherit;
+    font-size: 20px;
+    font-weight:bolder;
+    float:right;
+    background-color: #069;
+    color:aliceblue;
+    display:inline;
+    padding: 5px 30px;
+    border-radius: 15px;
+    border-style:double;
+    margin-right: 30px;
+    
+}
+
+a:hover img {
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+    animation: shake 0.5s; 
+    /* When the animation is finished, start again */
+    animation-iteration-count: 2.0s; 
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* unvisited link */
+a:link {
+    color: white;
+}
+
+/* visited link */
+a:visited {
+    color:snow;
+}
+
+/* mouse over link */
+a:hover {
+    color:aqua;
+    font-style: oblique;
+}
+
+/* selected link */
+a:active {
+    color: red;
+}
+
+h1 {
+    font-size: 60px;
+}
+
+h2{
+    font-size: 40px;
+}
+
+h3, p {
+    font-size: 25px;
+}
+
+label {
+    font-size: 20px;
+}
+
+a{
+    color:white;
+    text-decoration: none;    
+}
+
+
+
+h1, h2, h3, p, label, ul li{
+    text-align: center;
+    font-family:fantasy;
+    color: white;
+    list-style-type: none;
+}
+body{
+    
+    background-color:#004;
+}
+
+header{
+    padding: 100px;
+    text-align: center;
+
+}
+
+textarea, input, section, select, placeholder{
+    font-family: fantasy;
+    color:red;
+    text-align: center;
+    font-size: 20px;
+    
+}
+.border{
+    border-style: double;
+    border-color: #b30;
+    border-width: thick;
+    border-radius: 5px;
+}
+
+/* Style inputs with type="text", select elements and textareas */
+input[type=text], select, textarea {
+    width: 65%; /* Full width */
+    padding: 12px; /* Some padding */  
+    border: 2px solid #b30; /* Gray border */
+    border-radius: 8px; /* Rounded borders */
+    box-sizing: border-box; /* Make sure that padding and width stays in place */
+    margin-top: 6px; /* Add a top margin */
+    margin-bottom: 16px; /* Bottom margin */
+    resize: vertical /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+/* Style the submit button with a specific background color etc */
+input[type=submit] {
+    font-size: 15px;
+    background-color: #b30;
+    color: white;
+    padding: 8px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* When moving the mouse over the submit button, add a darker green color */
+input[type=submit]:hover {
+    background-color: #069;
+}
+
+/* Add a background color and some padding around the form */
+.container {
+    border-radius: 5px;
+    padding: 20px;
+}
+
+section ul li{
+    list-style-type: none;
+    margin: 200px 0px;
+    text-align: center;
+}
+
+ul li{
+    font-size: 25px;
+}
+
+footer{
+    padding-top: 50px;
+    color:#b30;
+}
