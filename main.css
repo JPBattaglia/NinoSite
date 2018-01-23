@@ -96,7 +96,7 @@ h1, h2, h3, p, label, ul li{
     list-style-type: none;
 }
 body{
-    
+    margin: 75%;
     background-color:#004;
 }
 
