@@ -66,15 +66,15 @@ a:active {
 }
 
 h1 {
-    font-size: 60px;
-}
-
-h2{
     font-size: 40px;
 }
 
+h2{
+    font-size: 20px;
+}
+
 h3, p {
-    font-size: 25px;
+    font-size: 15px;
 }
 
 label {
