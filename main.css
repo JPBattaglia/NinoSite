@@ -58,7 +58,6 @@ a:visited {
 /* mouse over link */
 a:hover {
     color:aqua;
-    font-style: oblique;
 }
 
 /* selected link */
