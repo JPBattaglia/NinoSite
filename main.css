@@ -76,7 +76,6 @@ h2{
 
 h3, p {
     font-size: 20px;
-    margin: 75%;
 }
 
 label {
@@ -97,8 +96,7 @@ h1, h2, h3, p, label, ul li{
     list-style-type: none;
 }
 body{
-    background-color:#004;
-    margin: 100px;
+    background-color:#003;
 }
 
 header{
