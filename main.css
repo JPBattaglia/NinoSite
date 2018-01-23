@@ -21,7 +21,7 @@ nav ul li {
     border-radius: 15px;
     border-style:double;
     margin-right: 30px;
-    
+    max-width: 100%;
 }
 
 a:hover img {
