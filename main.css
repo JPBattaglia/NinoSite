@@ -1,7 +1,6 @@
 html, body{
     min-height:100%;
     overflow:auto;
-    margin:0px;
 }
 article {
     float:left;
@@ -22,7 +21,6 @@ nav ul li {
     border-radius: 15px;
     border-style:double;
     margin-right: 30px;
-    max-width: 100%;
 }
 
 a:hover img {
