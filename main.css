@@ -21,6 +21,7 @@ nav ul li {
     border-radius: 15px;
     border-style:double;
     margin-right: 20px;
+    max-width: 100%;
 }
 
 a:hover img {
@@ -112,8 +113,9 @@ textarea, input, section, select, placeholder{
     color:red;
     text-align: center;
     font-size: 25px;
-    
+    font-weight:bolder;    
 }
+
 .border{
     border-style: double;
     border-color: #b30;
