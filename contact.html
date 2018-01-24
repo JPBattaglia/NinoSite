@@ -40,35 +40,38 @@
         </h2>
         
         <section>
-            <div class="container">
-                <form>
-
-                <label for="fname">First Name:</label><br>
-                <input type="text" id="fname" name="firstname" placeholder="Your First Name..."><br>
-
-                <label for="lname">Last Name:</label><br>
-                <input type="text" id="lname" name="lastname" placeholder="Your Last Name..."><br>
-                    
-                <label for="email">Email:</label><br>
-                <input type="text" id="email" name="email" placeholder="Your email..."><br>
-
-                <label for="service">Service:</label><br>
-                <select id="service" name="service">
-                <option value="Art">Art</option>
-                <option value="logo">Logo</option>
-                <option value="icon">App Icon</option>
-                <option value="Flyer">Flyer</option>
-                <option value="pamphlet">Pamphlet</option>
-                <option value="other">Other</option>
-                </select><br>
-
-                <label for="subject">Subject:</label><br>
-                <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea><br>
-
-                    <a href="mailto:jpbattaglia@hotmail.com"><input type="submit" value="Submit"></a>
-
-                </form>
-            </div>
+            <?php include('form_process.php'); ?>
+<link rel="stylesheet" href="form.css" type="text/css">
+<div class="container">  
+  <form id="contact" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
+    <h3>Contact</h3>
+    <h4>Contact us today, and get reply with in 24 hours!</h4>
+    <fieldset>
+      <input placeholder="Your name" type="text" name="name" value="<?= $name ?>" tabindex="1" autofocus>
+      <span class="error"><?= $name_error ?></span>
+    </fieldset>
+    <fieldset>
+      <input placeholder="Your Email Address" type="text" name="email" value="<?= $email ?>" tabindex="2">
+      <span class="error"><?= $email_error ?></span>
+    </fieldset>
+    <fieldset>
+      <input placeholder="Your Phone Number" type="text" name="phone" value="<?= $phone ?>" tabindex="3">
+      <span class="error"><?= $phone_error ?></span>
+    </fieldset>
+    <fieldset>
+      <input placeholder="Your Web Site starts with http://" type="text" name="url" value="<?= $url ?>" tabindex="4" >
+      <span class="error"><?= $url_error ?></span>
+    </fieldset>
+    <fieldset>
+      <textarea value="<?= $message ?>" name="message" tabindex="5">
+      </textarea>
+    </fieldset>
+    <fieldset>
+      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+    </fieldset>
+    <div class="success"><?= $success ?></div>
+  </form>
+</div>
         </section>
     
     
