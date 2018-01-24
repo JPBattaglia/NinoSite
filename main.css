@@ -8,7 +8,7 @@ article {
     float: left;
 }
 
-article a img{
+article a: img{
     max-width: 80%;
 }
 
