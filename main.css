@@ -10,7 +10,7 @@ article {
 
 article a:link{
     max-width: 80%;
-    margin: 10px 0px 0px 20px;
+    margin: 10px 0px 0px 10px;
 }
 
 nav ul li {
@@ -105,7 +105,7 @@ body{
 
 header{
     text-align: center;
-    margin: 100px;
+    margin: 100px 0px;
     max-width: 110%;
 }
 
@@ -156,7 +156,7 @@ input[type=submit]:hover {
     border-radius: 5px;
     padding: 20px;
     background-color: #069;
-    margin: 0px 100px 0px 100px;
+    margin: 0px 100px;
     max-width: 80%
 }
 
