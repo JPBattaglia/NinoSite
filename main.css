@@ -99,14 +99,14 @@ body{
 }
 
 header{
-    padding-top: 100px;
     text-align: center;
-    margin: 50px;
-    max-width: 100%;
+    margin: 30px;
+    max-width: 110%;
 }
 
 header img{
-    max-width: 100%;
+    max-width: 110%;
+    
 }
 
 textarea, input, section, select, placeholder{
