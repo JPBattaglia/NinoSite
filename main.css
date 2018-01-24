@@ -17,8 +17,8 @@ nav ul li {
     background-color: #069;
     color:aliceblue;
     display:inline;
-    padding: 5px 10px;
-    border-radius: 15px;
+    padding: 5px 20px;
+    border-radius: 20px;
     border-style:double;
     margin-right: 10px;
 }
@@ -103,7 +103,7 @@ body{
 header{
     padding: 150px;
     text-align: center;
-    margin-top: 100px;
+    margin: 100px;
 
 }
 
