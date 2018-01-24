@@ -86,10 +86,6 @@ a{
     text-decoration: none;    
 }
 
-img{
-    max-width: 80%;
-}
-
 h1, h2, h3, p, label, ul li{
     text-align: center;
     font-family:fantasy;
@@ -164,6 +160,7 @@ section {
 
 section img{
     margin-top: 100px;
+    max-width: 80%;
 
 footer{
     color:#b30;
