@@ -21,7 +21,6 @@ nav ul li {
     border-radius: 15px;
     border-style:double;
     margin-right: 20px;
-    max-width: 50%;
     
 }
 
@@ -80,6 +79,7 @@ h3, p {
 
 label {
     font-size: 20px;
+    padding-top: 10px;
 }
 
 a{
@@ -87,7 +87,7 @@ a{
     text-decoration: none;    
 }
 
-img{
+img, nav{
     max-width: 100%;
 }
 
