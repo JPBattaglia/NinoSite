@@ -79,7 +79,6 @@ h3, p {
 
 label {
     font-size: 20px;
-    padding-top: 10px;
 }
 
 a{
@@ -89,6 +88,7 @@ a{
 
 img{
     max-width: 100%;
+    margin:20px;
 }
 
 h1, h2, h3, p, label, ul li{
@@ -96,7 +96,6 @@ h1, h2, h3, p, label, ul li{
     font-family:fantasy;
     color: white;
     list-style-type: none;
-    padding-top: 20px;
 }
 body{
     background-color:#003;
