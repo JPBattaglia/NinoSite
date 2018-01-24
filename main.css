@@ -8,6 +8,10 @@ article {
     float: left;
 }
 
+article a img{
+    max-width: 80%;
+}
+
 nav ul li {
     text-decoration-color: aliceblue;
     font-family:inherit;
