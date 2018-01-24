@@ -8,7 +8,7 @@ article {
     float: left;
 }
 
-article a img{
+article a:link{
     max-width: 80%;
     margin: 10px 0px 0px 20px;
 }
@@ -110,7 +110,7 @@ header{
 }
 
 header img{
-    margin-top:100px;
+    margin-top:100px 0px;
     max-width: 110%;
     
 }
@@ -155,7 +155,7 @@ input[type=submit]:hover {
 .container {
     border-radius: 5px;
     padding: 20px;
-    background-color: dodgerblue;
+    background-color: #069;
     margin: 0px 100px 0px 100px;
     max-width: 80%
 }
