@@ -128,7 +128,7 @@ input[type=text], select, textarea {
     width: 65%; /* Full width */
     padding: 12px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
-    border-radius: 20px; /* Rounded borders */
+    border-radius: 10px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
     margin-top: 6px; /* Add a top margin */
     margin-bottom: 16px; /* Bottom margin */
@@ -153,7 +153,7 @@ input[type=submit]:hover {
 
 /* Add a background color and some padding around the form */
 .container {
-    border-radius: 5px;
+    border-radius: 15px;
     padding: 20px;
     background-color: #069;
     max-width: 80%
