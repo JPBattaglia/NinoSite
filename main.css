@@ -101,7 +101,10 @@ header{
     text-align: center;
     margin: 50px;
     max-width: 100%;
+}
 
+header img{
+    max-width: 100%;
 }
 
 textarea, input, section, select, placeholder{
@@ -161,7 +164,7 @@ section {
 section img{
     margin-top: 100px;
     max-width: 80%;
-
+}
 footer{
     color:#b30;
 }
