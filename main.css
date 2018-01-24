@@ -70,7 +70,7 @@ h1 {
 }
 
 h2{
-    font-size: 25px;
+    font-size: 30px;
 }
 
 h3, p {
@@ -87,8 +87,9 @@ a{
     text-decoration: none;    
 }
 
-img, nav{
+img{
     max-width: 100%;
+    padding: 100px;
 }
 
 h1, h2, h3, p, label, ul li{
