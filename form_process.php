@@ -1,8 +1,8 @@
 <?php 
 
 // define variables and set to empty values
-$name_error = $email_error = $phone_error = $url_error = "";
-$name = $email = $phone = $message = $url = $success = "";
+$name_error = $email_error = $phone_error =
+$name = $email = $phone = $message = $success = "";
 
 //form is submitted with POST method
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -36,23 +36,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
 
-  if (empty($_POST["url"])) {
-    $url_error = "";
-  } else {
-    $url = test_input($_POST["url"]);
-    // check if URL address syntax is valid (this regular expression also allows dashes in the URL)
-    if (!preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$url)) {
-      $url_error = "Invalid URL"; 
-    }
-  }
-
   if (empty($_POST["message"])) {
     $message = "";
   } else {
     $message = test_input($_POST["message"]);
   }
   
-  if ($name_error == '' and $email_error == '' and $phone_error == '' and $url_error == '' ){
+  if ($name_error == '' and $email_error == '' and $phone_error == '' ){
       $message_body = '';
       unset($_POST['submit']);
       foreach ($_POST as $key => $value){
@@ -63,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $subject = 'Contact Form Submit';
       if (mail($to, $subject, $message)){
           $success = "Message sent, thank you for contacting us!";
-          $name = $email = $phone = $message = $url = '';
+          $name = $email = $phone = $message;
       }
   }
   
