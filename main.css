@@ -8,7 +8,7 @@ article {
     float: left;
 }
 
-article a: img{
+article a img{
     max-width: 80%;
     margin: 10px 0px 0px 20px;
 }
@@ -125,7 +125,7 @@ textarea, input, section, select, placeholder{
 
 /* Style inputs with type="text", select elements and textareas */
 input[type=text], select, textarea {
-    width: 50%; /* Full width */
+    width: 65%; /* Full width */
     padding: 12px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
     border-radius: 8px; /* Rounded borders */
@@ -157,6 +157,7 @@ input[type=submit]:hover {
     padding: 20px;
     background-color: dodgerblue;
     margin: 0px 100px 0px 100px;
+    max-width: 80%
 }
 
 
