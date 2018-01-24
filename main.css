@@ -120,7 +120,7 @@ textarea, input, section, select, placeholder{
 
 /* Style inputs with type="text", select elements and textareas */
 input[type=text], select, textarea {
-    width: 65%; /* Full width */
+    width: 85%; /* Full width */
     padding: 12px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
     border-radius: 8px; /* Rounded borders */
@@ -150,6 +150,8 @@ input[type=submit]:hover {
 .container {
     border-radius: 5px;
     padding: 20px;
+    background-color: #b30;
+    margin: 0px 100px 0px 100px;
 }
 
 
