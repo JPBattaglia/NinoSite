@@ -120,6 +120,7 @@ textarea, input, section, select, placeholder{
     border-color: #b30;
     border-width: thick;
     border-radius: 5px;
+    margin: 100px;
 }
 
 /* Style inputs with type="text", select elements and textareas */
