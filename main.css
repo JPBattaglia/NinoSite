@@ -4,7 +4,6 @@ html, body{
 }
 article {
     float:left;
-    display:inline;
     padding: 10px;
 
 }
