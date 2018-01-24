@@ -13,13 +13,14 @@ nav ul li {
     font-family:inherit;
     font-size: 15px;
     font-weight:bolder;
-    float:center;
+    float:right;
     background-color: #069;
     color:aliceblue;
     display:inline;
     padding: 5px 20px;
     border-radius: 15px;
-    border-style:double;    
+    border-style:double;
+    margin-right: 20px;
 }
 
 a:hover img {
