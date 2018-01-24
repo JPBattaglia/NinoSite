@@ -91,6 +91,7 @@ h1, h2, h3, p, label, ul li{
     font-family:fantasy;
     color: white;
     list-style-type: none;
+    margin: 20px;
 }
 body{
     background-color:black;
@@ -152,6 +153,7 @@ input[type=submit]:hover {
 section {
     margin: 100px 0px;
     text-align: center;
+    color: white;
 }
 
 section img{
