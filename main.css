@@ -156,7 +156,8 @@ input[type=submit]:hover {
     border-radius: 15px;
     padding: 20px;
     background-color: #069;
-    max-width: 80%
+    max-width: 80%;
+    margin: auto;
 }
 
 
