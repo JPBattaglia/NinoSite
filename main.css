@@ -10,7 +10,7 @@ article {
 
 article a:link{
     max-width: 80%;
-    margin: 10px 0px 0px 10px;
+    margin: 10px 0px 0px 5px;
 }
 
 nav ul li {
@@ -128,7 +128,7 @@ input[type=text], select, textarea {
     width: 65%; /* Full width */
     padding: 12px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
-    border-radius: 8px; /* Rounded borders */
+    border-radius: 20px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
     margin-top: 6px; /* Add a top margin */
     margin-bottom: 16px; /* Bottom margin */
