@@ -159,6 +159,9 @@ section {
     text-align: center;
 }
 
+section img{
+    margin: 50px;
+
 footer{
     padding-top: 50px;
     color:#b30;
