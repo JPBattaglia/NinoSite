@@ -116,12 +116,6 @@ textarea, input, section, select, placeholder{
     font-size: 25px;
     font-weight:bolder;    
 }
-.border{
-    border-style: double;
-    border-color: #b30;
-    border-width: thick;
-    border-radius: 5px;
-}
 
 /* Style inputs with type="text", select elements and textareas */
 input[type=text], select, textarea {
