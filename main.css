@@ -91,10 +91,11 @@ h1, h2, h3, p, label, ul li{
     font-family:fantasy;
     color: white;
     list-style-type: none;
-    margin: 20px;
 }
+
 body{
     background-color:black;
+    margin:0px 20px 0px 20px;
 }
 
 header{
