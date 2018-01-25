@@ -38,9 +38,8 @@ article {
 .sidenav .closebtn {
     position: absolute;
     top: 0;
-    right: 25px;
-    font-size: 46px;
-    margin-left: 50px;
+    right: 5px;
+    font-size: 40px;
 }
 
 @media screen and (max-height: 450px) {
