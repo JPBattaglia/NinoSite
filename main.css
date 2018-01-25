@@ -16,22 +16,22 @@ article {
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: red;
+    background-color: darkred;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 100px;
 }
 
 .sidenav a {
-    padding: 8px 8px 28px 32px;
+    padding: 8px 18px 28px 32px;
     font-size: 10px;
-    color: black;
+    color: white;
     display: block;
     transition: 0.3s;
 }
 
 .sidenav a:hover {
-    color: dodgerblue;
+    color: black;
 }
 
 .sidenav .closebtn {
