@@ -160,6 +160,10 @@ input[type=submit]:hover {
     margin: auto;
 }
 
+form{
+    margin: 200px 0px;
+}
+
 
 section {
     margin: 100px 0px;
