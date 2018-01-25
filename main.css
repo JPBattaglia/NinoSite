@@ -26,6 +26,12 @@ nav ul li {
     margin-right: 10px;
 }
 
+@media (max-width: 768px) {
+  nav {
+    display:none;
+  }
+}
+
 a:hover img {
     /* Start the shake animation and make the animation last for 0.5 seconds */
     animation: shake 0.5s; 
@@ -109,7 +115,7 @@ header{
 
 header img{
     max-width: 110%;
-    margin-top: 20px;
+    margin: 20px;
 }
 
 textarea, input, section, select, placeholder{
@@ -135,7 +141,7 @@ input[type=text], select, textarea {
 /* Style the submit button with a specific background color etc */
 input[type=submit] {
     font-size: 15px;
-    background-color: dodgerblue;
+    background-color: #e62e00;
     color: white;
     padding: 8px 40px;
     border: none;
@@ -145,7 +151,7 @@ input[type=submit] {
 
 /* When moving the mouse over the submit button, add a blue color */
 input[type=submit]:hover {
-    background-color: #e62e00;
+    background-color: dodgerblue;
 }
 
 /* Add a background color and some padding around the form */
