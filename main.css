@@ -7,9 +7,9 @@ article {
     padding: 10px;
     float: left;
 }
-
-article link{
+article a img{
     margin: 10px 0px 0px 8px;
+}
 
 nav ul li {
     text-decoration-color: aliceblue;
@@ -103,26 +103,26 @@ body{
 
 header{
     text-align: center;
-    margin-top: 110px;
+    margin-top: 165px;
     max-width: 110%;
 }
 
 header img{
     max-width: 110%;
-    
+    margin-top: 20px;
 }
 
 textarea, input, section, select, placeholder{
     font-family: fantasy;
     color:red;
     text-align: center;
-    font-size: 25px;
+    font-size: 15px;
     font-weight:bolder;    
 }
 
 /* Style inputs with type="text", select elements and textareas */
 input[type=text], select, textarea {
-    width: 65%; /* Full width */
+    width: 100%; /* Full width */
     padding: 12px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
     border-radius: 10px; /* Rounded borders */
@@ -143,7 +143,7 @@ input[type=submit] {
     cursor: pointer;
 }
 
-/* When moving the mouse over the submit button, add a darker green color */
+/* When moving the mouse over the submit button, add a blue color */
 input[type=submit]:hover {
     background-color: dodgerblue;
 }
@@ -153,17 +153,16 @@ input[type=submit]:hover {
     border-radius: 15px;
     padding: 20px;
     background-color: #069;
-    max-width: 80%;
-    margin: auto;
+    max-width: 100%;
 }
 
 form{
-    margin: 200px 0px;
+    margin: 0px 150px;
 }
 
 
 section {
-    margin: 100px 0px;
+    margin: 50px 0px;
     text-align: center;
     color: white;
 }
