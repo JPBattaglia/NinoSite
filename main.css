@@ -152,17 +152,17 @@ body{
 header{
     text-align: center;
     margin-top: 120px;
-    max-width: 110%;
+    max-width: 100%;
 }
 
 header img{
-    max-width: 110%;
+    max-width: 100%;
     margin: 20px;
 }
 
 textarea, input, section, select, placeholder{
     font-family: fantasy;
-    color:firebrick;
+    color:red;
     text-align: center;
     font-size: 25px;
     font-weight:bolder;    
