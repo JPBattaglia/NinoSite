@@ -1,136 +1,187 @@
-<!DOCTYPE html>
+html, body{
+    min-height:100%;
+    overflow:auto;
+}
 
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Nino Battaglia</title>
-        <meta name="description" content="An interactive portfolio.">
-        <link rel="stylesheet" href="main.css"> 
-           
-        <style>
-    
-            .sidenav {
-                height: 100%;
-                width: 0;
-                position: fixed;
-                z-index: 1;
-                top: 0;
-                right: 0;
-                background-color: white;
-                overflow-x: hidden;
-                transition: 0.5s;
-                padding-top: 60px;
-            }
+article {
+    padding: 10px;
+    float: left;
+}
 
-            .sidenav a {
-                padding: 8px 8px 8px 32px;
-                text-decoration: none;
-                font-size: 25px;
-                color: #069;
-                display: block;
-                transition: 0.3s;
-            }
+article a img{
+    margin: 10px 0px 0px 8px;
+}
 
-            .sidenav a:hover {
-                color: darkred;
-            }
+nav ul li {
+    text-decoration-color: aliceblue;
+    font-family:inherit;
+    font-size: 20px;
+    font-weight:bolder;
+    background-color: #069;
+    color:aliceblue;
+    display:inline;
+    padding: 5px 20px;
+    border-radius: 20px;
+    border-style:double;
+    text-align: center;
+    margin: 20px;
+}
 
-            .sidenav .closebtn {
-                position: absolute;
-                top: 0;
-                right: 0px;
-                font-size: 36px;
-                margin-left: 50px;
-            }
+nav{
+    text-align: center;
+}
 
-            @media screen and (max-height: 450px) {
-              .sidenav {padding-top: 15px;}
-              .sidenav a {font-size: 18px;}
-            }
-        </style>
-    </head>
-<body>
+@media (max-width: 768px) {
+  nav {
+    display:none;
+  }
+}
 
-        <div id="mySidenav" class="sidenav">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-          <a href="index.html">Home</a>
-          <a href="services.html">Services</a>
-          <a href="contact.html">Contact</a>
-        </div>
+a:hover img {
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+    animation: shake 0.5s; 
+    /* When the animation is finished, start again */
+    animation-iteration-count: 2.0s; 
+}
 
-        <span style="float:right;color:darkred;font-size:40px;cursor:pointer" onclick="openNav()">&#9776;</span>
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
 
-        <script>
-        function openNav() {
-            document.getElementById("mySidenav").style.width = "250px";
-        }
+/* unvisited link */
+a:link {
+    color: white;
+}
 
-        function closeNav() {
-            document.getElementById("mySidenav").style.width = "0";
-        }
-        </script>
-        
-        <article>
-        
-            <img src="logo1.png" alt="logo"><br>
-            
-            <a href="https://www.instagram.com/thenino69/"><img src="Instagram.png" alt="Instagram"></a>
-            <a href="https://www.facebook.com/TheNino69"><img src="facebook.png" alt="Facebook"></a>
-            
-        </article>
-        
-        <nav>
-            <ul> 
-                <li><a href="contact.html">Contact</a></li> 
-                <li><a href="services.html">Services</a></li> 
-                <li><a href="index.html">Home</a></li>
-            </ul> 
-        </nav>
-        
-        <header>
-            
-            <h1>Nino Battaglia</h1>
-            <h2>Graphic Design</h2>
-            <h3>DeFine DeSign</h3>
-            
-        </header>    
-        
-        <p>Welcome to my portfolio site.</p> 
-        <p>This page was developed in order to showcase what I have done so far. These examples in the gallery below will continually be updated as often as possible. They are a result of the unique process of bringing what is in your imagination out into reality.</p>
-        <p>I have included a few packages and plans in the <a href="services.html">Services</a> page to give an idea of what I offer, but really prefer to discuss programs on an individual basis. Feel free to get in touch with any questions or ideas through my the <a href="contact.html">Contact</a> page.</p>
-        
-        <section>
-            
-                <img src="2017-11-28%2019.07.44.png" alt="logo" class="border"><br>Insignia<br>
-                <img src="2017-08-09%2009.18.07.gif" alt="icon"><br>App Icon<br>
-                <img src="2017-09-02%2017.41.11.png" alt="mascot"><br>Mascot<br>
-                <img class="border" src="Screen%20Shot%202018-01-21%20at%201.02.42%20AM.png" alt="photo manipulation"><br>Photo Manipulation<br>
-                <img class="border" src="2017-12-16%2021.09.05.gif" alt="photo animation"><br>Photo Animation<br>
-                <img src="AirobicFitness.png" alt="company logo"><br>Company Logo<br>
-                <img class="border" src="2017-09-12%2012.24.23.jpg" alt="letterhead"><br>Letterhead<br>
-                <img src="YinYang.gif" alt="concept sketch"><br>Concept Sketch<br>
-                <img class="border" src="1504235406516.jpeg" alt="mobile app splash"><br>Mobile App Splash<br>
-                <img class="border" src="IMG_9336.jpg" alt="profile portrait"><br>Profile Portrait<br>
-                <img class="border" src="IMG_9335.jpg" alt="graphite charcoal"><br>Graphite Charcoal<br>
-                <img class="border" src="IMG_9337.jpg" alt="airbrush painting"><br>Airbrush Painting<br>
-                <img class="border" src="IMG_9334.jpg" alt="logo"><br>Moniker<br>
-                <img class="border" src="2018-01-21%2018.25.42.jpg" alt="flyer"><br>Flyer<br>
-                <img class="border" src="AirobicFitness.jpg" alt="pamphlet"><br>Pamphlet<br>
-                <img class="border" src="eagleyes.jpg" alt="sketch"><br>Sketch<br>
-                <img class="border" src="DPower.jpg" alt="logo"><br>Emblem<br>
-                <img class="border" src="2018-01-21%2018.31.33.jpg" alt="slogan & icon"><br>Slogan & Icon<br>
-            
-        </section>
-    
-    
-        <footer>
-            <p><a href="https://www.instagram.com/thenino69/"><img src="Instagram.png" alt="Instagram"></a>
-            &#169; Nino Battaglia 2018
-            <a href="https://www.facebook.com/TheNino69"><img src="facebook.png" alt="Facebook"></a></p>
-        </footer>
-    </body>
+/* visited link */
+a:visited {
+    color:snow;
+}
+
+/* mouse over link */
+a:hover {
+    color:powderblue;
+}
+
+/* selected link */
+a:active {
+    color: red;
+}
+
+h1 {
+    font-size: 40px;
+    text-align: center;
+}
+
+h2{
+    font-size: 25px;
+}
+
+h3, p {
+    font-size: 20px;
+}
+
+label {
+    font-size: 20px;
+}
+
+a{
+    color:white;
+    text-decoration: none;    
+}
+
+h1, h2, h3, p, label, ul li{
+    text-align: center;
+    font-family:fantasy;
+    color: white;
+    list-style-type: none;
+}
+
+body{
+    background-color:black;
+    margin:0px 20px 0px 20px;
+}
+
+header{
+    text-align: center;
+    margin-top: 165px;
+    max-width: 110%;
+}
+
+header img{
+    max-width: 110%;
+    margin: 20px;
+}
+
+textarea, input, section, select, placeholder{
+    font-family: fantasy;
+    color:red;
+    text-align: center;
+    font-size: 15px;
+    font-weight:bolder;    
+}
+
+/* Style inputs with type="text", select elements and textareas */
+input[type=text], select, textarea {
+    width: 100%; /* Full width */
+    padding: 12px; /* Some padding */  
+    border: 2px solid #b30; /* Gray border */
+    border-radius: 10px; /* Rounded borders */
+    box-sizing: border-box; /* Make sure that padding and width stays in place */
+    margin-top: 6px; /* Add a top margin */
+    margin-bottom: 16px; /* Bottom margin */
+    resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+/* Style the submit button with a specific background color etc */
+input[type=submit] {
+    font-size: 15px;
+    background-color: #e62e00;
+    color: white;
+    padding: 8px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* When moving the mouse over the submit button, add a blue color */
+input[type=submit]:hover {
+    background-color: dodgerblue;
+}
+
+/* Add a background color and some padding around the form */
+.container {
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #069;
+    max-width: 100%;
+}
+
+form{
+    margin: 0px;
+}
 
 
-</html>
+section {
+    margin: 50px 25px;
+    text-align: center;
+    color: white;
+}
+
+section img{
+    margin-top: 100px;
+    max-width: 100%;
+}
+footer{
+    text-align: center;
+}
