@@ -157,12 +157,12 @@ input[type=submit]:hover {
 }
 
 form{
-    margin: 0px 150px;
+    margin: 0px;
 }
 
 
 section {
-    margin: 50px 0px;
+    margin: 50px 25px;
     text-align: center;
     color: white;
 }
