@@ -16,27 +16,28 @@ article {
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: darkred;
+    background-color: red;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 100px;
 }
 
 .sidenav a {
-    padding: 18px 8px 8px 32px;
+    padding: 28px 8px 8px 32px;
     text-decoration: none;
     font-size: 10px;
-    color: white;
+    color: black;
     display: block;
     transition: 0.3s;
 }
 
 .sidenav a:hover {
-    color: black;
+    color: dodgerblue;
 }
 
 .sidenav .closebtn {
     position: absolute;
+    margin-bottom: 10px;
     top: 0;
     right: 5px;
     font-size: 40px;
@@ -44,7 +45,7 @@ article {
 
 @media screen and (max-height: 450px) {
 .sidenav {padding-top: 15px;}
-.sidenav a {font-weight: bolder; font-size: 30px;}
+.sidenav a {font-weight: bolder; font-size: 20px;}
 }
 
 nav ul li {
