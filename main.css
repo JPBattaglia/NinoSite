@@ -8,10 +8,8 @@ article {
     float: left;
 }
 
-article a:link{
-    max-width: 80%;
-    margin: 20px 0px 0px 8px;
-}
+article link{
+    margin: 10px 0px 0px 8px;
 
 nav ul li {
     text-decoration-color: aliceblue;
@@ -105,12 +103,11 @@ body{
 
 header{
     text-align: center;
-    margin-top: 100px;
+    margin-top: 110px;
     max-width: 110%;
 }
 
 header img{
-    margin-top:100px;
     max-width: 110%;
     
 }
