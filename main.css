@@ -144,6 +144,10 @@ h2, footer, p, label, ul li{
     list-style-type: none;
 }
 
+h4{
+    color: darkred;
+}
+
 body{
     background-color:black;
     margin:0px 20px 0px 20px;
@@ -158,6 +162,7 @@ header{
 header img{
     max-width: 100%;
     margin: 20px;
+    margin:auto;
 }
 
 textarea, input, section, select, placeholder{
@@ -218,6 +223,7 @@ section img{
     margin-top: 100px;
     max-width: 100%;
 }
+
 footer{
     text-align: center;
 }
