@@ -23,8 +23,8 @@ article {
 }
 
 .sidenav a {
-    padding: 8px 18px 28px 32px;
-    font-size: 10px;
+    padding: 8px 20px 28px 32px;
+    font-size: 25px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -35,16 +35,15 @@ article {
 }
 
 .sidenav .closebtn {
-    position: absolute;
-    margin-bottom: 10px;
-    top: 0;
+    position:absolute;
+    top: 0px;
     right: 5px;
     font-size: 40px;
 }
 
 @media screen and (max-height: 450px) {
 .sidenav {padding-top: 15px;}
-.sidenav a {font-weight: bolder; font-size: 20px;}
+.sidenav a {font-weight: bolder; font-size: 30px;}
 }
 
 nav ul li {
@@ -94,22 +93,22 @@ a:hover img {
 }
 
 /* unvisited link */
-a:link {
+nav a:link {
     color: white;
 }
 
 /* visited link */
-a:visited {
+nav a:visited {
     color:snow;
 }
 
 /* mouse over link */
-a:hover {
+nav a:hover {
     color:powderblue;
 }
 
 /* selected link */
-a:active {
+nav a:active {
     color: red;
 }
 
@@ -152,11 +151,11 @@ body{
 header{
     text-align: center;
     margin-top: 120px;
-    max-width: 100%;
+    max-width: 110%;
 }
 
 header img{
-    max-width: 100%;
+    max-width: 110%;
     margin: 20px;
 }
 
