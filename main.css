@@ -25,13 +25,13 @@ article {
 .sidenav a {
     padding: 8px 20px 28px 32px;
     font-size: 25px;
-    color: white;
+    color: red;
     display: block;
     transition: 0.3s;
 }
 
 .sidenav a:hover {
-    color: black;
+    color: white;
 }
 
 .sidenav .closebtn {
@@ -125,6 +125,7 @@ h2{
 
 h3, p {
     font-size: 20px;
+    
 }
 
 label {
@@ -132,14 +133,14 @@ label {
 }
 
 a{
-    color:white;
+    color:dodgerblue;
     text-decoration: none;    
 }
 
-h2, h3, p, label, ul li{
+h2, footer, p, label, ul li{
     text-align: center;
     font-family:fantasy;
-    color: white;
+    color:white;
     list-style-type: none;
 }
 
