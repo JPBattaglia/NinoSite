@@ -70,7 +70,7 @@ nav ul li {
 }
 
 nav{
-    text-align: center;
+    text-align: right;
 }
 
 @media (min-width: 769px) {
