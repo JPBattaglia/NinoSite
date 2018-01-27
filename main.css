@@ -97,11 +97,12 @@ nav{
     aside{
         max-width: 85%;
         margin: auto;
-        border: 3px;
+        border-top: 4px;
+        border-bottom: 4px;
         border-color: red;
         border-bottom-style: double;
         border-top-style: double;
-        padding:10px;
+        padding:10px 0px;
     }
 }
 
