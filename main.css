@@ -187,6 +187,10 @@ header img{
     margin:auto;
 }
 
+aside{
+    margin: 0px 10px;
+}
+
 textarea, input, section, select, placeholder{
     font-family: 'federant', serif;
     color:red;
