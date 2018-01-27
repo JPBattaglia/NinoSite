@@ -73,6 +73,13 @@ nav{
     text-align: center;
 }
 
+@media (min-width: 1200px) {
+  .navicon {
+    display:none;
+  }
+}
+
+
 @media (max-width: 768px) {
   nav {
     display:none;
