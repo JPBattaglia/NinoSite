@@ -11,7 +11,7 @@ article {
 
 .navicon {
     width: 30px;
-    height: 5px;
+    height: 6px;
     background-color: red;
     margin: 6px 0;
 }
@@ -70,7 +70,7 @@ nav ul li {
 }
 
 nav{
-    text-align: right;
+    text-align:right;
 }
 
 @media (min-width: 769px) {
@@ -172,7 +172,7 @@ h4{
 
 body{
     background-color:black;
-    margin:0px 20px 0px 20px;
+    margin: 5px 20px 0px 20px;
 }
 
 header{
