@@ -75,8 +75,12 @@ nav{
 
 @media (min-width: 769px) {
   .navicon {
-    display:none;
+    display:none;      
   }
+    aside{
+        width: 800px;
+        margin: auto;
+    }
 }
 
 
@@ -185,10 +189,6 @@ header img{
     max-width: 100%;
     margin: 20px;
     margin:auto;
-}
-
-aside{
-    margin: 0px 10px;
 }
 
 textarea, input, section, select, placeholder{
