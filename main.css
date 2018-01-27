@@ -9,6 +9,13 @@ article {
     max-width: 80%;
 }
 
+.navicon {
+    width: 30px;
+    height: 5px;
+    background-color: red;
+    margin: 6px 0;
+}
+
 .sidenav {
     height: 100%;
     width: 0;
@@ -138,7 +145,7 @@ a{
     text-decoration: none;    
 }
 
-h2, footer, p, label, ul li{
+h2, h3, footer, p, label, ul li{
     text-align: center;
     font-family:fantasy;
     color:white;
@@ -147,7 +154,6 @@ h2, footer, p, label, ul li{
 
 h4{
     color: darkred;
-    font-size: 30px;
 }
 
 body{
