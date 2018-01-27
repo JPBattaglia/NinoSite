@@ -35,7 +35,7 @@ article {
     color: white;
     display: block;
     transition: 0.3s;
-    max-width: 100%;
+    max-width: 80%;
 }
 
 .sidenav a:hover {
@@ -121,10 +121,11 @@ nav a:active {
 }
 
 h1 {
-    font-size: 40px;
+    font-size: 60px;
     text-align: center;
     color: red;
-    font-family: fantasy;
+    font-family: 'Princess Sofia', serif;
+    text-shadow: 4px 4px 4px #069;
 }
 
 h2{
@@ -147,7 +148,7 @@ a{
 
 h2, h3, footer, p, label, ul li{
     text-align: center;
-    font-family:fantasy;
+    font-family:'federant', serif;
     color:white;
     list-style-type: none;
 }
@@ -174,7 +175,7 @@ header img{
 }
 
 textarea, input, section, select, placeholder{
-    font-family: fantasy;
+    font-family: 'federant', serif;
     color:red;
     text-align: center;
     font-size: 25px;
