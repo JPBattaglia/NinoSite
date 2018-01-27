@@ -213,7 +213,7 @@ input[type=text], select, textarea {
 
 /* Style the submit button with a specific background color etc */
 input[type=submit] {
-    font-size: 15px;
+    font-size: 20px;
     background-color: #e62e00;
     color: white;
     padding: 8px 40px;
@@ -236,7 +236,13 @@ input[type=submit]:hover {
 }
 
 form{
-    margin: 0px;
+    margin: 10px;
+}
+
+.container{
+    width:600px;
+    max-width: 100%;
+    margin: auto;
 }
 
 
@@ -248,6 +254,7 @@ section {
 section img{
     margin-top: 100px;
     max-width: 100%;
+    margin: auto;
 }
 
 footer{
