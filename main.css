@@ -175,6 +175,7 @@ header img{
 
 textarea, input, section, select, placeholder{
     font-family: fantasy;
+    color:red;
     text-align: center;
     font-size: 25px;
     font-weight:bolder;    
