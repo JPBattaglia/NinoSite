@@ -176,7 +176,7 @@ h4{
 
 body{
     background-color:black;
-    margin: 5px 20px 0px 20px;
+
 }
 
 header{
@@ -240,8 +240,8 @@ form{
 }
 
 .container{
-    width:600px;
-    max-width: 100%;
+    width: 600px;
+    max-width: 80%;
     margin: auto;
 }
 
