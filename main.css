@@ -121,11 +121,11 @@ nav a:active {
 }
 
 h1 {
-    font-size: 60px;
+    font-size: 50px;
     text-align: center;
-    color: red;
-    font-family: 'Princess Sofia', serif;
-    text-shadow: 4px 4px 4px #069;
+    color: black;
+    font-family: 'Fugaz One', serif;
+    text-shadow: 4px 2px 4px red;
 }
 
 h2{
