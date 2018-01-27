@@ -123,9 +123,9 @@ nav a:active {
 h1 {
     font-size: 50px;
     text-align: center;
-    color: black;
+    color: red;
     font-family: 'Fugaz One', serif;
-    text-shadow: 4px 2px 4px red;
+    text-shadow: 4px 2px 4px #069;
 }
 
 h2{
