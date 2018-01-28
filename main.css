@@ -292,14 +292,17 @@ input[type=submit]:hover {
     margin: auto;
 }
 
-#gallery, #gallery img{
+#gallery img, #services{
 
     max-width: 100%;
     margin: auto;
     margin: 100px 0px 15px ;
+}
+
+#gallery{
+    max-width: 100%;
     text-align: center;
-    font-size: 25px;
-    
+    font-size: 25px
 }
 
 #form {
