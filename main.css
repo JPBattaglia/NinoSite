@@ -56,7 +56,7 @@ article {
 
 nav ul li {
     text-decoration-color: aliceblue;
-    font-family:inherit;
+    font-family:'federant', serif;
     font-size: 20px;
     font-weight:bolder;
     background-color: #069;
@@ -73,6 +73,30 @@ nav{
     text-align:right;
 }
 
+table{
+    
+    text-align: center;
+    font-family:'federant', serif;
+    color:white;
+    font-size: 25px;
+    width: 75%;
+    border-bottom: 3px double red;
+    margin:auto;
+    padding-top: 50px;
+    border-spacing: 150px 30px;
+    max-width: 100%;
+    
+}
+
+th{
+    padding: 10px;
+    border-top: 3px double red;
+    border-bottom: 3px double red;
+    color: dodgerblue;
+    font-size: 35px;
+    max-width: 100%;
+}
+
 @media (min-width: 769px) {
   .navicon {
     display:none;      
@@ -86,6 +110,10 @@ nav{
         border-top-style: double;
         padding:10px;
     }
+    
+    #services{
+        display: none;
+    }
 }
 
 
@@ -97,12 +125,15 @@ nav{
     aside{
         max-width: 85%;
         margin: auto;
-        border-top: 4px;
-        border-bottom: 4px;
+        border: 3px;
         border-color: red;
         border-bottom-style: double;
         border-top-style: double;
-        padding:10px 0px;
+        padding:10px;
+    }
+    
+     table{
+        display: none;
     }
 }
 
@@ -165,6 +196,12 @@ h3{
    font-size: 25px; 
 }
 
+h4{
+    font-size: 30px;
+    font-family: 'federant', serif;
+    color: white;
+}
+
 p {
     font-size: 20px;
     
@@ -186,10 +223,6 @@ h2, h3, footer, p, label, ul li{
     list-style-type: none;
 }
 
-h4{
-    color: darkred;
-}
-
 body{
     background-color:black;
     margin:20px;
@@ -208,11 +241,11 @@ header img{
     margin:auto;
 }
 
-textarea, input, section, select, placeholder{
+textarea, input, section, select{
     font-family: 'federant', serif;
     color:red;
     text-align: center;
-    font-size: 25px;
+    font-size: 15px;
     font-weight:bolder;    
 }
 
@@ -250,28 +283,25 @@ input[type=submit]:hover {
     padding: 20px;
     background-color: #069;
     max-width: 100%;
-}
-
-form{
-    margin: 10px;
-}
-
-.container{
     width: 600px;
     max-width: 80%;
     margin: auto;
 }
 
+#gallery, #gallery img{
 
-section {
-    margin: 50px 0px;
-    text-align: center;
-}
-
-section img{
-    padding-top: 100px;
     max-width: 100%;
     margin: auto;
+    margin: 100px 0px 15px ;
+    text-align: center;
+    font-size: 25px;
+    
+}
+
+#form, {
+    font-size: 10px;
+    padding:20px
+    margin: 5px;
 }
 
 footer{
