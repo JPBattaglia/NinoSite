@@ -41,12 +41,11 @@ article {
     transition: .5s;
     padding-top: 100px;
     font-family: 'federant', cursive;
-    font-size: 10px;
 }
 
 .sidenav a {
     padding: 8px 20px 28px 32px;
-    font-size: 25px;
+    font-size: 20px;
     color: white;
     display: block;
     transition: 0.3s;
