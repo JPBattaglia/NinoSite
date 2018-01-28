@@ -44,7 +44,7 @@ article {
 }
 
 .sidenav a {
-    padding: 8px 20px 28px 32px;
+    padding: 0px 22px 28px 22px;
     font-size: 20px;
     color: white;
     display: block;
@@ -58,9 +58,9 @@ article {
 
 .sidenav .closebtn {
     position:absolute;
-    top: 5px;
+    top: 0px;
     right: 0px;
-    font-size: 55px;
+    font-size: 65px;
 }
 
 @media screen and (max-height: 450px) {
@@ -347,6 +347,7 @@ footer{
     font-family: 'princess sofia', serif;
     font-size: 20px;
 }
+
 
 
 
