@@ -148,6 +148,10 @@ th{
      table{
         display: none;
     }
+    
+    #gallery, #services{
+            border-top: 3px double red;
+    }
 }
 
 a:hover img {
@@ -218,6 +222,7 @@ h4{
 
 h5{
     color:darkred;
+    font-size: 25;
 }
 
 p {
@@ -318,7 +323,6 @@ input[type=submit]:hover {
     text-align: center;
     font-size: 25px;
     padding-bottom: 50px;
-    border-top: 3px double red;
 }
 
 #gallery a, #services a{
