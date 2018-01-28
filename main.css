@@ -13,7 +13,20 @@ article {
     height: 6px;
     background-color: red;
     margin: 6px 0;
+}
 
+.navicon2 {
+    width: 30px;
+    height: 6px;
+    background-color: blue;
+    margin: 6px 0;
+}
+
+.navicon1 {
+    width: 30px;
+    height: 6px;
+    background-color: maroon;
+    margin: 6px 0;
 }
 
 .sidenav {
@@ -98,7 +111,7 @@ th{
 }
 
 @media (min-width: 769px) {
-  .navicon {
+  .navicon, .navicon1, .navicon2 {
     display:none;      
   }
     aside{
