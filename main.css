@@ -40,7 +40,7 @@ article {
     overflow-x: hidden;
     transition: .5s;
     padding-top: 100px;
-    font-family: 'federant', cursive;
+    font-family: 'kaushan script', cursive;
 }
 
 .sidenav a {
@@ -149,7 +149,7 @@ th{
         display: none;
     }
     
-    #gallery, #services{
+     #services{
             border-top: 3px double red;
     }
 }
@@ -222,7 +222,6 @@ h4{
 
 h5{
     color:darkred;
-    font-size: 25;
 }
 
 p {
@@ -288,7 +287,7 @@ input[type=text], select, textarea {
 input[type=submit] {
     font-size: 20px;
     background-color: #e62e00;
-    color: white;
+    color: dodgerblue;
     padding: 8px 40px;
     border: none;
     border-radius: 4px;
@@ -349,7 +348,7 @@ footer{
     border-top: 3px double red;
     text-align: center;
     padding-top: 10px;
-    font-family: 'Quintessential', cursive;
+    font-family: 'quintessential', cursive;
     font-size: 20px;
 }
 
