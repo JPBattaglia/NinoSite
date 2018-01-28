@@ -202,6 +202,10 @@ h4{
     color: white;
 }
 
+h5{
+    color:darkred;
+}
+
 p {
     font-size: 20px;
     
@@ -298,9 +302,9 @@ input[type=submit]:hover {
     
 }
 
-#form, {
+#form {
     font-size: 10px;
-    padding:20px
+    padding:20px 0px;
     margin: 5px;
 }
 
