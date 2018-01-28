@@ -41,6 +41,7 @@ article {
     transition: .5s;
     padding-top: 100px;
     font-family: 'federant', cursive;
+    font-size: 10px;
 }
 
 .sidenav a {
