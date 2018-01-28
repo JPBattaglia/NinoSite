@@ -45,7 +45,7 @@ article {
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 20px;
+    font-size: 22px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -318,6 +318,7 @@ input[type=submit]:hover {
     text-align: center;
     font-size: 25px;
     padding-bottom: 50px;
+    border-top: 3px double red;
 }
 
 #gallery a, #services a{
@@ -344,7 +345,7 @@ footer{
     border-top: 3px double red;
     text-align: center;
     padding-top: 10px;
-    font-family: 'princess sofia', serif;
+    font-family: cursive;
     font-size: 20px;
 }
 
