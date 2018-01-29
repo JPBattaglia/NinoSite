@@ -324,24 +324,43 @@ input[type=submit]:hover {
     padding-bottom: 50px;
 }
 
+#gallery a, #services a{
+    border: 3px double red;
+    border-radius: 12px;
+    background: black;
+    color: dodgerblue;
+}
+
+#gallery a:hover, #services a:hover{
+    border: 3px double #069;
+    border-radius: 12px;
+    background-color: #069;
+    color:white;
+}
+
 #form {
     font-size: 10px;
     padding:0px 0px 40px;
     margin: 5px;
 }
 
-#button-wrap {
-    position: fixed;
-    bottom: 0px;
-    max-width:100%;
+#myBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 20px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: red; /* Set a background color */
+    color: white; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding: 10px; /* Some padding */
+    border-radius: 10px; /* Rounded corners */
 }
 
-#backToTop {
-    position:relative;
-    margin:0 auto;
-    z-index: 1000;
-    color: #C6C6C6;
-    opacity: 0.4;
+#myBtn:hover {
+    background-color: #069; /* Add a blue background on hover */
 }
 
 footer{
@@ -351,11 +370,3 @@ footer{
     font-family: 'quintessential', cursive;
     font-size: 20px;
 }
-
-
-
-
-
-
-
-
