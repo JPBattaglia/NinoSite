@@ -88,17 +88,14 @@ nav{
 }
 
 table{
-    
     text-align: center;
     font-family:'federant', serif;
     color:white;
     font-size: 25px;
-    width: 75%;
     margin:auto;
     padding-top: 50px;
     border-spacing: 150px 30px;
-    max-width: 100%;
-    
+    max-width: 100%;    
 }
 
 th{
@@ -130,8 +127,8 @@ th{
     
     #myBtn{
         padding:10px;
-        right: 80px;
         font-size: 25px;
+        margin-right: 50px;
     }
 }
 
@@ -156,7 +153,7 @@ th{
     }
     
      #services{
-            border-top: 3px double red;
+            bordeßr-top: 3px double red;
     }
 }
 
@@ -375,5 +372,4 @@ footer{
     font-family: 'quintessential', cursive;
     font-size: 20px;
 }
-
 
