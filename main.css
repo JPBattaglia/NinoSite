@@ -359,6 +359,7 @@ input[type=submit]:hover {
     cursor: pointer; /* Add a mouse pointer on hover */
     padding: 5px; /* Some padding */
     border-radius: 10px; /* Rounded corners */
+    border-color:white;
 }
 
 #myBtn:hover {
