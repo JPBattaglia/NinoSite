@@ -355,7 +355,7 @@ input[type=submit]:hover {
     background-color: red; /* Set a background color */
     color: white; /* Text color */
     cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 10px; /* Some padding */
+    padding: 5px; /* Some padding */
     border-radius: 10px; /* Rounded corners */
 }
 
