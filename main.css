@@ -8,6 +8,11 @@ article {
     max-width: 80%;
 }
 
+.iconright{
+    float:right;
+    max-width: 100%;
+}
+
 .navicon {
     width: 30px;
     height: 6px;
@@ -69,22 +74,20 @@ article {
 }
 
 nav ul li {
-    text-decoration-color: aliceblue;
+    text-decoration-color: red;
     font-family:'federant', serif;
     font-size: 20px;
     font-weight:bolder;
-    background-color: #069;
-    color:aliceblue;
     display:inline;
     padding: 5px 20px;
     border-radius: 20px;
-    border-style:double;
+    border: double red;
     text-align: center;
-    margin: 20px; 
+    margin: 20px;
 }
 
 nav{
-    text-align:right;
+    text-align:center;
 }
 
 table{
@@ -94,8 +97,7 @@ table{
     font-size: 25px;
     margin:auto;
     padding-top: 50px;
-    border-spacing: 150px 30px;
-    max-width: 100%;    
+    border-spacing: 150px 30px;    
 }
 
 th{
@@ -105,6 +107,7 @@ th{
     color: dodgerblue;
     font-size: 35px;
     max-width: 100%;
+    margin:auto:
 }
 
 @media (min-width: 769px) {
@@ -155,6 +158,10 @@ th{
      #services{
             bordeßr-top: 3px double red;
     }
+    
+    .iconright{
+        display:none;
+    }
 }
 
 a:hover img {
@@ -180,22 +187,22 @@ a:hover img {
 
 /* unvisited link */
 nav a:link {
-    color: white;
+    color: dodgerblue;
 }
 
 /* visited link */
 nav a:visited {
-    color:snow;
+    color:dodgerblue;
 }
 
 /* mouse over link */
-nav a:hover {
-    color:powderblue;
+nav a:hover, nav ul li:hover {
+    color:red;
 }
 
 /* selected link */
 nav a:active {
-    color: red;
+    color: white;
 }
 
 h1 {
@@ -238,10 +245,10 @@ label {
 
 a{
     color:dodgerblue;
-    text-decoration: none;    
+    text-decoration: none;
 }
 
-h2, h3, footer, p, label, ul li{
+h2, h3, footer, p, label{
     text-align: center;
     font-family:'federant', serif;
     color:white;
@@ -264,6 +271,7 @@ header img{
     max-width: 100%;
     margin: 20px;
     margin:auto;
+    image
 }
 
 textarea, input, section, select{
@@ -295,11 +303,13 @@ input[type=submit] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    border-radius: 15px;
 }
 
 /* When moving the mouse over the submit button, add a blue color */
 input[type=submit]:hover {
     background-color: dodgerblue;
+    border-radius: 15px;
 }
 
 /* Add a background color and some padding around the form */
@@ -359,7 +369,6 @@ input[type=submit]:hover {
     cursor: pointer; /* Add a mouse pointer on hover */
     padding: 5px; /* Some padding */
     border-radius: 10px; /* Rounded corners */
-    border-color:white;
 }
 
 #myBtn:hover {
