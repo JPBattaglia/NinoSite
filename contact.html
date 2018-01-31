@@ -11,7 +11,7 @@
         <link href="https://fonts.googleapis.com/css?family=Federant|Kaushan+Script|Quintessential" rel="stylesheet">
     </head>
     
-    <body>
+    <body onload="document.body.style.opacity='1'">
 
         <div id="mySidenav" class="sidenav">
           <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -79,9 +79,9 @@
                  <label for="email">Email:</label><br>
                  <input type="text" id="email" name="email" placeholder="Your email..."><br>
  
-                 <label for="service">Service:</label><br>
+                 <label for="subject">Subject:</label><br>
                  <select id="service" name="service">
-                 <option value="Art">Art</option>
+                 <option value="General">General</option>
                  <option value="logo">Logo</option>
                  <option value="icon">App Icon</option>
                  <option value="Flyer">Flyer</option>
@@ -89,7 +89,7 @@
                  <option value="other">Other</option>
                  </select><br>
  
-                 <label for="subject">Subject:</label><br>
+                 <label for="memo">Memo:</label><br>
                  <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea><br>
  
                      <a href="mailto:jpbattaglia@hotmail.com"><input type="submit" value="Submit"></a>
