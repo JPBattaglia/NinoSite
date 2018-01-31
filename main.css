@@ -81,7 +81,7 @@ nav ul li {
     display:inline;
     padding: 5px 20px;
     border-radius: 20px;
-    border: double red;
+    border:  5px double red;
     text-align: center;
     margin: 20px;
 }
@@ -382,4 +382,3 @@ footer{
     font-family: 'quintessential', cursive;
     font-size: 20px;
 }
-
