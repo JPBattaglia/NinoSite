@@ -167,7 +167,10 @@ tr, td{
     } 
     
     .slogan{
-        display: none;
+        display: none;        
+    }
+    header{
+        margin:100px 0px 0px;
     }
 
 }
@@ -202,6 +205,13 @@ tr, td{
     
     video{
         display:none;
+    }
+    
+    header img{
+        padding-top: 20px;
+    }
+    header{
+        padding-top: 70px;
     }
 }
 
@@ -301,13 +311,12 @@ body{
     transition: opacity 2s;
     -webkit-transition: opacity 2s; /* Safari */
     background-color:black;
-    margin:20px;
+    margin: 20px;
 
 }
 
 header{
     text-align: center;
-    margin-top: 100px;
     max-width: 100%;
 }
 
@@ -315,7 +324,6 @@ header img{
     max-width: 100%;
     margin: 20px;
     margin:auto;
-    image
 }
 
 textarea, input, section, select{
@@ -376,20 +384,7 @@ input[type=submit]:hover {
     text-align: center;
     font-size: 25px;
     padding-bottom: 50px;
-}
-
-#gallery a, #services a{
-    border: 3px double red;
-    border-radius: 12px;
-    background: black;
-    color: dodgerblue;
-}
-
-#gallery a:hover, #services a:hover{
-    border: 3px double #069;
-    border-radius: 12px;
-    background-color: #069;
-    color:white;
+    margin:auto;
 }
 
 #form {
