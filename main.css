@@ -1,6 +1,23 @@
-html, body{
+html{
     min-height:100%;
     overflow:auto;
+}
+
+video{
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background: black;
+    background-size: cover; 
 }
 
 article {
@@ -90,34 +107,41 @@ nav{
     text-align:center;
 }
 
-table{
+.servicelist {
+    width:800px;
     text-align: center;
     font-family:'federant', serif;
     color:white;
     font-size: 25px;
     margin:auto;
     padding-top: 50px;
-    border-spacing: 150px 30px;    
+    border-spacing: 150px 30px;
+    max-width: 100%;
 }
 
 th{
     padding: 10px;
-    border-top: 3px double red;
-    border-bottom: 3px double red;
+    border-top: 5px double red;
+    border-bottom: 5px double red;
     color: dodgerblue;
     font-size: 35px;
     max-width: 100%;
-    margin:auto:
+    margin:auto;
+}
+
+tr, td{
+    max-width: 100%;
+    margin:auto;
 }
 
 @media (min-width: 769px) {
   .navicon, .navicon1, .navicon2 {
     display:none;      
   }
-    aside{
+    .intro {
         width: 800px;
         margin: auto;
-        border: 3px;
+        border: 5px;
         border-color: red;
         border-bottom-style: double;
         border-top-style: double;
@@ -133,6 +157,19 @@ th{
         font-size: 25px;
         margin-right: 50px;
     }
+    
+    footer{
+        margin: 0px 100px;
+    }
+    
+    header{
+       padding-top: 550px; 
+    } 
+    
+    .slogan{
+        display: none;
+    }
+
 }
 
 
@@ -141,7 +178,7 @@ th{
     display:none;
     }
     
-    aside{
+    .intro{
         max-width: 95%;
         margin: auto;
         border: 3px;
@@ -160,6 +197,10 @@ th{
     }
     
     .iconright{
+        display:none;
+    }
+    
+    video{
         display:none;
     }
 }
@@ -279,7 +320,7 @@ textarea, input, section, select{
     color:red;
     text-align: center;
     font-size: 15px;
-    font-weight:bolder;    
+    font-weight:bolder;
 }
 
 /* Style inputs with type="text", select elements and textareas */
@@ -317,16 +358,13 @@ input[type=submit]:hover {
     border-radius: 15px;
     padding: 20px;
     background-color: #069;
-    max-width: 100%;
     width: 600px;
-    max-width: 80%;
+    max-width: 90%;
     margin: auto;
 }
 
 #gallery img{
-
     max-width: 100%;
-    margin: auto;
     margin: 100px 0px 15px ;
 }
 
@@ -376,7 +414,7 @@ input[type=submit]:hover {
 }
 
 footer{
-    border-top: 3px double red;
+    border-top: 5px double red;
     text-align: center;
     padding-top: 10px;
     font-family: 'quintessential', cursive;
