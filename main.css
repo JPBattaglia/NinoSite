@@ -199,7 +199,7 @@ tr, td{
             bordeßr-top: 3px double red;
     }
     
-    .iconright{
+    .iconright, video, .slogan{
         display:none;
     }
     
@@ -208,10 +208,6 @@ tr, td{
     }
     header{
         padding-top: 650px;
-    }
-    
-    .slogan{
-        display: none;
     }
 }
 
