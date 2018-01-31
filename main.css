@@ -203,15 +203,15 @@ tr, td{
         display:none;
     }
     
-    video{
-        display:none;
-    }
-    
     header img{
         padding-top: 20px;
     }
     header{
-        padding-top: 70px;
+        padding-top: 650px;
+    }
+    
+    .slogan{
+        display: none;
     }
 }
 
