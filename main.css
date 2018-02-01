@@ -144,6 +144,30 @@ tr, td{
     footer{
         margin: 0px 100px;
     }
+    
+    #background {
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background: url(polina.jpg) no-repeat;
+    background-size: cover;
+    
+    }
+    
+    .vid{
+        padding-top: 600px;
+    }
+    
+    .slogan{
+        display:none;
+    }
 }
 
 
@@ -176,6 +200,10 @@ tr, td{
     
     header img{
         padding-top: 20px;
+    }
+    
+    video{
+        display:none;
     }
 }
 
