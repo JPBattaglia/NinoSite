@@ -205,6 +205,10 @@ tr, td{
     video{
         display:none;
     }
+    
+    iframe{
+        width:auto;
+    }    
 }
 
 a:hover img {
