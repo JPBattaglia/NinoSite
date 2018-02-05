@@ -4,14 +4,14 @@ html{
     overflow:auto;
 }
 
-article{
+article img{
     float: left;
     max-width: 100%;
     -webkit-transition: width 2s, height 2s, -webkit-transform 2s; /* Safari */
     transition: width 2s, height 2s, transform 3s;
 }
 
-article:hover{
+article img:hover{
     -webkit-transform: rotate(360deg); /* Safari */
     transform: rotate(360deg);
 }
