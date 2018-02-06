@@ -6,8 +6,9 @@ html{
 article img{
     float: left;
     max-width: 100%;
-    -webkit-transition: width 2s, height 2s, -webkit-transform 2s; /* Safari */
-    transition: width 2s, height 2s, transform 2s;
+    -webkit-transition: width 2s, height 2s, 
+    -webkit-transform 1.5s; /* Safari */
+    transition: width 2s, height 2s, transform 1.5s;
 }
 
 article img:hover{
