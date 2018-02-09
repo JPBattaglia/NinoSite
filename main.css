@@ -58,7 +58,7 @@ article img:hover{
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 22px;
+    font-size: 25px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -134,7 +134,7 @@ tr, td, th{
     margin:auto;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 824px) {
   .navicon, .navicon1, .navicon2 {
     display:none;      
   }
@@ -146,6 +146,7 @@ tr, td, th{
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
+        margin-bottom: 50px;
     }
     
 
@@ -168,7 +169,7 @@ tr, td, th{
     top: 50%;
     left: 50%;
     min-width: 100%;
-    min-height: 100%;
+    min-height: 100ß%;
     width: auto;
     height: auto;
     z-index: -100;
@@ -189,19 +190,20 @@ tr, td, th{
 }
 
 
-@media (max-width: 768px) {
-  nav {
+@media (max-width: 825px) {
+  nav, #gallery h1 {
     display:none;
     }
     
     .intro{
         max-width: 95%;
         margin: auto;
-        border: 3px;
+        border: 5px;
         border-color: red;
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
+        margin-bottom: 20px;
     }
     
      table{
@@ -233,9 +235,16 @@ a:hover img {
     /* Start the shake animation and make the animation last for 0.5 seconds */
     animation: shake 1s; 
     /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s; 
+    animation-iteration-count: 2.0s;
 }
 
+#gallery a:hover img {
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+    animation: shake 1s; 
+    /* When the animation is finished, start again */
+    animation-iteration-count: 2.0s;
+    border: 3px double red;
+}
 @keyframes shake {
     0% { transform: translate(1px, 1px) rotate(0deg); }
     10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -270,17 +279,27 @@ nav a:active {
     color: white;
 }
 
+#gallery h1{
+    color:white;
+    text-shadow: 4px 4px 4px red;
+    font-size: 40px;
+    font-family: 'federant',serif;
+    text-decoration-line: underline;
+
+}
+
 h1 {
     font-size: 55px;
     text-align: center;
     color: red;
     font-family: 'kaushan script', serif;
-    text-shadow: 4px 4px 4px #444;
+    text-shadow: 4px 4px 4px #069;
 }
 
 h2{
     font-size: 30px;
     font-style:italic;
+    margin:auto;
 }
 
 h3{
@@ -297,6 +316,7 @@ h4{
 
 h5{
     color:darkred;
+    font-size: 25px;
 }
 
 p {
@@ -376,12 +396,12 @@ input[type=submit]:hover {
 }
 
 /* Add a background color and some padding around the form */
-.container {
+.container{
     border-radius: 15px;
     padding: 20px;
     background-color: #069;
     width: 600px;
-    max-width: 90%;
+    max-width: 80%;
     margin: auto;
 }
 
@@ -396,6 +416,19 @@ input[type=submit]:hover {
     font-size: 25px;
     padding-bottom: 50px;
     margin:auto;
+}
+
+.resume img{
+    margin: auto;
+    width: 600px;
+    max-width: 100%;
+    border: 3px double red;
+    border-radius: 10px;
+}
+
+.resume{
+    margin:auto;
+    max-width: 100%;
 }
 
 #form {
