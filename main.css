@@ -429,6 +429,7 @@ input[type=submit]:hover {
 .resume{
     margin:auto;
     max-width: 100%;
+    text-align:center;
 }
 
 #form {
