@@ -420,7 +420,6 @@ input[type=submit]:hover {
 
 .resume img{
     margin: auto;
-    width: 600px;
     max-width: 100%;
     border: 3px double red;
     border-radius: 10px;
