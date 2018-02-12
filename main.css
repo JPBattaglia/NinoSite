@@ -38,7 +38,7 @@ article img:hover{
 .navicon1 {
     width: 30px;
     height: 6px;
-    background-color: maroon;
+    background-color: darkseagreen;
     margin: 6px 0;
 }
 
@@ -87,11 +87,11 @@ nav ul li {
     font-size: 20px;
     font-weight:bolder;
     display:inline;
-    padding: 5px 20px;
     border-radius: 20px;
     border:  5px double red;
+    padding: 5px 0px;
     text-align: center;
-    margin: 20px;
+    margin: 15px;
 }
 
 nav{
@@ -135,7 +135,7 @@ tr, td, th{
 }
 
 @media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2 {
+  .navicon, .navicon1, .navicon2, #gallery, .resumemobile{
     display:none;      
   }
     .intro {
@@ -191,7 +191,7 @@ tr, td, th{
 
 
 @media (max-width: 825px) {
-  nav, #gallery h1 {
+  nav, #gallery h1, .resume {
     display:none;
     }
     
@@ -212,6 +212,7 @@ tr, td, th{
     
      #services{
             border-top: 3px double red;
+            padding: 20px 0px;
     }
     
     .iconright{
@@ -260,22 +261,18 @@ a:hover img {
 }
 
 /* unvisited link */
-nav a:link {
+nav li a:link {
     color: dodgerblue;
-}
-
-/* visited link */
-nav a:visited {
-    color:dodgerblue;
+    padding: 10px 25px;
 }
 
 /* mouse over link */
-nav a:hover, nav ul li:hover {
+nav li a:hover, nav li:hover {
     color:red;
 }
 
 /* selected link */
-nav a:active {
+nav li a:active {
     color: white;
 }
 
@@ -428,7 +425,20 @@ input[type=submit]:hover {
 .resume{
     margin:auto;
     max-width: 100%;
-    text-align:center;
+    text-align: center;
+}
+
+.resumemobile img{
+    margin: auto;
+    max-width: 100%;
+    border: 3px double red;
+    border-radius: 10px;
+}
+
+.resumemobile{
+    margin:auto;
+    max-width: 100%;
+    text-align: center;
 }
 
 #form {
