@@ -239,7 +239,7 @@ a:hover img {
     animation-iteration-count: 2.0s;
 }
 
-#gallery a:hover img {
+#gallery a:hover img, gallery2 a:hover img {
     /* Start the shake animation and make the animation last for 0.5 seconds */
     animation: shake 1s; 
     /* When the animation is finished, start again */
@@ -402,12 +402,12 @@ input[type=submit]:hover {
     margin: auto;
 }
 
-#gallery img{
+#gallery img, #gallery2 img{
     max-width: 100%;
     margin: 100px 0px 15px;
 }
 
-#gallery, #services{
+#gallery, #services, #gallery2{
     max-width: 100%;
     text-align: center;
     font-size: 25px;
