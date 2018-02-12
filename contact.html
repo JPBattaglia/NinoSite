@@ -17,7 +17,7 @@
           <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             
           <h5>MENU</h5>    
-          <a href="index.html">Home</a>
+          <a href="index.html">About</a>
           <a href="services.html">Services</a>
           <a href="contact.html">Contact</a>
         </div>
@@ -49,7 +49,8 @@
         
         <nav>
             <ul> 
-                <li><a href="index.html">Home</a></li> 
+                <li><a href="index.html">About</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
                 <li><a href="services.html">Services</a></li> 
                 <li><a href="contact.html">Contact</a></li>
             </ul> 
@@ -68,31 +69,31 @@
         
         <section id="form">
              <div class="container">
-                 <form action="//formspree.io/thenino69@gmail.com" method="POST">
+                 <form method="POST" name="contactform" action="response_page.php">
  
                  <label for="fname">First Name:</label><br>
-                 <input type="text" id="fname" name="firstname" placeholder="Your First Name..."><br>
+                 <input type="text" id="fname" name="fname" placeholder="Your First Name..."><br>
  
                  <label for="lname">Last Name:</label><br>
-                 <input type="text" id="lname" name="lastname" placeholder="Your Last Name..."><br>
+                 <input type="text" id="lname" name="lname" placeholder="Your Last Name..."><br>
                      
-                 <label for="email">Email:</label><br>
-                 <input type="text" id="email" name="email" placeholder="Your email..."><br>
+                 <label for="email_address">Email:</label><br>
+                 <input type="text" id="email_address" name="email_address" placeholder="Your email..."><br>
  
                  <label for="subject">Subject:</label><br>
                  <select id="service" name="service">
                  <option value="General">General</option>
-                 <option value="logo">Logo</option>
-                 <option value="icon">App Icon</option>
+                 <option value="Logo">Logo</option>
+                 <option value="Icon">App Icon</option>
                  <option value="Flyer">Flyer</option>
-                 <option value="newsletter">Newsletter</option>
-                 <option value="other">Other</option>
+                 <option value="Newsletter">Newsletter</option>
+                 <option value="Other">Other</option>
                  </select><br>
  
-                 <label for="memo">Memo:</label><br>
-                 <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea><br>
+                 <label for="message">Message:</label><br>
+                 <textarea id="message" name="message" placeholder="Write something.." style="height:200px"></textarea><br>
  
-                     <input type="submit" value="Submit">
+                 <input type="submit" value="Submit">
  
                  </form>
              </div>
