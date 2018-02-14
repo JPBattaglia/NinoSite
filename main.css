@@ -354,14 +354,27 @@ textarea, input, section, select{
     font-family: 'federant', serif;
     color:red;
     text-align: center;
-    font-size: 15px;
+    font-size: 18px;
     font-weight:bolder;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: skyblue;
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: red;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: red;
 }
 
 /* Style inputs with type="text", select elements and textareas */
 input[type=text], select, textarea {
     width: 100%; /* Full width */
-    padding: 12px; /* Some padding */  
+    padding: 5px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
     border-radius: 10px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
@@ -373,10 +386,10 @@ input[type=text], select, textarea {
 /* Style the submit button with a specific background color etc */
 input[type=submit] {
     font-size: 20px;
-    background-color: #e62e00;
+    background-color: red;
     color: white;
-    padding: 8px 40px;
-    border: none;
+    padding: 8px 30px;
+    border: 1px groove white;
     border-radius: 4px;
     cursor: pointer;
     border-radius: 15px;
@@ -384,6 +397,7 @@ input[type=submit] {
 
 /* When moving the mouse over the submit button, add a blue color */
 input[type=submit]:hover {
+    border: 1px groove white;
     background-color: dodgerblue;
     border-radius: 15px;
 }
@@ -391,11 +405,15 @@ input[type=submit]:hover {
 /* Add a background color and some padding around the form */
 .container{
     border-radius: 15px;
-    padding: 20px;
+    padding: 30px 20px;
     background-color: #069;
     width: 600px;
-    max-width: 80%;
+    max-width: 90%;
     margin: auto;
+}
+#service{
+    width:70%;
+    font-size: 20px
 }
 
 #gallery img, #gallery2 img{
@@ -416,6 +434,7 @@ input[type=submit]:hover {
     border-top: 5px double red;
     padding:20px;
     width:500px;
+    color:dodgerblue;
 }
 
 .resume img{
