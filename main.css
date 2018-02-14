@@ -87,7 +87,7 @@ nav ul li {
     font-size: 20px;
     font-weight:bolder;
     display:inline;
-    border-radius: 20px;
+    border-radius: 30px;
     border:  5px double red;
     padding: 5px 0px;
     text-align: center;
@@ -108,14 +108,14 @@ video{
 }
 
 .servicelist {
-    width:800px;
+    width:65%;
     text-align: center;
     font-family:'federant', serif;
     color:white;
     font-size: 25px;
     margin:auto;
     padding: 50px 0px;
-    border-spacing: 150px 30px;
+    border-spacing: 110px 40px;
     max-width: 100%;
 }
 
@@ -125,13 +125,8 @@ th{
     border-bottom: 5px double red;
     color: dodgerblue;
     font-size: 35px;
-    max-width: 100%;
-    margin:auto;
-}
-
-tr, td, th{
-    max-width: 100%;
-    margin:auto;
+    margin: auto;
+    max-width: 100%
 }
 
 @media (min-width: 824px) {
@@ -149,7 +144,6 @@ tr, td, th{
         margin-bottom: 50px;
     }
     
-
     #services{
         display: none;
     }
@@ -263,12 +257,14 @@ a:hover img {
 /* unvisited link */
 nav li a:link {
     color: dodgerblue;
-    padding: 10px 25px;
+    padding: 5px 25px;
 }
 
 /* mouse over link */
-nav li a:hover, nav li:hover {
+nav li a:hover{
     color:red;
+    background-color: #006;
+    border-radius: 20px;
 }
 
 /* selected link */
@@ -415,6 +411,13 @@ input[type=submit]:hover {
     margin:auto;
 }
 
+.gallery2 h2{
+    border-bottom: 5px double red;
+    border-top: 5px double red;
+    padding:20px;
+    width:500px;
+}
+
 .resume img{
     margin: auto;
     max-width: 100%;
@@ -436,6 +439,8 @@ input[type=submit]:hover {
 }
 
 .resumemobile{
+    border-top: 5px double red;
+    padding-top: 20px;
     margin:auto;
     max-width: 100%;
     text-align: center;
