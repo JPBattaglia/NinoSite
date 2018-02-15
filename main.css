@@ -343,6 +343,7 @@ header img{
     max-width: 100%;
     margin: 20px;
     margin:auto;
+    padding-bottom: 20px;
 }
 
 textarea, input, section, select{
