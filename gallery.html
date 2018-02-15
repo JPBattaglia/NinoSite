@@ -11,6 +11,29 @@
     </head>
     
     <body>
+        
+        <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <h5>MENU</h5>  
+          <a href="index.html">Home</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <span style="float:right;margin-top: 5px;cursor:pointer" onclick="openNav()"><div class=navicon></div><div class="navicon"></div><div class=navicon></div></span>
+
+        <script>
+            
+            
+            
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "150px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+        </script>
 
         
         <button onclick="topFunction()" id="myBtn" title="Go to top">&#8593;</button>
