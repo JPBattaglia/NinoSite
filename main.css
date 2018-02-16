@@ -186,6 +186,21 @@ th{
     .slogan{
         display:none;
     }
+    
+    h2{
+    font-size: 32px;
+    font-family: 'federant', serif;
+    color: #0099ff;
+    font-style:italic;
+    margin:auto;
+    padding:20px;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
+    }
 }
 
 
@@ -229,6 +244,21 @@ th{
     iframe{
         width:auto;
     }
+    
+    h2{
+    font-size: 25px;
+    font-family: 'federant', serif;
+    color: #0099ff;
+    font-style:italic;
+    margin:auto;
+    padding:20px;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
+}
 }
 
 a:hover img {
@@ -295,21 +325,6 @@ h1 {
       -1px 1px 0 white,
        1px 1px 0 white;
     
-}
-
-h2{
-    font-size: 25px;
-    font-family: 'federant', serif;
-    color: #0099ff;
-    font-style:italic;
-    margin:auto;
-    padding:20px;
-    text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
 }
 
 h3{
