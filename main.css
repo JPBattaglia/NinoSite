@@ -82,16 +82,15 @@ article img:hover{
 }
 
 nav ul li {
-    text-decoration-color: red;
     font-family:'federant', serif;
-    font-size: 20px;
+    font-size: 22px;
     font-weight:bolder;
     display:inline;
     border-radius: 30px;
     border:  5px double red;
     padding: 5px 0px;
     text-align: center;
-    margin: 15px;
+    margin: 11px;
 }
 
 nav{
@@ -126,7 +125,13 @@ th{
     color: dodgerblue;
     font-size: 35px;
     margin: auto;
-    max-width: 100%
+    max-width: 100%;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 }
 
 @media (min-width: 824px) {
@@ -258,19 +263,23 @@ a:hover img {
 nav li a:link {
     color: dodgerblue;
     padding: 5px 25px;
-    text-shadow: 1px 2px 1px red;
+    
 }
-
 /* mouse over link */
 nav li a:hover{
     color:red;
     border-radius: 20px;
-    text-shadow: none;
+   text-shadow:
+       1px 1px 0 white,
+     -1px -1px 0 white,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 }
 
 /* selected link */
 nav li a:active {
-    color: white;
+    color: red;
 }
 
 h1 {
@@ -279,15 +288,28 @@ h1 {
     color: red;
     font-family: 'kaushan script', serif;
     text-shadow: 2px 3px 3px dodgerblue;
+   text-shadow:
+       1px 1px 0 dodgerblue,
+     -1px -1px 0 dodgerblue,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
+    
 }
 
 h2{
-    font-size: 30px;
+    font-size: 35px;
+    font-family: 'federant', serif;
+    color: #0099ff;
     font-style:italic;
     margin:auto;
     padding:20px;
-    color:dodgerblue;
-    text-shadow: 2px 3px 3px red;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 }
 
 h3{
@@ -320,7 +342,7 @@ a{
     text-decoration: none;
 }
 
-h2, h3, footer, p, label{
+h3, footer, p, label{
     text-align: center;
     font-family:'federant', serif;
     color:white;
@@ -431,7 +453,12 @@ input[type=submit]:hover {
     padding:20px;
     width:500px;
     color:dodgerblue;
-    text-shadow: 2px 3px 3px red;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 }
 
 .resume img{
