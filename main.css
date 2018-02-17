@@ -58,7 +58,7 @@ article img:hover{
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 25px;
+    font-size: 20px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -122,16 +122,17 @@ th{
     padding: 10px;
     border-top: 5px double red;
     border-bottom: 5px double red;
-    color: dodgerblue;
+    color: black;
     font-size: 35px;
     margin: auto;
     max-width: 100%;
+    color: white;
     text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
+       2px 1px 0 red,
+     -2px -1px 0 red,  
+      2px -1px 0 red,
+      -2px 1px 0 red,
+       2px 1px 0 red;
 }
 
 @media (min-width: 824px) {
@@ -205,16 +206,16 @@ th{
     h2{
     font-size: 35px;
     font-family: 'federant', serif;
-    color: #0099ff;
     font-style:italic;
     margin:auto;
     padding:20px;
+    color: white;
     text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
+       2px 1px 0 red,
+     -2px -1px 0 red,  
+      2px -1px 0 red,
+      -2px 1px 0 red,
+       2px 1px 0 red;
     }
 }
 
@@ -275,20 +276,20 @@ th{
     
     }
     
-    h2{
-    font-size: 25px;
+    h2, section{
+    font-size: 28px;
     font-family: 'federant', serif;
-    color: #0099ff;
     font-style:italic;
     margin:auto;
     padding:20px;
+    color: white;
     text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-}
+       2px 1px 0 red,
+     -2px -1px 0 red,  
+      2px -1px 0 red,
+      -2px 1px 0 red,
+       2px 1px 0 red;
+    }
 }
 
 a:hover img {
@@ -356,9 +357,8 @@ h4{
 
 h5{
     color:darkred;
-    font-size: 25px;
+    font-size: 15px;
 }
-
 p {
     font-size: 22px;   
 }
@@ -372,7 +372,20 @@ a{
     text-decoration: none;
 }
 
-h3, footer, p, label{
+footer, label, section{
+    text-align: center;
+    font-family:'federant', serif;
+    color:white;
+    list-style-type: none;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+}
+
+p, h3{
     text-align: center;
     font-family:'federant', serif;
     color:white;
@@ -398,7 +411,7 @@ header img{
     padding-bottom: 20px;
 }
 
-textarea, input, section, select{
+textarea, input, select{
     font-family: 'federant', serif;
     color:red;
     text-align: center;
@@ -482,13 +495,12 @@ input[type=submit]:hover {
     border-top: 5px double red;
     padding:20px;
     width:500px;
-    color:dodgerblue;
     text-shadow:
        1px 1px 0 red,
      -1px -1px 0 red,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
 }
 
 .resume img{
