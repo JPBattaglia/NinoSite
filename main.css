@@ -42,6 +42,13 @@ article img:hover{
     margin: 6px 0;
 }
 
+.navicon3 {
+    width: 30px;
+    height: 6px;
+    background-color: firebrick;
+    margin: 6px 0;
+}
+
 .sidenav {
     height: 100%;
     width: 0;
@@ -58,7 +65,7 @@ article img:hover{
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 20px;
+    font-size: 22px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -136,7 +143,7 @@ th{
 }
 
 @media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2, #gallery, .resumemobile{
+  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile{
     display:none;      
   }
     .intro {
@@ -194,7 +201,7 @@ th{
     color: red;
     font-family: 'kaushan script', serif;
     text-shadow: 2px 3px 3px dodgerblue;
-   text-shadow:
+    text-shadow:
        1px 1px 0 dodgerblue,
      -1px -1px 0 dodgerblue,  
       1px -1px 0 white,
@@ -306,6 +313,7 @@ a:hover img {
     animation-iteration-count: 2.0s;
     border: 3px double red;
 }
+
 @keyframes shake {
     0% { transform: translate(1px, 1px) rotate(0deg); }
     10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -521,6 +529,7 @@ input[type=submit]:hover {
     max-width: 100%;
     border: 3px double red;
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 .resumemobile{
@@ -529,6 +538,41 @@ input[type=submit]:hover {
     margin:auto;
     max-width: 100%;
     text-align: center;
+}
+
+.pdflink a:link, .pdflink{
+    font-size: 22px;
+    font-weight:bolder;
+    border-radius: 30px;
+    border:  5px double red;
+    padding: 5px 15px;
+    text-align: center;
+    display:inline;
+    max-width: 100%;
+    background-color: dodgerblue;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+}
+
+.pdflink a:hover{
+    color:white;
+    border:  5px double red;
+    background-color: red;
+    text-shadow:
+       1px 1px 0 black,
+     -1px -1px 0 black,  
+      1px -1px 0 black,
+      -1px 1px 0 black,
+       1px 1px 0 black;
+}
+
+.pdflink a:visited{
+    color:white;
+    border: 5px double red;
 }
 
 #form {
@@ -561,4 +605,5 @@ footer{
     padding-top: 10px;
     font-family: 'quintessential', cursive;
     font-size: 20px;
+    margin-top: 50px;
 }
