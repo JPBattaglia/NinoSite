@@ -540,7 +540,7 @@ input[type=submit]:hover {
     text-align: center;
 }
 
-.pdflink a:link, .pdflink{
+.pdflink a:link{
     font-size: 22px;
     font-weight:bolder;
     border-radius: 30px;
