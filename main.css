@@ -65,7 +65,7 @@ article img:hover{
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 22px;
+    font-size: 20px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -126,7 +126,7 @@ video{
 }
 
 th{
-    padding: 10px;
+    padding: 5px;
     border-top: 5px double red;
     border-bottom: 5px double red;
     color: black;
@@ -143,7 +143,7 @@ th{
 }
 
 @media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile{
+  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services{
     display:none;      
   }
     .intro {
@@ -154,11 +154,6 @@ th{
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-        margin-bottom: 50px;
-    }
-    
-    #services{
-        display: none;
     }
     
     #myBtn{
@@ -191,12 +186,8 @@ th{
         padding-top: 600px;
     }
     
-    .slogan{
-        display:none;
-    }
-    
     h1 {
-    font-size: 55px;
+    font-size: 60px;
     text-align: center;
     color: red;
     font-family: 'kaushan script', serif;
@@ -224,6 +215,8 @@ th{
       -2px 1px 0 red,
        2px 1px 0 red;
     }
+    
+    
 }
 
 
@@ -240,7 +233,6 @@ th{
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-        margin-bottom: 20px;
     }
     
      table{
@@ -258,6 +250,10 @@ th{
     
     header img{
         padding-top: 20px;
+    }
+    
+    .slogan{
+        font-size: 28px
     }
     
     video{
@@ -283,12 +279,12 @@ th{
     
     }
     
-    h2, section{
-    font-size: 28px;
+    h2{
+    font-size: 25px;
+    padding-top: 10px;
     font-family: 'federant', serif;
     font-style:italic;
     margin:auto;
-    padding:20px;
     color: white;
     text-shadow:
        2px 1px 0 red,
@@ -296,6 +292,10 @@ th{
       2px -1px 0 red,
       -2px 1px 0 red,
        2px 1px 0 red;
+    }
+    
+    .resumemobile img{
+        margin: 20px;
     }
 }
 
@@ -332,13 +332,13 @@ a:hover img {
 nav li a:link {
     color: dodgerblue;
     padding: 5px 25px;
-    
 }
+
 /* mouse over link */
 nav li a:hover{
     color:red;
     border-radius: 20px;
-   text-shadow:
+    text-shadow:
        1px 1px 0 white,
      -1px -1px 0 white,  
       1px -1px 0 white,
@@ -353,7 +353,7 @@ nav li a:active {
 
 h3{
     
-   font-size: 25px;
+   font-size: 24px;
 
 }
 
@@ -361,6 +361,15 @@ h4{
     font-size: 30px;
     font-family: 'federant', serif;
     color: white;
+    font-style:italic;
+    text-shadow:
+       2px 1px 0 red,
+     -2px -1px 0 red,  
+      2px -1px 0 red,
+      -2px 1px 0 red,
+       2px 1px 0 red;
+    margin: 20px 0px 0px;;
+
 }
 
 h5{
@@ -490,12 +499,12 @@ input[type=submit]:hover {
     margin: 100px 0px 15px;
 }
 
-#gallery, #services, #gallery2{
+#gallery, #gallery2{
     max-width: 100%;
     text-align: center;
     font-size: 25px;
     padding-bottom: 50px;
-    margin:auto;
+    margin:auto;   
 }
 
 .gallery2 h2{
@@ -529,7 +538,8 @@ input[type=submit]:hover {
     max-width: 100%;
     border: 3px double red;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin-top: 25px;
+
 }
 
 .resumemobile{
@@ -538,41 +548,6 @@ input[type=submit]:hover {
     margin:auto;
     max-width: 100%;
     text-align: center;
-}
-
-.pdflink a:link{
-    font-size: 22px;
-    font-weight:bolder;
-    border-radius: 30px;
-    border:  5px double red;
-    padding: 5px 15px;
-    text-align: center;
-    display:inline;
-    max-width: 100%;
-    background-color: dodgerblue;
-    text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-.pdflink a:hover{
-    color:white;
-    border:  5px double red;
-    background-color: red;
-    text-shadow:
-       1px 1px 0 black,
-     -1px -1px 0 black,  
-      1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-.pdflink a:visited{
-    color:white;
-    border: 5px double red;
 }
 
 #form {
