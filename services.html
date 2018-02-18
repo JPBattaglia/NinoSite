@@ -1,584 +1,236 @@
-html{
-    min-height:100%;
-    overflow:auto;
-}
+<!DOCTYPE html>
 
-article img{
-    float: left;
-    max-width: 100%;
-    -webkit-transition: width 2s, height 2s, 
-    -webkit-transform 1.5s; /* Safari */
-    transition: width 2s, height 2s, transform 1.5s;
-}
-
-article img:hover{
-    -webkit-transform: rotate(360deg); /* Safari */
-    transform: rotate(360deg);
-}
-
-.iconright{
-    float:right;
-    max-width: 100%;
-}
-
-.navicon {
-    width: 30px;
-    height: 6px;
-    background-color: red;
-    margin: 6px 0;
-}
-
-.navicon2 {
-    width: 30px;
-    height: 6px;
-    background-color: blue;
-    margin: 6px 0;
-}
-
-.navicon1 {
-    width: 30px;
-    height: 6px;
-    background-color: darkseagreen;
-    margin: 6px 0;
-}
-
-.navicon3 {
-    width: 30px;
-    height: 6px;
-    background-color: firebrick;
-    margin: 6px 0;
-}
-
-.sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    background-color: darkred;
-    overflow-x: hidden;
-    transition: .5s;
-    padding-top: 100px;
-    font-family: 'kaushan script', cursive;
-}
-
-.sidenav a {
-    padding: 0px 22px 28px 22px;
-    font-size: 20px;
-    color: white;
-    display: block;
-    transition: 0.3s;
-    max-width: 80%;
-}
-
-.sidenav a:hover {
-    color: white;
-}
-
-.sidenav .closebtn {
-    position:absolute;
-    top: 0px;
-    right: 0px;
-    font-size: 65px;
-}
-
-@media screen and (max-height: 450px) {
-.sidenav {padding-top: 15px;}
-.sidenav a {font-weight: bolder; font-size: 30px;}
-}
-
-nav ul li {
-    font-family:'federant', serif;
-    font-size: 22px;
-    font-weight:bolder;
-    display:inline;
-    border-radius: 30px;
-    border:  5px double red;
-    padding: 5px 0px;
-    text-align: center;
-    margin: 11px;
-}
-
-nav{
-    text-align:center;
-}
-
-video{
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Nino Battaglia - Services </title>
+        <meta name="description" content="An interactive portfolio.">
+        <link rel="stylesheet" href="main.css">
+        <link href="https://fonts.googleapis.com/css?family=Federant|Kaushan+Script|Quintessential" rel="stylesheet">
+            
+    </head>
     
-    max-width: 100%;
-}
+    <body>
+        
+        
 
-.servgif{
-    padding-bottom: 20px;
-}
+        <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+          <h5>MENU</h5>    
+          <a href="index.html">Home</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
 
-.servicelist {
-    width:65%;
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    font-size: 25px;
-    margin:auto;
-    padding: 50px 0px;
-    border-spacing: 110px 40px;
-    max-width: 100%;
-}
+        <span style="float:right;margin-top: 5px;color: red; cursor:pointer" onclick="openNav()"><div class=navicon1></div><div class="navicon1"></div><div class=navicon1></div></span>
 
-th{
-    padding: 5px;
-    border-top: 5px double red;
-    border-bottom: 5px double red;
-    color: black;
-    font-size: 35px;
-    margin: auto;
-    max-width: 100%;
-    color: white;
-    text-shadow:
-       2px 1px 0 red,
-     -2px -1px 0 red,  
-      2px -1px 0 red,
-      -2px 1px 0 red,
-       2px 1px 0 red;
-}
+        <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "130px";
+        }
 
-@media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services{
-    display:none;      
-  }
-    .intro {
-        width: 800px;
-        margin: auto;
-        border: 5px;
-        border-color: red;
-        border-bottom-style: double;
-        border-top-style: double;
-        padding:10px;
-    }
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+        </script>
+        
+        <article class=iconright>
+        
+            <img src="logo3.png" alt="logo">
+            
+        </article>
+        
+        <article>
+        
+            <img src="logo3.png" alt="logo">
+            
+        </article>
+        
+        <nav>
+            <ul> 
+                <li><a href="index.html">About</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="services.html">Services</a></li> 
+                <li><a href="contact.html">Contact</a></li>
+            </ul> 
+        </nav>
+        
+        <header>
+            
+            <img class="servgif" src="services.gif" alt="services"><br>
+            
+            <iframe width="640" height="360" src="https://www.youtube.com/embed/12Q6C-ZXUR4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            
+            <h3>Below is a list of the services I offer:</h3><br>
+            
+        </header>
+        
+            
+<table class="servicelist">
+  <tr>
+    <th>Print</th>
+    <th>Design</th>
+    <th>Product</th>
+  </tr>
+  <tr>
+    <td>Stationary</td>
+    <td>Logo</td>
+    <td>T-shirt</td>
+  </tr>
+  <tr>
+    <td>Business Card</td>
+    <td>Icon & Emblem</td>
+    <td>Billboard</td>
+  </tr>
+  <tr>
+    <td>Letterhead</td>
+    <td>DVD/CD cover</td>
+    <td>Door & Wall Cling</td>
+  </tr>
+  <tr>
+    <td>Envelope</td>
+    <td>Web Development</td>
+    <td>Shopping Bags</td>
+  </tr>
+  <tr>
+    <td>Newsletter</td>
+    <td>Media Service Kits</td>
+    <td>Coffee Mug</td>
+  </tr>
+  <tr>
+    <td>Banner</td>
+    <td>Trade Show Package</td>
+    <td>Novelty Item</td>
+  </tr>
+  <tr>
+    <td>Flyer</td>
+    <td>Direct Mail Marketing</td>
+    <td>Stickers</td>
+  </tr>
+  <tr>
+    <td>Brochure</td>
+    <td>Advertising & Promotion</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Poster</td>
+    <td>Photo Enhancement</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Folder</td>
+    <td>Animation</td>
+    <td></td>
+  </tr>
+</table>
+        
+            
+    <section id="services">
+        
+        <button onclick="topFunction()" id="myBtn" title="Go to top">&#8682;</button>
+        
+        <script>
+            // When the user scrolls down 20px from the top of the document, show the button
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("myBtn").style.display = "block";
+            } else {
+            document.getElementById("myBtn").style.display = "none";
+                }
+            }
+
+            // When the user clicks on the button, scroll to the top of the document
+            function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            }   
+        </script>
+
+    <h2>Logo Design</h2>
+    <h2>Stationery</h2>
+    <h2>Business Card</h2>
+    <h2>Letterhead</h2>
+    <h2>Envelope</h2>
+    <h2>Mailing Label</h2>
+    <h2>Newsletter</h2>
+    <br>
+
+    <h2>Product Label</h2>
+    <h2>Film – DVD Covers</h2>
+    <h2>Music – CD Covers</h2>
+    <h2>Software/Digital Game Covers</h2>
+    <h2>Book & eBook Covers</h2><br>
+
+    <h2>High Resolution Photo</h2>
+    <h2>Photo Animation</h2>
+    <h2>Photo Retouching</h2>
+    <h2>Photo Restoration</h2>
+    <h2>Photo Illustration</h2>
+    <h2>Color Correcting</h2>
+    <h2>Distorting</h2>
+    <h2>Enhancing</h2>
+    <h2>Replacing Backgrounds</h2><br>
+        
+    <h2>Web Design Image & Graphics</h2>
+    <h2>Headers Graphics</h2>
+    <h2>Button Graphics</h2>
+    <h2>Web Site Construction</h2><br>
+        
+    <h2>Consumer Magazine</h2>
+    <h2>Business Magazine</h2>
+    <h2>Newspaper</h2>
+    <h2>Billboard</h2>
+    <h2>Bus & Transit</h2>
+    <h2>Station Posters & Flyers</h2><br>
+
+    <h2>Direct Mail Package</h2>
+    <h2>Press/Media Kit</h2>
+    <h2>Product/Service Catalog</h2>
+    <h2>Brochure Design</h2>
+    <h2>Trade Show Materials</h2><br>
     
-    #myBtn{
-        padding:10px;
-        font-size: 25px;
-        margin-right: 50px;
-    }
+    <h2>Book Jacket or Cover</h2>
+    <h2>Hardcover</h2>
+    <h2>Paperback</h2>
+    <h2>Card & Novelty Design</h2><br>
+
+    <h2>Display Header</h2>
+    <h2>Shelf Talker</h2>
+    <h2>Banner</h2>
+    <h2>Door Cling</h2>
+    <h2>Counter Cards</h2>
+    <h2>Counter Display</h2>
+    <h2>Poster</h2>
+    <h2>Shopping Bag</h2>
+    <h2>Calendar</h2>
+    <h2>Consumer Stationery</h2>
+    <h2>Gift Wrap</h2>
+    <h2>Greeting Cards</h2>
+    <h2>Mugs</h2>
+    <h2>Folder</h2>
+    <h2>T-shirt</h2><br>
+        
+        </section>
+        
+        <div class="resumemobile">
+            
+            <h4>~Current Resume~</h4>
+                
+            <a href="ResumeCoverReference.pdf" class="pdflink"><img src="Resume.png" alt="resume" ></a>    
+            
+        </div>
     
-    footer{
-        margin: 0px 100px;
-    }
-    
-    #background {
-    position:absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100ß%;
-    width: auto;
-    height: auto;
-    z-index: -100;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-    background: url(logo5.jpeg) no-repeat;
-    background-size: cover;
-    
-    }
-    
-    .vid{
-        padding-top: 600px;
-    }
-    
-    h1 {
-    font-size: 60px;
-    text-align: center;
-    color: red;
-    font-family: 'kaushan script', serif;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-     -1px -1px 0 dodgerblue,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
-    }
-    
-    h2{
-    font-size: 35px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    padding:20px;
-    color: white;
-    text-shadow:
-       2px 1px 0 red,
-     -2px -1px 0 red,  
-      2px -1px 0 red,
-      -2px 1px 0 red,
-       2px 1px 0 red;
-    }
-    
-    
-}
+        <footer>
+            <a href="https://www.instagram.com/thenino69/"><img src="Instagram.png" alt="Instagram"></a>&nbsp;
+            &#169; Nino Battaglia 2018&nbsp;
+            <a href="https://www.facebook.com/TheNino69"><img src="facebook.png" alt="Facebook"></a>
+        </footer>
+        
+    </body>
 
 
-@media (max-width: 825px) {
-  nav, .resume {
-    display:none;
-    }
-    
-    .intro{
-        max-width: 95%;
-        margin: auto;
-        border: 5px;
-        border-color: red;
-        border-bottom-style: double;
-        border-top-style: double;
-        padding:10px;
-    }
-    
-     table{
-        display: none;
-    }
-    
-     #services{
-            border-top: 3px double red;
-            padding: 20px 0px;
-    }
-    
-    .iconright{
-        display:none;
-    }
-    
-    header img{
-        padding-top: 20px;
-    }
-    
-    .slogan{
-        font-size: 28px
-    }
-    
-    video{
-        display:none;
-    }
-    
-    iframe{
-        width:auto;
-    }
-    
-    h1 {
-    font-size: 44px;
-    text-align: center;
-    color: red;
-    font-family: 'kaushan script', serif;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-     -1px -1px 0 dodgerblue,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
-    }
-    
-    h2{
-    font-size: 25px;
-    padding-top: 10px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    color: white;
-    text-shadow:
-       2px 1px 0 red,
-     -2px -1px 0 red,  
-      2px -1px 0 red,
-      -2px 1px 0 red,
-       2px 1px 0 red;
-    }
-    
-    .resumemobile img{
-        margin: 20px;
-    }
-}
-
-a:hover img {
-    /* Start the shake animation and make the animation last for 0.5 seconds */
-    animation: shake 1s; 
-    /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s;
-}
-
-#gallery a:hover img, #gallery2 a:hover img {
-    /* Start the shake animation and make the animation last for 0.5 seconds */
-    animation: shake 1s; 
-    /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s;
-    border: 3px double red;
-}
-
-@keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-/* unvisited link */
-nav li a:link {
-    color: dodgerblue;
-    padding: 5px 25px;
-}
-
-/* mouse over link */
-nav li a:hover{
-    color:red;
-    border-radius: 20px;
-    text-shadow:
-       1px 1px 0 white,
-     -1px -1px 0 white,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-}
-
-/* selected link */
-nav li a:active {
-    color: red;
-}
-
-h3{
-    
-   font-size: 24px;
-
-}
-
-h4{
-    font-size: 30px;
-    font-family: 'federant', serif;
-    color: white;
-    font-style:italic;
-    text-shadow:
-       2px 1px 0 red,
-     -2px -1px 0 red,  
-      2px -1px 0 red,
-      -2px 1px 0 red,
-       2px 1px 0 red;
-    margin: 20px 0px 0px;;
-
-}
-
-h5{
-    color:darkred;
-    font-size: 15px;
-}
-p {
-    font-size: 22px;   
-}
-
-label {
-    font-size: 20px;
-}
-
-a{
-    color:dodgerblue;
-    text-decoration: none;
-}
-
-footer, label, section{
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-    text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-p, h3{
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-}
-
-body{
-    background-color:black;
-    margin: 20px;
-
-}
-
-header{
-    text-align: center;
-    max-width: 100%;
-    padding-top: 70px;
-}
-
-header img{
-    max-width: 100%;
-    margin: 20px;
-    margin:auto;
-    padding-bottom: 20px;
-}
-
-textarea, input, select{
-    font-family: 'federant', serif;
-    color:red;
-    text-align: center;
-    font-size: 18px;
-    font-weight:bolder;
-}
-
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: skyblue;
-    opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: red;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-    color: red;
-}
-
-/* Style inputs with type="text", select elements and textareas */
-input[type=text], select, textarea {
-    width: 100%; /* Full width */
-    padding: 5px; /* Some padding */  
-    border: 2px solid #b30; /* Gray border */
-    border-radius: 10px; /* Rounded borders */
-    box-sizing: border-box; /* Make sure that padding and width stays in place */
-    margin-top: 6px; /* Add a top margin */
-    margin-bottom: 16px; /* Bottom margin */
-    resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
-}
-
-/* Style the submit button with a specific background color etc */
-input[type=submit] {
-    font-size: 20px;
-    background-color: red;
-    color: white;
-    padding: 8px 30px;
-    border: 1px groove white;
-    border-radius: 4px;
-    cursor: pointer;
-    border-radius: 15px;
-}
-
-/* When moving the mouse over the submit button, add a blue color */
-input[type=submit]:hover {
-    border: 1px groove white;
-    background-color: dodgerblue;
-    border-radius: 15px;
-}
-
-/* Add a background color and some padding around the form */
-.container{
-    border-radius: 15px;
-    padding: 25px 20px;
-    background-color: #069;
-    width: 600px;
-    max-width: 90%;
-    margin: auto;
-}
-#service{
-    width:70%;
-    font-size: 20px
-}
-
-#gallery img, #gallery2 img{
-    max-width: 100%;
-    margin: 100px 0px 15px;
-}
-
-#gallery, #gallery2{
-    max-width: 100%;
-    text-align: center;
-    font-size: 25px;
-    padding-bottom: 50px;
-    margin:auto;   
-}
-
-.gallery2 h2{
-    border-bottom: 5px double red;
-    border-top: 5px double red;
-    padding:20px;
-    width:500px;
-    text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-.resume img{
-    margin: auto;
-    max-width: 100%;
-    border: 3px double red;
-    border-radius: 10px;
-}
-
-.resume{
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-}
-
-.resumemobile img{
-    margin: auto;
-    max-width: 100%;
-    border: 3px double red;
-    border-radius: 10px;
-    margin-top: 25px;
-
-}
-
-.resumemobile{
-    border-top: 5px double red;
-    padding-top: 20px;
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-}
-
-#form {
-    font-size: 10px;
-    padding:20px 0px 40px;
-    margin: 5px;
-}
-
-#myBtn {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed/sticky position */
-    bottom: 20px; /* Place the button at the bottom of the page */
-    right: 5px; /* Place the button 5px from the right */
-    z-index: 99; /* Make sure it does not overlap */
-    outline: none; /* Remove outline */
-    background-color: red; /* Set a background color */
-    color: white; /* Text color */
-    cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 5px; /* Some padding */
-    border-radius: 10px; /* Rounded corners */
-}
-
-#myBtn:hover {
-    background-color: #069; /* Add a blue background on hover */
-}
-
-footer{
-    border-top: 5px double red;
-    text-align: center;
-    padding-top: 10px;
-    font-family: 'quintessential', cursive;
-    font-size: 20px;
-    margin-top: 50px;
-}
+</html>
