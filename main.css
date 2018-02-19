@@ -586,10 +586,11 @@ input[type=submit]:hover {
     padding: 4px; /* Some padding */
     border-radius: 50px; /* Rounded corners */
     border: 1px double red;
+    opacity: .8;
 }
 
 #myBtn:hover {
-    background-color: darkblue; /* Add a blue background on hover */
+    background-color: black; /* Add a blue background on hover */
     border-color: dodgerblue;
 }
 
