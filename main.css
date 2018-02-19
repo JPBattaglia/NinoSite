@@ -69,7 +69,7 @@ article img:hover{
     color: white;
     display: block;
     transition: 0.3s;
-    max-width: 80%;
+    max-width: 100%;
     text-shadow:
        1px 1px 0 black,
      -1px -1px 0 black,  
@@ -475,6 +475,12 @@ input[type=submit] {
     border-radius: 4px;
     cursor: pointer;
     border-radius: 15px;
+    text-shadow:
+       1px 1px 0 black,
+     -1px -1px 0 black,  
+      1px -1px 0 black,
+      -1px 1px 0 black,
+       1px 1px 0 black;
 }
 
 /* When moving the mouse over the submit button, add a blue color */
@@ -482,12 +488,18 @@ input[type=submit]:hover {
     border: 1px groove white;
     background-color: dodgerblue;
     border-radius: 15px;
+    text-shadow:
+       1px 1px 0 black,
+     -1px -1px 0 black,  
+      1px -1px 0 black,
+      -1px 1px 0 black,
+       1px 1px 0 black;
 }
 
 /* Add a background color and some padding around the form */
 .container{
     border-radius: 15px;
-    padding: 25px 20px;
+    padding: 30px 20px;
     background-color: #069;
     width: 600px;
     max-width: 90%;
@@ -502,6 +514,7 @@ input[type=submit]:hover {
     max-width: 100%;
     margin: 100px 0px 15px;
 }
+
 
 #gallery, #gallery2{
     max-width: 100%;
@@ -556,7 +569,7 @@ input[type=submit]:hover {
 
 #form {
     font-size: 10px;
-    padding:20px 0px 40px;
+    padding:30px 0px 40px;
     margin: 5px;
 }
 
@@ -567,15 +580,17 @@ input[type=submit]:hover {
     right: 5px; /* Place the button 5px from the right */
     z-index: 99; /* Make sure it does not overlap */
     outline: none; /* Remove outline */
-    background-color: red; /* Set a background color */
+    background-color: black; /* Set a background color */
     color: white; /* Text color */
     cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 0px; /* Some padding */
-    border-radius: 20px; /* Rounded corners */
+    padding: 4px; /* Some padding */
+    border-radius: 50px; /* Rounded corners */
+    border: 1px double red;
 }
 
 #myBtn:hover {
-    background-color: #069; /* Add a blue background on hover */
+    background-color: darkblue; /* Add a blue background on hover */
+    border-color: dodgerblue;
 }
 
 #myBtn img{
