@@ -164,6 +164,8 @@ th{
     
     #myBtn{
         margin-right: 30px;
+        width: 100px;
+        height: 100px;   
     }
     
     footer{
@@ -580,18 +582,19 @@ input[type=submit]:hover {
     right: 5px; /* Place the button 5px from the right */
     z-index: 99; /* Make sure it does not overlap */
     outline: none; /* Remove outline */
-    background-color: black; /* Set a background color */
     color: white; /* Text color */
     cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 4px; /* Some padding */
+    padding: 15px; /* Some padding */
     border-radius: 50px; /* Rounded corners */
-    border: 1px double red;
-    opacity: .8;
+    border: 1px solid red;
+    width: 30px;
+    height: 30px;
+    background: url("redarrow.png") no-repeat;
 }
 
 #myBtn:hover {
-    background-color: black; /* Add a blue background on hover */
     border-color: dodgerblue;
+    background: url("bluearrow1.png") no-repeat;
 }
 
 #myBtn img{
