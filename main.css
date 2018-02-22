@@ -65,7 +65,7 @@ article img:hover{
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 25px;
+    font-size: 30px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -80,6 +80,12 @@ article img:hover{
 
 .sidenav a:hover {
     color: white;
+    text-shadow:
+       1px 1px 0 black,
+     -1px -1px 0 black,  
+      1px -1px 0 black,
+      -1px 1px 0 black,
+       1px 1px 0 black;
 }
 
 .sidenav .closebtn {
@@ -135,7 +141,6 @@ th{
     padding: 5px;
     border-top: 5px double red;
     border-bottom: 5px double red;
-    color: black;
     font-size: 35px;
     margin: auto;
     max-width: 100%;
@@ -149,7 +154,7 @@ th{
 }
 
 @media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services{
+  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile{
     display:none;      
   }
     .intro {
@@ -160,12 +165,11 @@ th{
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
+        margin-bottom: 50px;
     }
     
     #myBtn{
         margin-right: 30px;
-        width: 100px;
-        height: 100px;   
     }
     
     footer{
@@ -220,18 +224,16 @@ th{
       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
-    }
-    
-    
+    } 
 }
 
 
 @media (max-width: 825px) {
-  nav, .resume {
+  nav, .resume, .intro {
     display:none;
     }
     
-    .intro{
+    .intromobile{
         max-width: 95%;
         margin: auto;
         border: 5px;
@@ -300,8 +302,26 @@ th{
        1px 1px 0 red;
     }
     
-    .resumemobile img{
-        margin: 20px;
+    .resumemobile a{
+    margin:auto;
+    max-width: 100%;
+    text-align: center;
+    color: white;
+    font-family: 'federant', serif;
+    font-size: 22px;
+    border: 5px double red;
+    border-radius: 30px;
+    padding: 8px;
+    display: block;
+    width: 245px;
+    font-weight:bolder;
+    background-color: #159;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
     }
 }
 
@@ -344,6 +364,7 @@ nav li a:link {
 nav li a:hover{
     color:red;
     border-radius: 20px;
+    background-color: #059;
     text-shadow:
        1px 1px 0 white,
      -1px -1px 0 white,  
@@ -374,7 +395,7 @@ h4{
       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
-    margin: 20px 0px 0px;;
+    margin: 30px 0px 0px;
 
 }
 
@@ -393,6 +414,17 @@ label {
 a{
     color:dodgerblue;
     text-decoration: none;
+    font-weight: bolder;
+    
+}
+
+a:hover{
+    text-shadow:
+       1px 1px 0 white,
+     -1px -1px 0 white,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 }
 
 footer, label, section{
@@ -418,7 +450,6 @@ p, h3{
 body{
     background-color:black;
     margin: 20px;
-
 }
 
 header{
@@ -431,7 +462,6 @@ header img{
     max-width: 100%;
     margin: 20px;
     margin:auto;
-    padding-bottom: 20px;
 }
 
 textarea, input, select{
@@ -469,14 +499,14 @@ input[type=text], select, textarea {
 
 /* Style the submit button with a specific background color etc */
 input[type=submit] {
-    font-size: 20px;
+    font-size: 22px;
     background-color: red;
     color: white;
     padding: 8px 30px;
-    border: 1px groove white;
+    border: 1px solid white;
     border-radius: 4px;
     cursor: pointer;
-    border-radius: 15px;
+    border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
      -1px -1px 0 black,  
@@ -487,9 +517,9 @@ input[type=submit] {
 
 /* When moving the mouse over the submit button, add a blue color */
 input[type=submit]:hover {
-    border: 1px groove white;
+    border: 1px solid white;
     background-color: dodgerblue;
-    border-radius: 15px;
+    border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
      -1px -1px 0 black,  
@@ -502,7 +532,7 @@ input[type=submit]:hover {
 .container{
     border-radius: 15px;
     padding: 30px 20px;
-    background-color: #069;
+    background-color: #059;
     width: 600px;
     max-width: 90%;
     margin: auto;
@@ -527,10 +557,13 @@ input[type=submit]:hover {
 }
 
 .gallery2 h2{
+    margin-top: 50px;
+    font-size: 35px;
     border-bottom: 5px double red;
     border-top: 5px double red;
     padding:20px;
-    width:500px;
+    width:300px;
+    max-width: 100%;
     text-shadow:
        1px 1px 0 red,
      -1px -1px 0 red,  
@@ -539,34 +572,44 @@ input[type=submit]:hover {
        1px 1px 0 red;
 }
 
-.resume img{
-    margin: auto;
-    max-width: 100%;
-    border: 3px double red;
-    border-radius: 10px;
-}
-
-.resume{
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-}
-
-.resumemobile img{
-    margin: auto;
-    max-width: 100%;
-    border: 3px double red;
-    border-radius: 10px;
-    margin-top: 25px;
-
-}
-
-.resumemobile{
-    border-top: 5px double red;
+.gallery2 h1{
+    font-size: 55px;
     padding-top: 20px;
+
+}
+
+.resume a{
     margin:auto;
     max-width: 100%;
     text-align: center;
+    color: white;
+    font-family: 'federant', serif;
+    font-size: 22px;
+    border: 5px double red;
+    border-radius: 30px;
+    padding: 8px;
+    display: block;
+    width: 300px;
+    font-weight:bolder;
+    background-color: #159;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+    
+}
+
+.resume a:hover, .resumemobile a:hover{
+    color:red;
+    border-radius: 30px;
+    text-shadow:
+       1px 1px 0 white,
+     -1px -1px 0 white,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 }
 
 #form {
@@ -582,23 +625,16 @@ input[type=submit]:hover {
     right: 5px; /* Place the button 5px from the right */
     z-index: 99; /* Make sure it does not overlap */
     outline: none; /* Remove outline */
-    color: white; /* Text color */
     cursor: pointer; /* Add a mouse pointer on hover */
     padding: 15px; /* Some padding */
     border-radius: 50px; /* Rounded corners */
     border: 1px solid red;
-    width: 30px;
-    height: 30px;
-    background: url("redarrow.png") no-repeat;
+    background: url("redarrow.png");
 }
 
 #myBtn:hover {
     border-color: dodgerblue;
-    background: url("bluearrow1.png") no-repeat;
-}
-
-#myBtn img{
-    margin:0px;
+    background: url("bluearrow1.png");
 }
 
 footer{
