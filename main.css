@@ -257,7 +257,7 @@ th{
     }
     
     article img{
-        max-width: 17%;
+        max-width: 18%;
     }
     
     header img{
@@ -326,6 +326,10 @@ th{
       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
+    }
+    
+    header h4{
+        font-size: 28px;
     }
 }
 
