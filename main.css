@@ -319,7 +319,7 @@ th{
     display: block;
     width: 245px;
     font-weight:bolder;
-    background-color: #159;
+    background-color: #039;
     text-shadow:
        1px 1px 0 red,
      -1px -1px 0 red,  
@@ -596,7 +596,7 @@ input[type=submit]:hover {
     display: block;
     width: 300px;
     font-weight:bolder;
-    background-color: #159;
+    background-color: #039;
     text-shadow:
        1px 1px 0 red,
      -1px -1px 0 red,  
