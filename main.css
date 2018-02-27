@@ -256,6 +256,10 @@ th{
         display:none;
     }
     
+    article img{
+        max-width: 17%;
+    }
+    
     header img{
         padding-top: 20px;
     }
@@ -365,12 +369,6 @@ nav li a:hover{
     color:red;
     border-radius: 20px;
     background-color: #059;
-    text-shadow:
-       1px 1px 0 white,
-     -1px -1px 0 white,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
 }
 
 /* selected link */
@@ -385,17 +383,15 @@ h3{
 }
 
 h4{
-    font-size: 30px;
-    font-family: 'federant', serif;
-    color: white;
-    font-style:italic;
+    font-size: 35px;
+    color: red;
+    font-family: 'kaushan script', serif;
     text-shadow:
-       1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    margin: 30px 0px 0px;
+       1px 1px 0 white,
+     -1px -1px 0 white,  
+      1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
 
 }
 
@@ -532,7 +528,7 @@ input[type=submit]:hover {
 .container{
     border-radius: 15px;
     padding: 30px 20px;
-    background-color: #059;
+    background-color: #069;
     width: 600px;
     max-width: 90%;
     margin: auto;
