@@ -31,7 +31,7 @@ article img:hover{
 .navicon2 {
     width: 30px;
     height: 6px;
-    background-color: blue;
+    background-color: #159;
     margin: 6px 0;
 }
 
@@ -65,7 +65,7 @@ article img:hover{
 
 .sidenav a {
     padding: 0px 22px 28px 22px;
-    font-size: 30px;
+    font-size: 28px;
     color: white;
     display: block;
     transition: 0.3s;
@@ -330,6 +330,8 @@ th{
     
     header h4{
         font-size: 28px;
+        font-family: 'federant';
+        color: #159;
     }
     
     .vid{
@@ -376,7 +378,7 @@ nav li a:link {
 nav li a:hover{
     color:red;
     border-radius: 20px;
-    background-color: #059;
+    background-color: #039;
 }
 
 /* selected link */
@@ -393,7 +395,7 @@ h3{
 h4{
     font-size: 35px;
     color: red;
-    font-family: 'kaushan script', serif;
+    font-family: 'federant', serif;
     text-shadow:
        1px 1px 0 white,
      -1px -1px 0 white,  
@@ -566,7 +568,8 @@ input[type=submit]:hover {
     border-bottom: 5px double red;
     border-top: 5px double red;
     padding:20px;
-    width:300px;
+    width:350px;
+    text-decoration: underline
     max-width: 100%;
     text-shadow:
        1px 1px 0 red,
@@ -577,9 +580,7 @@ input[type=submit]:hover {
 }
 
 .gallery2 h1{
-    font-size: 55px;
-    padding-top: 20px;
-
+    font-size: 65px;
 }
 
 .resume a{
