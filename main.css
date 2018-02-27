@@ -331,6 +331,10 @@ th{
     header h4{
         font-size: 28px;
     }
+    
+    .vid{
+        padding-top: 50px;
+    }
 }
 
 a:hover img {
