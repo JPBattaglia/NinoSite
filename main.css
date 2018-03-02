@@ -57,6 +57,7 @@ article img:hover{
     top: 0;
     right: 0;
     background-color: darkred;
+    opacity: .9;
     overflow-x: hidden;
     transition: .5s;
     padding-top: 100px;
