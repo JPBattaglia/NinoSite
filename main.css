@@ -393,11 +393,6 @@ nav li a:hover{
        1px 1px 0 red;
 }
 
-/* selected link */
-nav li a:active {
-    color: red;
-}
-
 h3{
     
    font-size: 24px;
