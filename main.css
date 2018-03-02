@@ -328,6 +328,12 @@ th{
        1px 1px 0 red;
     }
     
+    .resumemobile a:hover{
+        text-shadow: none;
+        color: dodgerblue;
+        background-color: black;
+    }
+    
     header h4{
         font-size: 28px;
         font-family: 'federant';
@@ -376,9 +382,15 @@ nav li a:link {
 
 /* mouse over link */
 nav li a:hover{
-    color:red;
+    color:white;
     border-radius: 20px;
     background-color: #039;
+    text-shadow:
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
 }
 
 /* selected link */
@@ -538,7 +550,7 @@ input[type=submit]:hover {
 .container{
     border-radius: 15px;
     padding: 30px 20px;
-    background-color: #069;
+    background-color: #059;
     width: 600px;
     max-width: 90%;
     margin: auto;
@@ -587,7 +599,7 @@ input[type=submit]:hover {
     margin:auto;
     max-width: 100%;
     text-align: center;
-    color: white;
+    color: dodgerblue;
     font-family: 'federant', serif;
     font-size: 22px;
     border: 5px double red;
@@ -596,25 +608,18 @@ input[type=submit]:hover {
     display: block;
     width: 320px;
     font-weight:bolder;
+}
+
+.resume a:hover{
+    color:white;
     background-color: #039;
+    border-radius: 30px;
     text-shadow:
        1px 1px 0 red,
      -1px -1px 0 red,  
       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
-    
-}
-
-.resume a:hover, .resumemobile a:hover{
-    color:red;
-    border-radius: 30px;
-    text-shadow:
-       1px 1px 0 white,
-     -1px -1px 0 white,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
 }
 
 #form {
