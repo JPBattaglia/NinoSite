@@ -592,9 +592,9 @@ input[type=submit]:hover {
     font-size: 22px;
     border: 5px double red;
     border-radius: 30px;
-    padding: 8px;
+    padding: 10px;
     display: block;
-    width: 300px;
+    width: 320px;
     font-weight:bolder;
     background-color: #039;
     text-shadow:
