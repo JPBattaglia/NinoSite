@@ -3,10 +3,6 @@ html{
     overflow:auto;
 }
 
-.linklogo{
-    display: none;
-}
-
 article img{
     float: left;
     max-width: 100%;
