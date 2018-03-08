@@ -25,7 +25,7 @@ article img:hover{
     width: 30px;
     height: 6px;
     background-color: red;
-    margin: 6px 0;
+    margin: 6px 0px;
 }
 
 .navicon2 {
@@ -366,6 +366,7 @@ a:hover img {
     /* When the animation is finished, start again */
     animation-iteration-count: 2.0s;
     border: 3px double red;
+    border-radius: 20px;
 }
 
 @keyframes shake {
@@ -386,6 +387,11 @@ a:hover img {
 nav li a:link {
     color: dodgerblue;
     padding: 5px 25px;
+    border-radius: 20px;
+    -webkit-transition: background-color, font-color .5s ease-out;
+  -moz-transition: background-color, font-color .5s ease-out;
+  -o-transition: background-color, font-color .5s ease-out;
+  transition: font-color, background-color .5s ease-out;
 }
 
 /* mouse over link */
@@ -534,6 +540,10 @@ input[type=submit] {
       1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
+    -webkit-transition: background-color 1s ease-out;
+  -moz-transition: background-color 1s ease-out;
+  -o-transition: background-color 1s ease-out;
+  transition: background-color 1s ease-out;
 }
 
 /* When moving the mouse over the submit button, add a blue color */
@@ -566,6 +576,7 @@ input[type=submit]:hover {
 #gallery img, #gallery2 img{
     max-width: 100%;
     margin: 100px 0px 15px;
+    
 }
 
 
@@ -611,6 +622,10 @@ input[type=submit]:hover {
     display: block;
     width: 375px;
     font-weight:bolder;
+    -webkit-transition: background-color .5s ease-out;
+  -moz-transition: background-color .5s ease-out;
+  -o-transition: background-color .5s ease-out;
+  transition: background-color .5s ease-out;
 }
 
 .resume a:hover{
@@ -668,4 +683,22 @@ footer{
     font-family: 'quintessential', cursive;
     font-size: 20px;
     margin-top: 50px;
+}
+
+.animate-in {
+    -webkit-animation: fadeIn 1s ease-in;
+    animation: fadeIn 1s ease-in;
+}
+.animate-out {
+    -webkit-transition: opacity 1s;
+    transition: opacity 1s;
+    opacity: 0;
+}
+@-webkit-keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
