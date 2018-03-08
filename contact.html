@@ -11,7 +11,11 @@
         <link href="https://fonts.googleapis.com/css?family=Federant|Kaushan+Script|Quintessential" rel="stylesheet">
     </head>
     
-    <body>
+    <body class="animate-in">
+        
+        <script>window.addEventListener("beforeunload", function () {
+  document.body.classList.add("animate-out");
+            });</script>
 
         <div id="mySidenav" class="sidenav">
           <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
