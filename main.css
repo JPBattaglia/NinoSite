@@ -138,7 +138,7 @@ video{
     max-width: 100%;
 }
 
-th{
+.servicelist th{
     padding: 5px;
     border-top: 5px double red;
     border-bottom: 5px double red;
@@ -636,6 +636,17 @@ input[type=submit]:hover {
     border-radius: 50px; /* Rounded corners */
     border: 1px solid red;
     background: url("redarrow.png");
+}
+
+.projects {
+    margin:auto;
+}
+
+.projects td{
+    font-size: 25px;
+    padding: 120px;
+    text-align: center;
+    color:white;    
 }
 
 #myBtn:hover {
