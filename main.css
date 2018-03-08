@@ -365,8 +365,6 @@ a:hover img {
     animation: shake 2s; 
     /* When the animation is finished, start again */
     animation-iteration-count: 2.0s;
-    border: 3px double red;
-    border-radius: 20px;
     opacity: 1;
 }
 
