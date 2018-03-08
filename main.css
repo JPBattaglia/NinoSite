@@ -58,7 +58,7 @@ article img:hover{
     right: 0;
     background-color: darkred;
     overflow-x: hidden;
-    transition: .5s;
+    transition: 1s;
     padding-top: 100px;
     font-family: 'kaushan script', cursive;
 }
