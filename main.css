@@ -367,6 +367,7 @@ a:hover img {
     animation-iteration-count: 2.0s;
     border: 3px double red;
     border-radius: 20px;
+    opacity: 1;
 }
 
 @keyframes shake {
@@ -576,6 +577,7 @@ input[type=submit]:hover {
 #gallery img, #gallery2 img{
     max-width: 100%;
     margin: 100px 0px 15px;
+    opacity: .7;
     
 }
 
