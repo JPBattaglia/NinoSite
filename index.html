@@ -12,7 +12,11 @@
         <link href="https://fonts.googleapis.com/css?family=Federant|Akronim|Kaushan+Script|Fugaz+One|Quintessential" rel="stylesheet">   
     </head>
     
-    <body>
+    <body class="animate-in">
+        
+        <script>window.addEventListener("beforeunload", function () {
+  document.body.classList.add("animate-out");
+            });</script>
         
         <video poster= "logo5.jpeg" autoplay id="background">
         <source src="NinoLogoAnimation.mp4"type="video/mp4">
