@@ -12,7 +12,11 @@
             
     </head>
     
-    <body>
+    <body class="animate-in">
+        
+        <script>window.addEventListener("beforeunload", function () {
+  document.body.classList.add("animate-out");
+            });</script>
         
         
 
