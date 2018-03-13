@@ -360,9 +360,9 @@ a:hover img {
     animation-iteration-count: 2.0s;
 }
 
-#gallery a:hover img, #gallery2 a:hover img {
-    /* Start the shake animation and make the animation last for 0.5 seconds */
-    animation: shake 2s; 
+#gallery2 a:hover img {
+    /* Start the shake animation and make the animation last for 1 seconds */
+    animation: shake 1.5s; 
     /* When the animation is finished, start again */
     animation-iteration-count: 2.0s;
     opacity: 1;
@@ -572,13 +572,16 @@ input[type=submit]:hover {
     font-size: 20px
 }
 
-#gallery img, #gallery2 img{
+#gallery img{
+    max-width: 100%;
+    margin: 100px 0px 15px;
+}
+
+#gallery2 img{
     max-width: 100%;
     margin: 100px 0px 15px;
     opacity: .7;
-    
 }
-
 
 #gallery, #gallery2{
     max-width: 100%;
