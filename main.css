@@ -130,7 +130,7 @@ video{
 }
 
 .servgif{
-    padding-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .servicelist {
@@ -270,6 +270,7 @@ video{
     
     header img{
         padding-top: 20px;
+        
     }
     
     .slogan{
@@ -446,11 +447,12 @@ a{
 
 a:hover{
     text-shadow:
-       1px 1px 0 white,
-     -1px -1px 0 white,  
-      1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
+       1px 1px 0 red,
+     -1px -1px 0 red,  
+      1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+    color: white;
 }
 
 footer, label, section{
@@ -488,6 +490,8 @@ header img{
     max-width: 100%;
     margin: 20px;
     margin:auto;
+    border: 2px double white;
+    border-radius: 12px;
 }
 
 textarea, input, select{
