@@ -184,6 +184,15 @@ video{
         margin: 0px 100px;
     }
     
+    header img{
+    max-width: 100%;
+    margin: 20px;
+    margin:auto;
+    border: 2px double white;
+    border-radius: 12px;
+    }
+
+    
     #background {
     position:absolute;
     top: 50%;
@@ -264,13 +273,18 @@ video{
         display:none;
     }
     
-    article img{
-        max-width: 18%;
+    header img{
+        max-width: 100%;
+        margin: 20px;
+        margin:auto;
+        border: 1px solid white;
+        border-radius: 8px;
+        
     }
     
-    header img{
-        padding-top: 20px;
-        
+    article img{
+        max-width: 18%;
+        margin-bottom: 20px;
     }
     
     .slogan{
@@ -484,14 +498,6 @@ header{
     text-align: center;
     max-width: 100%;
     padding-top: 70px;
-}
-
-header img{
-    max-width: 100%;
-    margin: 20px;
-    margin:auto;
-    border: 2px double white;
-    border-radius: 12px;
 }
 
 textarea, input, select{
