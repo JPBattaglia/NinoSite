@@ -64,14 +64,14 @@ article img:hover{
 }
 
 .sidenav a {
-    padding: 0px 22px 28px 22px;
+    padding: 20px 20px 20px 10px;
     font-size: 28px;
-    color: white;
+    color: dodgerblue;
     display: block;
     transition: 0.3s;
     max-width: 100%;
     text-shadow:
-       1px 1px 0 black,
+       1px 1px 0 white,
      -1px -1px 0 black,  
       1px -1px 0 black,
       -1px 1px 0 black,
@@ -79,9 +79,9 @@ article img:hover{
 }
 
 .sidenav a:hover {
-    color: white;
+    color: red;
     text-shadow:
-       1px 1px 0 black,
+       1px 1px 0 white,
      -1px -1px 0 black,  
       1px -1px 0 black,
       -1px 1px 0 black,
@@ -89,6 +89,7 @@ article img:hover{
 }
 
 .sidenav .closebtn {
+    padding: 0px 22px 28px 22px;
     position:absolute;
     top: 0px;
     right: 0px;
@@ -275,16 +276,15 @@ video{
     
     header img{
         max-width: 100%;
-        margin: 20px;
         margin:auto;
+        margin-top: 20px;
         border: 1px solid white;
-        border-radius: 8px;
-        
+        border-radius: 8px;   
     }
     
     article img{
         max-width: 18%;
-        margin-bottom: 20px;
+
     }
     
     .slogan{
@@ -577,6 +577,7 @@ input[type=submit]:hover {
     max-width: 90%;
     margin: auto;
 }
+
 #service{
     width:70%;
     font-size: 20px
