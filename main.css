@@ -72,8 +72,8 @@ article img:hover{
     max-width: 100%;
     text-shadow:
        1px 1px 0 white,
-     -1px -1px 0 black,  
-      1px -1px 0 black,
+      -1px -1px 0 black,  
+       1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
 }
@@ -82,8 +82,8 @@ article img:hover{
     color: red;
     text-shadow:
        1px 1px 0 white,
-     -1px -1px 0 black,  
-      1px -1px 0 black,
+      -1px -1px 0 black,  
+       1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
 }
@@ -157,8 +157,8 @@ nav {
     color: white;
     text-shadow:
        2px 1px 0 red,
-     -2px -1px 0 red,  
-      2px -1px 0 red,
+      -2px -1px 0 red,  
+       2px -1px 0 red,
       -2px 1px 0 red,
        2px 1px 0 red;
 }
@@ -636,8 +636,8 @@ input[type=submit]:hover {
     border-radius: 30px;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
 }
