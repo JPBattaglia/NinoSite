@@ -175,7 +175,7 @@ nav {
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-        margin-bottom: 50spx;
+        margin-bottom: 50px;
     }
     
     #myBtn{
@@ -208,7 +208,6 @@ nav {
     transform: translateX(-50%) translateY(-50%);
     background: url(logo5.jpeg) no-repeat;
     background-size: cover;
-    
     }
     
     
@@ -220,8 +219,8 @@ nav {
     text-shadow: 2px 3px 3px dodgerblue;
     text-shadow:
        1px 1px 0 dodgerblue,
-     -1px -1px 0 dodgerblue,  
-      1px -1px 0 white,
+      -1px -1px 0 dodgerblue,  
+       1px -1px 0 white,
       -1px 1px 0 white,
        1px 1px 0 white;
     
@@ -236,8 +235,8 @@ nav {
     color: white;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
     } 
@@ -264,8 +263,8 @@ nav {
     }
     
      #services{
-            border-top: 3px double red;
-            padding: 20px 0px;
+        border-top: 3px double red;
+        padding: 20px 0px;
     }
     
     .iconright{
@@ -301,8 +300,8 @@ nav {
     text-shadow: 2px 3px 3px dodgerblue;
     text-shadow:
        1px 1px 0 dodgerblue,
-     -1px -1px 0 dodgerblue,  
-      1px -1px 0 white,
+      -1px -1px 0 dodgerblue,  
+       1px -1px 0 white,
       -1px 1px 0 white,
        1px 1px 0 white;
     
@@ -317,8 +316,8 @@ nav {
     color: white;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
     }
@@ -339,8 +338,8 @@ nav {
     background-color: #039;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
     }
@@ -393,9 +392,9 @@ nav li a:link {
     padding: 5px 25px;
     border-radius: 20px;
     -webkit-transition: background-color, font-color .5s ease-out;
-  -moz-transition: background-color, font-color .5s ease-out;
-  -o-transition: background-color, font-color .5s ease-out;
-  transition: font-color, background-color .5s ease-out;
+    -moz-transition: background-color, font-color .5s ease-out;
+    -o-transition: background-color, font-color .5s ease-out;
+    transition: font-color, background-color .5s ease-out;
 }
 
 /* mouse over link */
@@ -405,8 +404,8 @@ nav li a:hover{
     background-color: #039;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
 }
@@ -414,7 +413,6 @@ nav li a:hover{
 h3{
     
    font-size: 24px;
-
 }
 
 h4{
@@ -423,8 +421,8 @@ h4{
     font-family: 'federant', serif;
     text-shadow:
        1px 1px 0 white,
-     -1px -1px 0 white,  
-      1px -1px 0 white,
+      -1px -1px 0 white,  
+       1px -1px 0 white,
       -1px 1px 0 white,
        1px 1px 0 white;
 
@@ -452,8 +450,8 @@ a{
 a:hover{
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
     color: white;
@@ -466,8 +464,8 @@ footer, label, section{
     list-style-type: none;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
 }
@@ -535,14 +533,14 @@ input[type=submit] {
     border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
-     -1px -1px 0 black,  
-      1px -1px 0 black,
+      -1px -1px 0 black,  
+       1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
     -webkit-transition: background-color 1s ease-out;
-  -moz-transition: background-color 1s ease-out;
-  -o-transition: background-color 1s ease-out;
-  transition: background-color 1s ease-out;
+    -moz-transition: background-color 1s ease-out;
+    -o-transition: background-color 1s ease-out;
+    transition: background-color 1s ease-out;
 }
 
 /* When moving the mouse over the submit button, add a blue color */
@@ -552,8 +550,8 @@ input[type=submit]:hover {
     border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
-     -1px -1px 0 black,  
-      1px -1px 0 black,
+      -1px -1px 0 black,  
+       1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
 }
@@ -603,8 +601,8 @@ input[type=submit]:hover {
     max-width: 100%;
     text-shadow:
        1px 1px 0 red,
-     -1px -1px 0 red,  
-      1px -1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
 }
@@ -627,9 +625,9 @@ input[type=submit]:hover {
     width: 375px;
     font-weight:bolder;
     -webkit-transition: background-color .5s ease-out;
-  -moz-transition: background-color .5s ease-out;
-  -o-transition: background-color .5s ease-out;
-  transition: background-color .5s ease-out;
+    -moz-transition: background-color .5s ease-out;
+    -o-transition: background-color .5s ease-out;
+    transition: background-color .5s ease-out;
 }
 
 .resume a:hover{
