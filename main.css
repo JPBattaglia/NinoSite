@@ -125,8 +125,9 @@ nav {
     }
 }
 
-video{
-    
+#intro img{
+    width: 100%;
+    margin:auto;
     max-width: 100%;
 }
 
@@ -174,7 +175,7 @@ video{
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-        margin-bottom: 50px;
+        margin-bottom: 50spx;
     }
     
     #myBtn{
@@ -210,9 +211,6 @@ video{
     
     }
     
-    .vid{
-        padding-top: 600px;
-    }
     
     h1 {
     font-size: 60px;
@@ -247,7 +245,7 @@ video{
 
 
 @media (max-width: 825px) {
-  nav, .resume, .intro {
+  nav, .resume, .intro, #intro {
     display:none;
     }
     
@@ -289,10 +287,6 @@ video{
     
     .slogan{
         font-size: 28px
-    }
-    
-    video{
-        display:none;
     }
     
     iframe{
@@ -362,13 +356,9 @@ video{
         font-family: 'federant';
         color: #159;
     }
-    
-    .vid{
-        padding-top: 50px;
-    }
 }
 
-a:hover img {
+a:hover img{
     /* Start the shake animation and make the animation last for 0.5 seconds */
     animation: shake 1.5s; 
     /* When the animation is finished, start again */
