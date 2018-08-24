@@ -125,10 +125,10 @@ nav {
     }
 }
 
-#intro img{
-    width: 100%;
+#intro {
     margin:auto;
-    max-width: 100%;
+    max-width: 50%;
+    
 }
 
 .servgif{
@@ -209,7 +209,6 @@ nav {
     background: url(logo5.jpeg) no-repeat;
     background-size: cover;
     }
-    
     
     h1 {
     font-size: 60px;
