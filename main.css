@@ -747,14 +747,15 @@ footer{
 	background: dodgerblue;
     border: 1px solid white;
 	color: #fff;
-	line-height: 28px;
+	line-height: 20px;
 	position: absolute;
 	right: -12px;
 	text-align: center;
 	top: -10px;
-	width: 28px;
+	width: 20px;
 	text-decoration: none;
 	font-weight: bold;
+    font-size: 15px;
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
