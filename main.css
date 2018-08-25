@@ -731,20 +731,21 @@ footer{
 }
 
 .modalDialog > div {
-	width: 300px;
+	width: 200px;
 	position: relative;
 	margin: 10% auto;
-	padding: 5px 50px 55px 50px;
+	padding: 1px 20px 5px 20px;
 	border-radius: 10px;
 	background: #000;
 	background: -moz-linear-gradient(#009, darkred);
-	background: -webkit-linear-gradient(#009, #000, #000, darkred);
-	background: -o-linear-gradient(#000, #001);
+	background: -webkit-linear-gradient(#009, #000, darkred);
     border: black double 3px;
+    max-width:100%;
 }
 
 .close {
 	background: dodgerblue;
+    border: 1px solid white;
 	color: #fff;
 	line-height: 28px;
 	position: absolute;
