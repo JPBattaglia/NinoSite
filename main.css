@@ -718,8 +718,8 @@ footer{
 	background: rgba(0,0,0,0.8);
 	z-index: 99999;
 	opacity:0;
-	-webkit-transition: opacity 400ms ease-in;
-	-moz-transition: opacity 400ms ease-in;
+	-webkit-transition: opacity 600ms ease-in;
+	-moz-transition: opacity 600ms ease-in;
 	transition: opacity 400ms ease-in;
 	pointer-events: none;
 }
@@ -730,7 +730,7 @@ footer{
 }
 
 .modalDialog > div {
-	width: 280px;
+	width: 285px;
 	position: relative;
 	margin: 10% auto;
 	padding: 1px 10px 1px 10px;
@@ -738,7 +738,7 @@ footer{
 	background: #000;
 	background: -moz-linear-gradient(#009, darkred);
 	background: -webkit-linear-gradient(#800000, #000, #005);
-    border: black double 4px;
+    border: black double 6px;
     max-width:100%;
 }
 
