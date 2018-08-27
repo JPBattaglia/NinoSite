@@ -686,24 +686,29 @@ footer{
     margin-top: 50px;
 }
 
-.animate-in {
-    -webkit-animation: fadeIn 1s ease-in;
-    animation: fadeIn 1s ease-in;
-}
-.animate-out {
-    -webkit-transition: opacity 1s;
-    transition: opacity 1s;
-    opacity: 0;
-}
-@-webkit-keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+.animated {
+            background-color: black;
+            background-position: left top;
+            padding-top:5px;
+            margin-bottom:30px;
+            -webkit-animation-duration: 3s;animation-duration: 3s;
+            -webkit-animation-fill-mode: both;animation-fill-mode: both;
+         }
 
+         @-webkit-keyframes fadeOut {
+            100% {opacity: 1;}
+            0% {opacity: 0;}
+         }
+
+         @keyframes fadeOut {
+            100% {opacity: 1;}
+            0% {opacity: 0;}
+         }
+
+         .fadeOut {
+            -webkit-animation-name: fadeOut;
+            animation-name: fadeOut;
+         }
 
 
 
