@@ -1,779 +1,277 @@
-html{
-    min-height:100%;
-    overflow:auto;
-}
+<!DOCTYPE html>
 
-article img{
-    float: left;
-    max-width: 100%;
-    -webkit-transition: width 2s, height 2s, 
-    -webkit-transform 1.5s; /* Safari */
-    transition: width 2s, height 2s, transform 1.5s;
-}
-
-article img:hover{
-    -webkit-transform: rotate(360deg); /* Safari */
-    transform: rotate(360deg);
-}
-
-.iconright{
-    float:right;
-    max-width: 100%;
-}
-
-.navicon {
-    width: 30px;
-    height: 6px;
-    background-color: red;
-    margin: 6px 0px;
-}
-
-.navicon2 {
-    width: 30px;
-    height: 6px;
-    background-color: #059;
-    margin: 6px 0;
-}
-
-.navicon1 {
-    width: 30px;
-    height: 6px;
-    background-color: darkseagreen;
-    margin: 6px 0;
-}
-
-.navicon3 {
-    width: 30px;
-    height: 6px;
-    background-color: firebrick;
-    margin: 6px 0;
-}
-
-.sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    background-color: darkred;
-    overflow-x: hidden;
-    transition: 1s;
-    padding-top: 100px;
-    font-family: 'kaushan script', cursive;
-}
-
-.sidenav a {
-    padding: 20px 20px 20px 10px;
-    font-size: 28px;
-    color: #007acc;
-    display: block;
-    transition: 0.3s;
-    max-width: 100%;
-    text-shadow:
-       1px 1px 0 white,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-.sidenav a:hover {
-    color: red;
-    text-shadow:
-       1px 1px 0 white,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-.sidenav .closebtn {
-    padding: 0px 22px 28px 22px;
-    position:absolute;
-    top: 0px;
-    right: 0px;
-    font-size: 65px;
-}
-
-@media screen and (max-height: 450px) {
-.sidenav {padding-top: 15px;}
-.sidenav a {font-weight: bolder; font-size: 30px;}
-}
-
-nav ul li {
-    font-family:'federant', serif;
-    font-size: 22px;
-    font-weight:bolder;
-    display:inline;
-    border-radius: 30px;
-    border:  5px double red;
-    padding: 5px 0px;
-    text-align: center;
-    margin: 20px;   
-}
-
-nav {
-    text-align:center;
-    margin:auto;
-}
-
-@media (max-width: 1000px){
+<html>
+    <head>
+        <meta name="keywords" content="Nino Battagliia, Graphic Designer, Portfolio">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Nino Battaglia</title>
+        <meta name="description" content="An interactive portfolio.">
+        <link rel="stylesheet" href="main.css"> 
+        <link href="https://fonts.googleapis.com/css?family=Federant|Akronim|Kaushan+Script|Fugaz+One|Quintessential" rel="stylesheet">   
+    </head>
     
-    nav ul li{
-        margin:8px;
-    }
-}
+    <body id="animated-example" class="animated fadeOut">
+        
+        <script>window.addEventListener("beforeunload", function () {
+  document.body.classList.add("animate-out");
+            });</script>
 
-#intro {
-    margin:auto;
-    max-width: 50%;
+
+        <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <h5>MENU</h5>  
+          <a href="index.html">Home</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <span style="float:right;margin-top: 5px;cursor:pointer" onclick="openNav()"><div class=navicon></div><div class="navicon"></div><div class=navicon></div></span>
+
+        <script>
+            
+            
+            
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "150px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+        </script>
+        
+        <article>
+        
+            <img src="logo1.png" alt="logo">
+            
+        </article>
+        
+        <article class=iconright>
+        
+            <img src="logo1.png" alt="logo">
+            
+        </article>
+        
+        <nav>
+            <ul>
+                <li><a href="index.html">About</a></li>
+                <li><a href="gallery.html">Gallery</a></li>   
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li> 
+            </ul> 
+        </nav>
+        
+        <div id= "intro">
+        
+            <center>
+                <img src="NinoGif1.gif" alt="Intro Logo Gif">
+            </center>
+        </div>
+        
+        <header class=vid>
+            
+            <h1>Nino Battaglia</h1>
+            <h2 class="slogan">~DeFine DeSign~</h2><br>
+            
+        </header> 
+        
+        <aside class="intro">
+        
+        <h3>Welcome to my portfolio site.</h3> 
+        <p>This website was developed in order to showcase what I have accomplished in graphic design for a few clients. Each example on the <a href="gallery.html">Gallery</a> page is the result of a unique process of bringing what is in the imagination out into reality. Most will expand when selected to reveal either previous iterations of the same project, or other versions of the same type of medium.</p>
+        <p>I've included a few packages and plans on the <a href="services.html">Services</a> page just to give an idea of what I can offer, but I really prefer to discuss and develop projects on an individual basis. Feel free to message me with any questions or ideas through the form provided on the <a href="contact.html">Contact</a> page.</p>
+            
+        </aside>
+        
+        <aside class="intromobile">
+        <h3>Welcome to my portfolio site.</h3>
+        <p>This website was developed to showcase what I've accomplished in graphic design. Select any image below to expand and reveal other iterations, videos or versions of the same medium.</p>
+        <p>Scroll through the <a href="services.html">Services</a> page for a list of what I offer and then feel free to contact me with any questions through my <a href="contact.html">Contact</a> page. </p>
+            
+        </aside>
+        
+        
+        <section id="gallery">
+            
+            <h4>~ Gallery ~</h4>
+            <a name="gallery"></a>
+            
+            <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+            
+
+        <script>
+  
+            // When the user scrolls down 20px from the top of the document, show the button
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+            if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+            document.getElementById("myBtn").style.display = "block";
+            } else {
+            document.getElementById("myBtn").style.display = "none";
+                }
+            }
+
+            // When the user clicks on the button, scroll to the top of the document
+            function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            }   
+        </script>
+            
+            
+                <a href="#openModal"><img src="Business%20Card.png"></a>
+                <div id="openModal" class="modalDialog">
+                <div>     
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="BizCardz.jpeg"><br>Business Cards<br><br>
+	            </div>
+                </div>
+                <br>Business Card<br>
     
-}
+                <a href="#openModal19"><img src="AppIcon.gif" alt="App Icon"></a>
+                <div id="openModal19" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+                    <img src="ChickenFootApp.png" alt="menu">Play Store Icons<br><br>
+	            </div>
+                </div><br>App Icon<br>
+            
+                <a href="#openModal13"><img src="Poster.jpg" alt="Flyer"></a>
+                <div id="openModal13" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+                    <img src="NewsletterNew.jpg" alt="menu">Keeping clients informed and finding new ones<br><br>
+	            </div>
+                </div>    
+                <br>Flyer/Newsletter<br>
+            
+                <a href="#openModal18"><img src="TableMenuMockup.png" alt="Menu"></a>
+                <div id="openModal18" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+                    <img src="MenuElla's.png" alt="menu">Restaurant Bar or Cafe<br><br>
+	            </div>
+                </div>    
+                <br>Menu<br>
+                
+                <a href="#openModal2"><img src="PhotoAnimation.gif" alt="photo animation"></a>
+                <div id="openModal2" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="export%203.gif">Add motion to still photos<br><br>
+	           </div>
+                </div><br>Photo Animation<br>
+                
+                <a href="#openModal9"><img src="CompanyLogo.png"></a>
+                <div id="openModal9" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="Branding.jpg">Establishing a specific look and style<br><br>
+                </div></div><br>Logo / Branding<br>        
+                <a href="#openModal3"><img src="Product%20Branding.jpg"></a>
+                <div id="openModal3" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="MonikerVersions.jpg">Imagery for brand, company, or family crest<br><br>
+	            </div>
+                </div><br>Moniker<br>
+                                   
+                <a href="#openModal4"><img src="DPower.jpg"></a>
+                <div id="openModal4" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="YinYang.gif">Memorable Symbols<br><br>
+                </div></div><br>Emblem<br>
+                
+                <a href="#openModal5"><img src="MobileAppSplash.png"></a>
+                <div id="openModal5" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="SplashVersions.jpeg">Opening page for mobile applications<br><br>
+                </div></div><br>Mobile App Splash<br>
+                
+                <a href="#openModal6"><img src="Avatar.jpg"></a>
+                <div id="openModal6" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="AvatarVersions.jpg">Unique facial illustrations<br><br>
+                </div></div><br>Avatar<br>
+            
+                <a href="#openModal7"><img src="Graphite.jpg"></a>
+                <div id="openModal7" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="GraphiteVersions.jpg">Detail shading <br><br>
+                </div></div><br>Graphite Charcoal<br>
+            
+                <a href="#openModal8"><img src="Airbrush.jpg"></a>
+                <div id="openModal8" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="Landscape.jpg">Fine paint spraying tool  using templates<br><br>
+                </div></div><br>Airbrush Painting<br>
+            
+                <a href="#openModal10"><img src="Newsletter.jpg"></a>
+                <div id="openModal10" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="StationPostVersion.jpg">Attracting new prospective clients<br><br>
+                </div></div><br>Station Post<br>
+            
+                <a href="#openModal12"><img src="FalconAvatar.jpg"></a>
+                <div id="openModal12" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="FalconVersions.jpeg">Brainstorming iterations<br><br>
+                </div></div><br>Sketch Concept<br>
+            
+                <a href="#openModal14"><img src="SloganIcon.jpg"></a>
+                <div id="openModal14" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="MoonSpadeVersions.png">Logos with a moto <br><br>
+                </div></div><br>Slogan & Icon<br>
+            
+                <a href="#openModal15"><img src="Letterhead.png"></a>
+                <div id="openModal15" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="envelope.png">Formal correspondence stationary<br><br>
+                </div></div><br>Letterhead<br>
+            
+                <a href="#openModal16"><img src="Typography.jpeg"></a>
+                <div id="openModal16" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="typographyversions.jpeg">Lettering and Font styling<br><br>
+                </div></div><br>Typography<br>
+            
+                <a href="#openModal17"><img src="LettermarkLogo.png"></a>
+                <div id="openModal17" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">X</a>
+		          <img src="LettermarkVersion.jpg">Subtle ways to blend letters and logos<br><br>
+                </div></div><br>Lettermark Logo<br>
+            
+        </section>
+        
+        <div class="resume">
+            
+            <a href="ResumeCoverReference.pdf"class="pdflink">Resume / CL / References PDF</a><br>
 
-.servgif{
-    margin-bottom: 20px;
-}
-
-.servicelist {
-    width:65%;
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    font-size: 25px;
-    margin:auto;
-    padding: 50px 0px;
-    border-spacing: 110px 40px;
-    max-width: 100%;
-}
-
-.servicelist th{
-    padding: 5px;
-    border-top: 5px double red;
-    border-bottom: 5px double red;
-    font-size: 35px;
-    margin: auto;
-    max-width: 100%;
-    color: white;
-    text-shadow:
-       2px 1px 0 red,
-      -2px -1px 0 red,  
-       2px -1px 0 red,
-      -2px 1px 0 red,
-       2px 1px 0 red;
-}
-
-@media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile{
-    display:none;      
-  }
-    .intro {
-        width: 800px;
-        margin: auto;
-        border: 5px;
-        border-color: red;
-        border-bottom-style: double;
-        border-top-style: double;
-        padding:10px;
-        margin-bottom: 50px;
-    }
+            
+        </div>
     
-    #myBtn{
-        margin-right: 30px;
-    }
-    
-    footer{
-        margin: 0px 100px;
-    }
-    
-    header img{
-    max-width: 100%;
-    margin: 20px;
-    margin:auto;
-    border: 2px double white;
-    border-radius: 12px;
-    }
+        <footer>
+            <a href="https://www.instagram.com/thenino69/"><img src="Instagram.png" alt="Instagram"></a>&nbsp;
+            &#169; Nino Battaglia 2018&nbsp;
+            <a href="https://www.facebook.com/TheNino69"><img src="facebook.png" alt="Facebook"></a>
+        </footer>
 
-    
-    #background {
-    position:absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100ß%;
-    width: auto;
-    height: auto;
-    z-index: -100;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-    background: url(logo5.jpeg) no-repeat;
-    background-size: cover;
-    }
-    
-    h1 {
-    font-size: 60px;
-    text-align: center;
-    color: red;
-    font-family: 'kaushan script', serif;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-      -1px -1px 0 dodgerblue,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
-    }
-    
-    h2{
-    font-size: 35px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    padding:20px;
-    color: white;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    } 
-}
+    </body>
 
 
-@media (max-width: 825px) {
-  nav, .resume, .intro, #intro {
-    display:none;
-    }
-    
-    .intromobile{
-        max-width: 95%;
-        margin: auto;
-        border: 5px;
-        border-color: red;
-        border-bottom-style: double;
-        border-top-style: double;
-        padding:10px;
-    }
-    
-     table{
-        display: none;
-    }
-    
-     #services{
-        border-top: 3px double red;
-        padding: 20px 0px;
-    }
-    
-    .iconright{
-        display:none;
-    }
-    
-    header img{
-        max-width: 100%;
-        margin:auto;
-        margin-top: 20px;
-        border: 1px solid white;
-        border-radius: 8px;   
-    }
-    
-    article img{
-        max-width: 18%;
-
-    }
-    
-    .slogan{
-        font-size: 28px
-    }
-    
-    iframe{
-        width:auto;
-    }
-    
-    h1 {
-    font-size: 44px;
-    text-align: center;
-    color: red;
-    font-family: 'kaushan script', serif;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-      -1px -1px 0 dodgerblue,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
-    }
-    
-    h2{
-    font-size: 25px;
-    padding-top: 10px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    color: white;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    }
-    
-    .resumemobile a{
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-    color: white;
-    font-family: 'federant', serif;
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 30px;
-    padding: 8px;
-    display: block;
-    width: 245px;
-    font-weight:bolder;
-    background-color: #039;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    }
-    
-    .resumemobile a:hover{
-        text-shadow: none;
-        color: dodgerblue;
-        background-color: black;
-    }
-    
-    header h4{
-        font-size: 28px;
-        font-family: 'federant';
-        color: #159;
-    }
-}
-
-a:hover img{
-    /* Start the shake animation and make the animation last for 0.5 seconds */
-    animation: shake 1.5s; 
-    /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s;
-}
-
-#gallery2 a:hover img {
-    /* Start the shake animation and make the animation last for 1 seconds */
-    animation: shake 1.5s; 
-    /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s;
-    opacity: 1;
-}
-
-@keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-/* unvisited link */
-nav li a:link {
-    color: dodgerblue;
-    padding: 5px 25px;
-    border-radius: 20px;
-    -webkit-transition: background-color, font-color .5s ease-out;
-    -moz-transition: background-color, font-color .5s ease-out;
-    -o-transition: background-color, font-color .5s ease-out;
-    transition: font-color, background-color .5s ease-out;
-}
-
-/* mouse over link */
-nav li a:hover{
-    color:white;
-    border-radius: 20px;
-    background-color: #039;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-h3{
-    
-   font-size: 24px;
-}
-
-h4{
-    font-size: 35px;
-    color: red;
-    font-family: 'federant', serif;
-    text-shadow:
-       1px 1px 0 white,
-      -1px -1px 0 white,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-
-}
-
-h5{
-    color:darkred;
-    font-size: 20px;
-}
-p {
-    font-size: 22px;   
-}
-
-label {
-    font-size: 20px;
-}
-
-a{
-    color:dodgerblue;
-    text-decoration: none;
-    font-weight: bolder;
-    
-}
-
-a:hover{
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    color: white;
-}
-
-footer, label, section{
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-p, h3{
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-}
-
-body{
-    background-color:black;
-    margin: 20px;
-}
-
-header{
-    text-align: center;
-    max-width: 100%;
-    padding-top: 70px;
-}
-
-textarea, input, select{
-    font-family: 'federant', serif;
-    color:red;
-    text-align: center;
-    font-size: 18px;
-    font-weight:bolder;
-}
-
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: skyblue;
-    opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: red;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-    color: red;
-}
-
-/* Style inputs with type="text", select elements and textareas */
-input[type=text], select, textarea {
-    width: 100%; /* Full width */
-    padding: 5px; /* Some padding */  
-    border: 2px solid #b30; /* Gray border */
-    border-radius: 10px; /* Rounded borders */
-    box-sizing: border-box; /* Make sure that padding and width stays in place */
-    margin-top: 6px; /* Add a top margin */
-    margin-bottom: 16px; /* Bottom margin */
-    resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
-}
-
-/* Style the submit button with a specific background color etc */
-input[type=submit] {
-    font-size: 22px;
-    background-color: red;
-    color: white;
-    padding: 8px 30px;
-    border: 1px solid white;
-    border-radius: 4px;
-    cursor: pointer;
-    border-radius: 25px;
-    text-shadow:
-       1px 1px 0 black,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-    -webkit-transition: background-color 1s ease-out;
-    -moz-transition: background-color 1s ease-out;
-    -o-transition: background-color 1s ease-out;
-    transition: background-color 1s ease-out;
-}
-
-/* When moving the mouse over the submit button, add a blue color */
-input[type=submit]:hover {
-    border: 1px solid white;
-    background-color: dodgerblue;
-    border-radius: 25px;
-    text-shadow:
-       1px 1px 0 black,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-/* Add a background color and some padding around the form */
-.container{
-    border-radius: 15px;
-    padding: 30px 20px;
-    background-color: #059;
-    width: 600px;
-    max-width: 90%;
-    margin: auto;
-}
-
-#service{
-    width:70%;
-    font-size: 20px
-}
-
-#gallery img{
-    max-width: 100%;
-    margin: 100px 0px 15px;
-}
-
-#gallery2 img{
-    max-width: 100%;
-    margin: 100px 0px 15px;
-    opacity: .7;
-}
-
-#gallery, #gallery2{
-    max-width: 100%;
-    text-align: center;
-    font-size: 25px;
-    padding-bottom: 50px;
-    margin:auto;   
-}
-
-.gallery2 h2{
-    margin-top: 50px;
-    font-size: 35px;
-    border-bottom: 5px double red;
-    border-top: 5px double red;
-    padding:20px;
-    width:350px;
-    text-decoration: underline
-    max-width: 100%;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-.gallery2 h1{
-    font-size: 65px;
-}
-
-.resume a{
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-    color: dodgerblue;
-    font-family: 'federant', serif;
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 30px;
-    padding: 10px;
-    display: block;
-    width: 375px;
-    font-weight:bolder;
-    -webkit-transition: background-color .5s ease-out;
-    -moz-transition: background-color .5s ease-out;
-    -o-transition: background-color .5s ease-out;
-    transition: background-color .5s ease-out;
-}
-
-.resume a:hover{
-    color:white;
-    background-color: #039;
-    border-radius: 30px;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-#form {
-    font-size: 10px;
-    padding:30px 0px 40px;
-    margin: 5px;
-}
-
-#myBtn{
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed/sticky position */
-    bottom: 20px; /* Place the button at the bottom of the page */
-    right: 5px; /* Place the button 5px from the right */
-    z-index: 99; /* Make sure it does not overlap */
-    outline: none; /* Remove outline */
-    cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 15px; /* Some padding */
-    border-radius: 50px; /* Rounded corners */
-    border: 1px solid red;
-    background: url("redarrow.png");
-}
-
-.projects {
-    margin:auto;
-}
-
-.projects td{
-    font-size: 25px;
-    padding: 120px;
-    text-align: center;
-    color:white;    
-}
-
-#myBtn:hover {
-    border-color: dodgerblue;
-    background: url("bluearrow1.png");
-}
-
-footer{
-    border-top: 5px double red;
-    text-align: center;
-    padding-top: 10px;
-    font-family: 'quintessential', cursive;
-    font-size: 20px;
-    margin-top: 50px;
-}
-
-.animated {
-            background-color: black;
-            background-position: left top;
-            padding-top:5px;
-            margin-bottom:30px;
-            -webkit-animation-duration: 3s;animation-duration: 3s;
-            -webkit-animation-fill-mode: both;animation-fill-mode: both;
-         }
-
-         @-webkit-keyframes fadeOut {
-            100% {opacity: 1;}
-            0% {opacity: 0;}
-         }
-
-         @keyframes fadeOut {
-            100% {opacity: 1;}
-            0% {opacity: 0;}
-         }
-
-         .fadeOut {
-            -webkit-animation-name: fadeOut;
-            animation-name: fadeOut;
-         }
-
-
-
-
-
-.modalDialog {
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(0,0,0,0.8);
-	z-index: 99999;
-	opacity:0;
-	-webkit-transition: opacity 600ms ease-in;
-	-moz-transition: opacity 600ms ease-in;
-	transition: opacity 400ms ease-in;
-	pointer-events: none;
-}
-
-.modalDialog:target {
-	opacity:1;
-	pointer-events: auto;
-}
-
-.modalDialog > div {
-	width: 285px;
-	position: relative;
-	margin: 10% auto;
-	padding: 1px 10px 1px 10px;
-	border-radius: 10px;
-	background: #000;
-	background: -moz-linear-gradient(#009, darkred);
-	background: -webkit-linear-gradient(#800000, #000, #005);
-    border: black double 6px;
-    max-width:100%;
-}
-
-.close {
-	background: dodgerblue;
-    border: 1px solid white;
-	color: #fff;
-	line-height: 28px;
-	position: absolute;
-	right: -12px;
-	text-align: center;
-	top: -10px;
-	width: 28px;
-	text-decoration: none;
-	font-weight: bold;
-    font-size: 22px;
-	-webkit-border-radius: 12px;
-	-moz-border-radius: 12px;
-	border-radius: 14px;
-	-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;
-}
-
-.close:hover { 
-    background: red;
-    text-shadow:
-       1px 1px 0 blue,
-      -1px -1px 0 blue,  
-       1px -1px 0 blue,
-      -1px 1px 0 blue,
-       1px 1px 0 blue;
-}
+</html>
