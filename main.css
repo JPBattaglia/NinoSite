@@ -243,7 +243,7 @@ nav {
 
 
 @media (max-width: 825px) {
-  nav, .resume, .intro, #intro {
+  nav, .resume, .intro, #intro, .resumemobile {
     display:none;
     }
     
@@ -738,7 +738,7 @@ footer{
 	width: 285px;
 	position: relative;
 	margin: 10% auto;
-	padding: 1px 10px 1px 10px;
+	padding: 1px 5px 1px 5px;
 	border-radius: 10px;
 	background: #000;
 	background: -moz-linear-gradient(#009, darkred);
