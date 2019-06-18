@@ -165,7 +165,7 @@ nav {
 }
 
 @media (min-width: 824px) {
-  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile{
+  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile, .resume{
     display:none;      
   }
     .intro {
@@ -214,8 +214,8 @@ nav {
     h1 {
     font-size: 60px;
     text-align: center;
-    color: red;
-    font-family: 'kaushan script', serif;
+    color: #b30000;
+    font-family: 'federant', serif;
     text-shadow: 2px 3px 3px dodgerblue;
     text-shadow:
        1px 1px 0 dodgerblue,
