@@ -299,6 +299,7 @@ nav {
     text-align: center;
     color: #b30000;
     font-family: 'Federant', serif;
+    text-decoration: underline;
     text-shadow: 2px 3px 3px dodgerblue;
     text-shadow:
        1px 1px 0 dodgerblue,
