@@ -251,7 +251,7 @@ nav {
     
     .intromobile{
         max-width: 95%;
-        margin: 150px auto;
+        margin: 125px auto;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
@@ -295,7 +295,7 @@ nav {
     }
     
     h1 {
-    margin-top: 125px;    
+    margin-top: 100px;    
     font-size: 50px;
     text-align: center;
     color: #b30000;
@@ -426,7 +426,7 @@ nav li a:visited{
     
 
 h3{
-    
+   
    font-size: 24px;
 }
 
