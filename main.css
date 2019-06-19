@@ -60,11 +60,11 @@ article img:hover{
     overflow-x: hidden;
     transition: 1s;
     padding-top: 100px;
-    font-family: 'kaushan script', cursive;
+    font-family: 'federant', cursive;
 }
 
 .sidenav a {
-    padding: 20px 20px 20px 10px;
+    padding: 20px;
     font-size: 28px;
     color: #007acc;
     display: block;
@@ -89,7 +89,7 @@ article img:hover{
 }
 
 .sidenav .closebtn {
-    padding: 0px 22px 28px 22px;
+    padding: 10px 22px 28px 22px;
     position:absolute;
     top: 0px;
     right: 0px;
@@ -170,13 +170,13 @@ nav {
   }
     .intro {
         width: 800px;
-        margin: auto;
+        margin: 200px auto;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-        margin-bottom: 100px;
+
     }
     
     #myBtn{
@@ -211,7 +211,7 @@ nav {
     background-size: cover;
     }
     
-    h1 {
+    h1 {    
     font-size: 60px;
     text-align: center;
     color: #b30000;
@@ -250,7 +250,7 @@ nav {
     
     .intromobile{
         max-width: 95%;
-        margin: auto;
+        margin: 200px auto;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
@@ -285,6 +285,7 @@ nav {
     }
     
     .slogan{
+        margin-top: 50px;
         font-size: 28px
     }
     
@@ -293,6 +294,7 @@ nav {
     }
     
     h1 {
+    margin-top: 150px;    
     font-size: 44px;
     text-align: center;
     color: #b30000;
