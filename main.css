@@ -358,6 +358,10 @@ nav {
         font-family: 'federant';
         color: #159;
     }
+	
+    .banner, .servgif{
+        margin: 100px auto;
+    }
 }
 
 a:hover img{
