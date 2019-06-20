@@ -108,7 +108,6 @@ nav ul li {
     border:  5px double black;
     display:inline;
     border-radius: 20px;
-    padding: 5px 0px;
     text-align: center;
     margin: 20px;   
 }
@@ -116,8 +115,8 @@ nav ul li {
 nav {
     text-align:center;
     margin:auto;
+    padding: 5px 0px;
 }
-
 
 @media (max-width: 1000px){
     
@@ -211,7 +210,47 @@ nav {
     background-size: cover;
     }
     
-    h1 {    
+    h1 {
+    margin:auto;
+    padding: 10px;
+    font-size: 65px;
+    border-bottom: 5px double red;
+    border-top: 5px double red;
+    width:300px;    
+    font-size: 60px;
+    text-align: center;
+    color: #b30000;
+    font-family: 'federant', serif;
+    letter-spacing: 2px;
+    text-shadow: 2px 3px 3px dodgerblue;
+    text-shadow:
+       1px 1px 0 dodgerblue,
+      -1px -1px 0 dodgerblue,  
+       1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
+    }
+
+    h2{
+    line-height: 1.6;
+    font-size: 35px;
+    font-family: 'federant', serif;
+    font-style:italic;
+    margin:auto;
+    padding:0px;
+    color: white;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+    } 
+    
+    .Name {
+    margin:auto;
+    font-size: 65px;
+    width:300px;    
     font-size: 60px;
     text-align: center;
     color: #b30000;
@@ -226,21 +265,6 @@ nav {
        1px 1px 0 white;
     
     }
-    
-    h2{
-    font-size: 35px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    padding:20px;
-    color: white;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    } 
 }
 
 
@@ -313,6 +337,7 @@ nav {
     }
     
     h2{
+    line-height: 1.6;
     font-size: 25px;
     padding-top: 10px;
     font-family: 'federant', serif;
@@ -579,7 +604,7 @@ input[type=submit]:hover {
     background-color: #059;
     width: 600px;
     max-width: 90%;
-    margin: auto;
+    margin: 50px auto;
 }
 
 #service{
@@ -609,8 +634,6 @@ input[type=submit]:hover {
 .gallery2 h2{
     margin-top: 50px;
     font-size: 35px;
-    border-bottom: 5px double red;
-    border-top: 5px double red;
     padding:20px;
     width:350px;
     text-decoration: underline
@@ -621,10 +644,6 @@ input[type=submit]:hover {
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
-}
-
-.gallery2 h1{
-    font-size: 65px;
 }
 
 .resume a{
