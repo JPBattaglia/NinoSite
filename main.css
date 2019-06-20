@@ -38,7 +38,7 @@ article img:hover{
 .navicon1 {
     width: 30px;
     height: 6px;
-    background-color: darkseagreen;
+    background-color: seagreen;
     margin: 6px 0;
 }
 
@@ -352,6 +352,26 @@ nav {
        1px 1px 0 red;
     }
     
+    .Name {
+    margin:100px auto 0px;
+    font-size: 65px;
+    width:300px;    
+    font-size: 60px;
+    text-align: center;
+    color: #b30000;
+    font-family: 'federant', serif;
+    letter-spacing: 2px;
+    text-decoration: underline;
+    text-shadow: 2px 3px 3px dodgerblue;
+    text-shadow:
+       1px 1px 0 dodgerblue,
+      -1px -1px 0 dodgerblue,  
+       1px -1px 0 white,
+      -1px 1px 0 white,
+       1px 1px 0 white;
+    
+    }
+    
     .resumemobile a{
     margin:auto;
     max-width: 100%;
@@ -426,17 +446,17 @@ nav li a:link {
     border:  5px double black;
     padding: 5px 25px;
     border-radius: 20px;
-    -webkit-transition: background-color, font-color .5s ease-out;
-    -moz-transition: background-color, font-color .5s ease-out;
-    -o-transition: background-color, font-color .5s ease-out;
-    transition: font-color, background-color .5s ease-out;
+    -webkit-transition: background-color, font-color .8s ease-out;
+    -moz-transition: background-color, font-color .8s ease-out;
+    -o-transition: background-color, font-color .8s ease-out;
+    transition: font-color, background-color .8s ease-out;
 }
 
 /* mouse over link */
 nav li a:hover{
     color:white;
-    border-radius: 20px;
-    background-color: #039;
+    border-radius: 30px;
+    background-color: #038;
     text-shadow:
        1px 1px 0 red,
       -1px -1px 0 red,  
@@ -634,7 +654,7 @@ input[type=submit]:hover {
 .gallery2 h2{
     margin-top: 50px;
     font-size: 35px;
-    padding:20px;
+    padding:10px;
     width:350px;
     text-decoration: underline
     max-width: 100%;
