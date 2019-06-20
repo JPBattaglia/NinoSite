@@ -163,7 +163,7 @@ nav {
        2px 1px 0 red;
 }
 
-@media (min-width: 824px) {
+@media (min-width: 851px) {
   .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile, .resume{
     display:none;      
   }
@@ -268,7 +268,7 @@ nav {
 }
 
 
-@media (max-width: 825px) {
+@media (max-width: 850px) {
   nav, .resume, .intro, #intro, .resumemobile {
     display:none;
     }
