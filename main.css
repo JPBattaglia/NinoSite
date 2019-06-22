@@ -167,9 +167,9 @@ nav {
   .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile, .resume{
     display:none;      
   }
-    .intro {
+    .intro{
         width: 800px;
-        margin: 200px auto;
+        margin: 200px auto 50px;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
@@ -441,7 +441,7 @@ a:hover img{
 }
 
 /* unvisited link */
-nav li a:link {
+btn, nav li a:link {
     color: dodgerblue;
     border:  5px double black;
     padding: 5px 25px;
@@ -572,6 +572,8 @@ textarea, input, select{
 
 /* Style inputs with type="text", select elements and textareas */
 input[type=text], select, textarea {
+    margin: auto;
+    text-align: center;
     width: 100%; /* Full width */
     padding: 5px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
@@ -584,6 +586,8 @@ input[type=text], select, textarea {
 
 /* Style the submit button with a specific background color etc */
 input[type=submit] {
+    margin: auto;
+    text-align: center;
     font-size: 22px;
     background-color: red;
     color: white;
@@ -606,8 +610,10 @@ input[type=submit] {
 
 /* When moving the mouse over the submit button, add a blue color */
 input[type=submit]:hover {
+    margin: auto;
+    text-align: center;
     border: 1px solid white;
-    background-color: dodgerblue;
+    background-color: green;
     border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
@@ -728,6 +734,34 @@ input[type=submit]:hover {
     color:white;    
 }
 
+#Btn{
+    margin: 30px auto;
+    color:white;
+    padding: 5px 30px;
+    background: black;
+    font-family: 'federant';
+    font-size: 25px;
+    border: 3px double red;
+    border-radius: 35px;    
+}
+
+#Btn:hover{
+    margin: 30px auto;
+    cursor: pointer;
+    color:white;
+    padding: 5px 30px;
+    background: dodgerblue;
+    font-family: 'federant';
+    font-size: 25px;
+    border: 3px double red;
+    border-radius: 35px;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+}
 #myBtn:hover {
     border-color: dodgerblue;
     background: url("bluearrow1.png");
@@ -767,7 +801,50 @@ footer{
          }
 
 
+/* The Modal (background) */
+.modal {
+  margin: auto;
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.modal-content {
+  background-color: dodgerblue;
+  margin: auto;
+  padding: 20px;
+  border: 3px solid white;
+  width: 30%;
+  border-radius: 30px;
+}
+
+.modal-content:link{
+  margin:auto;
+}
+
+/* The Close Button */
+.close1 {
+  color: white;
+  float: right;
+  font-size: 45px;
+  font-weight: bold;
+}
+
+.close1:hover,
+.close1:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
+}
 
 
 .modalDialog {
