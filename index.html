@@ -10,7 +10,8 @@
         <meta name="description" content="An interactive portfolio.">
         <link rel="stylesheet" href="main.css">
         <link rel="shortcut icon" type="image/png" href="logo1.png">
-        <link href="https://fonts.googleapis.com/css?family=Federant|Akronim|Kaushan+Script|Fugaz+One|Quintessential" rel="stylesheet">   
+        <link href="https://fonts.googleapis.com/css?family=Federant|Akronim|Kaushan+Script|Fugaz+One|Quintessential" rel="stylesheet"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     
     <body id="animated-example" class="animated fadeOut">
@@ -73,7 +74,7 @@
         
         <header class=vid>
             
-            <h1> Batt Bros </h1>
+            <h5 class="Name"> Batt Bros </h5>
             <h2 class="slogan">~DeFine DeSign~</h2><br>
             
         </header> 
@@ -92,6 +93,56 @@
         <p>Scroll through the <a href="services.html">Services</a> page for a list of what we offer and then feel free to contact us with any questions through our <a href="contact.html">Contact</a> page. </p><br>
             
         </aside>
+
+
+<!-- Trigger/Open The Modal -->
+<button id="Btn">Subscribe To Newsletter</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close1">&times;</span><br>
+    <form action="//formspree.io/thenino69@gmail.com" method="POST">
+
+                 <label for="fname">Full Name:</label><br>
+                 <input type="text" id="fname" name="fname" placeholder="Your Full Name..."><br>
+                 <label for="email_address">Email:</label><br>
+                 <input type="text" id="email_address" name="email_address" placeholder="Your email..."><br>
+                 <input type="submit" value="Submit">
+                </form>
+  </div>
+
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("Btn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close1")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
         
         
         <section id="gallery">
