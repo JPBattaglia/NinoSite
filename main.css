@@ -175,13 +175,12 @@ nav {
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-
     }
     
     #myBtn{
         margin-right: 30px;
     }
-    
+ 
     footer{
         margin: 0px 100px;
     }
@@ -294,6 +293,12 @@ nav {
     
     .iconright{
         display:none;
+        
+    }
+    .newsletter{
+    text-align: center;
+    padding-bottom: 100px;
+    border-bottom: 5px double red;
     }
     
     header img{
@@ -613,7 +618,7 @@ input[type=submit]:hover {
     margin: auto;
     text-align: center;
     border: 1px solid white;
-    background-color: green;
+    background-color: dodgerblue;
     border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
@@ -739,7 +744,7 @@ input[type=submit]:hover {
 #Btn{
     margin: 30px auto;
     color: dodgerblue;
-    padding: 5px 30px;
+    padding: 8px 30px;
     background: black;
     font-family: 'federant';
     font-size: 22px;
@@ -755,7 +760,7 @@ input[type=submit]:hover {
     margin: 30px auto;
     cursor: pointer;
     color:white;
-    padding: 5px 30px;
+    padding: 8px 30px;
     background: #039;
     font-family: 'federant';
     font-size: 22px;
@@ -842,15 +847,15 @@ footer{
 	margin: 10% auto;
 	padding: 1px 5px 1px 5px;
 	border-radius: 10px;
-	background: #000;
 	background: -moz-linear-gradient(#009, darkred);
-	background: -webkit-linear-gradient(#800000, #000, #005);
+	background: -webkit-linear-gradient(darkred, maroon, #007, #038);
     border: black double 6px;
     max-width:100%;
 }
 
 .close { 
-	background: red;
+    font-family: 'federant';
+	background: dodgerblue;
     border: 1px solid white;
 	color: #fff;
 	line-height: 29px;
@@ -868,14 +873,20 @@ footer{
 	-moz-box-shadow: 1px 1px 3px #000;
 	-webkit-box-shadow: 1px 1px 3px #000;
 	box-shadow: 1px 1px 3px #000;
-}
-
-.close:hover { 
-    background: dodgerblue;
     text-shadow:
        1px 1px 0 red,
       -1px -1px 0 red,  
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
+}
+
+.close:hover { 
+    background: red;
+    text-shadow:
+       1px 1px 0 black,
+      -1px -1px 0 black,  
+       1px -1px 0 black,
+      -1px 1px 0 black,
+       1px 1px 0 black;
 }
