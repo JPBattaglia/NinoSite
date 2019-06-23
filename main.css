@@ -733,16 +733,23 @@ input[type=submit]:hover {
     text-align: center;
     color:white;    
 }
+.newsletter{
+    text-align: center;
+}
 
 #Btn{
     margin: 30px auto;
-    color:white;
+    color: dodgerblue;
     padding: 5px 30px;
     background: black;
     font-family: 'federant';
-    font-size: 25px;
-    border: 3px double red;
-    border-radius: 35px;    
+    font-size: 22px;
+    border: 5px double red;
+    border-radius: 35px;
+    -webkit-transition: background-color .8s ease-out;
+    -moz-transition: background-color .8s ease-out;
+    -o-transition: background-color .8s ease-out;
+    transition: background-color .8s ease-out;
 }
 
 #Btn:hover{
@@ -750,10 +757,10 @@ input[type=submit]:hover {
     cursor: pointer;
     color:white;
     padding: 5px 30px;
-    background: dodgerblue;
+    background: #039;
     font-family: 'federant';
-    font-size: 25px;
-    border: 3px double red;
+    font-size: 22px;
+    border: 5px double red;
     border-radius: 35px;
     text-shadow:
        1px 1px 0 red,
@@ -761,6 +768,10 @@ input[type=submit]:hover {
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
+    -webkit-transition: background-color 1s ease-out;
+    -moz-transition: background-color 1s ease-out;
+    -o-transition: background-color 1s ease-out;
+    transition: background-color 1s ease-out;
 }
 #myBtn:hover {
     border-color: dodgerblue;
