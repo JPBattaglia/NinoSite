@@ -125,10 +125,8 @@ nav {
     }
 }
 
-#intro {
-    margin:auto;
-    max-width: 50%;
-    
+#intro img{
+    margin: 50px auto 0px;
 }
 
 .servgif{
@@ -169,7 +167,7 @@ nav {
   }
     .intro{
         width: 800px;
-        margin: 200px auto 50px;
+        margin: 100px auto 50px;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
@@ -580,12 +578,12 @@ input[type=text], select, textarea {
     margin: auto;
     text-align: center;
     width: 90%; /* Full width */
-    padding: 5px; /* Some padding */  
+    padding: 8px; /* Some padding */  
     border: 2px solid #b30; /* Gray border */
     border-radius: 20px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
     margin-top: 6px; /* Add a top margin */
-    margin-bottom: 16px; /* Bottom margin */
+    margin-bottom: 40px; /* Bottom margin */
     resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
 }
 
@@ -594,7 +592,7 @@ input[type=submit] {
     margin: auto;
     text-align: center;
     font-size: 22px;
-    background-color: red;
+    background-color: dodgerblue;
     color: white;
     padding: 8px 30px;
     border: 1px solid white;
@@ -618,7 +616,7 @@ input[type=submit]:hover {
     margin: auto;
     text-align: center;
     border: 1px solid white;
-    background-color: dodgerblue;
+    background-color: red;
     border-radius: 25px;
     text-shadow:
        1px 1px 0 black,
@@ -631,10 +629,10 @@ input[type=submit]:hover {
 /* Add a background color and some padding around the form */
 .container{
     border-radius: 15px;
-    padding: 30px 20px;
+    padding: 20px 0px;
     background-color: #059;
     width: 600px;
-    max-width: 90%;
+    max-width: 100%;
     margin: 50px auto;
 }
 
@@ -783,7 +781,7 @@ input[type=submit]:hover {
 }
 
 form{
-    margin: auto;
+    margin: 30px auto;
     text-align: center;
 }
 
@@ -823,7 +821,7 @@ footer{
 
 .modalDialog {
 	position: fixed;
-	top: 0;
+	top: 0px;
 	right: 0;
 	bottom: 0;
 	left: 0;
@@ -842,7 +840,7 @@ footer{
 }
 
 .modalDialog > div {
-	width: 285px;
+	width: 300px;
 	position: relative;
 	margin: 10% auto;
 	padding: 1px 5px 1px 5px;
@@ -855,21 +853,22 @@ footer{
 
 .close { 
     font-family: 'federant';
-	background: dodgerblue;
-    border: 1px solid white;
-	color: #fff;
+	background: black;
+    border: 1px solid red;
+	color: black;
 	line-height: 29px;
 	position: absolute;
 	right: -12px;
 	text-align: center;
 	top: -10px;
-	width: 28px;
+	width: 30px;
+    padding:3px;
 	text-decoration: none;
 	font-weight: bold;
     font-size: 22px;
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
-	border-radius: 16px;
+	border-radius: 20px;
 	-moz-box-shadow: 1px 1px 3px #000;
 	-webkit-box-shadow: 1px 1px 3px #000;
 	box-shadow: 1px 1px 3px #000;
@@ -882,6 +881,8 @@ footer{
 }
 
 .close:hover { 
+    color: white;
+    border: 1px solid white;
     background: red;
     text-shadow:
        1px 1px 0 black,
@@ -889,4 +890,8 @@ footer{
        1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
+    -webkit-transition: background-color .6s ease-out;
+    -moz-transition: background-color .6s ease-out;
+    -o-transition: background-color .6s ease-out;
+    transition: background-color .6s ease-out;
 }
