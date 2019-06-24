@@ -209,11 +209,11 @@ nav {
     
     h1 {
     margin:auto;
-    padding: 10px;
+    padding: 5px;
     font-size: 65px;
     border-bottom: 5px double red;
     border-top: 5px double red;
-    width:300px;    
+    width:302px;    
     font-size: 60px;
     text-align: center;
     color: #b30000;
@@ -583,7 +583,7 @@ input[type=text], select, textarea {
     border-radius: 20px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
     margin-top: 6px; /* Add a top margin */
-    margin-bottom: 40px; /* Bottom margin */
+    margin-bottom: 30px; /* Bottom margin */
     resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
 }
 
@@ -631,7 +631,7 @@ input[type=submit]:hover {
     border-radius: 15px;
     padding: 20px 0px;
     background-color: #059;
-    width: 600px;
+    width: 650px;
     max-width: 100%;
     margin: 50px auto;
 }
@@ -708,7 +708,6 @@ input[type=submit]:hover {
 
 #form {
     padding:30px 0px 40px;
-    margin: 5px;
 }
 
 #myBtn{
