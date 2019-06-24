@@ -853,43 +853,42 @@ footer{
 
 .close { 
     font-family: 'federant';
-	background: black;
-    border: 1px solid red;
-	color: black;
+	background: red;
+    border: 1px solid white;
+	color: white;
 	line-height: 29px;
 	position: absolute;
 	right: -12px;
 	text-align: center;
 	top: -10px;
 	width: 30px;
-    padding:3px;
 	text-decoration: none;
 	font-weight: bold;
     font-size: 22px;
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
-	border-radius: 20px;
+	border-radius: 25px;
 	-moz-box-shadow: 1px 1px 3px #000;
 	-webkit-box-shadow: 1px 1px 3px #000;
 	box-shadow: 1px 1px 3px #000;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-.close:hover { 
-    color: white;
-    border: 1px solid white;
-    background: red;
     text-shadow:
        1px 1px 0 black,
       -1px -1px 0 black,  
        1px -1px 0 black,
       -1px 1px 0 black,
        1px 1px 0 black;
+}
+
+.close:hover { 
+    color: black;
+    border: 1px solid red;
+    background: black;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
     -webkit-transition: background-color .6s ease-out;
     -moz-transition: background-color .6s ease-out;
     -o-transition: background-color .6s ease-out;
