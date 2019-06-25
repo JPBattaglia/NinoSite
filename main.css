@@ -129,10 +129,6 @@ nav {
     margin: 50px auto 0px;
 }
 
-.servgif{
-    margin-bottom: 20px;
-}
-
 .servicelist {
     width:65%;
     text-align: center;
@@ -146,7 +142,7 @@ nav {
 }
 
 .servicelist th{
-    padding: 5px;
+    padding: 8px ;
     border-top: 5px double red;
     border-bottom: 5px double red;
     font-size: 35px;
@@ -162,7 +158,7 @@ nav {
 }
 
 @media (min-width: 851px) {
-  .navicon, .navicon1, .navicon2, .navicon3,#gallery, .resumemobile, .slogan, #services, .intromobile, .resume{
+  .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile {
     display:none;      
   }
     .intro{
@@ -191,22 +187,6 @@ nav {
     border-radius: 12px;
     }
 
-    
-    #background {
-    position:absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100ß%;
-    width: auto;
-    height: auto;
-    z-index: -100;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-    background: url(logo5.jpeg) no-repeat;
-    background-size: cover;
-    }
-    
     h1 {
     margin:auto;
     padding: 5px;
@@ -266,7 +246,7 @@ nav {
 
 
 @media (max-width: 850px) {
-  nav, .resume, .intro, #intro, .resumemobile {
+  nav, .resume, .intro, #intro, .resumemobile, .iconright {
     display:none;
     }
     
@@ -289,22 +269,10 @@ nav {
         padding: 20px 0px;
     }
     
-    .iconright{
-        display:none;
-        
-    }
     .newsletter{
     text-align: center;
     padding-bottom: 100px;
     border-bottom: 5px double red;
-    }
-    
-    header img{
-        max-width: 100%;
-        margin:auto;
-        margin-top: 20px;
-        border: 1px solid white;
-        border-radius: 8px;   
     }
     
     article img{
@@ -315,10 +283,6 @@ nav {
     .slogan{
         margin-top: 50px;
         font-size: 28px
-    }
-    
-    iframe{
-        width:auto;
     }
     
     h1 {
@@ -375,42 +339,10 @@ nav {
     
     }
     
-    .resumemobile a{
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-    color: white;
-    font-family: 'federant', serif;
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 30px;
-    padding: 8px;
-    display: block;
-    width: 245px;
-    font-weight:bolder;
-    background-color: #039;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    }
-    
-    .resumemobile a:hover{
-        text-shadow: none;
-        color: dodgerblue;
-        background-color: black;
-    }
-    
     header h4{
         font-size: 28px;
         font-family: 'federant';
         color: #159;
-    }
-    
-    .banner, .servgif{
-        margin: 100px auto;
     }
 }
 
@@ -444,7 +376,7 @@ a:hover img{
 }
 
 /* unvisited link */
-btn, nav li a:link {
+nav li a:link {
     color: dodgerblue;
     border:  5px double black;
     padding: 5px 25px;
@@ -636,11 +568,6 @@ input[type=submit]:hover {
     margin: 50px auto;
 }
 
-#service{
-    width:70%;
-    font-size: 20px
-}
-
 #gallery img{
     max-width: 100%;
     margin: 100px 0px 15px;
@@ -667,37 +594,6 @@ input[type=submit]:hover {
     width:350px;
     text-decoration: underline
     max-width: 100%;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-.resume a{
-    margin:auto;
-    max-width: 100%;
-    text-align: center;
-    color: dodgerblue;
-    font-family: 'federant', serif;
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 30px;
-    padding: 10px;
-    display: block;
-    width: 375px;
-    font-weight:bolder;
-    -webkit-transition: background-color .5s ease-out;
-    -moz-transition: background-color .5s ease-out;
-    -o-transition: background-color .5s ease-out;
-    transition: background-color .5s ease-out;
-}
-
-.resume a:hover{
-    color:white;
-    background-color: #039;
-    border-radius: 30px;
     text-shadow:
        1px 1px 0 red,
       -1px -1px 0 red,  
@@ -741,7 +637,7 @@ input[type=submit]:hover {
 #Btn{
     margin: 30px auto;
     color: dodgerblue;
-    padding: 8px 30px;
+    padding: 8px 20px;
     background: black;
     font-family: 'federant';
     font-size: 22px;
@@ -757,7 +653,7 @@ input[type=submit]:hover {
     margin: 30px auto;
     cursor: pointer;
     color:white;
-    padding: 8px 30px;
+    padding: 8px 20px;
     background: #039;
     font-family: 'federant';
     font-size: 22px;
