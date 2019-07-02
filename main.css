@@ -484,12 +484,24 @@ header{
     padding-top: 70px;
 }
 
-textarea, input, select{
+textarea, input{
     font-family: 'federant', serif;
     color:red;
     text-align: center;
     font-size: 18px;
     font-weight:bolder;
+    max-width: 500px;
+}
+
+select{
+    font-family: 'federant', serif;
+    color:red;
+    text-align: center;
+    font-size: 18px;
+    font-weight:bolder;
+    max-width: 300px;
+    border: 3px solid red;
+    border-radius: 35px;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
