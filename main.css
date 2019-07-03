@@ -174,7 +174,7 @@ nav {
     #myBtn{
         margin-right: 30px;
     }
- 
+     
     footer{
         margin: 0px 100px;
     }
@@ -242,11 +242,67 @@ nav {
        1px 1px 0 white;
     
     }
+    
+    #Btn{
+    margin: 30px auto;
+    color: white;
+    padding: 8px 20px;
+    background: #003cb3;
+    font-family: 'federant';
+    font-size: 22px;
+    border: 3px double black;
+    border-radius: 35px;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+    }
+    
+    #Btn:hover{
+    margin: 30px auto;
+    color: white;
+    padding: 8px 20px;
+    background: #003cb3;
+    font-family: 'federant';
+    font-size: 22px;
+    border: 3px double black;
+    border-radius: 35px;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+}
+
+    #Btn{
+        margin: 30px auto;
+        cursor: pointer;
+        color: white;
+        padding: 8px 20px;
+        background: #038;
+        font-family: 'federant';
+        font-size: 22px;
+        border: 3px double black;
+        border-radius: 35px;
+        text-shadow:
+           1px 1px 0 black,
+          -1px -1px 0 black,  
+           1px -1px 0 black,
+          -1px 1px 0 black,
+           1px 1px 0 black;
+        -webkit-transition: background-color .8s ease-out;
+        -moz-transition: background-color .8s ease-out;
+        -o-transition: background-color .8s ease-out;
+        transition: background-color .8s ease-out;
+    }
 }
 
 
 @media (max-width: 850px) {
-  nav, .resume, .intro, #intro, .resumemobile, .iconright {
+  nav, .intro, #intro, .iconright {
     display:none;
     }
     
@@ -343,6 +399,23 @@ nav {
         font-size: 28px;
         font-family: 'federant';
         color: #159;
+    }
+    
+    #Btn{
+    margin: 30px auto;
+    color: white;
+    padding: 8px 20px;
+    background: #038;
+    font-family: 'federant';
+    font-size: 22px;
+    border: 5px double red;
+    border-radius: 35px;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
     }
 }
 
@@ -572,7 +645,8 @@ input[type=submit]:hover {
 
 /* Add a background color and some padding around the form */
 .container{
-    border-radius: 15px;
+    border-radius: 25px;
+    border: 8px double black;
     padding: 20px 0px;
     background-color: #059;
     width: 650px;
@@ -646,42 +720,6 @@ input[type=submit]:hover {
     text-align: center;
 }
 
-#Btn{
-    margin: 30px auto;
-    color: dodgerblue;
-    padding: 8px 20px;
-    background: black;
-    font-family: 'federant';
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 35px;
-    -webkit-transition: background-color .8s ease-out;
-    -moz-transition: background-color .8s ease-out;
-    -o-transition: background-color .8s ease-out;
-    transition: background-color .8s ease-out;
-}
-
-#Btn:hover{
-    margin: 30px auto;
-    cursor: pointer;
-    color:white;
-    padding: 8px 20px;
-    background: #039;
-    font-family: 'federant';
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 35px;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    -webkit-transition: background-color 1s ease-out;
-    -moz-transition: background-color 1s ease-out;
-    -o-transition: background-color 1s ease-out;
-    transition: background-color 1s ease-out;
-}
 #myBtn:hover {
     border-color: dodgerblue;
     background: url("bluearrow1.png");
