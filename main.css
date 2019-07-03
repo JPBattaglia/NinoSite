@@ -650,7 +650,7 @@ input[type=submit]:hover {
     padding: 20px 0px;
     background-color: #059;
     width: 650px;
-    max-width: 100%;
+    max-width: 95%;
     margin: 50px auto;
 }
 
