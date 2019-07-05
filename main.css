@@ -3,6 +3,13 @@ html{
     overflow:auto;
 }
 
+@media only screen and (orientation:landscape){
+  body {
+    height: 100vw;
+    transform: rotate(90deg);
+  }
+}
+
 article img{
     float: left;
     max-width: 100%;
@@ -436,6 +443,7 @@ nav {
 	margin: 10% auto;
 	padding: 1px 5px 1px 5px;
 	border-radius: 10px;
+    border: 1px solid red;
 	background: -moz-radial-gradient(#009, darkred);
 	background: -webkit-radial-gradient( black, #002, #007);
     max-width:100%;
