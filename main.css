@@ -3,13 +3,6 @@ html{
     overflow:auto;
 }
 
-@media only screen and (orientation:portrait){
-  body {
-    height: 100vw;
-    transform: rotate(0deg);
-  }
-}
-
 article img{
     float: left;
     max-width: 100%;
@@ -164,10 +157,13 @@ nav {
        2px 1px 0 red;
 }
 
+
+
 @media (min-width: 851px) {
   .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile {
     display:none;      
   }
+    
     .intro{
         width: 800px;
         margin: 100px auto 50px;
@@ -323,6 +319,13 @@ nav {
 @media (max-width: 850px) {
   nav, .intro, #intro, .iconright {
     display:none;
+    }
+    
+    @media only screen and (orientation:landscape){
+      body {
+        height: 100vw;
+        transform: rotate(90deg);
+      }
     }
     
     .intromobile{
