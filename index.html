@@ -22,9 +22,13 @@
     </head>
     
     <body id="animated-example" class="animated fadeOut">
+	    
+	<script>if(window.innerHeight > window.innerWidth){
+    document.getElementsByTagName("body")[0].style.transform = "rotate(90deg)";
+	}</script>
         
         <script>window.addEventListener("beforeunload", function () {
-  document.body.classList.add("animate-out");
+    document.body.classList.add("animate-out");
             });</script>
 
 
