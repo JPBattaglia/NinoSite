@@ -298,6 +298,18 @@ nav {
         -o-transition: background-color .8s ease-out;
         transition: background-color .8s ease-out;
     }
+    
+    .modalDialog > div {
+	width: 350px;
+	position:relative;
+	margin: 20px auto;
+	padding: 1px 50px 1px 50px;
+	border-radius: 10px;
+	background: -moz-radial-gradient(#009, darkred);
+	background: -webkit-radial-gradient( black, #002, #004);
+    border: white double 3px;
+    max-width:100%;
+    }
 }
 
 
@@ -416,6 +428,17 @@ nav {
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
+    }
+    
+    .modalDialog > div {
+	width: 300px;
+	position: relative;
+	margin: 10% auto;
+	padding: 1px 5px 1px 5px;
+	border-radius: 10px;
+	background: -moz-radial-gradient(#009, darkred);
+	background: -webkit-radial-gradient( black, #002, #007);
+    max-width:100%;
     }
 }
 
@@ -767,9 +790,9 @@ footer{
 .modalDialog {
 	position: fixed;
 	top: 0px;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
 	background: rgba(0,0,0,0.8);
 	z-index: 99999;
 	opacity:0;
@@ -780,20 +803,8 @@ footer{
 }
 
 .modalDialog:target {
-	opacity:1;
+	opacity: 1;
 	pointer-events: auto;
-}
-
-.modalDialog > div {
-	width: 300px;
-	position: relative;
-	margin: 10% auto;
-	padding: 1px 5px 1px 5px;
-	border-radius: 10px;
-	background: -moz-linear-gradient(#009, darkred);
-	background: -webkit-linear-gradient(darkred, maroon, #007, #038);
-    border: black double 6px;
-    max-width:100%;
 }
 
 .close { 
