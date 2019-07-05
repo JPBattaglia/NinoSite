@@ -115,7 +115,7 @@ nav ul li {
 nav {
     text-align:center;
     margin:auto;
-    padding: 5px 0px;
+    padding: 5px 25px;
 }
 
 @media (max-width: 1000px){
@@ -300,14 +300,14 @@ nav {
     }
     
     .modalDialog > div {
-	width: 350px;
-	position:relative;
-	margin: 20px auto;
-	padding: 1px 50px 1px 50px;
+	width: 380px;
+	position: relative;
+	margin: 15px auto;
+	padding: 1px 100px 1px 100px;
 	border-radius: 10px;
 	background: -moz-radial-gradient(#009, darkred);
 	background: -webkit-radial-gradient( black, #002, #004);
-    border: white double 3px;
+    border: red double .5px;
     max-width:100%;
     }
 }
@@ -549,7 +549,21 @@ a:hover{
     color: white;
 }
 
-footer, label, section{
+footer, section{
+    text-align: center;
+    font-family:'federant', serif;
+    color:white;
+    list-style-type: none;
+    text-shadow:
+       1px 1px 0 red,
+      -1px -1px 0 red,  
+       1px -1px 0 red,
+      -1px 1px 0 red,
+       1px 1px 0 red;
+}
+
+label{
+    font-size: 25px;
     text-align: center;
     font-family:'federant', serif;
     color:white;
@@ -619,10 +633,10 @@ input[type=text], select, textarea {
     text-align: center;
     width: 90%; /* Full width */
     padding: 8px; /* Some padding */  
-    border: 2px solid #b30; /* Gray border */
+    border: 1.5px solid red; /* Gray border */
     border-radius: 20px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
-    margin-top: 6px; /* Add a top margin */
+    margin-top: 10px; /* Add a top margin */
     margin-bottom: 30px; /* Bottom margin */
     resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
 }
@@ -671,7 +685,7 @@ input[type=submit]:hover {
     border-radius: 25px;
     border: 8px double black;
     padding: 20px 0px;
-    background-color: #059;
+    background-color: #049;
     width: 650px;
     max-width: 95%;
     margin: 50px auto;
@@ -788,7 +802,8 @@ footer{
 
 
 .modalDialog {
-	position: fixed;
+    margin: auto;
+	position:fixed;
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
@@ -845,8 +860,8 @@ footer{
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
-    -webkit-transition: background-color .6s ease-out;
-    -moz-transition: background-color .6s ease-out;
-    -o-transition: background-color .6s ease-out;
-    transition: background-color .6s ease-out;
+    -webkit-transition: background-color 1s ease-out;
+    -moz-transition: background-color 1s ease-out;
+    -o-transition: background-color 1s ease-out;
+    transition: background-color 1s ease-out;
 }
