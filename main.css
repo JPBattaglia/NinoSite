@@ -321,13 +321,6 @@ nav {
     display:none;
     }
     
-    @media only screen and (orientation:landscape){
-      body {
-        height: 100vw;
-        transform: rotate(-90deg);
-      }
-    }
-    
     .intromobile{
         max-width: 95%;
         margin: 100px auto;
@@ -451,6 +444,18 @@ nav {
 	background: -webkit-radial-gradient( black, #002, #007);
     max-width:100%;
     }
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
 }
 
 a:hover img{
