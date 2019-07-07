@@ -442,7 +442,7 @@ nav {
     border: 1px solid red;
 	background: -moz-radial-gradient(#009, darkred);
 	background: -webkit-radial-gradient( black, #002, #007);
-    max-width:100%;
+    	max-width:100%;
     }
 }
 
