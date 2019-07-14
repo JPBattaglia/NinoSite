@@ -183,102 +183,102 @@ nav {
     }
     
     header img{
-    max-width: 100%;
-    margin: 20px;
-    margin:auto;
-    border: 2px double white;
-    border-radius: 12px;
-    }
+        max-width: 100%;
+        margin: 20px;
+        margin:auto;
+        border: 2px double white;
+        border-radius: 12px;
+        }
 
     h1 {
-    margin:auto;
-    padding: 5px;
-    font-size: 65px;
-    border-bottom: 5px double red;
-    border-top: 5px double red;
-    width:302px;    
-    font-size: 60px;
-    text-align: center;
-    color: #b30000;
-    font-family: 'federant', serif;
-    letter-spacing: 2px;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-      -1px -1px 0 dodgerblue,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    }
+        margin:auto;
+        padding: 5px;
+        font-size: 65px;
+        border-bottom: 5px double red;
+        border-top: 5px double red;
+        width:302px;    
+        font-size: 60px;
+        text-align: center;
+        color: #b30000;
+        font-family: 'federant', serif;
+        letter-spacing: 2px;
+        text-shadow: 2px 3px 3px dodgerblue;
+        text-shadow:
+           1px 1px 0 dodgerblue,
+          -1px -1px 0 dodgerblue,  
+           1px -1px 0 white,
+          -1px 1px 0 white,
+           1px 1px 0 white;
+        }
 
     h2{
-    line-height: 1.6;
-    font-size: 35px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    padding:0px;
-    color: white;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    } 
+        line-height: 1.6;
+        font-size: 35px;
+        font-family: 'federant', serif;
+        font-style:italic;
+        margin:auto;
+        padding:0px;
+        color: white;
+        text-shadow:
+           1px 1px 0 red,
+          -1px -1px 0 red,  
+           1px -1px 0 red,
+          -1px 1px 0 red,
+           1px 1px 0 red;
+        } 
     
     .Name {
-    margin:auto;
-    font-size: 65px;
-    width:300px;    
-    font-size: 60px;
-    text-align: center;
-    color: #b30000;
-    font-family: 'federant', serif;
-    letter-spacing: 2px;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-      -1px -1px 0 dodgerblue,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
-    }
+        margin:auto;
+        font-size: 65px;
+        width:300px;    
+        font-size: 60px;
+        text-align: center;
+        color: #b30000;
+        font-family: 'federant', serif;
+        letter-spacing: 2px;
+        text-shadow: 2px 3px 3px dodgerblue;
+        text-shadow:
+           1px 1px 0 dodgerblue,
+          -1px -1px 0 dodgerblue,  
+           1px -1px 0 white,
+          -1px 1px 0 white,
+           1px 1px 0 white;
+
+        }
     
     #Btn{
-    margin: 30px auto;
-    color: white;
-    padding: 8px 20px;
-    background: #003cb3;
-    font-family: 'federant';
-    font-size: 22px;
-    border: 3px double black;
-    border-radius: 35px;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    }
+        margin: 30px auto;
+        color: white;
+        padding: 8px 20px;
+        background: #003cb3;
+        font-family: 'federant';
+        font-size: 22px;
+        border: 3px double black;
+        border-radius: 35px;
+        text-shadow:
+           1px 1px 0 red,
+          -1px -1px 0 red,  
+           1px -1px 0 red,
+          -1px 1px 0 red,
+           1px 1px 0 red;
+        }
     
     #Btn:hover{
-    margin: 30px auto;
-    color: white;
-    padding: 8px 20px;
-    background: #003cb3;
-    font-family: 'federant';
-    font-size: 22px;
-    border: 3px double black;
-    border-radius: 35px;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
+        margin: 30px auto;
+        color: white;
+        padding: 8px 20px;
+        background: #003cb3;
+        font-family: 'federant';
+        font-size: 22px;
+        border: 3px double black;
+        border-radius: 35px;
+        text-shadow:
+           1px 1px 0 red,
+          -1px -1px 0 red,  
+           1px -1px 0 red,
+          -1px 1px 0 red,
+           1px 1px 0 red;
+        }
 
     #Btn{
         margin: 30px auto;
@@ -300,20 +300,24 @@ nav {
         -moz-transition: background-color .8s ease-out;
         -o-transition: background-color .8s ease-out;
         transition: background-color .8s ease-out;
-    }
+        }
     
     .modalDialog > div {
-	width: 380px;
-	position: relative;
-	margin: 15px auto;
-	padding: 1px 100px 1px 100px;
-	border-radius: 10px;
-	background: -moz-radial-gradient(#009, darkred);
-	background: -webkit-radial-gradient( black, #002, #004);
-    border: red double .5px;
-    max-width:100%;
+        width: 380px;
+        position: relative;
+        margin: 15px auto;
+        padding: 1px 100px 1px 100px;
+        border-radius: 10px;
+        background: -moz-radial-gradient(#009, darkred);
+        background: -webkit-radial-gradient( black, #002, #004);
+        border: red double .5px;
+        max-width:100%;
+        }
+    
+    #modalImg{
+        opacity: 1;
+        }
     }
-}
 
 
 @media (max-width: 850px) {
@@ -341,9 +345,9 @@ nav {
     }
     
     .newsletter{
-    text-align: center;
-    padding-bottom: 100px;
-    border-bottom: 5px double red;
+        text-align: center;
+        padding-bottom: 100px;
+        border-bottom: 5px double red;
     }
     
     article img{
@@ -357,57 +361,56 @@ nav {
     }
     
     h1 {
-    margin-top: 75px;    
-    font-size: 50px;
-    text-align: center;
-    color: #b30000;
-    font-family: 'Federant', serif;
-    letter-spacing: 3px;
-    text-decoration: underline;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-      -1px -1px 0 dodgerblue,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
+        margin-top: 75px;    
+        font-size: 50px;
+        text-align: center;
+        color: #b30000;
+        font-family: 'Federant', serif;
+        letter-spacing: 3px;
+        text-shadow: 2px 3px 3px dodgerblue;
+        text-shadow:
+           1px 1px 0 dodgerblue,
+          -1px -1px 0 dodgerblue,  
+           1px -1px 0 white,
+          -1px 1px 0 white,
+           1px 1px 0 white;
+
     }
     
     h2{
-    line-height: 1.6;
-    font-size: 25px;
-    padding-top: 10px;
-    font-family: 'federant', serif;
-    font-style:italic;
-    margin:auto;
-    color: white;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
+        line-height: 1.6;
+        font-size: 25px;
+        padding-top: 10px;
+        font-family: 'federant', serif;
+        font-style:italic;
+        margin:auto;
+        color: white;
+        text-shadow:
+           1px 1px 0 red,
+          -1px -1px 0 red,  
+           1px -1px 0 red,
+          -1px 1px 0 red,
+           1px 1px 0 red;
     }
     
     .Name {
-    margin:100px auto 0px;
-    font-size: 65px;
-    width:300px;    
-    font-size: 60px;
-    text-align: center;
-    color: #b30000;
-    font-family: 'federant', serif;
-    letter-spacing: 2px;
-    text-decoration: underline;
-    text-shadow: 2px 3px 3px dodgerblue;
-    text-shadow:
-       1px 1px 0 dodgerblue,
-      -1px -1px 0 dodgerblue,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-    
+        margin:100px auto 0px;
+        font-size: 65px;
+        width:300px;    
+        font-size: 60px;
+        text-align: center;
+        color: #b30000;
+        font-family: 'federant', serif;
+        letter-spacing: 2px;
+        text-decoration: underline;
+        text-shadow: 2px 3px 3px dodgerblue;
+        text-shadow:
+           1px 1px 0 dodgerblue,
+          -1px -1px 0 dodgerblue,  
+           1px -1px 0 white,
+          -1px 1px 0 white,
+           1px 1px 0 white;
+
     }
     
     header h4{
@@ -417,32 +420,32 @@ nav {
     }
     
     #Btn{
-    margin: 30px auto;
-    color: white;
-    padding: 8px 20px;
-    background: #038;
-    font-family: 'federant';
-    font-size: 22px;
-    border: 5px double red;
-    border-radius: 35px;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
+        margin: 30px auto;
+        color: white;
+        padding: 8px 20px;
+        background: #038;
+        font-family: 'federant';
+        font-size: 22px;
+        border: 5px double red;
+        border-radius: 35px;
+        text-shadow:
+           1px 1px 0 red,
+          -1px -1px 0 red,  
+           1px -1px 0 red,
+          -1px 1px 0 red,
+           1px 1px 0 red;
     }
     
     .modalDialog > div {
-	width: 300px;
-	position: relative;
-	margin: 10% auto;
-	padding: 1px 5px 1px 5px;
-	border-radius: 10px;
-    border: 1px solid red;
-	background: -moz-radial-gradient(#009, darkred);
-	background: -webkit-radial-gradient( black, #002, #007);
-    	max-width:100%;
+        width: 300px;
+        position: relative;
+        margin: 10% auto;
+        padding: 1px 5px 1px 5px;
+        border-radius: 10px;
+        border: 1px solid red;
+        background: -moz-radial-gradient(#003, #009);
+        background: -webkit-radial-gradient( black, #002, #007);
+        max-width:100%;
     }
 }
 
@@ -654,9 +657,9 @@ input[type=submit] {
     color: white;
     padding: 8px 30px;
     border: 1px solid white;
-    border-radius: 4px;
     cursor: pointer;
     border-radius: 25px;
+    box-shadow: 5px 10px 20px black;
     text-shadow:
        1px 1px 0 black,
       -1px -1px 0 black,  
@@ -689,7 +692,7 @@ input[type=submit]:hover {
     border-radius: 25px;
     border: 8px double black;
     padding: 20px 0px;
-    background-color: #049;
+    background-color: #038;
     width: 650px;
     max-width: 95%;
     margin: 50px auto;
@@ -700,10 +703,14 @@ input[type=submit]:hover {
     margin: 100px 0px 15px;
 }
 
-#gallery2 img{
+.projects img{
     max-width: 100%;
     margin: 100px 0px 15px;
     opacity: .7;
+}
+
+#modalImg{
+    margin: 75px auto 0px;
 }
 
 #gallery, #gallery2{
