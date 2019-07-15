@@ -56,7 +56,7 @@ article img:hover{
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: darkred;
+    background-color: #800;
     overflow-x: hidden;
     transition: 1s;
     padding-top: 100px;
@@ -317,7 +317,12 @@ nav {
     #modalImg{
         opacity: 1;
         }
+    
+        #gallery img{
+        max-width: 100%;
+        margin: 100px 0px 15px;
     }
+}
 
 
 @media (max-width: 850px) {
@@ -439,13 +444,18 @@ nav {
     .modalDialog > div {
         width: 300px;
         position: relative;
-        margin: 10% auto;
+        margin: 5% auto;
         padding: 1px 5px 1px 5px;
         border-radius: 10px;
         border: 1px solid red;
         background: -moz-radial-gradient(#003, #009);
         background: -webkit-radial-gradient( black, #002, #007);
         max-width:100%;
+    }
+    
+    #gallery img{
+    max-width: 100%;
+    margin: 100px 0px 15px;
     }
 }
 
@@ -616,9 +626,8 @@ select{
     text-align: center;
     font-size: 18px;
     font-weight:bolder;
-    max-width: 300px;
-    border: 3px solid red;
-    border-radius: 35px;
+    max-width: 50%;
+    box-sizing: border-box;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -659,7 +668,7 @@ input[type=submit] {
     border: 1px solid white;
     cursor: pointer;
     border-radius: 25px;
-    box-shadow: 5px 10px 20px black;
+    box-shadow: 0px 5px 25px black;
     text-shadow:
        1px 1px 0 black,
       -1px -1px 0 black,  
@@ -696,11 +705,6 @@ input[type=submit]:hover {
     width: 650px;
     max-width: 95%;
     margin: 50px auto;
-}
-
-#gallery img{
-    max-width: 100%;
-    margin: 100px 0px 15px;
 }
 
 .projects img{
