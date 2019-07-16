@@ -291,8 +291,8 @@ nav {
         position: relative;
         margin: 15px auto;
         padding: 1px 100px 1px 100px;
-        border-radius: 10px;
-        background: -moz-radial-gradient(#009, darkred);
+        border-radius: 20px;
+        background: -moz-radial-gradient(black, #006);
         background: -webkit-radial-gradient( black, #002, #004);
         border: red double .5px;
         max-width:100%;
@@ -305,7 +305,7 @@ nav {
         #gallery img{
         max-width: 100%;
         margin: 100px 0px 15px;
-    }
+        }
 }
 
 
@@ -430,7 +430,7 @@ nav {
         position: relative;
         margin: 5% auto;
         padding: 1px 5px 1px 5px;
-        border-radius: 10px;
+        border-radius: 20px;
         border: 1px solid red;
         background: -moz-radial-gradient(#003, #009);
         background: -webkit-radial-gradient( black, #002, #007);
@@ -823,8 +823,9 @@ footer{
 
 .close { 
     font-family: 'federant';
-	background: red;
-    border: 1px solid white;
+	background: -webkit-radial-gradient( orange, red, #200);
+    max-width:100%;
+    border: .5px hidden black;
 	color: white;
 	line-height: 29px;
 	position: absolute;
@@ -834,7 +835,7 @@ footer{
 	width: 30px;
 	text-decoration: none;
 	font-weight: bold;
-    font-size: 22px;
+    font-size: 20px;
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 25px;
@@ -850,17 +851,14 @@ footer{
 }
 
 .close:hover { 
-    color: black;
-    border: 1px solid red;
     background: black;
+    max-width:100%;
+    border: .5px solid red;
+	color: black;
     text-shadow:
        1px 1px 0 red,
       -1px -1px 0 red,  
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
-    -webkit-transition: background-color 1s ease-out;
-    -moz-transition: background-color 1s ease-out;
-    -o-transition: background-color 1s ease-out;
-    transition: background-color 1s ease-out;
 }
