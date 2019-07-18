@@ -287,9 +287,9 @@ nav {
         }
     
     .modalDialog > div {
-        width: 380px;
+        width: 400px;
         position: relative;
-        margin: 15px auto;
+        margin: 10px auto;
         padding: 1px 100px 1px 100px;
         border-radius: 20px;
         background: -moz-radial-gradient(black, #006);
@@ -302,7 +302,7 @@ nav {
         opacity: 1;
         }
     
-        #gallery img{
+    #gallery img{
         max-width: 100%;
         margin: 100px 0px 15px;
         }
@@ -438,8 +438,8 @@ nav {
     }
     
     #gallery img{
-    max-width: 100%;
-    margin: 100px 0px 15px;
+        max-width: 100%;
+        margin: 50px 0px 15px;
     }
 }
 
