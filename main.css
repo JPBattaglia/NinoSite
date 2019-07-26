@@ -426,15 +426,15 @@ nav {
     }
     
     .modalDialog > div {
-        width: 300px;
+        width: 400px;
         position: relative;
-        margin: 5% auto;
+        margin: 20px auto;
         padding: 1px 5px 1px 5px;
         border-radius: 20px;
         border: 1px solid red;
         background: -moz-radial-gradient(#003, #009);
         background: -webkit-radial-gradient( black, #002, #007);
-        max-width:100%;
+        max-width: 100%;
     }
     
     #gallery img{
