@@ -59,13 +59,12 @@ article img:hover{
     background: repeating-linear-gradient(to right, #300, #800, #300 100%);
     overflow-x: hidden;
     transition: .8s;
-    padding-top: 200px;
+    padding-top: 150px;
     font-family: 'federant', cursive;
-    border-left: 10px double black;
 }
 
 .sidenav a {
-    padding: 20px 27px;
+    padding: 35px 27px;
     font-size: 28px;
     color: #007acc;
     display: block;
