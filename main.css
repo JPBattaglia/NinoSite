@@ -23,7 +23,7 @@ article img:hover{
 
 .navicon {
     width: 30px;
-    height: 6px;
+    height: 5px;
     background-color: red;
     margin: 6px 0px;
 }
@@ -56,19 +56,20 @@ article img:hover{
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: #800;
+    background: repeating-linear-gradient(to right, #300, #800, #300 100%);
     overflow-x: hidden;
-    transition: 1s;
-    padding-top: 100px;
+    transition: .8s;
+    padding-top: 200px;
     font-family: 'federant', cursive;
+    border-left: 10px double black;
 }
 
 .sidenav a {
-    padding: 20px;
+    padding: 20px 27px;
     font-size: 28px;
     color: #007acc;
     display: block;
-    transition: 0.3s;
+    transition: 1s;
     max-width: 100%;
     text-shadow:
        1px 1px 0 white,
@@ -89,11 +90,11 @@ article img:hover{
 }
 
 .sidenav .closebtn {
-    padding: 10px 22px 28px 22px;
+    padding: 18px 18px 28px 22px;
     position:absolute;
     top: 0px;
     right: 0px;
-    font-size: 65px;
+    font-size: 42px;
 }
 
 @media screen and (max-height: 450px) {
