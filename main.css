@@ -94,7 +94,7 @@ article img:hover{
     position:absolute;
     top: 0px;
     right: 0px;
-    font-size: 42px;
+    font-size: 40px;
 }
 
 @media screen and (max-height: 450px) {
