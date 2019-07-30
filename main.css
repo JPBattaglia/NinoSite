@@ -163,6 +163,9 @@ nav {
   .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile {
     display:none;      
   }
+    #intro img{
+        width: 300px
+    }
     
     .intro{
         width: 800px;
