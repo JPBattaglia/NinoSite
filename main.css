@@ -72,7 +72,7 @@ article img:hover{
     transition: 1s;
     max-width: 100%;
     text-shadow:
-       1px 1px 0 white,
+       1px 1px 0 powderblue,
       -1px -1px 0 black,  
        1px -1px 0 black,
       -1px 1px 0 black,
@@ -82,7 +82,7 @@ article img:hover{
 .sidenav a:hover {
     color: red;
     text-shadow:
-       1px 1px 0 white,
+       1px 1px 0 powderblue,
       -1px -1px 0 black,  
        1px -1px 0 black,
       -1px 1px 0 black,
@@ -90,7 +90,7 @@ article img:hover{
 }
 
 .sidenav .closebtn {
-    padding: 18px 18px 28px 22px;
+    padding: 16px 18px 28px 22px;
     position:absolute;
     top: 0px;
     right: 0px;
