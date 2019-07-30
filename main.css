@@ -480,7 +480,7 @@ nav li a:link {
     color: dodgerblue;
     border:  5px double black;
     padding: 5px 25px;
-    border-radius: 20px;
+    border-radius: 30px;
     -webkit-transition: background-color, font-color .8s ease-out;
     -moz-transition: background-color, font-color .8s ease-out;
     -o-transition: background-color, font-color .8s ease-out;
