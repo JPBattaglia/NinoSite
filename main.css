@@ -290,7 +290,7 @@ nav {
         }
     
     .modalDialog > div {
-        width: 400px;
+        width: 385px;
         position: relative;
         margin: 10px auto;
         padding: 1px 100px 1px 100px;
@@ -432,12 +432,12 @@ nav {
         width: 400px;
         position: relative;
         margin: 20px auto;
-        padding: 1px 5px 1px 5px;
+        padding: 0px 5px;
         border-radius: 20px;
         border: 1px solid red;
         background: -moz-radial-gradient(#003, #009);
         background: -webkit-radial-gradient( black, #002, #007);
-        max-width: 100%;
+        max-width: 95%;
     }
     
     #gallery img{
@@ -698,10 +698,6 @@ input[type=submit]:hover {
     max-width: 100%;
     margin: 100px 0px 15px;
     opacity: .7;
-}
-
-#modalImg{
-    margin: 75px auto 0px;
 }
 
 #gallery, #gallery2{
