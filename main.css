@@ -237,7 +237,7 @@ nav {
         font-size: 60px;
         text-align: center;
         color: #b30000;
-        font-family: 'federant', serif;
+        font-family: 'Kaushan Script', serif;
         letter-spacing: 2px;
         text-shadow: 2px 3px 3px dodgerblue;
         text-shadow:
@@ -387,14 +387,12 @@ nav {
     
     .Name {
         margin:100px auto 0px;
-        font-size: 65px;
+        font-size: 55px;
         width:300px;    
-        font-size: 60px;
         text-align: center;
         color: #b30000;
-        font-family: 'federant', serif;
+        font-family: 'Kaushan Script', serif;
         letter-spacing: 2px;
-        text-decoration: underline;
         text-shadow: 2px 3px 3px dodgerblue;
         text-shadow:
            1px 1px 0 dodgerblue,
@@ -429,7 +427,7 @@ nav {
     }
     
     .modalDialog > div {
-        width: 385px;
+        width: 400px;
         position: relative;
         margin: 20px auto;
         padding: 0px 5px;
