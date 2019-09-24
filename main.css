@@ -3,6 +3,19 @@ html{
     overflow:auto;
 }
 
+AOS.init({
+  useClassNames: true,
+  initClassName: false,
+  animatedClassName: 'animated',
+});
+
+[data-aos] {
+  visibility: hidden;
+}
+[data-aos].animated {
+  visibility: visible;
+}
+
 article img{
     float: left;
     max-width: 100%;
@@ -214,7 +227,7 @@ nav {
            1px 1px 0 white;
         }
 
-    h2{
+    h2{ 
         line-height: 1.6;
         font-size: 35px;
         font-family: 'federant', serif;
@@ -527,10 +540,6 @@ h5{
 p {
     line-height: 1.6;
     font-size: 22px;   
-}
-
-label {
-    font-size: 20px;
 }
 
 a{
