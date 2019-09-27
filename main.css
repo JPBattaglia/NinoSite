@@ -80,17 +80,16 @@ article img:hover{
 .sidenav a {
     text-align: center;
     padding: 45px 27px;
-    font-size: 28px;
-    color: #007acc;
+    font-size: 30px;
+    color: #fff;
     display: block;
     transition: 1s;
     max-width: 100%;
     text-shadow:
-       1px 1px 0 powderblue,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
+      -2px -1px 0 #00f,  
+       2px -1px 0 #00f,
+      -2px 1px 0 #00f,
+       2px 1px 0 #00f;
 }
 
 .sidenav a:hover {
