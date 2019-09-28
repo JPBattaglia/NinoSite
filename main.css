@@ -352,7 +352,6 @@ nav {
     .newsletter{
         text-align: center;
         padding-bottom: 100px;
-        border-bottom: 5px double red;
     }
     
     article img{
@@ -712,7 +711,8 @@ input[type=submit]:hover {
     text-align: center;
     font-size: 25px;
     padding-bottom: 50px;
-    margin:auto;   
+    margin:auto; 
+    border-top: 5px double red;
 }
 
 .gallery2 h2{
