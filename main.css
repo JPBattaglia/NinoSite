@@ -3,19 +3,6 @@ html{
     overflow:auto;
 }
 
-AOS.init({
-  useClassNames: true,
-  initClassName: false,
-  animatedClassName: 'animated',
-});
-
-[data-aos] {
-  visibility: hidden;
-}
-[data-aos].animated {
-  visibility: visible;
-}
-
 article img{
     float: left;
     max-width: 100%;
@@ -37,7 +24,6 @@ article img:hover{
 .navicon {
     width: 30px;
     height: 5px;
-    background-color: red;
     margin: 6px 0px;
 }
 
@@ -712,7 +698,6 @@ input[type=submit]:hover {
     font-size: 25px;
     padding-bottom: 50px;
     margin:auto; 
-    border-top: 5px double red;
 }
 
 .gallery2 h2{
@@ -867,4 +852,14 @@ footer{
        1px -1px 0 red,
       -1px 1px 0 red,
        1px 1px 0 red;
+}
+
+@media (max-width: 600px){
+    #gallery{
+        border-top: 3px double red;
+    }
+    
+    .container{
+        margin-top: 0;
+    }
 }
