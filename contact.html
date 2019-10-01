@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="main.css">
         <link href="https://fonts.googleapis.com/css?family=Federant|Kaushan+Script|Quintessential" rel="stylesheet">
         <link rel="shortcut icon" type="image/png" href="logo2.png">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     </head>
     
     <body id="animated-example" class="animated fadeOut">
@@ -25,7 +26,7 @@
           <a style= "text-decoration: underline" href="contact.html">Contact</a>
         </div>
 
-        <span style="float:right;margin-top:5px;cursor:pointer" onclick="openNav()"><div class=navicon2></div><div class="navicon2"></div><div class=navicon2></div></span>
+        <span style="float:right;margin-top: 5px;cursor:pointer" onclick="openNav()"><div ><img data-aos="fade-up" data-aos-duration="3000" class=navicon style="width:35px; height:30px" src="BURGERLOGO2.png"></div></span>
 
         <script>
         function openNav() {
@@ -38,14 +39,14 @@
         </script>
         
         <article>
-        
-            <img src="logo2.png" alt="logo">
+            <div data-aos="fade-up" data-aos-duration="3000" data-aos-anchor-placement="top-bottom">
+            <img src="logo2.png" alt="logo"></div>
             
         </article>
         
         <article class=iconright>
-        
-            <img src="logo2.png" alt="logo">
+            <div data-aos="fade-up" data-aos-duration="3000" data-aos-anchor-placement="top-bottom">
+            <img src="logo2.png" alt="logo"></div>
             
         </article>
         
@@ -69,7 +70,7 @@
         <header>
      
             
-            <h1>Contact</h1><br> 
+            <h1 data-aos="flip-up" data-aos-duration="3000" data-aos-anchor-placement="top-bottom">Contact</h1><br> 
             
             
         </header>    
@@ -81,16 +82,16 @@
                  <form action="//formspree.io/thenino69@gmail.com" method="POST">
  
                  <label for="fname">First Name:</label><br>
-                 <input type="text" id="fname" name="fname" placeholder="Your First Name..."><br>
+                 <input data-aos="flip-right" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" type="text" id="fname" name="fname" placeholder="Your First Name..."><br>
  
                  <label for="lname">Last Name:</label><br>
-                 <input type="text" id="lname" name="lname" placeholder="Your Last Name..."><br>
+                 <input data-aos="flip-right" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" type="text" id="lname" name="lname" placeholder="Your Last Name..."><br>
                      
                  <label for="email_address">Email:</label><br>
-                 <input type="text" id="email_address" name="email_address" placeholder="Your Email Address..."><br>
+                 <input data-aos="flip-right" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" type="text" id="email_address" name="email_address" placeholder="Your Email Address..."><br>
  
-                 <label for="subject">Subject:</label><br>
-                 <select id="service" name="service">
+                 <label data-aos="flip-right" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" for="subject">Subject:</label><br>
+                 <select data-aos="flip-right" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" id="service" name="service">
                  <option value="General">General</option>
                  <option value="Logo">Logo</option>
                  <option value="Icon">App Icon</option>
@@ -100,9 +101,9 @@
                  </select><br>
  
                  <label for="message">Message:</label><br>
-                 <textarea id="message" name="message" placeholder="Write Something.." style="height:200px"></textarea><br>
+                 <textarea data-aos="flip-right" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" id="message" name="message" placeholder="Write Something.." style="height:200px"></textarea><br>
  
-                 <input type="submit" value="Submit">
+                 <input data-aos="fade-up" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" type="submit" value="Submit">
                 </form>
              </div>
     
@@ -114,6 +115,12 @@
             &#169; Battaglia 2018&nbsp;
             <a href="https://www.facebook.com/Nino-303877860279981/?fref=pb&hc_location=profile_browser"><img src="facebook.png" alt="Facebook"></a>
         </footer>
+        
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+          <script>
+            AOS.init();
+          </script>
+        
     </body>
 
 
