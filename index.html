@@ -1,865 +1,334 @@
-html{
-    min-height:100%;
-    overflow:auto;
-}
+<!DOCTYPE html>
 
-article img{
-    float: left;
-    max-width: 100%;
-    -webkit-transition: width 2s, height 2s, 
-    -webkit-transform 1.5s; /* Safari */
-    transition: width 2s, height 2s, transform 1.5s;
-}
-
-article img:hover{
-    -webkit-transform: rotate(360deg); /* Safari */
-    transform: rotate(360deg);
-}
-
-.iconright{
-    float:right;
-    max-width: 100%;
-}
-
-.navicon {
-    width: 30px;
-    height: 5px;
-    margin: 6px 0px;
-}
-
-.navicon2 {
-    width: 30px;
-    height: 6px;
-    background-color: #059;
-    margin: 6px 0;
-}
-
-.navicon1 {
-    width: 30px;
-    height: 6px;
-    background-color: purple;
-    margin: 6px 0;
-}
-
-.navicon3 {
-    width: 30px;
-    height: 6px;
-    background-color: firebrick;
-    margin: 6px 0;
-}
-
-.sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    background: url(Zoetropic.gif);
-    background-size: 100% 100%;
-    overflow-x: hidden;
-    transition: .8s;
-    padding-top: 150px;
-    font-family: 'federant', cursive;
-}
-
-.sidenav a {
-    text-align: center;
-    padding: 45px 27px;
-    font-size: 30px;
-    color: #fff;
-    display: block;
-    transition: 1s;
-    max-width: 100%;
-    text-shadow:
-      -2px -1px 0 #00f,  
-       2px -1px 0 #00f,
-      -2px 1px 0 #00f,
-       2px 1px 0 #00f;
-}
-
-.sidenav a:hover {
-    color: red;
-    text-shadow:
-       1px 1px 0 powderblue,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-.sidenav .closebtn {
-    padding: 16px 18px 28px 22px;
-    position:absolute;
-    top: 0px;
-    right: 0px;
-    font-size: 40px;
-}
-
-@media screen and (max-height: 450px) {
-.sidenav {padding-top: 15px;}
-.sidenav a {font-weight: bolder; font-size: 30px;}
-}
-
-nav ul li {
-    font-family:'federant', serif;
-    font-size: 22px;
-    font-weight:bolder;
-    border:  5px double black;
-    display:inline;
-    border-radius: 20px;
-    text-align: center;
-    margin: 20px;   
-}
-
-nav {
-    text-align:center;
-    margin:auto;
-    padding: 5px 25px;
-}
-
-@media (max-width: 1000px){
+<html>
+    <head>
+	<meta property="og:title" content="Nino Battaglia" />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:width" content="400" />
+	<meta property="og:image:height" content="300" />
+	<meta property="og:image" content="https://i.ibb.co/RCjm4by/BattBros.png" />
+	<meta property="og:image:secure_url" content="https://i.ibb.co/RCjm4by/BattBros.png" />
+        <meta name="keywords" content="Nino Battaglia, Graphic Designer, Portfolio">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Nino Battaglia</title>
+        <meta name="description" content="An interactive portfolio.">
+        <link rel="stylesheet" href="main.css">
+        <link rel="shortcut icon" type="image/png" href="logo1.png">
+        <link href="https://fonts.googleapis.com/css?family=Federant|Akronim|Kaushan+Script|Fugaz+One|Quintessential" rel="stylesheet"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    </head>
     
-    nav ul li{
-        margin:8px;
-    }
-}
-
-#intro img{
-    margin: 50px auto 0px;
-}
-
-.servicelist {
-    width:65%;
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    font-size: 25px;
-    margin:auto;
-    padding: 50px 0px;
-    border-spacing: 110px 40px;
-    max-width: 100%;
-}
-
-.servicelist th{
-    padding: 8px ;
-    border-top: 5px double red;
-    border-bottom: 5px double red;
-    font-size: 35px;
-    margin: auto;
-    max-width: 100%;
-    color: white;
-    text-shadow:
-       2px 1px 0 red,
-      -2px -1px 0 red,  
-       2px -1px 0 red,
-      -2px 1px 0 red,
-       2px 1px 0 red;
-}
+    <body id="animated-example" class="animated fadeOut">
+        
+        <script>window.addEventListener("beforeunload", function () {
+  document.body.classList.add("animate-out");
+            });</script>
 
 
+        <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&#9747;</a>
+          <a style= "text-decoration: underline" href="index.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="contact.html">Contact</a>
+        </div>
 
-@media (min-width: 851px) {
-  .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile {
-    display:none;      
-  }
-    #intro img{
-        width: 300px
-    }
-    
-    .intro{
-        width: 800px;
-        margin: 100px auto 50px;
-        border: 5px;
-        border-color: red;
-        border-bottom-style: double;
-        border-top-style: double;
-        padding: 10px;
-    }
-    
-    #myBtn{
-        margin-right: 30px;
-    }
-     
-    footer{
-        margin: 0px 100px;
-    }
-    
-    header img{
-        max-width: 100%;
-        margin: 20px;
-        margin:auto;
-        border: 2px double white;
-        border-radius: 12px;
+        <span style="float:right;margin-top: 5px;cursor:pointer" onclick="openNav()"><div ><img data-aos="fade-up" data-aos-duration="3000" class=navicon style="width:35px; height:30px" src="BURGERLOGO.png"></div></span>
+
+        <script>
+            
+            
+            
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "150px";
         }
 
-    h1 {
-        margin:auto;
-        padding: 5px;
-        font-size: 65px;
-        border-bottom: 5px double red;
-        border-top: 5px double red;
-        width:302px;    
-        font-size: 60px;
-        text-align: center;
-        color: #b30000;
-        font-family: 'federant', serif;
-        letter-spacing: 2px;
-        text-shadow: 2px 3px 3px dodgerblue;
-        text-shadow:
-           1px 1px 0 dodgerblue,
-          -1px -1px 0 dodgerblue,  
-           1px -1px 0 white,
-          -1px 1px 0 white,
-           1px 1px 0 white;
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
         }
+        </script>
+        
+        <article>
+            <div data-aos="fade-up" data-aos-duration="3000" data-aos-anchor-placement="top-bottom">
+            <img src="logo1.png" alt="logo"></div>
+            
+        </article>
+        
+        <article class=iconright>
+            <div data-aos="fade-up" data-aos-duration="3000" data-aos-anchor-placement="top-bottom">
+            <img src="logo1.png" alt="logo"></div>
+            
+        </article>
+        
+        <nav>
+            <ul>
+                <li><a href="index.html" style ="color:white;
+                        border-radius: 30px;
+                        text-shadow:
+                           1px 1px 0 red,
+                          -1px -1px 0 red,  
+                           1px -1px 0 red,
+                          -1px 1px 0 red,
+                           1px 1px 0 red;">About</a></li>
+                <li><a href="gallery.html">Gallery</a></li>   
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li> 
+            </ul> 
+        </nav>
+        
+        <div id= "intro">
+        
+            <center>
+                <img data-aos="fade-down" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" src= "NinoGif1.gif" alt="Logo Gif">
+            </center>
+        </div>
+        
+        <header class=vid>
+            
+            <h5 data-aos="flip-down" data-aos-duration="3000" data-aos-anchor-placement="top-bottom" class="Name"> Nino Battaglia </h5>
+            <h2 data-aos="zoom-in-down" data-aos-duration="3000" class="slogan">~DeFine DeSign~</h2><br>
+            
+        </header> 
+        
+        <aside class="intro">
+        
+        <h3 data-aos="zoom-in-up" data-aos-duration="3000">Welcome to my portfolio site.</h3><br>
+        <p data-aos="zoom-in-up" data-aos-duration="3000">This website was developed in order to showcase what I have accomplished in graphic design for a few clients. Each example on the <a href="gallery.html">Gallery</a> page is the result of a unique process of bringing what is in the imagination out into reality. Most will expand when selected to reveal either previous iterations of the same project, or other versions of the same type of medium.</p><br>
+        <p data-aos="zoom-in-up" data-aos-duration="2000">I've included a few packages and plans on the <a href="services.html">Services</a> page just to give an idea of what I can offer, but I really prefer to discuss and develop projects on an individual basis. Feel free to message me with any questions or ideas through the form provided on the <a href="contact.html">Contact</a> page.</p><br>
+            
+        </aside>
+        
+        <aside class="intromobile">
+        <h3 data-aos="zoom-in-up" data-aos-duration="2000">Welcome to my portfolio.</h3><br>
+        <p data-aos="zoom-in-up" data-aos-duration="2000">This was developed to showcase what I've accomplished in graphic design. Select any image below to expand and reveal other iterations, videos or versions of the same medium.</p><br>
+        <p data-aos="zoom-in-up" data-aos-duration="2000">Scroll through the <a href="services.html">Services</a> page for a list of what I offer and then feel free to contact me with any questions through my <a href="contact.html">Contact</a> page. </p><br>
+            
+        </aside>
+        
+        <div data-aos="zoom-in-up" data-aos-duration="2000" class=newsletter><a href="#openModal99"><button data-aos="zoom-in-up" data-aos-duration="1000" id="Btn">Subscribe To Newsletter</button></a></div>
+        
+                <div id="openModal99" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		        <form action="//formspree.io/thenino69@gmail.com" method="POST">
 
-    h2{ 
-        line-height: 1.6;
-        font-size: 35px;
-        font-family: 'federant', serif;
-        font-style:italic;
-        margin:auto;
-        padding:0px;
-        color: white;
-        text-shadow:
-           1px 1px 0 red,
-          -1px -1px 0 red,  
-           1px -1px 0 red,
-          -1px 1px 0 red,
-           1px 1px 0 red;
-        } 
+                 <br><label for="fname">Name:</label><br>
+                 <input type="text" id="fname" name="fname" placeholder="Your Full Name..."><br>
+                 <label for="email_address">Email:</label><br>
+                 <input type="text" id="email_address" name="email_address" placeholder="Your Email Address..."><br>
+                 <br><input type="submit" value="Submit"><br>
+                </form><br>
+                </div></div>
+        
+        
+        <section id="gallery">
+            
+            <h1>Gallery</h1>
+            <a name="gallery"></a>
+            
+            <button onclick="topFunction()" id="myBtn" title="Go to top"></button>
+            
+
+        <script>
+  
+            // When the user scrolls down 20px from the top of the document, show the button
+            window.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+            if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
+            document.getElementById("myBtn").style.display = "block";
+            } else {
+            document.getElementById("myBtn").style.display = "none";
+                }
+            }
+
+            // When the user clicks on the button, scroll to the top of the document
+            function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            }   
+        </script>
+            
+                <div  data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal"><img src="Business%20Card.png"></a>
+                <div id="openModal" class="modalDialog">
+                <div>     
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="BizCardz.jpeg"><br>Stand Out Business Cards<br><br>
+	            </div>
+                </div>
+                <br>Business Card<br><br>
+                </div>
     
-    .Name {
-        margin:auto;
-        font-size: 65px;
-        width:300px;    
-        text-align: center;
-        color: #b30000;
-        font-family: 'Kaushan Script', serif;
-        letter-spacing: 2px;
-        text-shadow: 2px 3px 3px dodgerblue;
-        text-shadow:
-           1px 1px 0 dodgerblue,
-          -1px -1px 0 dodgerblue,  
-           1px -1px 0 white,
-          -1px 1px 0 white,
-           1px 1px 0 white;
-
-        }
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal19"><img src="AppIcon.gif" alt="App Icon"></a>
+                <div id="openModal19" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+                    <img id="modalImg" src="ChickenFootApp.png" alt="menu">Apple and Android Application Icons<br><br>
+	            </div>
+                </div><br>App Icon<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal13"><img src="Poster.jpg" alt="Flyer"></a>
+                <div id="openModal13" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+                    <img id="modalImg" src="NewsletterNew.jpg" alt="menu">Keeping Clients Informed and Finding New Ones<br><br>
+	            </div>
+                </div>    
+                <br>Flyer/Newsletter<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal18"><img src="TableMenuMockup.png" alt="Menu"></a>
+                <div id="openModal18" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+                    <img id="modalImg" src="MenuElla's.png" alt="menu">Restaurant, Bar, Cafe, & To-go Menus<br><br>
+	            </div>
+                </div>    
+                <br>Menu<br><br>
+            </div>
+                
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal2"><img src="PhotoAnimation.gif" alt="photo animation"></a>
+                <div id="openModal2" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="PhotoAnimationVersion.gif">Add Motion and Animation Effects to Still Images<br><br>
+	            </div>
+                </div><br>Photo Animation<br><br>
+            </div>
+                
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal9"><img src="CompanyLogo.png"></a>
+                <div id="openModal9" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="Branding.jpg">Establishing a Specific Look and Style for A Company or Organization<br><br>
+                </div></div><br>Logo / Branding<br><br> 
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal3"><img src="Product%20Branding.jpg"></a>
+                <div id="openModal3" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="MonikerVersions.jpeg">Imagery for a Foundation, Company, or Family Crest<br><br>
+	            </div>
+                </div><br>Moniker<br><br>
+            </div>
+                 
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal4"><img src="DPower.jpg"></a>
+                <div id="openModal4" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="EmblemVersion.jpg">Memorable Symbols as a Signature<br><br>
+                </div></div><br>Emblem<br><br>
+            </div>
+                
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal5"><img src="MobileAppSplash.png"></a>
+                <div id="openModal5" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="SplashVersion.jpg">Opening Imagery for Mobile Applications<br><br>
+                </div></div><br>Mobile App Splash<br><br>
+            </div>
+                
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal6"><img src="Avatar.jpg"></a>
+                <div id="openModal6" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="AvatarVersions.jpeg">Unique Profile Illustrations<br><br>
+                </div></div><br>Avatar<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal7"><img src="Graphite.jpg"></a>
+                <div id="openModal7" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="GraphiteVersionss.jpg">For Focusing on Detail and Shading <br><br>
+                </div></div><br>Graphite Charcoal<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal10"><img src="Newsletter.jpg"></a>
+                <div id="openModal10" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="StationPostVersion.jpg">Attracting New Prospective Clients<br><br>
+                </div></div><br>Station Post<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal12"><img src="YinYang.gif"></a>
+                <div id="openModal12" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="YinYangVersions.jpg">Brainstorming Iterations<br><br>
+                </div></div><br>Sketch Concept<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal14"><img src="SloganIcon.jpg"></a>
+                <div id="openModal14" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="MoonSpadeVersions.png">Logos with Motos <br><br>
+                </div></div><br>Slogan & Icon<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal15"><img src="Letterhead.png"></a>
+                <div id="openModal15" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="envelope.png">Formal Correspondence Stationary<br><br>
+                </div></div><br>Letterhead<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal16"><img src="Typography.jpeg"></a>
+                <div id="openModal16" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="MENUBCKGRND.png">Lettering and Font Styling<br><br>
+                </div></div><br>Typography<br><br>
+            </div>
+            
+            <div data-aos="zoom-in-up" data-aos-duration="2000">
+                <a href="#openModal17"><img src="LettermarkLogo.png" alt= "Lettermark"></a>
+                <div id="openModal17" class="modalDialog">
+                <div>       
+		          <a href="#close" title="Close" class="close">&#9747;</a>
+		          <img id="modalImg" src="LettermarkVersion.jpg">( P )<br>Subtle Ways to Blend Letters with Images<br><br>
+                </div></div><br>Lettermark<br><br>
+            </div>
+            
+        </section>
+        
+        
     
-    
-    #Btn:hover{
-        margin: 30px auto;
-        color: white;
-        padding: 8px 20px;
-        background: #059;
-        font-family: 'federant';
-        font-size: 22px;
-        border: 5px double black;
-        border-radius: 35px;
-        text-shadow:
-           1px 1px 0 red,
-          -1px -1px 0 red,  
-           1px -1px 0 red,
-          -1px 1px 0 red,
-           1px 1px 0 red;
-        }
+        <footer>
+            <a href="https://www.instagram.com/thenino69/"><img src="Instagram.png" alt="Instagram"></a>&nbsp;
+            &#169; Battaglia 2018&nbsp;
+            <a href="https://www.facebook.com/Nino-303877860279981/?fref=pb&hc_location=profile_browser"><img src="facebook.png" alt="Facebook"></a>
+        </footer>
+        
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+          <script>
+            AOS.init();
+          </script>
 
-    #Btn{
-        margin: 30px auto;
-        cursor: pointer;
-        color: white;
-        padding: 8px 20px;
-        background: #038;
-        font-family: 'federant';
-        font-size: 22px;
-        border: 5px double black;
-        border-radius: 35px;
-        text-shadow:
-           1px 1px 0 black,
-          -1px -1px 0 black,  
-           1px -1px 0 black,
-          -1px 1px 0 black,
-           1px 1px 0 black;
-        -webkit-transition: background-color .8s ease-out;
-        -moz-transition: background-color .8s ease-out;
-        -o-transition: background-color .8s ease-out;
-        transition: background-color .8s ease-out;
-        }
-    
-    .modalDialog > div {
-        width: 385px;
-        position: relative;
-        margin: 10px auto;
-        padding: 1px 100px 1px 100px;
-        border-radius: 20px;
-        background: -moz-radial-gradient(black, #006);
-        background: -webkit-radial-gradient( black, #002, #004);
-        border: red solid 1px;
-        max-width:100%;
-        }
-    
-    #modalImg{
-        opacity: 1;
-        }
-    
-    #gallery img{
-        max-width: 100%;
-        margin: 100px 0px 15px;
-        }
-}
+    </body>
 
 
-@media (max-width: 850px) {
-  nav, .intro, #intro, .iconright {
-    display:none;
-    }
-    
-    .intromobile{
-        max-width: 95%;
-        margin: 100px auto;
-        border: 5px;
-        border-color: red;
-        border-bottom-style: double;
-        border-top-style: double;
-        padding:10px;
-    }
-    
-     table{
-        display: none;
-    }
-    
-     #services{
-        border-top: 3px double red;
-        padding: 20px 0px;
-    }
-    
-    .newsletter{
-        text-align: center;
-        padding-bottom: 100px;
-    }
-    
-    article img{
-        max-width: 18%;
-
-    }
-    
-    .slogan{
-        margin-top: 50px;
-        font-size: 28px
-    }
-    
-    h1 {
-        margin-top: 75px;    
-        font-size: 50px;
-        text-align: center;
-        color: #b30000;
-        font-family: 'Federant', serif;
-        letter-spacing: 3px;
-        text-shadow: 2px 3px 3px dodgerblue;
-        text-shadow:
-           1px 1px 0 dodgerblue,
-          -1px -1px 0 dodgerblue,  
-           1px -1px 0 white,
-          -1px 1px 0 white,
-           1px 1px 0 white;
-
-    }
-    
-    h2{
-        line-height: 1.6;
-        font-size: 25px;
-        padding-top: 10px;
-        font-family: 'federant', serif;
-        font-style:italic;
-        margin:auto;
-        color: white;
-        text-shadow:
-           1px 1px 0 red,
-          -1px -1px 0 red,  
-           1px -1px 0 red,
-          -1px 1px 0 red,
-           1px 1px 0 red;
-    }
-    
-    .Name {
-        margin:100px auto 0px;
-        font-size: 55px;
-        width:300px;    
-        text-align: center;
-        color: #b30000;
-        font-family: 'Kaushan Script', serif;
-        letter-spacing: 2px;
-        text-shadow: 2px 3px 3px dodgerblue;
-        text-shadow:
-           1px 1px 0 dodgerblue,
-          -1px -1px 0 dodgerblue,  
-           1px -1px 0 white,
-          -1px 1px 0 white,
-           1px 1px 0 white;
-
-    }
-    
-    header h4{
-        font-size: 28px;
-        font-family: 'federant';
-        color: #159;
-    }
-    
-    #Btn{
-        margin: 30px auto;
-        color: white;
-        padding: 8px 20px;
-        background: #038;
-        font-family: 'federant';
-        font-size: 22px;
-        border: 3px solid red;
-        border-radius: 35px;
-        text-shadow:
-           1px 1px 0 red,
-          -1px -1px 0 red,  
-           1px -1px 0 red,
-          -1px 1px 0 red,
-           1px 1px 0 red;
-    }
-    
-    .modalDialog > div {
-        width: 400px;
-        position: relative;
-        margin: 20px auto;
-        padding: 0px 5px;
-        border-radius: 20px;
-        border: 1px solid red;
-        background: -moz-radial-gradient(#003, #009);
-        background: -webkit-radial-gradient( black, #002, #007);
-        max-width: 90%;
-    }
-    
-    #gallery img{
-        max-width: 100%;
-        margin: 50px 0px 15px;
-    }
-}
-
-a:hover img{
-    /* Start the shake animation and make the animation last for 0.5 seconds */
-    animation: shake 1.5s; 
-    /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s;
-}
-
-#gallery2 a:hover img {
-    /* Start the shake animation and make the animation last for 1 seconds */
-    animation: shake 1.5s; 
-    /* When the animation is finished, start again */
-    animation-iteration-count: 2.0s;
-    opacity: 1;
-}
-
-@keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-/* unvisited link */
-nav li a:link {
-    color: dodgerblue;
-    border:  5px double black;
-    padding: 5px 25px;
-    border-radius: 30px;
-    -webkit-transition: background-color, font-color .8s ease-out;
-    -moz-transition: background-color, font-color .8s ease-out;
-    -o-transition: background-color, font-color .8s ease-out;
-    transition: font-color, background-color .8s ease-out;
-}
-
-/* mouse over link */
-nav li a:hover{
-    color:white;
-    border-radius: 30px;
-    background-color: #038;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-nav li a:visited{
-    border: 5px double black;
-}
-    
-
-h3{
-   
-   font-size: 24px;
-}
-
-h4{
-    font-size: 35px;
-    color: red;
-    font-family: 'federant', serif;
-    text-shadow:
-       1px 1px 0 white,
-      -1px -1px 0 white,  
-       1px -1px 0 white,
-      -1px 1px 0 white,
-       1px 1px 0 white;
-
-}
-
-h5{
-    color:darkred;
-    font-size: 20px;
-}
-p {
-    line-height: 1.6;
-    font-size: 22px;   
-}
-
-a{
-    color:dodgerblue;
-    text-decoration: none;
-    font-weight: bolder;
-    
-}
-
-a:hover{
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-    color: white;
-}
-
-footer, section{
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-label{
-    font-size: 25px;
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-p, h3{
-    text-align: center;
-    font-family:'federant', serif;
-    color:white;
-    list-style-type: none;
-}
-
-body{
-    background-color:black;
-    margin: 20px;
-}
-
-header{
-    text-align: center;
-    max-width: 100%;
-    padding: 70px 0 0;
-}
-
-textarea, input{
-    font-family: 'federant', serif;
-    color: white;
-    text-align: center;
-    font-size: 18px;
-    font-weight:bolder;
-    max-width: 500px;
-}
-
-select{
-    font-family: 'federant', serif;
-    color:white;
-    text-align: center;
-    font-size: 20px;
-    font-weight:bolder;
-    max-width: 50%;
-    box-sizing: border-box;
-}
-
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: white;
-    opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: white;
-}
-
-::-ms-input-placeholder { /* Microsoft Edge */
-    color: white;
-}
-
-/* Style inputs with type="text", select elements and textareas */
-input[type=text], select, textarea {
-    margin: auto;
-    text-align: center;
-    background: #027;
-    width: 90%; /* Full width */
-    padding: 8px; /* Some padding */  
-    border: 1.5px solid red; /* Gray border */
-    border-radius: 20px; /* Rounded borders */
-    box-sizing: border-box; /* Make sure that padding and width stays in place */
-    margin-top: 10px; /* Add a top margin */
-    margin-bottom: 30px; /* Bottom margin */
-    resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
-}
-
-/* Style the submit button with a specific background color etc */
-input[type=submit] {
-    margin: auto;
-    text-align: center;
-    font-size: 22px;
-    background: repeating-linear-gradient(to top, #009, #00e, dodgerblue 100%);
-    color: white;
-    padding: 8px 30px;
-    border: 1px solid dodgerblue;
-    cursor: pointer;
-    border-radius: 25px;
-    box-shadow: 0px 5px 25px red;
-    text-shadow:
-       1px 1px 0 black,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-    -webkit-transition: background-color 1s ease-out;
-    -moz-transition: background-color 1s ease-out;
-    -o-transition: background-color 1s ease-out;
-    transition: background-color 1s ease-out;
-}
-
-/* When moving the mouse over the submit button, add a blue color */
-input[type=submit]:hover {
-    margin: auto;
-    text-align: center;
-    border: 1px solid orangered;
-    background: repeating-linear-gradient(to top, #500, #900, red 100%);
-    border-radius: 25px;
-    box-shadow: 0px 5px 25px blue;
-    text-shadow:
-       1px 1px 0 black,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-/* Add a background color and some padding around the form */
-.container{
-    border-radius: 25px;
-    width: 650px;
-    max-width: 95%;
-    margin: 50px auto;
-}
-
-.projects img{
-    max-width: 100%;
-    margin: 100px 0px 15px;
-    opacity: .7;
-}
-
-#gallery, #gallery2{
-    max-width: 100%;
-    text-align: center;
-    font-size: 25px;
-    padding-bottom: 50px;
-    margin:auto; 
-}
-
-.gallery2 h2{
-    margin-top: 50px;
-    font-size: 35px;
-    padding:10px;
-    width:350px;
-    text-decoration: underline
-    max-width: 100%;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-#form {
-    padding: 0px 0px 40px;
-}
-
-#myBtn{
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed/sticky position */
-    bottom: 20px; /* Place the button at the bottom of the page */
-    right: 5px; /* Place the button 5px from the right */
-    z-index: 99; /* Make sure it does not overlap */
-    outline: none; /* Remove outline */
-    cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 15px; /* Some padding */
-    border-radius: 50px; /* Rounded corners */
-    border: 1px solid red;
-    background: url("redarrow.png");
-}
-
-.projects {
-    margin:auto;
-}
-
-.projects td{
-    font-size: 25px;
-    padding: 120px;
-    text-align: center;
-    color:white;    
-}
-.newsletter{
-    text-align: center;
-}
-
-#myBtn:hover {
-    border-color: dodgerblue;
-    background: url("bluearrow1.png");
-}
-
-form{
-    margin: 30px auto;
-    text-align: center;
-}
-
-footer{
-    border-top: 5px double red;
-    text-align: center;
-    padding-top: 10px;
-    font-family: 'quintessential', cursive;
-    font-size: 20px;
-    margin-top: 50px;
-}
-
-.animated {
-            background-color: black;
-            background-position: left top;
-            padding-top:5px;
-            margin-bottom:30px;
-            -webkit-animation-duration: 3s;animation-duration: 3s;
-            -webkit-animation-fill-mode: both;animation-fill-mode: both;
-         }
-
-         @-webkit-keyframes fadeOut {
-            100% {opacity: 1;}
-            0% {opacity: 0;}
-         }
-
-         @keyframes fadeOut {
-            100% {opacity: 1;}
-            0% {opacity: 0;}
-         }
-
-         .fadeOut {
-            -webkit-animation-name: fadeOut;
-            animation-name: fadeOut;
-         }
-
-
-.modalDialog {
-    margin: auto;
-	position:fixed;
-	top: 0px;
-	right: 0px;
-	bottom: 0px;
-	left: 0px;
-	background: rgba(0,0,0,0.8);
-	z-index: 99999;
-	opacity:0;
-	-webkit-transition: opacity 600ms ease-in;
-	-moz-transition: opacity 600ms ease-in;
-	transition: opacity 400ms ease-in;
-	pointer-events: none;
-}
-
-.modalDialog:target {
-	opacity: 1;
-	pointer-events: auto;
-}
-
-.close { 
-    font-family: 'federant';
-	background: -webkit-radial-gradient( orange, red, #200);
-    max-width:100%;
-    border: .5px hidden black;
-	color: white;
-	line-height: 29px;
-	position: absolute;
-	right: -12px;
-	text-align: center;
-	top: -10px;
-	width: 30px;
-	text-decoration: none;
-	font-weight: bold;
-    font-size: 20px;
-	-webkit-border-radius: 12px;
-	-moz-border-radius: 12px;
-	border-radius: 25px;
-	-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;
-    text-shadow:
-       1px 1px 0 black,
-      -1px -1px 0 black,  
-       1px -1px 0 black,
-      -1px 1px 0 black,
-       1px 1px 0 black;
-}
-
-.close:hover { 
-    background: black;
-    max-width:100%;
-    border: .5px solid red;
-	color: black;
-    text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
-}
-
-@media (max-width: 600px){
-    #gallery{
-        border-top: 3px double red;
-    }
-    
-    .container{
-        margin-top: 0;
-    }
-    
-}
+</html>
