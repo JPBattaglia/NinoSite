@@ -601,9 +601,9 @@ textarea, input{
 
 select{
     font-family: 'federant', serif;
-    color:red;
+    color:white;
     text-align: center;
-    font-size: 18px;
+    font-size: 20px;
     font-weight:bolder;
     max-width: 50%;
     box-sizing: border-box;
@@ -626,6 +626,7 @@ select{
 input[type=text], select, textarea {
     margin: auto;
     text-align: center;
+    background: #038;
     width: 90%; /* Full width */
     padding: 8px; /* Some padding */  
     border: 1.5px solid red; /* Gray border */
@@ -641,13 +642,13 @@ input[type=submit] {
     margin: auto;
     text-align: center;
     font-size: 22px;
-    background-color: dodgerblue;
+    background: repeating-linear-gradient(to top, #009, #00e, dodgerblue 100%);
     color: white;
     padding: 8px 30px;
-    border: 1px solid white;
+    border: 1px solid dodgerblue;
     cursor: pointer;
     border-radius: 25px;
-    box-shadow: 0px 5px 25px black;
+    box-shadow: 0px 5px 15px dodgerblue;
     text-shadow:
        1px 1px 0 black,
       -1px -1px 0 black,  
@@ -664,9 +665,10 @@ input[type=submit] {
 input[type=submit]:hover {
     margin: auto;
     text-align: center;
-    border: 1px solid white;
-    background-color: red;
+    border: 1px solid orangered;
+    background: repeating-linear-gradient(to top, #500, #900, red 100%);
     border-radius: 25px;
+    box-shadow: 0px 5px 15px red;
     text-shadow:
        1px 1px 0 black,
       -1px -1px 0 black,  
@@ -678,9 +680,7 @@ input[type=submit]:hover {
 /* Add a background color and some padding around the form */
 .container{
     border-radius: 25px;
-    border: 8px double black;
     padding: 20px 0px;
-    background-color: #038;
     width: 650px;
     max-width: 95%;
     margin: 50px auto;
@@ -862,4 +862,5 @@ footer{
     .container{
         margin-top: 0;
     }
+    
 }
