@@ -862,4 +862,11 @@ footer{
         margin-top: 0;
     }
     
+    header{
+        margin: auto;
+        width: 200px;
+        height: 150px;
+        padding: 15px 0px 0px 0px;
+    }
+    
 }
