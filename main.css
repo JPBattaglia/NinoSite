@@ -251,19 +251,24 @@ nav {
     
     #Btn:hover{
         margin: 30px auto;
+        font-weight: bolder;
         color: white;
         padding: 8px 20px;
         background: #059;
         font-family: 'federant';
         font-size: 22px;
-        border: 5px double black;
+        border: 2px solid darkred;
+        box-shadow: 
+            1px 2px 10px red,
+            1px -2px 10px red,
+            -1px -2px 10px red,
+            -1px 2px 10px red;
         border-radius: 35px;
         text-shadow:
-           1px 1px 0 red,
-          -1px -1px 0 red,  
-           1px -1px 0 red,
-          -1px 1px 0 red,
-           1px 1px 0 red;
+           1px 1px 0 orangered,
+          -1px -1px 0 orangered,  
+           1px -1px 0 orangered,
+          -1px 1px 0 orangered;
         }
 
     #Btn{
@@ -274,7 +279,7 @@ nav {
         background: #038;
         font-family: 'federant';
         font-size: 22px;
-        border: 5px double black;
+        border: 2px solid red;
         border-radius: 35px;
         text-shadow:
            1px 1px 0 black,
@@ -798,7 +803,7 @@ footer{
 	bottom: 0px;
 	left: 0px;
 	background: rgba(0,0,0,0.8);
-	z-index: 99999;
+	z-index: 99999999999 !important;
 	opacity:0;
 	-webkit-transition: opacity 600ms ease-in;
 	-moz-transition: opacity 600ms ease-in;
