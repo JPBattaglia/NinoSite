@@ -96,6 +96,20 @@ article img:hover{
     font-size: 40px;
 }
 
+#openModal99{
+    padding: 100px;
+}
+
+#subscription{
+    background-image: url(newsletter3.jpg);
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 200px;
+    padding-top: 80px;
+}
+
 @media screen and (max-height: 450px) {
 .sidenav {padding-top: 15px;}
 .sidenav a {font-weight: bolder; font-size: 30px;}
@@ -169,7 +183,7 @@ nav {
     
     .intro{
         width: 800px;
-        margin: 100px auto 50px;
+        margin: 100px auto 0px;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
@@ -300,7 +314,7 @@ nav {
         padding: 1px 100px 1px 100px;
         border-radius: 20px;
         background: -moz-radial-gradient(black, #006);
-        background: -webkit-radial-gradient( black, #002, #004);
+        background: -webkit-radial-gradient( black, #002, #006);
         border: red solid 1px;
         max-width:100%;
         }
@@ -323,7 +337,7 @@ nav {
     
     .intromobile{
         max-width: 95%;
-        margin: 100px auto;
+        margin: 100px auto 0px;
         border: 5px;
         border-color: red;
         border-bottom-style: double;
@@ -439,6 +453,10 @@ nav {
         background: -moz-radial-gradient(#003, #009);
         background: -webkit-radial-gradient( black, #002, #007);
         max-width: 90%;
+    }
+    
+    #gallery{
+        border-top: 5px double red;
     }
     
     #gallery img{
@@ -875,6 +893,14 @@ footer{
         width: 200px;
         height: 150px;
         padding: 15px 0px 0px 0px;
+    }
+    
+    #openModal99{
+        padding: 50px;
+    }
+
+    .Name{
+        margin-top: 70px;
     }
     
 }
