@@ -454,7 +454,7 @@ nav {
         border-radius: 20px;
         border: 1px solid red;
         background: -moz-radial-gradient(#003, #009);
-        background: -webkit-radial-gradient( black, #002, #007);
+        background: -webkit-radial-gradient( black, #002, #004);
         max-width: 90%;
     }
     
@@ -649,7 +649,7 @@ select{
 input[type=text], select, textarea {
     margin: auto;
     text-align: center;
-    background: #027;
+    background: #02c;
     width: 90%; /* Full width */
     padding: 8px; /* Some padding */  
     border: 1.5px solid red; /* Gray border */
@@ -893,7 +893,7 @@ footer{
     }
     
     #openModal99{
-        padding: 50px;
+        padding-top: 150px;
     }
 
     .Name{
