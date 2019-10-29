@@ -896,6 +896,14 @@ footer{
         padding: 150px 0;
         
     }
+    
+    #openModal19, #openModal9, #openModal7, #openModal12, #openModal15, #openModal16{
+        padding-top: 100px;
+    }
+    
+    #openModal2, #openModal4, #openModal5, #openModal6, #openModal14{
+        padding-top: 50px;
+    }
 
     .Name{
         margin-top: 60px;
