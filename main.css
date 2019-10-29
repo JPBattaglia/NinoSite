@@ -897,7 +897,11 @@ footer{
     }
 
     .Name{
-        margin-top: 70px;
+        margin-top: 60px;
+    }
+    
+    .intromobile{
+        margin-top: 50px;
     }
     
     #subscription{
