@@ -178,7 +178,7 @@ nav {
 
 
 @media (min-width: 851px) {
-  .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile {
+  .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile{
     display:none;      
   }
     #intro img{
@@ -251,7 +251,7 @@ nav {
     .Name {
         margin:auto;
         font-size: 65px;
-        width:300px;    
+        width:500px;    
         text-align: center;
         color: #b30000;
         font-family: 'Kaushan Script', serif;
@@ -335,7 +335,7 @@ nav {
 
 
 @media (max-width: 850px) {
-  nav, .intro, #intro, .iconright {
+  nav, .intro, #intro, .iconright, #scrolldown {
     display:none;
     }
     
@@ -498,8 +498,8 @@ a:hover img{
 /* unvisited link */
 nav li a:link {
     color: dodgerblue;
-    border:  5px double black;
-    padding: 5px 25px;
+    border:  8px double black;
+    padding: 3px 22px;
     border-radius: 30px;
     -webkit-transition: background-color, font-color .8s ease-out;
     -moz-transition: background-color, font-color .8s ease-out;
@@ -511,7 +511,7 @@ nav li a:link {
 nav li a:hover{
     color:white;
     border-radius: 30px;
-    background-color: #038;
+    background-color: #02b;
     text-shadow:
        1px 1px 0 red,
       -1px -1px 0 red,  
@@ -541,6 +541,20 @@ h4{
       -1px 1px 0 white,
        1px 1px 0 white;
 
+}
+
+#scrolldown{
+        margin: 50px auto 0px;
+        font-size: 45px;  
+        text-align: center;
+        color: #b30000;
+        font-family: 'Kaushan Script', serif;
+        text-shadow:
+           1px 1px 0 dodgerblue,
+          -1px -1px 0 dodgerblue,  
+           1px -1px 0 white,
+          -1px 1px 0 white,
+           1px 1px 0 white;
 }
 
 h5{
@@ -789,30 +803,6 @@ footer{
     margin-top: 50px;
 }
 
-.animated {
-            background-color: black;
-            background-position: left top;
-            padding-top:5px;
-            margin-bottom:30px;
-            -webkit-animation-duration: 3s;animation-duration: 3s;
-            -webkit-animation-fill-mode: both;animation-fill-mode: both;
-         }
-
-         @-webkit-keyframes fadeOut {
-            100% {opacity: 1;}
-            0% {opacity: 0;}
-         }
-
-         @keyframes fadeOut {
-            100% {opacity: 1;}
-            0% {opacity: 0;}
-         }
-
-         .fadeOut {
-            -webkit-animation-name: fadeOut;
-            animation-name: fadeOut;
-         }
-
 
 .modalDialog {
     margin: auto;
@@ -878,7 +868,7 @@ footer{
 }
 
 @media (max-width: 600px){
-    label{
+    label, #scrolldown{
         display: none;
     }
 
