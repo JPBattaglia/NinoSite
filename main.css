@@ -97,10 +97,6 @@ article img:hover{
     font-size: 40px;
 }
 
-#openModal99{
-    padding: 100px;
-}
-
 #subscription{
     background-image: url(Newsprint.jpeg);
     background-attachment: fixed;
@@ -175,10 +171,8 @@ nav {
        2px 1px 0 red;
 }
 
-
-
 @media (min-width: 851px) {
-  .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile{
+  .navicon, .navicon1, .navicon2, .navicon3, #gallery, .slogan, #services, .intromobile, label{
     display:none;      
   }
     #intro img{
@@ -312,16 +306,17 @@ nav {
         }
     
     .modalDialog > div {
-        width: 385px;
+        width: 50%;
         position: relative;
-        margin: 10px auto;
-        padding: 1px 100px 1px 100px;
+        margin: 100px auto;
+        padding: 0px 75px;
         border-radius: 20px;
         background: -moz-radial-gradient(black, #006);
         background: -webkit-radial-gradient( black, #002, #006);
         border: red solid 1px;
         max-width:100%;
         }
+    
     
     #modalImg{
         opacity: 1;
@@ -335,7 +330,7 @@ nav {
 
 
 @media (max-width: 850px) {
-  nav, .intro, #intro, .iconright, #scrolldown {
+  nav, .intro, #intro, .iconright, #scrolldown, label, table {
     display:none;
     }
     
@@ -347,10 +342,6 @@ nav {
         border-bottom-style: double;
         border-top-style: double;
         padding:10px;
-    }
-    
-     table{
-        display: none;
     }
     
      #services{
