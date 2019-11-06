@@ -898,4 +898,16 @@ footer{
     #subscription{
         background-size: 100% 80%;
     }
+    
+    .modalDialog > div {
+        width: 50%;
+        position: relative;
+        margin: 0px auto;
+        padding: 0px 35px;
+        border-radius: 20px;
+        background: -moz-radial-gradient(black, #006);
+        background: -webkit-radial-gradient( black, #002, #006);
+        border: red solid 1px;
+        max-width:100%;
+        }
 }
