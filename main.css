@@ -900,10 +900,10 @@ footer{
     }
     
     .modalDialog > div {
-        width: 50%;
+        width: 80%;
         position: relative;
         margin: 0px auto;
-        padding: 0px 35px;
+        padding: 0px 15px;
         border-radius: 20px;
         background: -moz-radial-gradient(black, #006);
         background: -webkit-radial-gradient( black, #002, #006);
