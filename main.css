@@ -265,40 +265,38 @@ nav {
         margin: 30px auto;
         font-weight: bolder;
         color: white;
-        padding: 8px 20px;
-        background: #059;
+        padding: 5px 20px;
+        background: #05d;
         font-family: 'federant';
         font-size: 22px;
-        border: 2px solid darkred;
+        border: 7px double #500;
         box-shadow: 
-            1px 2px 10px red,
-            1px -2px 10px red,
-            -1px -2px 10px red,
-            -1px 2px 10px red;
+            1px 1px 15px #700,
+            -1px 1px 15px #700;
         border-radius: 35px;
         text-shadow:
-           1px 1px 0 orangered,
-          -1px -1px 0 orangered,  
-           1px -1px 0 orangered,
-          -1px 1px 0 orangered;
+           1px 1px 2px #500,
+          -1px -1px 2px #500,  
+           1px -1px 2px #500,
+          -1px 1px 2px #500;
+        cursor: pointer;
         }
 
-    #Btn{
+   #Btn{
         margin: 30px auto;
-        cursor: pointer;
         color: white;
-        padding: 8px 20px;
-        background: #038;
+        padding: 5px 20px;
+        background: #07f;
         font-family: 'federant';
         font-size: 22px;
-        border: 2px solid red;
+        border: 7px double #000;
         border-radius: 35px;
+        font-weight: bolder;
         text-shadow:
-           1px 1px 0 black,
-          -1px -1px 0 black,  
-           1px -1px 0 black,
-          -1px 1px 0 black,
-           1px 1px 0 black;
+           1px 1px 1px black,
+          -1px -1px 1px black,  
+           1px -1px 1px black,
+          -1px 1px 1px black;
         -webkit-transition: background-color .8s ease-out;
         -moz-transition: background-color .8s ease-out;
         -o-transition: background-color .8s ease-out;
@@ -306,17 +304,16 @@ nav {
         }
     
     .modalDialog > div {
-        width: 50%;
+        width: 55%;
         position: relative;
         margin: 100px auto;
-        padding: 0px 75px;
+        padding: 0px 55px;
         border-radius: 20px;
         background: -moz-radial-gradient(black, #006);
         background: -webkit-radial-gradient( black, #002, #006);
         border: red solid 1px;
         max-width:100%;
         }
-    
     
     #modalImg{
         opacity: 1;
@@ -424,18 +421,18 @@ nav {
     #Btn{
         margin: 30px auto;
         color: white;
-        padding: 8px 20px;
-        background: #038;
+        padding: 5px 20px;
+        background: #05d;
         font-family: 'federant';
         font-size: 22px;
-        border: 3px solid red;
+        border: 7px double #000;
         border-radius: 35px;
         text-shadow:
-           1px 1px 0 red,
-          -1px -1px 0 red,  
-           1px -1px 0 red,
-          -1px 1px 0 red,
-           1px 1px 0 red;
+           1px 1px 2px black,
+          -1px -1px 2px black,  
+           1px -1px 2px black,
+          -1px 1px 2px black,
+           1px 1px 2px black;
     }
     
     .modalDialog > div {
@@ -488,9 +485,9 @@ a:hover img{
 
 /* unvisited link */
 nav li a:link {
-    color: dodgerblue;
+    color: #05d;
     border:  8px double black;
-    padding: 3px 22px;
+    padding: 2px 22px;
     border-radius: 30px;
     -webkit-transition: background-color, font-color .8s ease-out;
     -moz-transition: background-color, font-color .8s ease-out;
@@ -502,13 +499,12 @@ nav li a:link {
 nav li a:hover{
     color:white;
     border-radius: 30px;
-    background-color: #02b;
+    background-color: #06d;
     text-shadow:
-       1px 1px 0 red,
-      -1px -1px 0 red,  
-       1px -1px 0 red,
-      -1px 1px 0 red,
-       1px 1px 0 red;
+       1px 1px 2px black,
+      -1px -1px 2px black,  
+       1px -1px 2px black,
+      -1px 1px 2px black;
 }
 
 nav li a:visited{
@@ -655,11 +651,11 @@ select{
 input[type=text], select, textarea {
     margin: auto;
     text-align: center;
-    background: #02b;
+    background: #06d;
     width: 90%; /* Full width */
     padding: 8px; /* Some padding */  
-    border: 1.5px solid red; /* Gray border */
-    border-radius: 20px; /* Rounded borders */
+    border: 8px double #000; /* Gray border */
+    border-radius: 30px; /* Rounded borders */
     box-sizing: border-box; /* Make sure that padding and width stays in place */
     margin-top: 10px; /* Add a top margin */
     margin-bottom: 30px; /* Bottom margin */
@@ -697,7 +693,7 @@ input[type=submit]:hover {
     border: 1px solid lime;
     background: repeating-linear-gradient(to top, #030, #070, lightgreen 100%);
     border-radius: 25px;
-    box-shadow: 0px 5px 25px lime;
+    box-shadow: 0px 5px 25px lightgreen;
     text-shadow:
        1px 1px 0 black,
       -1px -1px 0 black,  
