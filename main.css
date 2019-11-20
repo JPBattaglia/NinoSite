@@ -264,21 +264,21 @@ nav {
     #Btn:hover{
         margin: 30px auto;
         font-weight: bolder;
-        color: white;
+        color: #fff;
         padding: 5px 20px;
-        background: #05d;
+        background: #000;
         font-family: 'federant';
         font-size: 22px;
-        border: 7px double #500;
+        border: 7px double #900;
         box-shadow: 
-            1px 1px 15px #700,
-            -1px 1px 15px #700;
+            1px 1px 15px #f00,
+            -1px 1px 15px #f00;
         border-radius: 35px;
         text-shadow:
-           1px 1px 2px #500,
-          -1px -1px 2px #500,  
-           1px -1px 2px #500,
-          -1px 1px 2px #500;
+           1px 2px 0px #f00,
+          -1px -2px 0px #f00,  
+           1px -2px 0px #f00,
+          -1px 2px 0px #f00;
         cursor: pointer;
         }
 
@@ -286,7 +286,7 @@ nav {
         margin: 30px auto;
         color: white;
         padding: 5px 20px;
-        background: #07f;
+        background: #04d;
         font-family: 'federant';
         font-size: 22px;
         border: 7px double #000;
@@ -422,7 +422,7 @@ nav {
         margin: 30px auto;
         color: white;
         padding: 5px 20px;
-        background: #05d;
+        background: #04d;
         font-family: 'federant';
         font-size: 22px;
         border: 7px double #000;
@@ -499,7 +499,7 @@ nav li a:link {
 nav li a:hover{
     color:white;
     border-radius: 30px;
-    background-color: #06d;
+    background-color: #04d;
     text-shadow:
        1px 1px 2px black,
       -1px -1px 2px black,  
@@ -632,6 +632,7 @@ select{
     font-weight:bolder;
     max-width: 50%;
     box-sizing: border-box;
+    border-radius: 20px;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -651,7 +652,7 @@ select{
 input[type=text], select, textarea {
     margin: auto;
     text-align: center;
-    background: #06d;
+    background: #03d;
     width: 90%; /* Full width */
     padding: 8px; /* Some padding */  
     border: 8px double #000; /* Gray border */
