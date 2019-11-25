@@ -647,7 +647,7 @@ select{
 input[type=text], select, textarea {
     margin: auto;
     text-align: center;
-    background: #03d;
+    background: #03a;
     width: 90%; /* Full width */
     padding: 8px; /* Some padding */  
     border: 8px double #000; /* Gray border */
