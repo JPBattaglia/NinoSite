@@ -116,8 +116,8 @@ article img:hover{
 }
 
 nav ul li {
-    font-family:'federant', serif;
-    font-size: 22px;
+    font-family:'quintessential', serif;
+    font-size: 25px;
     font-weight:bolder;
     border:  5px double black;
     display:inline;
@@ -129,7 +129,7 @@ nav ul li {
 nav {
     text-align:center;
     margin:auto;
-    padding: 15px 0;
+    padding: 1px 0;
     max-width: 88%;
 }
 
@@ -486,10 +486,9 @@ a:hover img{
 
 /* unvisited link */
 nav li a:link {
-    color: #05d;
-    border:  8px double black;
-    padding: 2px 22px;
-    border-radius: 30px;
+    border:  8px double transparent;
+    padding: 10px 5px;
+    margin: 15px;
     -webkit-transition: background-color, font-color .8s ease-out;
     -moz-transition: background-color, font-color .8s ease-out;
     -o-transition: background-color, font-color .8s ease-out;
@@ -499,23 +498,18 @@ nav li a:link {
 /* mouse over link */
 nav li a:hover{
     color:white;
-    border-radius: 30px;
-    background-color: #04d;
+    border-bottom: 8px double #f00;
+    background-color: #000;
     text-shadow:
-       1px 1px 2px black,
-      -1px -1px 2px black,  
-       1px -1px 2px black,
-      -1px 1px 2px black;
+       1px 1px 2px red,
+      -1px -1px 2px red,  
+       1px -1px 2px red,
+      -1px 1px 2px red;
 }
-
-nav li a:visited{
-    border: 5px double black;
-}
-    
 
 h3{
    
-   font-size: 24px;
+   font-size: 28px;
 }
 
 h4{
@@ -551,7 +545,7 @@ h5{
 }
 p {
     line-height: 1.6;
-    font-size: 22px;   
+    font-size: 26px;   
 }
 
 a{
@@ -600,7 +594,7 @@ label{
 
 p, h3{
     text-align: center;
-    font-family:'federant', serif;
+    font-family:'quintessential', serif;
     color:white;
     list-style-type: none;
 }
