@@ -116,8 +116,8 @@ article img:hover{
 }
 
 nav ul li {
-    font-family:'quintessential', serif;
-    font-size: 25px;
+    font-family:'Orbitron', serif;
+    font-size: 20px;
     font-weight:bolder;
     border:  5px double black;
     display:inline;
@@ -147,7 +147,7 @@ nav {
 .servicelist {
     width:65%;
     text-align: center;
-    font-family:'federant', serif;
+    font-family:'Orbitron', serif;
     color:white;
     font-size: 25px;
     margin:auto;
@@ -268,7 +268,7 @@ nav {
         color: #fff;
         padding: 5px 20px;
         background: #000;
-        font-family: 'federant';
+        font-family: 'Orbitron';
         font-size: 22px;
         border: 7px double #900;
         box-shadow: 
@@ -288,7 +288,7 @@ nav {
         color: white;
         padding: 5px 20px;
         background: #04d;
-        font-family: 'federant';
+        font-family: 'Orbitron';
         font-size: 22px;
         border: 7px double #000;
         border-radius: 35px;
@@ -424,8 +424,8 @@ nav {
         color: white;
         padding: 5px 20px;
         background: #04d;
-        font-family: 'federant';
-        font-size: 22px;
+        font-family: 'Orbitron';
+        font-size: 20px;
         border: 7px double #000;
         border-radius: 35px;
         text-shadow:
@@ -509,7 +509,7 @@ nav li a:hover{
 
 h3{
    
-   font-size: 28px;
+   font-size: 25px;
 }
 
 h4{
@@ -545,7 +545,7 @@ h5{
 }
 p {
     line-height: 1.6;
-    font-size: 26px;   
+    font-size: 20px;   
 }
 
 a{
@@ -567,7 +567,7 @@ a:hover{
 
 footer, section{
     text-align: center;
-    font-family:'federant', serif;
+    font-family:'Orbitron', serif;
     color:white;
     list-style-type: none;
     text-shadow:
@@ -581,7 +581,7 @@ footer, section{
 label{
     font-size: 25px;
     text-align: center;
-    font-family:'federant', serif;
+    font-family:'Orbitron', serif;
     color:white;
     list-style-type: none;
     text-shadow:
@@ -594,7 +594,7 @@ label{
 
 p, h3{
     text-align: center;
-    font-family:'quintessential', serif;
+    font-family:'Orbitron', serif;
     color:white;
     list-style-type: none;
 }
