@@ -892,7 +892,8 @@ footer{
     }
     
     #Btn{
-        font-size: 18px;
+        font-size: 22px;
+        font-family: 'federant';
     }
     
     .modalDialog > div {
