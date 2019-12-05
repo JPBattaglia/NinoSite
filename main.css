@@ -891,6 +891,10 @@ footer{
         background-size: 100% 80%;
     }
     
+    #Btn{
+        font-size: 18px;
+    }
+    
     .modalDialog > div {
         width: 80%;
         position: relative;
