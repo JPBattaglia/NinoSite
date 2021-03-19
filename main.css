@@ -547,7 +547,7 @@ input {
 
 select {
     font-family: 'federant', serif;
-    color: #2100df;
+    color: #0051ff;
     text-align: center;
     font-size: 20px;
     font-weight: bolder;
@@ -558,19 +558,19 @@ select {
 
 ::placeholder {
     /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #2100df;
+    color: #0051ff;
     opacity: 1;
     /* Firefox */
 }
 
 :-ms-input-placeholder {
     /* Internet Explorer 10-11 */
-    color: #2100df;
+    color: #0051ff;
 }
 
 ::-ms-input-placeholder {
     /* Microsoft Edge */
-    color: #2100df;
+    color: #0051ff;
 }
 
 
@@ -581,14 +581,14 @@ select,
 textarea {
     margin: auto;
     text-align: center;
-    background: #b3e9ff;
+    background: #ddf9fd;
     width: 90%;
     /* Full width */
     padding: 8px;
     /* Some padding */
     border: 8px double #000;
     /* Gray border */
-    border-radius: 20px;
+    border-radius: 15px;
     /* Rounded borders */
     box-sizing: border-box;
     /* Make sure that padding and width stays in place */
@@ -598,6 +598,10 @@ textarea {
     /* Bottom margin */
     resize: vertical;
     /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+select {
+    padding: 4px 8px;
 }
 
 
