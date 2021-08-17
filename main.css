@@ -230,11 +230,10 @@ nav {
         font-size: 65px;
         width: 500px;
         text-align: center;
-        color: #b30000;
+        color: #a00;
         font-family: 'Kaushan Script', serif;
         letter-spacing: 2px;
-        text-shadow: 2px 3px 3px dodgerblue;
-        text-shadow: 1px 1px 0 dodgerblue, -1px -1px 0 dodgerblue, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+        text-shadow: 1.5px 1px 0 dodgerblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
     }
     #Btn:hover {
         margin: 30px auto;
@@ -446,6 +445,7 @@ nav li a:link {
     -moz-transition: background-color, font-color .8s ease-out;
     -o-transition: background-color, font-color .8s ease-out;
     transition: font-color, background-color .8s ease-out;
+    transition: 1s;
 }
 
 
@@ -453,8 +453,8 @@ nav li a:link {
 
 nav li a:hover {
     color: white;
-    border-bottom: 8px double #f00;
     text-shadow: 1px 1px 2px red, -1px -1px 2px red, 1px -1px 2px red, -1px 1px 2px red;
+    transition: .5s;
 }
 
 h3 {
@@ -673,7 +673,7 @@ input[type=submit]:hover {
 }
 
 #form {
-    padding: 0px 0px 40px;
+    padding: 75px 0px 40px;
 }
 
 #myBtn {
