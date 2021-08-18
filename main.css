@@ -344,11 +344,10 @@ nav {
         font-size: 55px;
         width: 300px;
         text-align: center;
-        color: #b30000;
+        color: #B00;
         font-family: 'Kaushan Script', serif;
         letter-spacing: 2px;
-        text-shadow: 2px 3px 3px dodgerblue;
-        text-shadow: 1px 1px 0 dodgerblue, -1px -1px 0 dodgerblue, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+        text-shadow: 1.5px 1px 0 dodgerblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
     }
     header h4 {
         font-size: 28px;
