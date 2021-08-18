@@ -236,10 +236,10 @@ nav {
         font-size: 65px;
         width: 500px;
         text-align: center;
-        color: #a00;
+        color: #b00;
         font-family: 'Kaushan Script', serif;
         letter-spacing: 2px;
-        text-shadow: 1.5px 1px 0 dodgerblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+        text-shadow: .5px .5px 0 #fff;
     }
     
     #Btn:hover {
@@ -363,10 +363,10 @@ nav {
         font-size: 55px;
         width: 300px;
         text-align: center;
-        color: #B00;
+        color: #b00;
         font-family: 'Kaushan Script', serif;
         letter-spacing: 2px;
-        text-shadow: 1.5px 1px 0 dodgerblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+        text-shadow: .5px .5px 0 #fff;
     }
     
     header h4 {
@@ -494,9 +494,9 @@ h4 {
     margin: 50px auto 0px;
     font-size: 45px;
     text-align: center;
-    color: #b30000;
+    color: #b00;
     font-family: 'Kaushan Script', serif;
-    text-shadow: 1px 1px 0 dodgerblue, -1px -1px 0 dodgerblue, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    text-shadow: .5px .5px 0 #fff;;
 }
 
 h5 {
