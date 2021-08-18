@@ -175,9 +175,11 @@ nav {
     label {
         display: none;
     }
+    
     #intro img {
         width: 300px
     }
+    
     .intro {
         width: 800px;
         margin: 100px auto 0px;
@@ -187,12 +189,15 @@ nav {
         border-top-style: double;
         padding: 10px;
     }
+    
     #myBtn {
         margin-right: 30px;
     }
+    
     footer {
         margin: 0px 100px;
     }
+    
     header img {
         max-width: 100%;
         margin: 20px;
@@ -200,6 +205,7 @@ nav {
         border: 2px double white;
         border-radius: 12px;
     }
+    
     h1 {
         margin: auto;
         padding: 5px;
@@ -235,6 +241,7 @@ nav {
         letter-spacing: 2px;
         text-shadow: 1.5px 1px 0 dodgerblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
     }
+    
     #Btn:hover {
         margin: 30px auto;
         font-weight: bolder;
@@ -249,6 +256,7 @@ nav {
         text-shadow: 1px 2px 0px #f00, -1px -2px 0px #f00, 1px -2px 0px #f00, -1px 2px 0px #f00;
         cursor: pointer;
     }
+    
     #Btn {
         margin: 30px auto;
         color: white;
@@ -265,6 +273,7 @@ nav {
         -o-transition: background-color .8s ease-out;
         transition: background-color .8s ease-out;
     }
+    
     .modalDialog>div {
         width: 55%;
         position: relative;
@@ -276,9 +285,11 @@ nav {
         border: red solid 1px;
         max-width: 100%;
     }
+    
     #modalImg {
         opacity: 1;
     }
+    
     #gallery img {
         max-width: 100%;
         margin: 100px 0px 15px;
@@ -295,6 +306,7 @@ nav {
     table {
         display: none;
     }
+    
     .intromobile {
         max-width: 95%;
         margin: 100px auto 0px;
@@ -304,21 +316,26 @@ nav {
         border-top-style: double;
         padding: 10px;
     }
+    
     #services {
         border-top: 3px double red;
         padding: 20px 0px;
     }
+    
     .newsletter {
         text-align: center;
         padding-bottom: 100px;
     }
+    
     article img {
         max-width: 18%;
     }
+    
     .slogan {
         margin-top: 50px;
         font-size: 28px
     }
+    
     h1 {
         margin-top: 75px;
         font-size: 50px;
@@ -329,6 +346,7 @@ nav {
         text-shadow: 2px 3px 3px dodgerblue;
         text-shadow: 1px 1px 0 dodgerblue, -1px -1px 0 dodgerblue, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
     }
+    
     h2 {
         line-height: 1.6;
         font-size: 25px;
@@ -339,6 +357,7 @@ nav {
         color: white;
         text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
     }
+    
     .Name {
         margin: 100px auto 0px;
         font-size: 55px;
@@ -349,11 +368,13 @@ nav {
         letter-spacing: 2px;
         text-shadow: 1.5px 1px 0 dodgerblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
     }
+    
     header h4 {
         font-size: 28px;
         font-family: 'federant';
         color: #159;
     }
+    
     #Btn {
         margin: 30px auto;
         color: white;
@@ -365,6 +386,7 @@ nav {
         border-radius: 35px;
         text-shadow: 1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black, -1px 1px 2px black, 1px 1px 2px black;
     }
+    
     .modalDialog>div {
         width: 400px;
         position: relative;
@@ -376,6 +398,7 @@ nav {
         background: -webkit-radial-gradient( black, #002, #004);
         max-width: 90%;
     }
+    
     #gallery img {
         max-width: 100%;
         margin: 50px 0px 15px;
@@ -587,7 +610,7 @@ textarea {
     /* Some padding */
     border: 8px double #000;
     /* Gray border */
-    border-radius: 15px;
+    border-radius: 25px;
     /* Rounded borders */
     box-sizing: border-box;
     /* Make sure that padding and width stays in place */
