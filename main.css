@@ -280,8 +280,8 @@ nav {
         margin: 100px auto;
         padding: 0px 55px;
         border-radius: 20px;
-        background: -moz-radial-gradient(black, #006);
-        background: -webkit-radial-gradient( black, #002, #006);
+        background: -moz-radial-gradient(black, #034);
+        background: -webkit-radial-gradient( black, #034);
         border: red solid 1px;
         max-width: 100%;
     }
@@ -394,8 +394,6 @@ nav {
         padding: 0px 5px;
         border-radius: 20px;
         border: 1px solid red;
-        background: -moz-radial-gradient(#003, #009);
-        background: -webkit-radial-gradient( black, #002, #004);
         max-width: 90%;
     }
     
@@ -547,7 +545,8 @@ h3 {
 }
 
 body {
-    background-color: black;
+    background: url(Background.png);
+    background-size: 100% 100%;
     margin: 20px;
 }
 
@@ -673,7 +672,7 @@ input[type=submit]:hover {
 .projects img {
     max-width: 100%;
     margin: 100px 0px 15px;
-    opacity: .7;
+    opacity: 1;
 }
 
 #gallery,
@@ -762,7 +761,6 @@ footer {
     right: 0px;
     bottom: 0px;
     left: 0px;
-    background: rgba(0, 0, 0, 0.8);
     z-index: 99999999999 !important;
     opacity: 0;
     -webkit-transition: opacity 600ms ease-in;
@@ -859,8 +857,8 @@ footer {
         margin: 20px auto;
         padding: 0px 15px;
         border-radius: 20px;
-        background: -moz-radial-gradient(black, #006);
-        background: -webkit-radial-gradient( black, #002, #006);
+        background: -moz-radial-gradient(black, #023, #034);
+        background: -webkit-radial-gradient( black, #023, #034);
         border: red solid 1px;
         max-width: 100%;
     }
