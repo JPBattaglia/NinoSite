@@ -132,7 +132,7 @@ nav {
 }
 
 #intro img {
-    margin: 0px auto;
+    margin: 100px auto 0;
 }
 
 .servicelist {
@@ -563,7 +563,7 @@ input {
 
 select {
     font-family: 'federant', serif;
-    color: #0051ff;
+    color: #034;
     text-align: center;
     font-size: 20px;
     font-weight: bolder;
@@ -574,7 +574,7 @@ select {
 
 ::placeholder {
     /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #0051ff;
+    color: #034;
     opacity: 1;
     /* Firefox */
 }
@@ -602,7 +602,7 @@ textarea {
     /* Full width */
     padding: 8px;
     /* Some padding */
-    border: 8px double #000;
+    border: 8px double #034;
     /* Gray border */
     border-radius: 25px;
     /* Rounded borders */
@@ -627,13 +627,13 @@ input[type=submit] {
     margin: auto;
     text-align: center;
     font-size: 22px;
-    background: repeating-linear-gradient(to top, #009, #00e, dodgerblue 100%);
+    background: repeating-linear-gradient(to top, #023, #068, #0ac 100%);
     color: white;
     padding: 8px 30px;
     border: 1px solid dodgerblue;
     cursor: pointer;
     border-radius: 25px;
-    box-shadow: 0px 5px 25px red;
+    box-shadow: 0px 5px 25px #079;
     text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
     -webkit-transition: background-color 1s ease-out;
     -moz-transition: background-color 1s ease-out;
