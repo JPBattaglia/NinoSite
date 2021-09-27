@@ -856,8 +856,8 @@ footer {
         margin: 20px auto;
         padding: 0px 15px;
         border-radius: 20px;
-        background: -moz-radial-gradient(black, #023, #034);
-        background: -webkit-radial-gradient( black, #023, #034);
+        background: -moz-radial-gradient(#057, #012);
+        background: -webkit-radial-gradient( #057, #001920);
         border: red solid 1px;
         max-width: 100%;
     }
