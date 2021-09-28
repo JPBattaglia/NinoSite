@@ -176,7 +176,7 @@ nav {
     }
     
     #intro img {
-        width: 300px
+        width: 300px;
     }
     
     .intro {
@@ -298,12 +298,21 @@ nav {
 @media (max-width: 850px) {
     nav,
     .intro,
-    #intro,
     .iconright,
     #scrolldown,
     label,
     table {
         display: none;
+    }
+    
+    #intro{
+        width: 200px;
+        margin: auto;
+    }
+    
+    #intro img{
+        width: 125px;
+        margin: 50px auto -100px;
     }
     
     .intromobile {
@@ -358,9 +367,9 @@ nav {
     }
     
     .Name {
-        margin: 100px auto 0px;
-        font-size: 55px;
-        width: 300px;
+        margin: 50px auto -60px;
+        font-size: 45px;
+        width: 320px;
         text-align: center;
         color: #b00;
         font-family: 'Kaushan Script', serif;
