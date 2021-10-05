@@ -890,4 +890,18 @@ footer {
         border: red solid 1px;
         max-width: 100%;
     }
+    
+    input[type=text],
+    select,
+    textarea {
+       margin-bottom: 0px; 
+    }
+    
+    form{
+        margin-top: 0px;
+    }
+    
+    input[type=submit]{
+        margin-top: 20px;
+    }
 }
