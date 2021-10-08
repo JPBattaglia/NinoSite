@@ -73,7 +73,7 @@ article img:hover {
     display: block;
     transition: 1s;
     max-width: 100%;
-    text-shadow: -2px -1px 0 #070, 2px -1px 0 #070, -2px 1px 0 #070, 2px 1px 0 #070;
+    text-shadow: -1px -1px 0 #f00, 1px -1px 0 #f00, -1px 1px 0 #f00, 1px 1px 0 #f00;
 }
 
 .sidenav a:hover {
