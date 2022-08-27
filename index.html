@@ -22,6 +22,8 @@
     </head>
     
     <body>
+        
+        <div id="preloader"><p>Loading . . .</p></div>
 
 
         <div id="mySidenav" class="sidenav">
@@ -319,6 +321,13 @@
             AOS.init();
           </script>
         
+        <script>
+        
+        var loader = document.getElementById("preloader");
+        
+        window.addEventListener("load", function(){loader.style.display = "none"})
+        
+    </script>
         
 
     </body>

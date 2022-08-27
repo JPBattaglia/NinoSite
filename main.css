@@ -292,6 +292,30 @@ nav {
         max-width: 100%;
         margin: 100px 0px 15px;
     }
+    
+    #preloader{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0ff;
+        font-size: 25px;
+        font-family: 'Philosopher' ;
+        background: #000 url(NinoGif1.gif) no-repeat center center;
+        background-size: 20%;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 9999999999999999;
+        top: 0;
+        left: 0;
+    }
+    
+    #preloader p{
+        margin-top: 25%;
+        color: #0ac;
+        font-weight: bolder;
+    }
+
 }
 
 @media (max-width: 850px) {
@@ -834,6 +858,30 @@ footer {
     text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
 }
 
+#preloader{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0ff;
+        font-family: 'Philosopher' ;
+        background: #000 url(NinoGif1.gif) no-repeat center center;
+        background-size: 20%;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 9999999999999999;
+        top: 0;
+        left: 0;
+    }
+
+#preloader p{
+        margin-top: 30%;
+        color: #0ac;
+        font-weight: bolder;
+        font-size: 20px;
+    }
+    
+
 @media (max-width: 600px) {
     label,
     #scrolldown {
@@ -903,5 +951,12 @@ footer {
     
     input[type=submit]{
         margin-top: 40px;
+    }
+    
+    #preloader p{
+        margin-top: 35%;
+        color: #0ac;
+        font-weight: bolder;
+        font-size: 16px;
     }
 }

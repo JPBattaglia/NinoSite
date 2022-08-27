@@ -14,6 +14,8 @@
     
     <body id="animated-example" class="animated fadeOut">
         
+        <div id="preloader"><p>Loading . . .</p></div>
+        
         <script>window.addEventListener("beforeunload", function () {
   document.body.classList.add("animate-out");
             });</script>
@@ -278,6 +280,14 @@
   <script>
     AOS.init();
   </script>
+        
+        <script>
+        
+        var loader = document.getElementById("preloader");
+        
+        window.addEventListener("load", function(){loader.style.display = "none"})
+        
+    </script>
 
     </body>
 
