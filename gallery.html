@@ -92,6 +92,64 @@
              
         </header> 
         
+        <div class="desktop" style="text-align:center"> 
+  
+  <br><br>
+            
+  <video id="video1" width="520">
+    <source src="NinoSlideshow.mp4" type="video/mp4">
+    <source src="mov_bbb.ogg" type="video/ogg">
+    Your browser does not support HTML video.
+  </video><br><br>
+            
+            <button onclick="playPause()">&#10148;&nbsp;&#10072;&nbsp;&#10072;</button> 
+  <button onclick="makeBig()">Big</button>
+  <button onclick="makeSmall()">Small</button>
+  <button onclick="makeNormal()">Normal</button>
+</div> 
+        
+        <div class="mobile" style="text-align:center"> 
+  
+  <br><br>
+            
+  <video id="video1" width="320">
+    <source src="NinoSlideshow.mp4" type="video/mp4">
+    <source src="mov_bbb.ogg" type="video/ogg">
+    Your browser does not support HTML video.
+  </video><br><br>
+            
+            <button onclick="playPause()">&#10148;&nbsp;&#10072;&nbsp;&#10072;</button> 
+  <button onclick="makeBig()">Big</button>
+  <button onclick="makeSmall()">Small</button>
+  <button onclick="makeNormal()">Normal</button>
+</div> 
+        
+        
+        
+
+<script> 
+var myVideo = document.getElementById("video1"); 
+
+function playPause() { 
+  if (myVideo.paused) 
+    myVideo.play(); 
+  else 
+    myVideo.pause(); 
+} 
+
+function makeBig() { 
+    myVideo.width = 1060; 
+} 
+
+function makeSmall() { 
+    myVideo.width = 320; 
+} 
+
+function makeNormal() { 
+    myVideo.width = 420; 
+} 
+</script> 
+        
         <section id="gallery2">
             
             <a name="gallery"></a>

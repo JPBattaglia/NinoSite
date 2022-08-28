@@ -162,6 +162,8 @@ nav {
 }
 
 @media (min-width: 851px) {
+    
+    .mobile,
     .navicon,
     .navicon1,
     .navicon2,
@@ -319,7 +321,9 @@ nav {
 }
 
 @media (max-width: 850px) {
+    
     nav,
+    .desktop,
     .intro,
     .iconright,
     #scrolldown,
@@ -883,6 +887,7 @@ footer {
     
 
 @media (max-width: 600px) {
+    
     label,
     #scrolldown {
         display: none;
