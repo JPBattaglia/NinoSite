@@ -322,6 +322,18 @@ nav {
 
 @media (max-width: 850px) {
     
+    #latest button{
+        border-radius: 20px;
+        padding: 3px 15px;
+        color: #000;
+        background: #0ac;
+        border: 8px double #035;
+    }
+    
+    #video1{
+        border-radius: 20px;
+    }
+    
     nav,
     .desktop,
     .intro,

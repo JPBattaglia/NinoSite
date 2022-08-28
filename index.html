@@ -89,7 +89,41 @@
             
         </header> 
         
+        <div id="latest" data-aos="zoom-out-up" data-aos-duration="2000" data-aos-delay="500" class="mobile" style="text-align:center"> 
+  
+  <br>
+            
+  <video id="video1" width="320">
+    <source src="NinoSlideshowLowMB.mp4" type="video/mp4">
+    <source src="mov_bbb.ogg" type="video/ogg">
+    Your browser does not support HTML video.
+  </video><br><br>
+            
+            <button onclick="playPause()">Play Me</button> </div>
+
         
+        <script> 
+var myVideo = document.getElementById("video1"); 
+
+function playPause() { 
+  if (myVideo.paused) 
+    myVideo.play(); 
+  else 
+    myVideo.pause(); 
+} 
+
+function makeBig() { 
+    myVideo.width = 1060; 
+} 
+
+function makeSmall() { 
+    myVideo.width = 320; 
+} 
+
+function makeNormal() { 
+    myVideo.width = 420; 
+} 
+</script> 
         
         
         <aside class="intro">
