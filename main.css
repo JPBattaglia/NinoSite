@@ -317,6 +317,18 @@ nav {
         color: #0ac;
         font-weight: bolder;
     }
+    
+    #latest button{
+        border-radius: 20px;
+        padding: 3px 15px;
+        color: #000;
+        background: #0cf;
+        border: 8px double #035;
+    }
+    
+    #video1{
+        border-radius: 20px;
+    }
 
 }
 
@@ -331,7 +343,7 @@ nav {
     }
     
     #video1{
-        border-radius: 20px;
+        border-radius: 100px;
     }
     
     nav,
