@@ -965,3 +965,10 @@ footer {
         font-size: 16px;
     }
 }
+
+@media (min-width: 851px) and (max-width: 870px){
+    
+    nav ul li{
+        margin: 5px;
+    }
+}
