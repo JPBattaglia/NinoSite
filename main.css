@@ -1,288 +1,774 @@
-*:focus {
-    outline: none;
-    background: transparent;
-   }
-
 html {
     min-height: 100%;
     overflow: auto;
     scroll-behavior: smooth;
 }
 
-[data-aos=spin]{
+article img {
+    float: left;
+    max-width: 100%;
+    -webkit-transition: width 2s, height 2s, -webkit-transform 1.5s;
+    /* Safari */
+    transition: width 2s, height 2s, transform 1.5s;
+}
+
+article img:hover {
+    -webkit-transform: rotate(360deg);
+    /* Safari */
     transform: rotate(360deg);
-    opacity: 0;
-    transition-property: transform, opacity;
 }
 
-[data-aos=spin].aos-animate {
-    transform: rotate(0);
-    opacity: 1;
+.iconright {
+    float: right;
+    max-width: 100%;
 }
 
-.social{
-    background: linear-gradient(to top, #034, #046, #068, #046, #034);
-    background-size: 100% 3%;
-    border: 1px solid #068;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding: 5px 0;
-    margin-top: 30%;
-    display: flex;
-    flex-direction: column;
-    width: 37px;
+.navicon {
+    width: 30px;
+    height: 5px;
+    margin: 6px 0px;
+}
+
+.navicon2 {
+    width: 30px;
+    height: 6px;
+    background-color: #059;
+    margin: 6px 0;
+}
+
+.navicon1 {
+    width: 30px;
+    height: 6px;
+    background-color: purple;
+    margin: 6px 0;
+}
+
+.navicon3 {
+    width: 30px;
+    height: 6px;
+    background-color: firebrick;
+    margin: 6px 0;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
     position: fixed;
-    z-index: 999999;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background: linear-gradient(90deg, #200, #500, #900, #500, #200);
+    background-size: 100% 100%;
+    overflow-x: hidden;
+    transition: .8s;
+    padding-top: 150px;
+    font-family: 'federant', cursive;
 }
 
-.social img{
-    width: 25px;
-    filter: drop-shadow(2px 2px 5px #000);
+.sidenav a {
+    text-align: center;
+    padding: 45px 27px;
+    font-size: 30px;
+    color: #fff;
+    display: block;
+    transition: 1s;
+    max-width: 100%;
+    text-shadow: -1px -1px 0 #f00, 1px -1px 0 #f00, -1px 1px 0 #f00, 1px 1px 0 #f00;
 }
 
-.social a{
-    margin: 5px 3px;
+.sidenav a:hover {
+    color: #068;
+    text-shadow: 1px 1px 0 powderblue, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 }
 
-#site{
-    max-width: 1500px;
+.sidenav .closebtn {
+    padding: 16px 18px 28px 22px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    font-size: 40px;
+}
+
+#subscription {
+    height: 200px;
+    padding-top: 80px;
+    max-width: 820px;
     margin: auto;
 }
 
-.logos a:hover{
-        filter: drop-shadow(1px 1px 10px #0df);
+#openModal16 {
+        padding-top: 150px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
     }
-
-.splash{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: #540c21;
-    z-index: 999999999999999;
+    .sidenav a {
+        font-weight: bolder;
+        font-size: 30px;
+    }
 }
 
-.splash.display-none{
-    position: fixed;
-    opacity: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: #540c21;
-    z-index: -9999;
-    transition: all 1.5s;
-}
-
-.popup{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-}
-
-.contentBox{
-    position: relative;
-    width: 600px;
-    height: 400px;
-    background: #fff;
-    border-radius: 20px;
-    display: flex;
-    box-shadow: 0 5px 15px #000;
-}
-
-.contentBox .imgBx{
-    position: relative;
-    width: 300px;
-    height: 500px;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-}
-
-.contentBox .imgBx::before{
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 18px;
-    width: 255px;
-    height: 250px;
-    background: #068;
-    border-radius: 50%;
-    box-shadow: 6px 8px 15px #000;
-}
-
-.contentBox .imgBx img{
-    position: relative;
-    top: -45px;
-    max-width: 240px;
-    height: 300px;
-}
-
-.contentBox .content{
-    position: relative;
-    width: 300px;
-    height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    padding: 0px;
-}
-
-.contentBox .content h3{
-    margin-bottom: 25px;
-    letter-spacing: -2px;
-    color: #e00;
-    line-height: 1.5em;
-    font-size: 3.3em;
-    font-weight: bolder;
-    text-shadow: 2px 2px 2px #000;
-}
-
-.contentBox .content h2{
-    letter-spacing: 2px;
-    font-size: 4.5em;
-    color: #0ac;
-    line-height: .8em;
-    font-family: 'righteous';
-    text-shadow: 2px 2px 2px #000;
-    font-weight: bolder;
-    margin-bottom: 10px;
-}
-
-.contentBox .content h2 sup{
-    font-size: 40px;
-}
-
-.contentBox .content h2 span{
-    color: #000;
-    font-size: .8em;
-    text-transform: uppercase; 
-    font-weight: bolder;
-    text-shadow: 0px 1px 0px #000;
-    letter-spacing: 0px;
-}
-
-.contentBox .content p{
-    font-weight: bolder;
-    letter-spacing: -.5px;
-    margin-top: -5px;
-    font-weight: bold;
+nav ul li {
+    font-family: 'Orbitron', serif;
     font-size: 20px;
-    font-family: 'Philosopher';
-    width: 95%;
-}
-
-.contentBox .content a{
-    margin-top: 5px;
-    transition: .5s;
-    font-family: 'Philosopher';
     font-weight: bolder;
-    display: inline-block;
-    padding: 11px 20px 8px;
-    background: repeating-linear-gradient(to bottom, #022, #058, #0d888f 100%);
-    color: #fff;
-    margin-left: 60px;
-    text-decoration: none;
-    border-radius: 50px;
-    border: .5px solid #079;
-    box-shadow: 1px 6px 10px #000;
-    text-shadow: 1px 1px 0 black, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    border: 5px double transparent;
+    display: inline;
+    border-radius: 20px;
+    text-align: center;
+    margin: 20px;
 }
 
-.contentBox .content a:hover{
-    transition: .5s;
-    color: #0ac;
-    border: 1px solid #0ac;
-    background: repeating-linear-gradient(to top, #022, #058, #0d888f 100%);
-    text-shadow: 1px 1px 0 white, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-    box-shadow: 2px 6px 18px #057;
+nav {
+    text-align: center;
+    margin: auto;
+    padding: 1px 0;
+    max-width: 88%;
 }
 
-.closex{
-    transition: .5s;
-    color: #f00;
-    position: absolute;
-    top: -5px;
-    right: -18px;
-    width: 60px;
-    font-size: 35px;
-    cursor: pointer;
-    border-radius: 50%;
-    z-index: 10;
-    filter: drop-shadow(0px 0px 1px #f00);
-    text-shadow: 1px 1px 0px #000, -1px 1px 0px #000,  -1px -1px 0px #000,  1px -1px 0px #000;
-}
-
-.closex:hover{
-    transition: .5s;
-    color: #000;
-    text-shadow: 1px 1px 0px #f00, -1px 1px 0px #f00,  -1px -1px 0px #f00,  1px -1px 0px #f00;
-}
-
-.animated {
-    background-color: #034;
-    background-position: left top;
-    margin-bottom: 30px;
-    -webkit-animation-duration: 3s;
-    animation-duration: 3s;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-}
-
-.arrow{
-    position: absolute;
-    top: 97%;
-    left: 69%;
-    transform: translate(-50%,-50%);
-}
-
-.arrows{
-    position: absolute;
-    top: 97%;
-    left: 31%;
-    transform: translate(-50%,-50%);
-}
-
-.arrow span, .arrows span{
-    display: block;
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
-    border-radius: 5px;
-    border-bottom: 5px solid #0ac;
-    border-right: 5px solid #0ac;
-    transform: rotate(45deg);
-    margin: -15px;
-    animation: animate 7.5s infinite;
-}
-.arrow span:nth-child(2), .arrows span:nth-child(2){
-    animation-delay: -0.2s;
-}
-.arrow span:nth-child(3), .arrows span:nth-child(3){
-    animation-delay: -0.4s;
-}
-@keyframes animate {
-    0%{
-        opacity: 0;
-        transform: rotate(45deg) translate(-20px,-20px);
+@media (max-width: 1000px) {
+    nav ul li {
+        margin: 8px;
     }
-    50%{
+}
+
+#intro img {
+    margin: 100px auto 0;
+}
+
+.servicelist {
+    width: 65%;
+    text-align: center;
+    font-family: 'Orbitron', serif;
+    color: white;
+    font-size: 25px;
+    margin: auto;
+    padding: 50px 0px;
+    border-spacing: 110px 40px;
+    max-width: 100%;
+}
+
+.servicelist th {
+    padding: 8px;
+    border-top: 5px double red;
+    border-bottom: 5px double red;
+    font-size: 35px;
+    margin: auto;
+    max-width: 100%;
+    color: white;
+    text-shadow: 2px 1px 0 red, -2px -1px 0 red, 2px -1px 0 red, -2px 1px 0 red, 2px 1px 0 red;
+}
+
+@media (min-width: 851px) {
+    
+    .mobile,
+    .navicon,
+    .navicon1,
+    .navicon2,
+    .navicon3,
+    #gallery,
+    .slogan,
+    #services,
+    .intromobile,
+    label {
+        display: none;
+    }
+    
+    #intro img {
+        width: 300px;
+    }
+    
+    .intro {
+        width: 800px;
+        margin: 100px auto 0px;
+        border: 5px;
+        border-color: red;
+        border-top-style: double;
+        padding: 10px;
+    }
+    
+    #myBtn {
+        margin-right: 30px;
+    }
+    
+    footer {
+        margin: 0px 100px;
+    }
+    
+    header img {
+        max-width: 100%;
+        margin: 20px;
+        margin: auto;
+        border: 2px double white;
+        border-radius: 12px;
+    }
+    
+    h1 {
+        margin: auto;
+        padding: 5px;
+        font-size: 65px;
+        border-bottom: 5px double red;
+        border-top: 5px double red;
+        width: 302px;
+        font-size: 60px;
+        text-align: center;
+        color: #b30000;
+        font-family: 'federant', serif;
+        letter-spacing: 2px;
+        text-shadow: 2px 3px 3px dodgerblue;
+        text-shadow: 1px 1px 0 dodgerblue, -1px -1px 0 dodgerblue, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    }
+    h2 {
+        line-height: 1.6;
+        font-size: 35px;
+        font-family: 'federant', serif;
+        font-style: italic;
+        margin: auto;
+        padding: 0px;
+        color: white;
+        text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+    }
+    .Name {
+        margin: auto;
+        font-size: 65px;
+        width: 500px;
+        text-align: center;
+        color: #b00;
+        font-family: 'Kaushan Script', serif;
+        letter-spacing: 2px;
+        text-shadow: .5px .5px 0 #fff;
+    }
+    
+    #Btn:hover {
+        margin: 30px auto;
+        font-weight: bolder;
+        color: #fff;
+        padding: 5px 20px;
+        background: #000;
+        font-family: 'Orbitron';
+        font-size: 22px;
+        border: 7px double #900;
+        box-shadow: 1px 1px 15px #f00, -1px 1px 15px #f00;
+        border-radius: 35px;
+        text-shadow: 1px 2px 0px #f00, -1px -2px 0px #f00, 1px -2px 0px #f00, -1px 2px 0px #f00;
+        cursor: pointer;
+    }
+    
+    #Btn {
+        margin: 30px auto;
+        color: white;
+        padding: 5px 20px;
+        background: #08c;
+        font-family: 'Orbitron';
+        font-size: 22px;
+        border: 7px double #046;
+        border-radius: 35px;
+        font-weight: bolder;
+        text-shadow: 1px 1px 1px black, -1px -1px 1px black, 1px -1px 1px black, -1px 1px 1px black;
+        -webkit-transition: background-color .8s ease-out;
+        -moz-transition: background-color .8s ease-out;
+        -o-transition: background-color .8s ease-out;
+        transition: background-color .8s ease-out;
+    }
+
+    
+    .modalDialog> div {
+        width: 55%;
+        position: relative;
+        margin: 100px auto;
+        padding: 0px 55px;
+        border-radius: 20px;
+        background: -moz-radial-gradient(#057, #012);
+        background: -webkit-radial-gradient( #057, #001920);
+        border: red solid 1px;
+        max-width: 100%;
+    }
+    
+    #modalImg {
         opacity: 1;
     }
-    100%{
-        opacity: 0;
-        transform: rotate(45deg) translate(20px,20px);
+    
+    #gallery img {
+        max-width: 100%;
+        margin: 100px 0px 15px;
     }
+    
+    #preloader{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0ff;
+        font-size: 25px;
+        font-family: 'Philosopher' ;
+        background: #000 url(NinoGif1.gif) no-repeat center center;
+        background-size: 20%;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 9999999999999999;
+        top: 0;
+        left: 0;
+    }
+    
+    #preloader p{
+        margin-top: 25%;
+        color: #0ac;
+        font-weight: bolder;
+    }
+    
+    #latest button{
+        border-radius: 20px;
+        padding: 3px 15px;
+        color: #000;
+        background: #0cf;
+        border: 8px double #035;
+        font-family: 'Federant';
+        font-weight: bolder;
+        box-shadow: 2px 2px 4px #013;
+        cursor: pointer;
+    }
+    
+    #latest button:hover{
+        background: #046;
+        color: #0df;
+        transition: .3s;
+        border: 8px double #0ac;
+    }
+    
+    #video1{
+        border-radius: 20px;
+    }
+
+}
+
+@media (max-width: 850px) {
+    
+    #latest button{
+        border-radius: 20px;
+        padding: 3px 10px;
+        color: #000;
+        background: #0ac;
+        border: 8px double #035;
+        font-family: 'Kanit';
+    }
+    
+    #video1{
+        border-radius: 100px;
+    }
+    
+    nav,
+    .desktop,
+    .intro,
+    .iconright,
+    #scrolldown,
+    label,
+    table {
+        display: none;
+    }
+    
+    #intro{
+        width: 200px;
+        margin: auto;
+    }
+    
+    #intro img{
+        width: 125px;
+        margin: 80px auto -100px;
+    }
+    
+    .intromobile {
+        max-width: 95%;
+        margin: 100px auto 0px;
+        border: 5px;
+        border-color: red;
+        border-bottom-style: double;
+        border-top-style: double;
+        padding: 10px;
+    }
+    
+    #services {
+        border-top: 3px double red;
+        padding: 20px 0px;
+    }
+    
+    .newsletter {
+        text-align: center;
+        padding-bottom: 100px;
+    }
+    
+    article img {
+        max-width: 18%;
+    }
+    
+    .slogan {
+        margin-top: 70px;
+        font-size: 28px
+    }
+    
+    h1 {
+        margin-top: 75px;
+        font-size: 50px;
+        text-align: center;
+        color: #b30000;
+        font-family: 'Federant', serif;
+        letter-spacing: 3px;
+        text-shadow: 2px 3px 3px dodgerblue;
+        text-shadow: 1px 1px 0 dodgerblue, -1px -1px 0 dodgerblue, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+    }
+    
+    h2 {
+        line-height: 1.6;
+        font-size: 25px;
+        padding-top: 10px;
+        font-family: 'federant', serif;
+        font-style: italic;
+        margin: auto;
+        color: white;
+        text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+    }
+    
+    .Name {
+        margin: 50px auto -60px;
+        font-size: 45px;
+        width: 320px;
+        text-align: center;
+        color: #b00;
+        font-family: 'Kaushan Script', serif;
+        letter-spacing: 2px;
+        text-shadow: .5px .5px 0 #fff;
+    }
+    
+    header h4 {
+        font-size: 28px;
+        font-family: 'federant';
+        color: #159;
+    }
+    
+    #Btn {
+        margin: 30px auto;
+        color: white;
+        padding: 5px 20px;
+        background: #07c;
+        font-family: 'Orbitron';
+        font-size: 20px;
+        border: 7px double #046;
+        border-radius: 35px;
+        text-shadow: 1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black, -1px 1px 2px black, 1px 1px 2px black;
+    }
+    
+    .modalDialog>div {
+        width: 400px;
+        position: relative;
+        margin: 20px auto;
+        padding: 0px 5px;
+        border-radius: 20px;
+        border: 1px solid red;
+        max-width: 90%;
+    }
+    
+    #gallery img {
+        max-width: 100%;
+        margin: 50px 0px 15px;
+    }
+}
+
+a:hover img {
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+    animation: shake 1.5s;
+    /* When the animation is finished, start again */
+    animation-iteration-count: 2.0s;
+}
+
+#gallery2 a:hover img {
+    /* Start the shake animation and make the animation last for 1 seconds */
+    animation: shake 1.5s;
+    /* When the animation is finished, start again */
+    animation-iteration-count: 2.0s;
+    opacity: 1;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+
+/* unvisited link */
+
+nav li a:link {
+    border: 8px double transparent;
+    padding: 10px 5px;
+    margin: 15px;
+    -webkit-transition: background-color, font-color .8s ease-out;
+    -moz-transition: background-color, font-color .8s ease-out;
+    -o-transition: background-color, font-color .8s ease-out;
+    transition: font-color, background-color .8s ease-out;
+    transition: 1s;
+}
+
+
+/* mouse over link */
+
+nav li a:hover {
+    color: white;
+    text-shadow: 1px 1px 2px red, -1px -1px 2px red, 1px -1px 2px red, -1px 1px 2px red;
+    transition: .5s;
+}
+
+h3 {
+    font-size: 25px;
+}
+
+h4 {
+    font-size: 35px;
+    color: red;
+    font-family: 'federant', serif;
+    text-shadow: 1px 1px 0 white, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+}
+
+#scrolldown {
+    margin: 50px auto 0px;
+    font-size: 45px;
+    text-align: center;
+    color: #b00;
+    font-family: 'Kaushan Script', serif;
+    text-shadow: .5px .5px 0 #fff;;
+}
+
+h5 {
+    color: darkred;
+    font-size: 20px;
+}
+
+p {
+    line-height: 1.6;
+    font-size: 20px;
+}
+
+a {
+    color: dodgerblue;
+    text-decoration: none;
+    font-weight: bolder;
+}
+
+a:hover {
+    text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+    color: white;
+}
+
+footer,
+section {
+    text-align: center;
+    font-family: 'Orbitron', serif;
+    color: white;
+    list-style-type: none;
+    text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+}
+
+label {
+    font-size: 25px;
+    text-align: center;
+    font-family: 'Orbitron', serif;
+    color: white;
+    list-style-type: none;
+    text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+}
+
+p,
+h3 {
+    text-align: center;
+    font-family: 'Orbitron', serif;
+    color: white;
+    list-style-type: none;
+}
+
+body {
+    background: url(Background.png);
+    background-size: 100% 100%;
+    margin: 20px;
+}
+
+header {
+    text-align: center;
+    max-width: 100%;
+    padding: 70px 0 0;
+}
+
+textarea,
+input {
+    font-family: 'federant', serif;
+    color: #000caf;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bolder;
+    max-width: 500px;
+}
+
+select {
+    font-family: 'federant', serif;
+    color: #034;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bolder;
+    max-width: 50%;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+
+::placeholder {
+    /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #034;
+    opacity: 1;
+    /* Firefox */
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #0051ff;
+}
+
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: #0051ff;
+}
+
+
+/* Style inputs with type="text", select elements and textareas */
+
+input[type=text],
+select,
+textarea {
+    margin: auto;
+    text-align: center;
+    background: #ddf9fd;
+    width: 90%;
+    /* Full width */
+    padding: 8px;
+    /* Some padding */
+    border: 8px double #034;
+    /* Gray border */
+    border-radius: 25px;
+    /* Rounded borders */
+    box-sizing: border-box;
+    /* Make sure that padding and width stays in place */
+    margin-top: 10px;
+    /* Add a top margin */
+    margin-bottom: 30px;
+    /* Bottom margin */
+    resize: vertical;
+    /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+select {
+    padding: 4px 8px;
+}
+
+
+/* Style the submit button with a specific background color etc */
+
+input[type=submit] {
+    margin: auto;
+    text-align: center;
+    font-size: 22px;
+    background: repeating-linear-gradient(to top, #023, #068, #0ac 100%);
+    color: white;
+    padding: 8px 30px;
+    border: 1px solid dodgerblue;
+    cursor: pointer;
+    border-radius: 25px;
+    box-shadow: 0px 5px 25px #079;
+    text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    -webkit-transition: background-color 1s ease-out;
+    -moz-transition: background-color 1s ease-out;
+    -o-transition: background-color 1s ease-out;
+    transition: background-color 1s ease-out;
+}
+
+
+/* When moving the mouse over the submit button, add a blue color */
+
+input[type=submit]:hover {
+    margin: auto;
+    text-align: center;
+    border: 1px solid lime;
+    background: repeating-linear-gradient(to top, #030, #070, lightgreen 100%);
+    border-radius: 25px;
+    box-shadow: 0px 5px 25px lightgreen;
+    text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+
+
+/* Add a background color and some padding around the form */
+
+.container {
+    border-radius: 25px;
+    width: 650px;
+    max-width: 95%;
+    margin: 50px auto;
+}
+
+.projects img {
+    max-width: 100%;
+    margin: 100px 0px 15px;
+    opacity: 1;
+}
+
+#gallery,
+#gallery2 {
+    max-width: 100%;
+    text-align: center;
+    font-size: 25px;
+    padding-bottom: 50px;
+    margin: auto;
+}
+
+.gallery2 h2 {
+    margin-top: 50px;
+    font-size: 35px;
+    padding: 10px;
+    width: 350px;
+    text-decoration: underline max-width: 100%;
+    text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+}
+
+#form {
+    padding: 75px 0px 40px;
 }
 
 #myBtn {
-    color: #0ac;
-    transform: rotate(180deg);
-    font-size: 40px;
-    margin-right: 20px;
     display: none;
     /* Hidden by default */
     position: fixed;
@@ -297,2657 +783,228 @@ html {
     /* Remove outline */
     cursor: pointer;
     /* Add a mouse pointer on hover */
-    padding: 0 9px;
+    padding: 15px;
     /* Some padding */
     border-radius: 50px;
     /* Rounded corners */
-    border: 1px solid transparent;
-    background: transparent;
-}
-
-#myBtn:hover {
-    transition: 1s;
-    border-color: white;
-    background: transparent;
-    color: white;
-}
-
-@-webkit-keyframes fadeOut {
-    100% {
-        opacity: 1;
-    }
-    0% {
-        opacity: 0;
-    }
-}
-
-@keyframes fadeOut {
-    100% {
-        opacity: 1;
-    }
-    0% {
-        opacity: 0;
-    }
-}
-
-.fadeOut {
-    -webkit-animation-name: fadeOut;
-    animation-name: fadeOut;
-}
-
-.sidenav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    right: 0;
-    background: url(Wide2.jpg)center top no-repeat, url(Wide.jpg)center bottom no-repeat;
-    background-size: 115% 50%;
-    overflow-x: hidden;
-    transition: .8s;
-    padding-top: 50px;
-    font-family: 'Philosopher';
-    font-weight: bold;
-}
-
-.sidenav a {
-    font-size: 24px;
-    color: white;
-    transition: 1s;
-    max-width: 100%;
-    margin-bottom: 60px;
-    text-align: center;
-    text-shadow: 1px 1px 0 red, -1px -1px 0 #800, 1px -1px 0 #800, -1px 1px 0 #800, 1px 1px 0 #800;
-    text-decoration: none;
-}
-
-.sidenav a:hover {
-    color: #08a;
-    text-shadow: 1px 1px 0 tan, -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
-}
-
-.sidenav .closebtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: -5px;
-    right: 2px;
-    font-size: 40px;
-    text-decoration: none;
-}
-
-.sidelink{
-        width: 85px;
-        margin: 0px auto 96px;
-    }
-
-.burger{
-    transition: 1.5s;
-    float: right;
-    margin: -60px 20px 0 0;
-    background: none;
-    border: none;
-}
-
-.burger span{
-    display: block;
-    width: 43px;
-    height: 7px;
-    margin-bottom: 5px;
-    background: linear-gradient(to left, #034, #068, #09b, #0cf, #09b, #068, #034);
-    z-index: 1;
-    box-shadow: 0px 0px 2px #000;
-    border: .5px solid #000;
-}
-
-.burger:hover{
-    cursor: pointer;
-    filter: drop-shadow(0px 0px 10px #0ac);
-    transition: 1.5s;
-}
-
-#top{
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-}
-
-#middle{
-    border-radius: 3px;
-}
-
-#bottom{
-    border-bottom-right-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-.navicon {
-    float: right;
-    width: 44px;
-    height: 35px;
-    margin: 28px 20px 10px 0;
-    cursor: pointer;
-    filter: drop-shadow(0px 0px 0px #000);
-}
-
-ul, li{
-    float:right;
-    display: flex;
-    flex-direction: row-reverse;
-    text-decoration: none;
-    color: white;
-    text-transform: uppercase;
-}
-
-ul{
-    margin-top: -55px;
-    margin-right: 30px;
-    width: 55%;
-}
-
-li{
-    margin: 0 0px;
-    font-family: 'Philosopher';
-    letter-spacing: 1px;
-}
-
-li a{
-    transition: 1s;
-    padding: 5px 0;
-    text-decoration: none;
-    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    text-decoration: none;
-    
-}
-
-li a:hover{
-    padding: 5px 0;
-    transition: .5s;
-    color: #0ff;
-    text-shadow: .5px .5px 0 #fff, -1px -1px 0 #300, 1px -1px 1px #300, -1px 1px 0 #300, 1px 1px 0 #300;
-}
-
-.dropdown {
-    position: relative;
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    top: 9px;
-    width: 100px;
-    padding: 0 10%;
-}
-
-.dropdown-text {
-    cursor: pointer;
-    position: absolute;
-    width: 100%;
-    margin: -1px 40% 0 70%;
-}
-
-.dropdown-text span{
-    font-size: 20px;
-    margin: 1px 2px 0;
-    transform: rotate(-90deg);
-    color: #0ff;
-}
-
-.dropdown-text,
-.dropdown-content a {
-    color: #fff;
-    font-family: 'Philosopher';
-    font-size: 25px;
-    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
-
-.dropdown-text:hover{
-    transition: .5s;
-    color: #0ce;
-    text-shadow: .5px .5px 0 #fff, -1px -1px 0 #300, 1px -1px 1px #300, -1px 1px 0 #300, 1px 1px 0 #300;
-}
-
-.dropdown-toggle {
-    font-size: 0;
-    z-index: 1;
-    cursor: pointer;
-    position: absolute;
-    top: -10px;
-    border: none;
-    padding: 0;
-    background: transparent;
-    height: 44px;
-    width: 80%;
-}
-
-.dropdown-toggle:focus {
-    outline: 0;
-}
-
-.dropdown-content {
-    -webkit-transition: all .25s ease;
-    -moz-transition: all .25s ease;
-    -ms-transition: all .25s ease;
-    -o-transition: all .25s ease;
-    transition: all .5s ease;
-    position: absolute;
-    top: 22px;
-    padding: 0 10px;
-    margin: 0 0 0 40px;
-    opacity: 0;
-    visibility:hidden;
-    line-height: 32px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.dropdown-content a {
-    padding: 10px 60px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: -9.5px;
-    font-size: 18px;
-    width: 100px;
-    background: #600;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    text-transform: none;
-}
-
-.dropdown-toggle:focus ~ .dropdown-text {
-    z-index: 2;
-}
-
-.dropdown-content:hover,
-.dropdown-toggle:focus ~ .dropdown-content {
-    opacity: 1;
-    visibility:visible;
-    top: 42px;
-}
-
-.dropdown-content a:hover{
-    padding: 10px 60px;
-}
-
-#stage {
-    position: fixed;
-    margin: 3px auto;
-    width: 100%;
-    z-index: -1;
-}
-
-#stage img:nth-of-type(1) {
-    animation-name: fader;
-    animation-delay: 3s;
-    animation-duration: 4s;
-    z-index: 20;
-}
-
-#stage img:nth-of-type(2) {
-    z-index: 10;
-}
-
-#stage img:nth-of-type(n+3) {
-    display: none;
-}
-
-@keyframes fader {
-    from {
-        opacity: 1.0;
-    }
-    to {
-        opacity: 0.0;
-    }
-}
-
-.space{
-    height: 750px;
-}
-
-.desknav img{
-    width: 35px;
-    padding: 0 8px 8px 0;
-}
-
-.dropdown-text img{
-    width: 35px;
-    height: 30px;
-    padding: 3px 8px 3px 0;
-}
-
-nav {
-    top:0;
-    position: fixed;
-    width: 100%;
-    max-width: 1500px;
-    margin: auto;
-    height: 80px;
-    z-index: 10;
-}
-
-.logoburger {
-    width: 55px;
-    height: 55px;
-    margin: 11px 10px 0 20px;
-    float: left;
-    filter: drop-shadow(1px 4px 1px #000);
-    -webkit-transition: width 2s, height 2s, -webkit-transform 1.5s;
-    /* Safari */
-    transition: width 2s, height 2s, transform 1.5s;
-}
-
-.logoburger:hover {
-    -webkit-transform: rotate(360deg);
-    /* Safari */
-    transform: rotate(360deg);
-}
-
-.logo img{
-    float: left;
-    margin: 22px 0;
-    width: 150px;
-    height: 30px;
-    filter: drop-shadow(2px 4px 1px #010);
-}
-
-h1 {
-    width: 100%;
-    color: white;
-    text-align: center;
-    font-family: 'Philosopher';
-    padding: 15px 20px 0px 20px;
-    font-weight: bolder;
-    margin: 0px auto;
-    letter-spacing: 1px;
-}
-
-#info {
-    background: linear-gradient(to top, #034, #046, #068, #046, #034);
-    background-size: 100% .25%;
-    display: flex;
-    max-width: 100%;
-    margin: 0px auto;
-    text-align: center;
-    padding-bottom: 20px;
-    flex-direction: column;
-    padding-bottom: 50px;
-}
-
-.pandemic{
-    width: 800px;
-    height: 300px;
-    margin: 20px auto;
-    background: url(Pandemic.jpeg);
-    background-size: 100% 100%;
-    border-radius: 20px;
-    box-shadow: 4px 6px 8px #000;
-}
-
-.pandemic h2 {
-    margin-top: 40px;
-    color: #fff;
-    font-family: 'Philosopher';
-    font-size: 24px;
-    width: 350px;
-    padding-left: 65px;
-    text-shadow: 
-        1px 1px 0px #000;
-}
-
-.media h2{
-    margin-top: 40px;
-    margin-left: -450px;
-    color: #fff;
-    font-family: 'Philosopher';
-    font-size: 24px;
-    width: 350px;
-    padding-left: 65px;
-    text-shadow: 
-        1px 1px 0px #000;
-}
-
-.presence{
-    background: url(Presence.jpeg);
-}
-
-.media{
-    background: url(Online.jpeg) 20% 30%;
-}
-
-.commerce{
-    background: url(Ecommerce.jpg);
-    background-size: 100% 110%;
-}
-
-.presence, .media, .commerce{
-    width: 800px;
-    height: 300px;
-    margin: 75px auto;
-    border-radius: 20px;
-    box-shadow: 4px 6px 8px #000;
-}
-
-.presence h2{
-    margin-top: 40px;
-    color: #fff;
-    font-family: 'Philosopher';
-    font-size: 24px;
-    width: 800px;
-    padding-left: 495px;
-    padding-right: 20px;
-    text-shadow: 
-        2px 1px 0px #000;
-}
-
-.commerce h2{
-    margin-top: 40px;
-    color: #fff;
-    font-family: 'Philosopher';
-    font-size: 24px;
-    width: 800px;
-    padding-top: 50px;
-    padding-left: 495px;
-    padding-right: 20px;
-    text-shadow: 
-        2px 1px 0px #000;
-}
-
-#intro {
-    width: 100%;
-    max-width: 1500px;
-    height: 550px;
-    margin: auto;
-    margin-bottom: 198px;
-}
-
-#intro img {
-    width: 100%;
-    max-width: 1500px;
-    margin: 76px auto;
-    height: 668px;
-    position: absolute;
-}
-
-.services{
-    margin: 100px auto 50px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 50px;
-}
-
-.cafe h4,
-.restaurant h4,
-.pastry h4{
-    font-family: 'Philosopher';
-    margin: 0 0 -10px;
-    
-} 
-
-.cafe,
-.restaurant,
-.pastry {
-    width: 75%;
-    padding: 30px;
-    text-align: center;
-    font-family: 'Philosopher';
-    font-size: 22px;
-    font-weight: bolder;
-    color: white;
-    border: 2px double transparent;
-    border-radius: 30px;
-    box-shadow: 15px 15px 1px transparent;
-}
-
-.restaurant img {
-    width: 130px;
-    height: 65px;
-    padding: 8px;
-    margin: 20px auto 0;
-    filter: drop-shadow(2px 4px 1px #010);
-}
-
-.cafe img {
-    width: 100px;
-    height: 80px;
-    padding: 10px;
-    filter: drop-shadow(2px 4px 1px #010);
-}
-
-.pastry img {
-    width: 72px;
-    height: 75px;
-    padding: 10px 8px;
-    margin: 8px 0 0;
-    filter: drop-shadow(2px 4px 1px #010);
-}
-
-.cafe:hover,
-.restaurant:hover,
-.pastry:hover {
-    cursor: default;
-}
-
-.cafe .details,
-.restaurant .details,
-.pastry .details {
-    width: 95%;
-    border: 1.5px solid #000;
-    height: auto;
-    padding: 5px 15px 10px;
-    position: absolute;
-    content: "";
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotateY(90deg);
-    transform-origin: 50%;
-    opacity: 0;
-    transition: all 0.6s ease-in;
-    font-size: 20px;
-    border-radius: 24px;
-    box-shadow: 4px 8px 8px #000;
-    background: -moz-linear-gradient(135deg, #056 5%, #800 100%);
-    background: -webkit-linear-gradient(135deg, #056 5%, #800 100%);
-    background: linear-gradient(90deg, #012, #034, #046, #046, #034, #012 );
-    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#056', endColorstr='#800', GradientType=1);
-}
-
-.cafe:hover .details,
-.restaurant:hover .details,
-.pastry:hover .details {
-    transform: translate(-50%, -50%) rotateY(0deg);
-    opacity: 1;
-}
-
-.consult{
-    margin: 30px 0 0 40%;
-    width: 120px;
-}
-
-#Btn {
-    transition: .5s;
-    color: #fff;
-    padding: 2px;
-    background: #09b;
-    border: .5px solid transparent;
-    width: 120px;
-    border-radius: 3px;
-    font-family: 'Orbitron';
-    font-weight: bolder;
-    font-size: 15px;
-    letter-spacing: .5px;
-    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
-
-#Btn a{
-    text-decoration: none;
-}
-
-#Btn:hover {
-    background: #023;
-    border: .5px solid #079;
-    padding: 2px;
-    cursor: pointer;
-    font-weight: bolder;
-    color: #0ce;
-    text-shadow: 1px 1px 0 white, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-    box-shadow: 1px 1px 10px #0ce;
-}
-
-
-.Btn1{
-    transition: .3s;
-    cursor: pointer;
-    padding: 1px 20px;
-    color: white;
-    border-radius: 5px;
-    border: 1.5px solid #068;
-    background: repeating-linear-gradient(to top, #046, #09b, #0ce 100%);
-    box-shadow: 2px 4px 8px #000, -2px 4px 8px #000;
-}
-
-.Btn1:hover{
-    transition: .3s;
-    color: #0ac;
-    background: #023;
-    text-shadow: 1px 1px 0 white, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-    box-shadow: 0px 0px 10px #0ce;
+    border: 1px solid red;
+    background: url("redarrow.png");
 }
 
 .ninoSite{
-    width: 450px;
-    margin: auto;
+        width: 250px;
+        margin: auto;
 }
 
 .servLink button{
-    background: #0ce;
+    background: transparent;
     text-shadow: 2px 2px 4px #000;
-    width: 450px;
-    margin:auto;
+    width: 250px;
+    margin: auto;
     border-radius: 10px;
     font-size: 30px;
     box-shadow: 0px 2px 8px #012;
+    padding: 20px;
+    cursor: pointer;
 }
 
 .servLink img{
-    width: 45px;
-    margin: 5px;
+    width: 200px;
 }
 
-.cform label {
-    font-size: 20px;
+.projects {
+    margin: auto;
+}
+
+.projects td {
+    font-size: 25px;
+    padding: 120px;
     text-align: center;
-    font-family: 'Philosopher', serif;
     color: white;
-    list-style-type: none;
+}
+
+.newsletter {
+    text-align: center;
+}
+
+#myBtn:hover {
+    border-color: dodgerblue;
+    background: url("bluearrow1.png");
+}
+
+form {
+    margin: 30px auto;
+    text-align: center;
+}
+
+footer {
+    border-top: 5px double red;
+    text-align: center;
+    padding-top: 10px;
+    font-family: 'quintessential', cursive;
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+.modalDialog {
+    margin: auto;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 99999999999 !important;
+    opacity: 0;
+    -webkit-transition: opacity 600ms ease-in;
+    -moz-transition: opacity 600ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: none;
+}
+
+.modalDialog:target {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.close {
+    font-family: 'federant';
+    background: -webkit-radial-gradient( orange, red, #200);
+    max-width: 100%;
+    border: .5px hidden black;
+    color: white;
+    line-height: 29px;
+    position: absolute;
+    right: -12px;
+    text-align: center;
+    top: -10px;
+    width: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 25px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
+    text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+
+.close:hover {
+    background: black;
+    max-width: 100%;
+    border: .5px solid red;
+    color: black;
     text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
 }
 
-.cform textarea,
-.cform input {
-    font-family: 'Philosopher', serif;
-    color: red;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bolder;
-    width: 300px;
-    opacity: .8;
-}
-
-.cform select {
-    font-family: 'Philosopher', serif;
-    color: #800;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bolder;
-    max-width: 50%;
-    box-sizing: border-box;
-    background: #fff;
-}
-
-::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #800;
-    opacity: 1;
-    font-family: 'Philosopher';
-    /* Firefox */
-}
-
-:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: red;
-}
-
-::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: red;
-}
-
-
-/* Style inputs with type="text", select elements and textareas */
-
-input[type=text],
-select,
-textarea {
-    margin: auto;
-    text-align: center;
-    width: 85%;
-    /* Full width */
-    padding: 5px;
-    /* Some padding */
-    border: 6px double #600;
-    /* Gray border */
-    border-radius: 15px;
-    /* Rounded borders */
-    box-sizing: border-box;
-    /* Make sure that padding and width stays in place */
-    margin-top: 10px;
-    /* Add a top margin */
-    margin-bottom: 20px;
-    /* Bottom margin */
-    resize: vertical;
-    /* Allow the user to vertically resize the textarea (not horizontally) */
-}
-
-.cform{
-    margin: 140px auto 0;
-    width: 60%;
-    text-align: center;
-    color: white;
-}
-
-.cform textarea{
-    height: 100px;
-}
-
-.cform textarea, .cform input[type=text]{
-    width: 60%;
-    margin: 50px 0 0 0;
-    color: #08a;
-    background: #fff;
-}
-
-.cform textarea:hover, .cform input[type=text]:hover,.cform selct:hover{
-    border: 6px double #068;
-}
-
-.cform textarea:focus, .cform input[type=text]:focus,.cform selct:focus{
-    border: 6px double #068;
-}
-
-.cform input[type=submit]{
-    width: 25%;
-    width: 35%;
-    text-align: center;
-    font-size: 20px;
-    background: linear-gradient(45deg, #0ac, #f00);
-    color: white;
-    padding: 2px 20px;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0px 5px 25px black;
-    text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-    font-family: 'Orbitron';
-}
-
-.cform input[type=submit]:hover{
-    text-align: center;
-    color: #0ff;
-    background: linear-gradient(45deg, #f00, #0ac);
-    text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-}
-
-.cform select{
-    color: #800;
-    margin: 50px 0 0 0;
-    width: 40%;
-    padding: 4px 10px;
-}
-
-.cform h2{
-    font: 35px 'Philosopher';
-    margin: 20px 0 -20px 0;
-}
-
-.website {
-    color: #fff;
-    width: 75%;
-    font-size: 25px;
-    background: linear-gradient(315deg, #002632, #002d3c);
-    box-shadow:  -12px -8px 28px #000,
-                12px 8px 28px #079;
-    margin: -15px auto;
-    padding: 20px;
-    border-radius: 20px;
-}
-
-.website h1{
-    color: #e00;
-    font-size: 34px;
-    text-align: center;
-    background: transparent;
-    box-shadow: none;
-    padding: 10px 0 0;
-    text-decoration: underline;
-    text-shadow: 1px 1px 0px #fff,
-                -1px -1px 0px #000;
-    text-underline-position: under;
-}
-
-.website h2{
-    font-family: 'Philosopher';
-    margin: 25px;
-}
-
-.plans{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 100px;
-}
-
-.stars{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    float: left;
-    margin-top: -70px;
-}
-
-.star-1, .star-3{
-    width: 60px;
-    height: 60px;
-    margin-top: 20px;
-}
-
-.star-2{
-    width: 75px;
-    height: 75px;
-    z-index: 9;
-}
-
-.star-3{
-    margin-left: -25px;
-    transform: rotate(25deg)
-}
-
-.star-1{
-    margin-right: -25px;
-    transform: rotate(-25deg)
-}
-
-.star{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 65px;
-    height: 65px;
-    margin: 20px auto;
-    border-radius: 50px;
-    padding: 10px;
-    border: 4px solid #08a;
-    filter: drop-shadow(0px 3px 1px #010);
-}
-
-.star img{
-    margin: 0 0 5px 0px;
-    width: 75px;
-    -webkit-transition: width 2s, height 2s, -webkit-transform 1.5s;
-    /* Safari */
-    transition: width 2s, height 2s, transform 1.5s;
-}
-
-.star img:hover {
-    -webkit-transform: rotate(360deg);
-    /* Safari */
-    transform: rotate(360deg);
-    filter: drop-shadow(0px 0px 0px transparent);
-}
-
-.check{
-    width: 35px;
-    height: 25px;
-    filter: drop-shadow(2px 2px 1px #000);
-}
-
-.items{
-    text-align: left;
-    margin: 20px auto 50px;
-    width: 75%;
-    background: linear-gradient(90deg, #023, #034, #057, #057, #034, #023);
-    padding: 10px 25px 0px 25px;
-    border-radius: 15px;
-    text-shadow: 2px 2px 1px #000;
-    box-shadow: 2px 4px 8px #000;
-}
-
-.items h4{
-    font-family: 'Philosopher';
-    color: #fff;
-    margin-left: 18%;
-}
-
-.basic, .pro, .prime{
-    text-decoration: none;
-    margin: 20px;
-    width: 33%;
-    color: white;
-    text-align: center;
-    border-radius: 20px;
-    background: #057;
-    box-shadow: inset 6px 6px 12px #002230,
-            inset -6px -6px 12px #0088be;
-}
-
-.basic h1{
-    color: #0bf;
-}
-
-.prime h1{
-    color: #fc0;
-}
-
-.plans h1{
-    text-shadow: 2px 2px 0px #000;
-    letter-spacing: 2.5px;
-    font-weight: bolder;
-    text-decoration: underline;
-    padding: 0px;
-}
-
-.plans h3{
-    letter-spacing: 2.5px;
-    margin: 0;
-    color: #0f0;
-    font-family: 'Orbitron';
-    font-size: 35px;
-    margin-bottom: -10px;
-    font-weight: bolder;
-    text-shadow: 2px 2px 1px #000;
-    
-}
-
-.plans sup{
-    font-size: 20px;
-}
-
-.servLink{
-    text-decoration: none;
-}
-
-.servLink h1{
-    width: 350px;
-    background: #034;
-    padding: 5px;
-    border-radius: 35px;
-    box-shadow:  -12px -8px 28px #000,
-                12px 8px 28px #079;
-}
-
-h6{
-    font-family: 'Philosopher';
-    margin: 0;
-    font-size: 15px;
-}
-
-.bio{
-    background: linear-gradient(315deg, #00303d, #034);
-    box-shadow:  -10px -10px 20px #000,
-             10px 10px 20px #004769;
-    background-size: 100% 100%;
-    width: 60%;
-    height: 100%;
-    border-radius: 20px;
-    margin: 200px auto 100px;
-    border: 1px solid #046;
-}
-
-
-.bio h1{
-    padding-top: 50px;
-    color: #fff;
-    font-family: 'Philosopher', serif;
-    font-size: 52px;
-    letter-spacing: 3px;
-    text-shadow: 1px 0px 1px #fff, -1px 0px 1px #fff;
-    font-weight: lighter;
-}
-
-.bio h2{
-    color: #fff;
-    font-family: 'Philosopher', serif;
-    font-size: 20px;
-    padding: 20px 100px 80px;
-}
-
-.nino{
-    width: 50%;
-    float: right;
-    margin: -130px 15%;
-}
-
-.nino img{
-    width: 80px;
-    height: 130px;
-    transform: rotate(-1deg);
-    filter: drop-shadow(-2px -2px 20px #000);
-}
-
-.piero img{
-    width: 75px;
-    height: 125px;
-    transform: rotate(2deg);
-    filter: drop-shadow(2px 2px 20px #000);
-}
-
-.piero{
-    width: 22%;
-    float: right;
-    margin: -85px 30%;
-    z-index: 99
-}
-
-.logolinks{
-    margin: -20px auto;
-}
-
-.logolinks h1{
-    background: linear-gradient(315deg, #00303d, #034);
-    box-shadow:  -5px -5px 15px #000,
-             5px 5px 15px #068;
-    border: 1px solid #046;
-    border-radius: 15px;
-    width: 305px;
-    margin: 0 auto 100px;
-    padding: 15px 0 20px 0;
-    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-}
-
-.logolinks img{
-    width: 200px;
-    filter: drop-shadow(2px 2px 10px #000);
-}
-
-.logos{
-    width: 95%;
-    margin: 50px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logos a{
-    margin: 0 50px;
-}
-
-#pinecrest img{
-    width: 175px;
-}
-
-#footer {
-    position: relative;
-    width: 100%;
-    margin: 20px auto;
-    bottom: 0;
-    z-index: -1;
-}
-
-#footer img {
-    width: 75px;
-}
-
-#footer p {
-    text-align: center;
-    color: #0bb;
-    font-family: 'Quintessential';
-    font-size: 24px;
-    margin: 100px 0 0;
-    filter: drop-shadow(2px 2px 1px #000);
-}
-
 #preloader{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #0ff;
-    font-size: 25px;
-    padding-top: 25%;
-    font-family: 'Philosopher' ;
-    background: #000 url(menugif.gif) no-repeat center center;
-    background-size: 20%;
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    z-index: 9999999999999999;
-    top: 0;
-}
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0ff;
+        font-family: 'Philosopher' ;
+        background: #000 url(NinoGif1.gif) no-repeat center center;
+        background-size: 20%;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 9999999999999999;
+        top: 0;
+        left: 0;
+    }
 
+#preloader p{
+        margin-top: 30%;
+        color: #0ac;
+        font-weight: bolder;
+        font-size: 20px;
+    }
+    
 
-/*=======================================*/
-
-
-/*=======================================*/
-
-@media (max-width: 1000px) and (min-width: 601px) {
-    .mconsult
-    article,
-    .mobile,
-    ul {
+@media (max-width: 600px) {
+    
+    label,
+    #scrolldown {
         display: none;
     }
-    #Btn {
-        font-size: 12px;
+    .container {
+        margin-top: 0;
+    }
+    #contact {
+        margin: auto;
         width: 200px;
-        margin: 30px 12%;
+        height: 150px;
+        padding: 15px 0px 0px 0px;
+    }
+    #openModal99 {
+        padding: 150px 0;
+    }
+    #openModal19,
+    #openModal9,
+    #openModal7,
+    #openModal12,
+    #openModal15,
+    #openModal16 {
+        padding-top: 100px;
+    }
+    #openModal2,
+    #openModal4,
+    #openModal5,
+    #openModal6,
+    #openModal14 {
+        padding-top: 50px;
+    }
+    .Name {
+        margin-top: 60px;
+    }
+    .intromobile {
+        margin-top: 50px;
+    }
+    #subscription {
+        background-size: 100% 80%;
+    }
+    #Btn {
+        font-size: 22px;
+        font-family: 'federant';
+    }
+    .modalDialog>div {
+        width: 80%;
+        position: relative;
+        margin: 20px auto;
+        padding: 0px 15px;
+        border-radius: 20px;
+        background: -moz-radial-gradient(#057, #012);
+        background: -webkit-radial-gradient( #057, #001920);
+        border: red solid 1px;
+        max-width: 100%;
     }
     
-    .sidenav .closebtn{
-        margin: -5px 12px;
-        height: 75px;
-        width: 50px;
+    input[type=text],
+    select,
+    textarea {
+       margin-bottom: 0px; 
     }
     
-    .dconsult {
-        width: 70px;
+    form{
+        margin-top: 0px;
     }
     
-    .pandemic{
-        width: 550px;
-        background-size: 105% 100%;
-    }
-    
-    .pandemic h2{
-        width: 280px;
-        font-size: 23px;
-        padding: 0 0 0 30px;
+    input[type=submit]{
         margin-top: 40px;
     }
     
-    .presence{
-        width: 550px;
-        background: url('Presence.jpeg') 40%;
-    }
-    
-    .media{
-        width: 550px;
-        background: url('Online.jpeg') 32% 45%;
-    }
-    
-    .commerce{
-        width: 550px;
-    }
-    
-    .presence h2{
-        width: 530px;
-        font-size: 23px;
-        padding: 0 0 0 330px;
-        margin-top: 30px;
-    }
-    
-    .media h2{
-        width: 600px;
-        padding: 0 65px 0 295px;
-        margin-top: 5px;
-    }
-    
-    #intro {
-        margin: auto;
-        height: 537px;
-        max-width: 100%;
-    }
-    #intro h1 {
-        font-size: 32px;
-        margin: 20px auto;
-        max-width: 100%;
-    }
-    #intro img {
-        margin: 76px auto;
-        max-width: 100%;
-        height: 460px;
-    }
-    
-    .space{
-        height: 0;
-    }
-    
-    h1 {
-        font-size: 28px;
-        margin: 0px;
-    }
-    
-    .website{
-        margin-bottom: 50px;
-    }
-    
-    .website h2{
-        font-family: 'Philosopher';
-        margin: 20px;
-        font-size: 24px
-    }
-    
-    .items{
-        margin-bottom: 20px;
-    }
-    
-    .items h4{
-        line-height: .5;
-        margin: 10px 0 0 -20px;
-    }
-    
-    .items img{
-        width: 28px;
-        height: 20px;
-    }
-    
-    .services{
-        flex-direction: row;
-        margin: 150px 10px 70px 0;
-        padding: 0;
-    }
-    
-    #info {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    
-    .cafe,
-    .restaurant,
-    .pastry {
-        width: 400px;
-        margin: auto;
-        margin-bottom: 20px;
-        border: 
-    }
-    .cafe .details,
-    .restaurant .details,
-    .pastry .details {
-        padding: 10px;
-        max-width: 100%;
-        height: auto;
-    }
-    
-    .cafe:hover,
-    .restaurant:hover,
-    .pastry:hover {
-        border: 2px solid transparent;
-        cursor: pointer;
-        box-shadow: 15px 15px 5px transparent;
-    }
-    
-    .cform{
-        width: 75%;
-    }
-    
-    .items{
-        width: 90%;
-    }
-    
-    .items h4{
-        font-size: 16px;
-    }
-    
-    .logolinks h1{
-        background: linear-gradient(315deg, #00303d, #034);
-        box-shadow:  -5px -5px 15px #000,
-                 5px 5px 15px #068;
-        border-radius: 15px;
-        width: 255px;
-        margin: auto;
-        padding: 15px 0 20px 0;
-    }
-    
-    .logos a{
-        margin: 15px;
-    }
-    
-}
-
-
-/*=======================================*/
-
-
-/*=======================================*/
-
-@media (max-width: 801px){
-    
-    .splash{
-        background: #4c131e;
-    }
-    
-    .plans{
-        flex-direction: column;
-    }
-    
-    .basic, .pro, .prime{
-        width: 90%;
-        margin: 50px auto;
-    }
-    
-    .items{
-        width: 80%;
-    }
-    
-    .plans h1{
-        background: transparent;
-        box-shadow: none;
-        width: 100px;
-        font-size: 30px;
-        margin: 0px auto;
-    }
-    
-    .services{
-        margin-bottom: 50px;
-    }
-    
-    #preloader{
-        font-size: 16px;
-    }
-}
-
-/*=======================================*/
-
-
-/*=======================================*/
-
-@media (min-width: 601px) and (max-width: 800px){
-    .dconsult{
-        display: none;
-    }
-    
-    #Btn{
-        margin-top: 22px;
-        width: 130px;
-        font-size: 14px;
-        padding: 3px;
-    }
-    
-    #Btn:hover{
-        padding: 4px;
-    }
-    
-    .items{
-        width: 65%;
-        padding: 30px 0px 10px 120px;
-    }
-    
-    .items h4{
-        font-size: 18px;
-    }
-    
-    .contentBox{
-        margin-top: 70px;
-        width: 400px;
-        height: auto;
-        flex-direction: column;
-    }
-    
-    .contentBox .imgBx{
-        height: 220px;
-        margin: auto;
-        transform: translateY(-50px);
-    }
-    
-    .contentBox .imgBx::before{
-        background: #fff;
-        box-shadow: none;
-        width: 300px;
-        left: 0px;
-        top: 5px;
-    }
-    
-    .contentBox .imgBx img{
-        position: relative;
-        top: 18px;
-        left: 0px;
-        width: 175px;
-        height: 210px;
-    }
-    
-    .contentBox .content{
-        height: auto;
-        text-align: center;
-        padding: 50px 20px;
-        padding-top: 10px;
-        font-size: 16px;
-        margin: -5px auto;
-    }
-    
-    .contentBox .content p{
-        font-size: 20px;
-        margin: 10px auto 30px;
-        font-family: 'Philosopher';
+    #preloader p{
+        margin-top: 35%;
+        color: #0ac;
         font-weight: bolder;
-        line-height: 1.3;
-    }
-    
-    .contentBox .content h3{
-        font-weight: bolder;
-        font-size: 50px;
-        margin: -40px 0 15px;
-    }
-    
-    .contentBox .content h2{
-        font-family: 'righteous';
-        font-weight: bolder;
-        width: 300px;
-        margin-bottom: -5px;
-        letter-spacing: 4px;
-    }
-    
-    .contentBox .content a{
-        margin: 10px auto 0;
-        font-weight: bolder;
-        font-size: 18px;
-    }
-    
-    .closex{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 35px;
-        top: 8px;
-        right: 6px;
-        background: white;
-        width: 40px;
-        height: 40px;
-        padding-bottom: 8px;
-        filter: drop-shadow(0px 0px 1px transparent);
-    }
-    
-    #info{
-        margin-top: 4px;
-    }
-    
-    #info h1{
-        width: 480px;
-        background: linear-gradient(to top, #034, #046, #068, #046, #034);
-        background-size: 100% 7.1%;
-        border-bottom: 2px solid #023;
-        margin: -25px auto;
-        border-radius: 50px;
-        padding: 5px 0px;
-    }
-    
-    .plans{
-        width: 90%;
-        margin: 0px auto 50px;
-    }
-    
-    .basic, .pro, .prime{
-        padding-bottom: 50px;
-    }
-    
-    .services{
-        margin: 120px 0 75px 0;
-    }
-    
-    .cafe .details,
-    .restaurant .details,
-    .pastry .details {
-        padding: 0px 10px 20px;
-        border-radius: 15px;
-        font-size: 16px;
-        width: 320px;
-        height: auto;
-    }
-    
-    .cform input[type=submit]{
-        width: 30%;
-        margin: 30px;
-    }
-    
-    .cform{
-        margin-bottom: -50px;
-    }
-    
-    .mconsult{
-        margin: 0px 50%;
-    }
-    
-    .presence h2{
-        padding: 25px 16px 0 345px;
-        width: 100%;
-    }
-    
-    .pandemic h2{
-        padding: 45px 25px;
-    }
-    
-    .media  h2{
-        width: 100%;
-        margin-left: -270px;
-        padding: 27px 50px 10px 290px;
-    }
-    
-    .commerce h2{
-        width: 100%;
-        padding: 25px 10px 10px 320px;
-    }
-    
-    .website{
-        width: 85%
-    }
-    
-    .star{
-        margin: 25px auto 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 54px;
-        height: 54px;
-        border: 2px solid #0ac;
-    }
-    
-    .star img{
-        width: 65px;
-        margin: 0 0 6px 0;
-    }
-    
-    .piero img{
-        width: 60px;
-        height: 100px;
-    }
-    
-    .nino img{
-        width: 70px;
-        height: 110px;
-    }
-    
-    .piero{
-        margin: -55px 3%;
-    }
-    
-    .nino{
-        margin: -100px -15%;
-    }
-    
-    .bio{
-        width: 85%;
-    }
-    
-    .bio h1{
-        font-size: 35px;
-        padding-top: 50px;
-    }
-    
-    .bio h2{
-        padding: 20px 50px 100px;
-        font-size: 20px;
-    }
-    
-    .logos a{
-        margin: 0 15px;
-    }
-    
-    .logolinks img{
-        width: 130px;
-    }
-    
-    #pinecrest img{
-        width: 110px;
-    }
-}
-
-/*=======================================*/
-
-@media (max-width: 1000px) and (min-width: 801px){
-    .logos img{
-        width: 170px;
-    }
-    
-    .logos a{
-        margin: 0 25px;
-    }
-    
-    #pinecrest img{
-        width: 145px;
-    }
-}
-
-
-/*=======================================*/
-
-
-@media (max-width: 600px) {
-    label,
-    .desktop,
-    ul,
-    .dconsult,
-    article {
-        display: none;
-    }
-    
-    .arrows{
-        left: 35%;
-    }
-    
-    .arrow{
-        left: 65%
-    }
-    
-    .arrow span, .arrows span{
-        display: block;
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-        border-radius: 5px;
-        border-bottom: 3px solid #0ac;
-        border-right: 3px solid #0ac;
-        transform: rotate(45deg);
-        margin: -12px;
-        animation: animate 5.5s infinite;
-}
-    
-    .splash{
-        padding-bottom: 100px;
-        width: 160%;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    
-    .plans{
-        width: 90%;
-        margin: auto;
-    }
-    
-    .prime{
-        margin-bottom: 100px;
-    }
-    
-    .stars{
-        float: inherit;
-        width: 100px;
-        margin: -65px auto 0px;
-    }
-    
-    .star-1, .star-3{
-        width: 45px;
-        height: 45px;
-    }
-    
-    .star-2{
-        width: 55px;
-        height: 55px;
-        margin-top: -10px;
-    }
-    
-    .star-1{
-        margin-right: -20px;
-    }
-    
-    .star-3{
-        margin-left: -20px;
-    }
-    
-    .contentBox{
-        margin-top: 70px;
-        width: 280px;
-        height: auto;
-        flex-direction: column;
-    }
-    
-    .contentBox .imgBx{
-        height: 200px;
-        transform: translateY(-50px);
-    }
-    
-    .contentBox .imgBx::before{
-        background: #fff;
-        box-shadow: none;
-        left: 4%;
-    }
-    .contentBox .imgBx img{
-        position: relative;
-        top: 15px;
-        left: -9px;
-        max-width: 160px;
-        height: 150px;
-    }
-    
-    .contentBox .content{
-        height: auto;
-        text-align: center;
-        padding: 30px;
-        padding-top: 0;
-        font-size: 14px;
-        margin: -10px auto;
-    }
-    
-    .contentBox .content p{
-        font-size: 16px;
-        margin: 5px 0px 20px -10px;
-        font-family: 'Philosopher';
-        font-weight: bolder;
-        line-height: 1.3;
-        width: 100%;
-    }
-    
-    .contentBox .content h3{
-        font-weight: bolder;
-        font-size: 40px;
-        margin: -55px 10px 5px -10px;
-    }
-    
-    .contentBox .content h2{
-        font-family: 'righteous';
-        font-weight: bolder;
-        font-size: 55px;
-        margin: 0px 10px 0px -10px;
-    }
-    
-    .contentBox .content a{
-        margin: 5px 10px 15px -10px;
-        font-weight: bolder;
-    }
-    
-    .contentBox .content h2 sup{
-        font-size: 30px;
-    }
-    
-    .closex{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 30px;
-        top: 10px;
-        right: 5px;
-        background: white;
-        width: 35px;
-        height: 35px;
-        padding: 0px 0px 6px .5px;
-        filter: drop-shadow(0px 0px 1px transparent);
-    }
-    
-    nav {
-        width: 100%;
-        height: 60px;
-    }
-    
-    
-    .burger {
-        float: right;
-        margin: 10px 7px 0 0;
-    }
-    
-    .burger span{
-        width: 33px;
-        height: 4px;
-        margin: 6px;
-        background: linear-gradient(to left, #057, #079, #09b, #0cf, #09b, #079, #057);
-        border: .5px solid transparent;
-        filter: drop-shadow(-1px 0px 2px #000);
-    }
-    
-    #top{
-        border-top-right-radius: 3.5px;
-        border-top-left-radius: 3.5px;
-    }
-    
-    #bottom{
-        border-bottom-right-radius: 3.5px;
-        border-bottom-left-radius: 3.5px;
-    }
-    
-    .logo{
-        display: flex;
-        margin-top: -2px;
-        width: 100px;
-    }
-    
-    .logo img{
-        height: 20px; 
-        width: 100px;
-        filter: drop-shadow(2px 3px 1px #000);
-    }
-    
-    .logoburger {
-        width: 30px;
-        height: 30px;
-        margin: 15px 5px 0 5px;
-        filter: drop-shadow(0px 2px 1px #000);
-    }
-    
-    #stage {
-        margin-top: 60px;
-    }
-    
-    .space{
-        height: 0px;
-    }
-    
-    #intro {
-        margin: auto;
-        height: 315px;
-        max-width: 100%;
-    }
-    
-    #intro img {
-        margin: auto;
-        max-width: 100%;
-        height: 250px;
-    }
-    
-    .basic, .pro, .prime{
-        width: 100%;
-    }
-    
-    .basic, .pro{
-        margin-bottom: 0px;
-    }
-    
-    .website{
-        margin-top: 55px;
-        padding: 20px 10px 35px;
-        width: 85%;
-    }
-    
-    .website h1{
-        width: 200px;
-        font-size: 25px;
-        text-align: center;
-        background: transparent;
-        box-shadow: none;
-        padding: 10px 0;
-        text-decoration: underline;
-        text-shadow: .5px .5px 0px #fff;
-        text-underline-position: under;
-    }
-    
-    .website h2{
-        font-size: 16px;
-        margin: 20px 5px 0 15px;
-    }
-    
-    
-    .items h4{
-        font-size: 16px;
-        margin: 5px 0 0 22%;
-    }
-    
-    .items img{
-        width: 28px;
-        height: 20px;
-        margin-bottom: 3px;
-    }
-    
-    .items{
-        padding-top: 20px;
-        background: linear-gradient(90deg, #023, #034, #057, #057, #034, #023);
-        width: 80%;
-    }
-    
-    .pandemic{
-        width: 300px;
-        height: 200px;
-    }
-    
-    .pandemic h2, .commerce h2{
-        width: 300px;
-        font-size: 18px;
-        padding: 30px 20px;
-        margin-top: 10px;
-    }
-    
-    .presence{
-        background: url(Presence.jpeg);
-        margin: 20px auto;
-        
-    }
-    
-    .commerce{
-        background: url(Ecommerce.jpg);
-        width: 300px;
-        height: 200px;
-    }
-    
-    .media{
-        background: url(Online.jpeg);
-    }
-    
-    .media h2{
-        width: 300px;
-        margin: 0;
-        font-size: 18px;
-        padding: 30px 35px;
-    }
-    
-    .presence, .media, .commerce{
-        width: 300px;
-        height: 200px;
-        background-size: 130% 100%;
-    }
-    
-    .presence h2{
-        width: 300px;
-        font-size: 18px;
-        padding: 40px 20px;
-        margin-top: 20px;
-    }
-    
-    .presence, .pandemic, .media, .commerce{
-        margin-top: 10px;
-    }
-    
-    .media{
-        margin-top: 70px;
-    }
-    
-    #info {
-        background: linear-gradient(to top, #034, #046, #068, #046, #034);
-        background-size: 100% .22%;
-        margin-top: -5px;
-        flex-direction: column;
-        max-width: 100%;
-        padding-bottom: 100px;
-        
-    }
-    
-    #info h1{
-        background: linear-gradient(to top, #034, #046, #068, #046, #034);
-        background-size: 100% 7.2%;
-        width: 300px;
-        font-size: 17px;
-        padding: 8px;
-        margin-top: -16px;
-        border-radius: 20px;
-    }
-    
-    .services{
-        flex-direction: row;
-        margin: 125px 0px 40px;
-        padding: 20px;
-        justify-content: space-evenly;
-    }
-    
-    .services img{
-        float: left;
-        left: 0;
-        width: 35px;
-        height: 35px;
-        margin: -10px 0 0 10px;
-        padding: 0;
-    }
-    
-    .services h4{
-        font-size: 15px;
-        margin-top: 20px;
-    }
-    
-    .cafe,
-    .restaurant,
-    .pastry {
-        background: linear-gradient(0deg, #023, #046, #057, #057, #046, #023);
-        font-size: 18px;
-        margin: 10px;
-        width: 100px;
-        height: 70px;
-        border-radius: 50%;
-        padding: 25px;
-        box-shadow: 4px 4px 8px #000;
-        border: 1px solid #000;
-    }
-    
-    .cafe .details,
-    .restaurant .details,
-    .pastry .details {
-        padding: 0px 2px 40px;
-        border-radius: 15px;
-        font-size: 13px;
-        width: 130px;
-        height: auto;
-        margin-top: 18px;
-    }
-    
-    .cafe .details p,
-    .restaurant .details p,
-    .pastry .details p{
-        margin: 7px 8px;
-    }
-    
-    .cafe:hover,
-    .restaurant:hover,
-    .pastry:hover {
-        cursor: pointer;
-        box-shadow: none;
-    }
-    
-    .mconsult{
-        margin: -55px 46%;
-        width: 100px;
-    }
-    
-    #Btn {
-        font-size: 12px;
-        margin-left: 5%;
-        margin-top: 10px;
-        width: 115px;
-        box-shadow: 1px 1px 5px #000;
-        padding: 2px;
-    }
-    
-    #Btn:hover{
-        padding: 2px;
-        box-shadow: 1px 1px 10px #0ce;
-    }
-    
-    .Btn1{
-        position: fixed;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        bottom: 15px;
-        margin: 0px 0 0 20%;
-        padding: 0px 15px;
-        z-index: 99999;
-    }
-    
-    #myBtn{
-        margin: 0 -5px -15px 0;
-        font-size: 35px;
-        padding: 0 6px;
-        color: #0ce;
-        border: 1px solid transparent;
-    }
-    
-    #myBtn:hover{
-        border: 1px solid transparent;
-    }
-    
-    .ninoSite{
-        width: 300px;
-        margin: 50px auto;
-}
-
-    .servLink button{
-        background: #0ce;
-        text-shadow: 2px 2px 4px #000;
-        width: 300px;
-        margin:auto;
-        border-radius: 10px;
-        font-size: 20px;
-        box-shadow: 0px 2px 8px #012;
-    }
-    
-    .servLink img{
-        width: 35px;
-        margin: 10px;
-    }
-    
-    .cafe{
-        margin-right: 30%;
-    }
-    
-    .cafe .details{
-        margin-top: 0px;
-        margin-left: -5px;
-    }
-    
-    .pastry{
-        margin-left: 30%;
-    }
-    
-    .pastry img{
-        margin-top: -5px;
-        margin-left: 2px;
-        width: 45px;
-        height: 30px;
-    }
-    
-    .pastry .details{
-        margin-top: 0px;
-        margin-left: 5px;
-    }
-    
-    .restaurant{
-        margin-top: -100px;
-    }
-    
-    .restaurant .details{
-        margin-top: 35px;
-        width: 140px;
-        padding: 0px 0px 40px;
-    }
-    
-    .restaurant .Btn1{
-        margin: 0px 23% 0;
-    }
-    
-    .cafe img{
-        width: 47px;
-        margin-left: 1px;
-        height: 36px;
-    }
-    
-    .restaurant img {
-        width: 65px;
-        height: 30px;
-        margin-left: -5px;
-        margin-top: -2px;
-    }
-    
-    .cform h2{
-        font-family: 'Philosopher';
-        margin: 25px auto 10px;
-        font-size: 30px;
-    }
-    
-    .cform{
-        width: 85%;
-        margin: 100px auto 0px;
-        margin-bottom: -50px;
-    }
-    
-    .cform textarea, .cform input[type=text]{
-        width: 80%;
-        margin: 15px 0;
-        padding: 3px;
-    }
-    
-    .cform input[type=submit]{
-        width: 150px;
-        margin: 10px auto 30px;
-    }
-    
-    .cform select{
-        margin: 10px;
-        padding: 3px 20px;
-        width: 50%;
-    }
-    
-    .sidenav .closebtn {
-        padding: 11px 15px 28px 22px;
-        font-size: 30px;
-    }
-    
-    .star{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 55px;
-        height: 55px;
-        border: 2px solid #0ac;
-        margin-bottom: 5px;
-    }
-    
-    .star img{
-        margin: 0 0px 6px 0;
-        width: 65px;
-    }
-    
-    .items{
-        margin: 20px auto 30px;
-    }
-    
-    
-    #footer{
-        position:relative;
-        margin: 50px auto 0px;
-    }
-    
-    .piero img{
-        width: 45px;
-        height: 85px;
-        filter: drop-shadow(2px 2px 5px #000);
-    }
-    
-    .nino img{
-        width: 55px;
-        height: 90px;
-        filter: none;
-        filter: drop-shadow(2px 2px 5px #000);
-    }
-    
-    .piero{
-        margin: -35px 5%;
-    }
-    
-    .nino{
-        margin: -80px -6%;
-    }
-    
-    .bio{
-        width: 80%;
-        padding-top: 50px;
-        margin-top: 100px;
-    }
-    
-    .bio h1{
-        letter-spacing: 2px;
-        font-size: 32px;
-        margin-top: -120px;
-        background: none;
-        box-shadow: none;
-        padding-top: 110px;
-    }
-    
-    .bio h2{
-        padding: 10px 10px 50px 30px;
-        font-size: 18px;
-    }
-    
-    .logolinks h1{
-        font-size: 24px;
-        background: linear-gradient(315deg, #00303d, #034);
-        box-shadow:  -5px -5px 15px #000,
-                 5px 5px 15px #068;
-        border-radius: 15px;
-        width: 215px;
-        margin: auto;
-        padding: 15px 0 20px 0;
-    }
-
-    .logolinks img{
-        width: 100%x;
-    }
-    
-    .logos{
-        flex-direction: column;
-    }
-    
-    .logos a{
-        margin: 30px 30px;
-    }  
-    
-    .social{
-        margin-top: 95%;
-        z-index: 9;
-        width: 32px;
-        padding: 0;
-        background-size: 100% 2%;
-    }
-    
-    .social img{
-        width: 20px;
-    }
-}
-
-/*=======================================*/
-
-
-/*=======================================*/
-
-@media (max-width: 600px) and (min-width: 425px){
-    .piero{
-        margin: -35px 28%;
-    }
-    
-    .nino{
-        margin: -80px 12%;
-    }
-}
-
-/*=======================================*/
-
-
-/*=======================================*/
-
-@media (min-width: 801px) and (max-width: 1000px){
-    
-    .burger{
-        margin-top: -60px;
-    }
-    
-    .mconsult{
-        display: none;
-    }
-    
-    .dconsult{
-        margin: 30px 45%;;
-    }
-    
-    .items{
-        width: 80%;
-    }
-    
-    .items h4{
-        margin-left: 10%;
-    }
-    
-    #info{
-        margin-top: 5px;
-    }
-    
-    #info h1{
-        width: 450px;
-        background: linear-gradient(to top, #034, #046, #068, #046, #034);
-        background-size: 100% 8.1%;
-        border-bottom: 2px solid #023;
-        margin: -25px auto;
-        border-radius: 30px;
-        padding: 5px 0px;
-        font-size: 26px;
-    }
-    
-    #Btn{
-        margin: -15px 15%;
-        font-size: 16px;
-        width: 160px;
-        padding: 2px;
-    }
-    
-    .presence h2{
-        padding: 35px 16px 0 345px;
-        width: 100%;
-    }
-    
-    .pandemic h2{
-        padding: 45px 25px;
-    }
-    
-    .media  h2{
-        width: 100%;
-        margin-left: -250px;
-        padding: 30px 50px 10px 267px;
-    }
-    
-    .commerce h2{
-        padding: 30px 10px 0 300px;
-        width: 100%;
-    }
-    
-    .cform input[type=submit]{
-        margin: 50px auto;
-        width: 25%;
-    }
-    
-    .cform{
-        margin-bottom: -80px;
-    }
-    
-    .star{
-        width: 70px;
-        height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid #0ac;
-    }
-    
-    .star img{
-        width: 50px;
-        height: 50px;
-        margin: 0 auto 5px;   
-    }
-    
-    .basic, .pro, .prime{
-        margin: 10px;
-        padding-bottom: 10px;
-    }
-    
-    .piero{
-        margin-right: 3%;
-    }
-    
-    .nino{
-        margin-right: -17%;
-    }
-    
-    .bio{
-        width: 85%;
-    }
-    
-    .bio h1{
-        font-size: 45px;
-    }
-    
-    .bio h2{
-        padding: 20px 100px 100px;
-        font-size: 22px;
-    }
-}
-
-@media (min-width: 1001px) and (max-width: 1200px) {
-    li{
-        margin: 0 24px;
-        font-size: 24px;   
-    }
-    
-    #Btn{
-        margin: -10px 0 0 10%;
-        font-size: 16px;
-        width: 150px;
-        padding: 2px;
-    }
-    
-    #Btn:hover{
-        padding: 2px;
-    }
-    
-    .items{
-        width: 80%;
-    }
-    
-    .pro, .basic, .prime{
-        margin: 10px
-    }
-    .items h4{
-        margin-left: 10%;
-    }
-    
-    #bout{
-        margin-left: -20px;
-    }
-    
-    .desknav{
-        margin-right: 0px;
-    }
-    
-    .desknav li{
-        font-size: 15px;
-    }
-    
-    .desknav img{
-        width: 30px;
-    }
-    
-    .dropdown-text{
-        margin: -4px 13% 0 23%;
-    }
-    
-    .dropdown-text span{
-        margin: -3px 2px 2px 4px;
-    }
-    
-    .dropdown-text img{
-        width: 30px;
-        padding: 2px 8px 10px 0;
-        margin-top: -1px;
-    }
-    
-    .dropdown-toggle{
-        margin-left: 10px;
-    }
-    
-    .dropdown-content{
-        margin-left: 20px;
-    }
-    
-    .piero{
-        margin-right: 5%;
-    }
-    
-    .nino{
-        margin-right: -15%;
-    }
-    
-    .bio{
-        width: 75%;
-    }
-    
-    .bio h1{
-        font-size: 45px;
-
-    }
-    
-    .bio h2{
-        padding: 20px 100px 100px;
-        font-size: 20px;
-    }
-}
-
-@media (min-width: 1001px) {
-    .burger,
-    .mconsult,
-    .mobile{
-        display: none;
-    }
-    
-    .arrow{
-        left: 76%;
-    }
-    
-    .arrows{
-        left: 24%;
-    }
-    
-    .website{
-        margin-bottom: 50px;
-    }
-    
-    #info h1{
-        width: 620px;
-        background: linear-gradient(to top, #034, #046, #068, #046, #034);
-        border-bottom: 2px solid #023;
-        background-size: 100% 7.1%;
-        margin: -32px auto;
-        border-radius: 40px;
-        padding: 5px 0px;
-        transition: 1s;
-    }
-    
-    .presence h2{
-        padding: 35px 20px 0 520px;
-        width: 100%;
-    }
-    
-    .pandemic h2{
-        padding: 35px 500px 0 60px;
-        width: 100%
-    }
-    
-    .media  h2{
-        padding: 55px 34px 0 480px;
-        width: 100%;
-    }
-    
-    .dconsult{
-        margin: 25px 25%;
-    }
-    
-    .cform input[type=submit]{
-        margin: 50px auto;
-        width: 25%;
-    }
-    
-    .cform{
-        margin-bottom: -50px;
-    }
-    
-    #footer{
-        margin: -20px 0;
-    }
-}
-
-@media (min-width: 1201px){
-    li{
-        margin-left: 48px;
         font-size: 16px;
     }
-    
-    .arrow{
-        left: 72%;
-    }
-    
-    .arrows{
-        left: 28%;
-    }
-    
-    #bout{
-        margin-left: -15px;
-    }
-    
-    .cform input[type=submit]{
-        width: 20%;
-    }
-    
-    .dconsult{
-        margin: 25px 33%;
-    }
-    
-    #Btn{
-        width: 170px;
-        font-size: 16px;
-        margin-top: -2px;
-    }
-    
-    .desknav{
-        margin-top: -58px;
-    }
-    
-    .desknav img{
-        width: 30px;
-    }
-    
-    .dropdown-text{
-        margin: -4px 20% 0 60%;
-        font-size: 16px;
-    }
-    
-    .dropdown-text img{
-        height: 25px;
-        margin-top: -3px;
-    }
-    
-    .dropdown-text span{
-        margin: -3px 5px;
-    }
-    
-    .dropdown-toggle{
-        margin-left: 60px;
-    }
-    
-    .piero{
-        margin-right: 5%;
-    }
-    
-    .nino{
-        margin-right: -14%;
-    }
 }
 
-@media (min-width: 1300px){
-    li a{
-        margin-left: 25px;
-        font-size: 18px;
-    }
+@media (min-width: 851px) and (max-width: 870px){
     
-    .arrow{
-        left: 70%;
-    }
-    
-    .arrows{
-        left: 30%;
-    }
-    
-    #bout{
-        margin-left: 0px;
-    }
-    
-    .dropdown-text{
-        margin: -4px 0 0 50%;
-        font-size: 18px;
-    }
-    
-    .dropdown-text span{
-        margin-left: 5px;
-    }
-    
-    .desknav img{
-        width: 30px;
-    }
-    
-    .desknav{
-        margin-top: -60px;
-    }
-    
-    .dropdown-text img{
-        height: 25px;
-        margin-top: -1px;
-    }
-    
-    .dropdown-toggle{
-        margin-left: 70px;
-        width: 150px;
-    }
-    
-    .piero{
-        margin-right: 5%;
-    }
-    
-    .nino{
-        margin-right: -15%;
+    nav ul li{
+        margin: 5px;
     }
 }
-
-@media (min-width: 1400px){
-    .dropdown-text{
-        margin: -4px 0 0 40%;
-}
-
-
-    
