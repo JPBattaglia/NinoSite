@@ -318,7 +318,7 @@ nav {
         font-weight: bolder;
     }
     
-    #latest button{
+    #latest button, .sizes button{
         border-radius: 20px;
         padding: 3px 15px;
         color: #000;
@@ -330,7 +330,7 @@ nav {
         cursor: pointer;
     }
     
-    #latest button:hover{
+    #latest button:hover, .sizes button:hover{
         background: #046;
         color: #0df;
         transition: .3s;
@@ -340,12 +340,41 @@ nav {
     #video1{
         border-radius: 20px;
     }
+    
+    #shirts{
+        text-align: center;
+        margin-top: 50px;
+    }
+    
+    .shirts h2{
+        text-align: center;
+    }
+    
+    .shirts{
+        margin: 50px auto;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .shirts img{
+        width: 300px;
+    }
+    
+    .sizes{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
 
 }
 
 @media (max-width: 850px) {
     
-    #latest button{
+    #latest button, .sizes button{
         border-radius: 20px;
         padding: 3px 10px;
         color: #000;
@@ -755,6 +784,11 @@ input[type=submit]:hover {
     margin: auto;
 }
 
+#gallery2 h2{
+    margin: 150px auto -150px;
+    font-size: 45px;
+}
+
 .gallery2 h2 {
     margin-top: 50px;
     font-size: 35px;
@@ -920,7 +954,36 @@ footer {
         font-weight: bolder;
         font-size: 20px;
     }
+
+
+    #shirts{
+        text-align: center;
+        margin-top: 50px;
+    }
     
+    .shirts h2{
+        text-align: center;
+    }
+    
+    .shirts{
+        margin: 50px auto;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .shirts img{
+        width: 300px;
+    }
+    
+    .sizes{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
 
 @media (max-width: 600px) {
     
@@ -1000,6 +1063,42 @@ footer {
         font-weight: bolder;
         font-size: 16px;
     }
+    
+    #shirts{
+        text-align: center;
+        margin-top: 50px;
+    }
+    
+    .shirts h2{
+        text-align: center;
+    }
+    
+    .shirts{
+        margin: 20px auto;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .shirts img{
+        width: 100px;
+    }
+    
+    .sizes{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .sizes button{
+        font-size: 12px;
+        padding: 0px 8px;
+        margin: 5px;
+    }
+    
 }
 
 @media (min-width: 851px) and (max-width: 870px){
@@ -1008,3 +1107,14 @@ footer {
         margin: 5px;
     }
 }
+
+@media (min-width: 601px) and (max-width: 800px){
+    
+    .shirts img{
+        width: 200px;
+    }
+}
+
+
+
+
