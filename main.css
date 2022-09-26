@@ -361,9 +361,18 @@ nav {
     
     .shirts img{
         width: 300px;
+        transition: 1s;
+        margin: 5px;
+    }
+    
+    .shirts img:hover{
+        width: 500px;
+        transition: 1s;
+        cursor: pointer;
     }
     
     .sizes{
+        margin: 20px;
         display: flex;
         flex-direction: row;
         align-items: center;
