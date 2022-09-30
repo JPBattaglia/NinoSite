@@ -346,6 +346,12 @@ nav {
         margin-top: 50px;
     }
     
+    #shirts img{
+        margin-bottom: -40px;
+        width: 125px;
+        margin-left: -10px;
+    }
+    
     .shirts h2{
         text-align: center;
     }
@@ -1076,6 +1082,7 @@ footer {
     #shirts{
         text-align: center;
         margin-top: 50px;
+        margin-bottom: -20px;
     }
     
     .shirts h2{
@@ -1086,18 +1093,29 @@ footer {
         margin: 20px auto;
         width: 100%;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
     }
     
     .shirts img{
-        width: 100px;
+        width: 240px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        transition: 1s;
+        margin-top: 50px;
+    }
+    
+    .shirts img:hover{
+        width: 400px;
+        transition: 1s;
     }
     
     .sizes{
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
     }
