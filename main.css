@@ -119,6 +119,7 @@ nav ul li {
     border-radius: 20px;
     text-align: center;
     margin: 20px;
+    margin-left: -5px;
 }
 
 nav {
@@ -1145,7 +1146,7 @@ footer {
 @media (min-width: 851px) and (max-width: 870px){
     
     nav ul li{
-        margin: 5px;
+        margin: -8px;
     }
 }
 
