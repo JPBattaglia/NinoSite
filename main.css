@@ -126,6 +126,19 @@ nav {
     margin: auto;
     padding: 1px 0;
     max-width: 88%;
+    margin-top: -65px;
+}
+
+.navbar{
+    float: inherit;
+    position: relative;
+    margin: auto;
+    width: 75%;
+    height: 60px;
+    box-shadow: inset -14px -14px 23px #023,
+            inset 14px 14px 23px #057;
+    border: .5px solid #012;
+    border-radius: 50px;
 }
 
 @media (max-width: 1000px) {
@@ -408,7 +421,8 @@ nav {
     .iconright,
     #scrolldown,
     label,
-    table {
+    table,
+    .navbar{
         display: none;
     }
     
