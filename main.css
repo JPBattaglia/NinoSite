@@ -135,7 +135,7 @@ nav {
     position: relative;
     margin: auto;
     width: 75%;
-    height: 60px;
+    height: 50px;
     box-shadow: inset -14px -14px 23px #023,
             inset 14px 14px 23px #057;
     border: .5px solid #012;
@@ -201,6 +201,7 @@ nav {
         border-color: red;
         border-top-style: double;
         padding: 10px;
+        border-bottom-style: double;
     }
     
     #myBtn {
@@ -258,26 +259,28 @@ nav {
     #Btn:hover {
         margin: 30px auto;
         font-weight: bolder;
-        color: #fff;
-        padding: 5px 20px;
-        background: #000;
+        color: #0ff;
+        padding: 8px 25px;
+        background: #08c;
         font-family: 'Orbitron';
-        font-size: 22px;
-        border: 7px double #900;
-        box-shadow: 1px 1px 15px #f00, -1px 1px 15px #f00;
+        border: 4px double #034;
+        box-shadow: inset 10px 15px 30px #004, inset 10px 10px 20px #25d;
         border-radius: 35px;
-        text-shadow: 1px 2px 0px #f00, -1px -2px 0px #f00, 1px -2px 0px #f00, -1px 2px 0px #f00;
+        text-shadow: 1px 2px 0px #000, -1px -2px 0px #000, 1px -2px 0px #000, -1px 2px 0px #000;
         cursor: pointer;
+        transition: .5s;
     }
     
     #Btn {
         margin: 30px auto;
         color: white;
-        padding: 5px 20px;
+        padding: 8px 25px;
         background: #08c;
+        box-shadow: inset 10px 10px 20px #25d,
+            inset 10px 15px 20px #004;
         font-family: 'Orbitron';
-        font-size: 22px;
-        border: 7px double #046;
+        font-size: 20px;
+        border: 4px double #046;
         border-radius: 35px;
         font-weight: bolder;
         text-shadow: 1px 1px 1px black, -1px -1px 1px black, 1px -1px 1px black, -1px 1px 1px black;
@@ -285,6 +288,7 @@ nav {
         -moz-transition: background-color .8s ease-out;
         -o-transition: background-color .8s ease-out;
         transition: background-color .8s ease-out;
+        transition: 1s;
     }
 
     
@@ -508,11 +512,13 @@ nav {
     #Btn {
         margin: 30px auto;
         color: white;
-        padding: 5px 20px;
+        padding: 8px 20px;
         background: #07c;
+        box-shadow: inset 10px 10px 20px #25d,
+            inset 10px 15px 20px #004;
         font-family: 'Orbitron';
         font-size: 20px;
-        border: 7px double #046;
+        border: 5px double #046;
         border-radius: 35px;
         text-shadow: 1px 1px 2px black, -1px -1px 2px black, 1px -1px 2px black, -1px 1px 2px black, 1px 1px 2px black;
     }
@@ -1015,6 +1021,14 @@ footer {
         justify-content: center;
     }
 
+    .navbar{
+        height: 40px;
+        }
+
+    nav ul {
+        margin-top: 28px;
+        }
+
 @media (max-width: 600px) {
     
     label,
@@ -1143,10 +1157,15 @@ footer {
     
 }
 
-@media (min-width: 851px) and (max-width: 870px){
+@media (min-width: 851px) and (max-width: 1000px){
     
     nav ul li{
         margin: -8px;
+        font-size: 18px;
+    }
+    
+    nav{
+        margin-top: -63px;
     }
 }
 
