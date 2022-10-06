@@ -10,6 +10,7 @@ article img {
     -webkit-transition: width 2s, height 2s, -webkit-transform 1.5s;
     /* Safari */
     transition: width 2s, height 2s, transform 1.5s;
+    margin-top: -13px;
 }
 
 article img:hover {
@@ -133,7 +134,7 @@ nav {
 .navbar{
     float: inherit;
     position: relative;
-    margin: auto;
+    margin: 35px auto;
     width: 75%;
     height: 50px;
     box-shadow: inset -14px -14px 23px #023,
@@ -1026,7 +1027,7 @@ footer {
         }
 
     nav ul {
-        margin-top: 28px;
+        margin-top: -6px;
         }
 
 @media (max-width: 600px) {
