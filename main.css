@@ -141,7 +141,7 @@ nav {
     height: 50px;
     box-shadow: inset -14px -14px 23px #023,
             inset 14px 14px 23px #057;
-    border: .5px solid #012;
+    border: .5px double #023;
     border-radius: 50px;
 }
 
@@ -514,7 +514,7 @@ nav {
     
     #Btn {
         margin: 30px auto;
-        color: white;
+        color: #fff;
         padding: 8px 20px;
         background: #07c;
         box-shadow: inset 10px 10px 20px #25d,
@@ -611,8 +611,8 @@ nav li a:link {
 /* mouse over link */
 
 nav li a:hover {
-    color: white;
-    text-shadow: 1px 1px 2px red, -1px -1px 2px red, 1px -1px 2px red, -1px 1px 2px red;
+    text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
+    color: #0ff;
     transition: .5s;
 }
 
@@ -647,9 +647,10 @@ p {
 }
 
 a {
-    color: dodgerblue;
     text-decoration: none;
     font-weight: bolder;
+    text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    color: #0bd;
 }
 
 a:hover {
