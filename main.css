@@ -1119,7 +1119,7 @@ article{
         margin-top: 0px;
     }
     
-    input[type=submit]{
+    input[type=submit], input[type=submit]:hover{
         margin-top: 40px;
     }
     
