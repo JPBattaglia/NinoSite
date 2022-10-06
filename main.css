@@ -10,7 +10,7 @@ article img {
     -webkit-transition: width 2s, height 2s, -webkit-transform 1.5s;
     /* Safari */
     transition: width 2s, height 2s, transform 1.5s;
-    margin-top: -13px;
+    margin-top: -15px;
 }
 
 article img:hover {
@@ -22,6 +22,7 @@ article img:hover {
 .iconright {
     float: right;
     max-width: 100%;
+    margin-top: 0px;
 }
 
 .navicon {
@@ -969,6 +970,15 @@ footer {
     text-shadow: 1px 1px 0 red, -1px -1px 0 red, 1px -1px 0 red, -1px 1px 0 red, 1px 1px 0 red;
 }
 
+article{
+    margin-top: 35px;
+}
+
+.navicon{
+    margin-top: -7px;
+    margin-right: 5px;
+}
+
 #preloader{
         display: flex;
         align-items: center;
@@ -1031,6 +1041,15 @@ footer {
         }
 
 @media (max-width: 600px) {
+    
+    article{
+        margin-top: 35px;
+    }
+    
+    .navicon{
+        margin-top: -10px;
+        margin-right: 8px;
+    }
     
     label,
     #scrolldown {
@@ -1170,7 +1189,7 @@ footer {
     }
 }
 
-@media (min-width: 601px) and (max-width: 800px){
+@media (min-width: 601px) and (max-width: 850px){
     
     .shirts img{
         width: 200px;
