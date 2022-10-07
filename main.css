@@ -52,6 +52,11 @@ article img:hover {
     margin: 6px 0;
 }
 
+#topnav{
+    max-width: 1500px;
+    margin: auto;
+}
+
 .sidenav {
     height: 100%;
     width: 0;
@@ -212,7 +217,9 @@ nav {
     }
     
     footer {
-        margin: 0px 100px;
+        margin: 0px auto;
+        width: 85%;
+        max-width: 1400px;
     }
     
     header img {
