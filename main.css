@@ -337,7 +337,7 @@ nav {
         font-size: 25px;
         font-family: 'Philosopher' ;
         background: #000 url(NinoSiteLoader.gif) no-repeat center center;
-        background-size: 20%;
+        background-size: 100%;
         height: 100%;
         width: 100%;
         position: fixed;
@@ -1001,7 +1001,7 @@ article{
         color: #0ff;
         font-family: 'Philosopher' ;
         background: #000 url(NinoSiteLoader.gif) no-repeat center center;
-        background-size: 20%;
+        background-size: 120%;
         height: 100%;
         width: 100%;
         position: fixed;
