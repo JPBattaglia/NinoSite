@@ -4,6 +4,12 @@ html {
     scroll-behavior: smooth;
 }
 
+[data-aos=spin]{
+    transform: rotate(360deg);
+    opacity: 0;
+    transition-property: transform, opacity;
+}
+
 article img {
     float: left;
     max-width: 100%;
@@ -330,7 +336,7 @@ nav {
         color: #0ff;
         font-size: 25px;
         font-family: 'Philosopher' ;
-        background: #000 url(NinoGif1.gif) no-repeat center center;
+        background: #000 url(NinoSiteLoader.gif) no-repeat center center;
         background-size: 20%;
         height: 100%;
         width: 100%;
@@ -994,7 +1000,7 @@ article{
         justify-content: center;
         color: #0ff;
         font-family: 'Philosopher' ;
-        background: #000 url(NinoGif1.gif) no-repeat center center;
+        background: #000 url(NinoSiteLoader.gif) no-repeat center center;
         background-size: 20%;
         height: 100%;
         width: 100%;
