@@ -5,10 +5,16 @@ html {
 }
 
 [data-aos=spin]{
-    transform: rotate(360deg);
+    transform: rotate(-500deg);
     opacity: 0;
     transition-property: transform, opacity;
 }
+
+[data-aos=spin].aos-animate {
+    transform: rotate(0);
+    opacity: 1;
+}
+
 
 article img {
     float: left;
