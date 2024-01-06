@@ -355,6 +355,17 @@ function makeNormal() {
         window.addEventListener("load", function(){loader.style.display = "none"})
         
     </script>
+        
+        <script>
+        
+        let allImages = document.querySelectorAll("img");
+            allImages.forEach((value)=>{
+                value.oncontextmenu = (e)=>{
+                    e.preventDefault();
+                }
+            })
+        
+        </script>
 
     </body>
 
