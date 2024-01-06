@@ -342,8 +342,8 @@ nav {
         color: #0ff;
         font-size: 25px;
         font-family: 'Philosopher' ;
-        background: #000 url(NinoSiteLoader.gif) no-repeat center center;
-        background-size: 100%;
+        background: #000 url(NinoSiteLoader1.gif) no-repeat center center;
+        background-size: 50%;
         height: 100%;
         width: 100%;
         position: fixed;
@@ -354,7 +354,7 @@ nav {
     
     #preloader p{
         margin-top: 25%;
-        color: #0ac;
+        color: #800;
         font-weight: bolder;
     }
     
@@ -1006,8 +1006,8 @@ article{
         justify-content: center;
         color: #0ff;
         font-family: 'Philosopher' ;
-        background: #000 url(NinoSiteLoader.gif) no-repeat center center;
-        background-size: 120%;
+        background: #000 url(NinoSiteLoader1.gif) no-repeat center center;
+        background-size: 20%;
         height: 100%;
         width: 100%;
         position: fixed;
@@ -1018,7 +1018,7 @@ article{
 
 #preloader p{
         margin-top: 30%;
-        color: #0ac;
+        color: #800;
         font-weight: bolder;
         font-size: 20px;
     }
@@ -1144,7 +1144,7 @@ article{
     
     #preloader p{
         margin-top: 35%;
-        color: #0ac;
+        color: #800;
         font-weight: bolder;
         font-size: 16px;
     }
