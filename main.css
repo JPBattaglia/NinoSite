@@ -1042,15 +1042,13 @@ article{
         justify-content: center;
     }
     
-    .shirts img{
-        width: 300px;
+    .etsy img{
+        width: 200px;
     }
-    
-    .sizes{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
+
+    .etsy h2{
+        text-align: center;
+
     }
 
     .navbar{
