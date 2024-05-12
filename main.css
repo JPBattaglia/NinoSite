@@ -424,6 +424,15 @@ nav {
         align-items: center;
         justify-content: center;
     }
+    
+    #etsy{
+        width: 300px;
+        margin: auto;
+    }
+    
+    #etsy h2{
+        text-align: center;
+    }
 
 }
 
@@ -1194,6 +1203,23 @@ article{
         margin: 5px;
     }
     
+    #etsy{
+        width: 150px;
+        margin: auto;
+    }
+
+    #etsy img, .etsy img{
+        width: 150px;
+        margin-top: 50px;
+    }
+    
+    #etsy h2, .etsy h2{
+        text-align: center;
+        font-size: 20px;
+        border-bottom: 5px double red;
+        padding-bottom: 20px;
+    }
+    
 }
 
 @media (min-width: 851px) and (max-width: 1000px){
@@ -1212,6 +1238,22 @@ article{
     
     .shirts img{
         width: 200px;
+    }
+    
+    #etsy{
+        width: 200px;
+        margin: auto;
+    }
+
+    #etsy img{
+        width: 200px;
+        margin-top: 50px;
+    }
+    
+    #etsy h2{
+        text-align: center;
+        font-size: 22px;
+        margin-top: -10px;
     }
 }
 
