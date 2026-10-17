@@ -143,7 +143,7 @@
     link.href = kind === 'product' ? 'shop.html?product=' + encodeURIComponent(record.id) : kind === 'art' ? 'art.html?art=' + encodeURIComponent(record.id) : 'shop.html';
     link.setAttribute('aria-haspopup', 'dialog');
     link.setAttribute('aria-label', `Preview ${title(record.title)}`);
-    const photo = image(record.image, title(record.title));
+    const photo = image(record.image, record.imageUnavailable ? 'Product image not available yet' : title(record.title));
     if (kind === 'art') { const frame = node('span', 'art-image'); frame.append(photo); link.append(frame); }
     else { link.append(photo); const mark = node('span', 'product-open-mark', '↗'); mark.setAttribute('aria-hidden', 'true'); link.append(mark); }
     link.addEventListener('click', event => { event.preventDefault(); openRecord(record, kind, link); });
@@ -273,20 +273,24 @@
       };
       document.querySelectorAll('[data-shop-link]').forEach(link => { link.href = catalog.shop.url; });
       if (data.shop?.contactUrl) document.querySelectorAll('[data-contact-instruction]').forEach(item => { item.hidden = true; });
-      initializeProducts(); initializeArt();
-      window.NinoCommerce?.loadProducts().then(records => {
-        for (const product of catalog.products) {
-          const live = records.get(String(product.id));
-          if (!live) continue;
-          const prices = [...live.variants.values()].filter(v => v.purchasable).map(v => v.price);
-          if (prices.length && new Set(prices.map(p => p.currency)).size === 1) product.price = prices.reduce((a,b) => a.amount < b.amount ? a : b);
-        }
-        document.querySelectorAll('.product-card').forEach(card => {
-          const product = catalog.products.find(p => String(p.id) === card.dataset.record);
-          const price = card.querySelector('.product-price');
-          if (price && product) price.textContent = priceLabel(product) || 'View shirt details';
-        });
-      }).catch(() => {});
+      initializeArt();
+      // Completed provider snapshots include future products without a site rebuild.
+      // Keep the curated catalog when credentials, initial sync or the API are unavailable.
+      let timer;
+      try {
+        const synced = await Promise.race([
+          (async () => {
+            if (!window.NinoCommerce) return null;
+            const records = await window.NinoCommerce.loadProducts();
+            const { storefrontProducts } = await import('./catalog-sync.mjs');
+            return storefrontProducts(catalog.products, records, window.NinoCommerce.getCatalogStatus().complete);
+          })(),
+          new Promise(resolve => { timer = setTimeout(() => resolve(null), 3000); })
+        ]);
+        if (synced) catalog.products = synced;
+      } catch { /* The original collection remains browseable during an outage. */ }
+      finally { clearTimeout(timer); }
+      initializeProducts();
     } catch {
       document.querySelectorAll('[data-featured-products],[data-shop-products]').forEach(previewCollection);
       document.querySelectorAll('[data-featured-art],[data-art-grid]').forEach(container => {

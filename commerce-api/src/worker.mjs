@@ -19,7 +19,7 @@ function syncSummary(run) { return {sync_id:run.id,status:run.status,processed:r
 function commerceReadiness(env,catalog) {
   let ready=true;
   try { checkoutConfiguration(env); } catch { ready=false; }
-  return {checkout_ready:ready && catalog.catalog_ready && catalog.products.length>0,shipping_mode:env.SHIPPING_MODE || null,shipping_countries:countries(env)};
+  return {checkout_ready:ready && catalog.catalog_ready && catalog.products.some(product=>product.variants.some(variant=>variant.available)),shipping_mode:env.SHIPPING_MODE || null,shipping_countries:countries(env)};
 }
 
 export function createApp(dependencies={}) {

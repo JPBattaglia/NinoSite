@@ -9,3 +9,13 @@ The separate `commerce-api/` Worker implements authoritative Printful variants a
 Purchases stay in the site’s cart and use Stripe for payment; Etsy is not required by the buying flow. Current deployment is a review while payment/fulfillment connections and shipping configuration are pending. Do not enable purchases or claim a successful payment without the server’s verified readiness and paid-event handling.
 
 Preserve `gallery.html` for existing portfolio links and `CNAME` for the GitHub Pages domain. `catalog.json` uses canonical Printful sync product IDs and locally optimized, verified garment images.
+
+## Automatic Printful product additions
+
+The storefront reads the completed Printful catalog on page load. Published products added to the configured Printful store appear after the scheduled six-hour sync finishes, without editing `catalog.json` or rebuilding the site. Sync batches resume every minute. This covers that store's published/synced products, not unpublished design templates or another Printful store.
+
+The existing 137 verified designs remain the fallback until the first complete sync or during an API outage. A completed snapshot becomes authoritative, including removals. Existing curated photos and categories are retained for matching IDs; new designs use the supplier image. Designs without eligible variants remain visible with purchasing unavailable. Server-verified variants, prices and checkout readiness still control purchasing. A page refresh picks up a newly completed sync; browsing is not interrupted by background polling. If the API takes longer than three seconds, the page shows the fallback collection for that visit.
+
+Activation still requires the private Printful token and selected store ID on the deployed commerce Worker. A saved browser sign-in does not supply an API token. Stripe, shipping and tax setup are separate requirements for accepting payments. No live payment or supplier order is authorized by this catalog change.
+
+The October 17 requirement is independence from Etsy. Use a dedicated Printful Manual order/API store (`PRINTFUL_CATALOG_MODE=store`) as the continuing product source. Create/publish sellable products and their variants there; an unpublished design template alone is not an orderable product. The earlier Etsy-linked inventory is only the source of the already imported local reference catalog, not a required customer destination or runtime image host. Products must be configured in the independent store before its live sync can replace that reference catalog. Do not point the new store ID at the Etsy-linked store or silently turn on payment/fulfillment.

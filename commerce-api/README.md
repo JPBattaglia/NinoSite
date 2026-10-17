@@ -18,6 +18,8 @@ Tests use SQLite through Node's `node:sqlite` and mocked provider transports. Th
 
 ## Configuration required before activation
 
+Current owner requirement (October 17): the Nino website must operate independently of Etsy. The tracked configuration therefore selects `PRINTFUL_CATALOG_MODE=store`. Configure a dedicated Printful Manual order/API store and its real published products/variants, rather than relying on the previously inspected Etsy-linked store. Existing source-import images are local site assets. New public product images reject Etsy and its image CDN, using independent Printful images when available. A plain unpublished design template is not a purchasable product. The generic `sync` mode remains supported for other explicitly chosen integrations; it is not the selected Nino deployment mode.
+
 Use the dedicated database binding in the deployment's tracked `wrangler.jsonc` and verify the supplied migration has been applied before opening checkout. `wrangler.example.jsonc` remains a disabled template for isolated local setups; it can be copied to an untracked `wrangler.local.jsonc` when needed. Do not point it at the old Gelato database.
 
 Store the following as Worker secrets, outside source control:
@@ -69,6 +71,7 @@ The public read-only `GET /api/products`, `GET /api/commerce-config` and `GET /a
 {
   "checkout_ready": false,
   "catalog_ready": false,
+  "catalog_complete": false,
   "shipping_mode": null,
   "shipping_countries": [],
   "products": []
