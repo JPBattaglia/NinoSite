@@ -1,0 +1,119 @@
+import {Store} from './db.mjs';
+import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,countries,nowSeconds} from './common.mjs';
+import {createStripeClient,PrintfulClient} from './providers.mjs';
+import {publicCatalog,startCatalogSync,continueCatalogSync} from './catalog.mjs';
+import {shippingQuote,createCheckout} from './checkout.mjs';
+import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
+
+function json(value,status=200,headers={}) {
+  return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...headers}});
+}
+async function admin(request,env) {
+  if(!env.ADMIN_API_TOKEN) fail(503,'admin_not_configured');
+  const supplied=request.headers.get('Authorization') || '';
+  const a=await hash(supplied); const b=await hash(`Bearer ${env.ADMIN_API_TOKEN}`);
+  let mismatch=0; for(let i=0;i<a.length;i++) mismatch|=a.charCodeAt(i)^b.charCodeAt(i);
+  if(mismatch) fail(401,'unauthorized');
+}
+function syncSummary(run) { return {sync_id:run.id,status:run.status,processed:run.cursor,total:JSON.parse(run.product_ids_json).length,last_error:run.last_error}; }
+function commerceReadiness(env,catalog) {
+  let ready=true;
+  try { checkoutConfiguration(env); } catch { ready=false; }
+  return {checkout_ready:ready && catalog.catalog_ready && catalog.products.length>0,shipping_mode:env.SHIPPING_MODE || null,shipping_countries:countries(env)};
+}
+
+export function createApp(dependencies={}) {
+  const clock=dependencies.now || nowSeconds;
+  const gateways=async env=>({stripe:dependencies.stripe || await createStripeClient(env),printful:dependencies.printful || new PrintfulClient(env)});
+  return {
+    async fetch(request,env,ctx) {
+      const url=new URL(request.url); const origin=request.headers.get('Origin');
+      const cors=origin===env.STOREFRONT_ORIGIN ? {'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Idempotency-Key, Authorization'} : {};
+      try {
+        if(request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
+        if(!env.DB) fail(503,'database_not_configured');
+        const store=new Store(env.DB); const now=clock();
+        if(request.method==='GET' && url.pathname==='/api/health') {
+          const row=await store.first('SELECT 1 AS ok');
+          return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured'},200,cors);
+        }
+        if(request.method==='GET' && url.pathname==='/api/products') {
+          const catalog=await publicCatalog(store,env,now);
+          return json({...catalog,...commerceReadiness(env,catalog)},200,cors);
+        }
+        if(request.method==='GET' && url.pathname==='/api/commerce-config') {
+          const catalog=await publicCatalog(store,env,now);
+          return json({...commerceReadiness(env,catalog),catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
+        }
+        if(request.method==='POST' && url.pathname==='/api/webhooks/stripe') {
+          const raw=await limitedText(request,1048576);
+          const {stripe,printful}=await gateways(env);
+          return json(await stripeWebhook(raw,request.headers.get('Stripe-Signature'),store,stripe,printful,env,now,ctx));
+        }
+        if(request.method==='POST' && ['/api/checkout','/api/shipping-quotes'].includes(url.pathname)) {
+          if(origin!==env.STOREFRONT_ORIGIN) fail(403,'origin_not_allowed');
+          const body=await requestJson(request); const {stripe,printful}=await gateways(env);
+          const result=url.pathname==='/api/checkout' ? await createCheckout(body,request,store,stripe,printful,env,now) : await shippingQuote(body,store,printful,env,now);
+          return json(result,200,cors);
+        }
+        const receipt=url.pathname.match(/^\/api\/orders\/(ord_[a-f0-9]{24})$/);
+        if(request.method==='GET' && receipt) {
+          const order=await store.order(receipt[1]);
+          if(!order || !url.searchParams.get('token') || url.searchParams.get('token')!==order.receipt_token) fail(404,'order_not_found');
+          return json({order_id:order.id,payment_status:order.payment_status,fulfillment_status:order.fulfillment_status,total_cents:order.paid_total_cents,currency:'usd'},200,cors);
+        }
+        if(url.pathname.startsWith('/api/admin/')) {
+          await admin(request,env);
+          const printful=dependencies.printful || new PrintfulClient(env);
+          if(request.method==='POST' && url.pathname==='/api/admin/catalog/sync') {
+            if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) fail(503,'printful_not_configured');
+            const run=await startCatalogSync(store,printful,now);
+            return json(await continueCatalogSync(store,printful,run.id,now),200,cors);
+          }
+          const sync=url.pathname.match(/^\/api\/admin\/catalog\/sync\/([a-zA-Z0-9-]+)$/);
+          if(sync) {
+            const run=await store.first('SELECT * FROM catalog_sync_runs WHERE id=?',sync[1]);
+            if(!run) fail(404,'sync_not_found');
+            if(request.method==='GET') return json(syncSummary(run),200,cors);
+            if(request.method==='POST') return json(await continueCatalogSync(store,printful,run.id,now),200,cors);
+          }
+          const retry=url.pathname.match(/^\/api\/admin\/orders\/(ord_[a-f0-9]{24})\/retry$/);
+          if(request.method==='POST' && retry) {
+            const lock=await store.run("UPDATE commerce_orders SET fulfillment_status='retry',fulfillment_attempts=0,next_retry_at=0,last_error=NULL,updated_at=? WHERE id=? AND payment_status='paid' AND live_mode=1 AND fulfillment_status IN ('retry','review','draft') AND lease_until<=?",now,retry[1],now);
+            if(!lock.meta.changes) fail(409,'order_not_retryable');
+            const {stripe}=await gateways(env);
+            return json(await fulfillOrder(retry[1],store,stripe,printful,env,now),200,cors);
+          }
+          if(request.method==='GET' && url.pathname==='/api/admin/orders') {
+            const orders=await store.all('SELECT id,payment_status,fulfillment_status,paid_total_cents,printful_order_id,last_error,fulfillment_attempts,created_at,updated_at FROM commerce_orders ORDER BY created_at DESC LIMIT 100');
+            return json({orders},200,cors);
+          }
+        }
+        return json({error:'not_found'},404,cors);
+      } catch(error) {
+        const known=error instanceof HttpError;
+        const status=known?error.status:500;
+        return json({error:known?error.code:'service_error',message:known?error.message:'The request could not be completed. Please try again.'},status,{...cors,...(status===503?{'Retry-After':'30'}:{})});
+      }
+    },
+    async scheduled(event,env,ctx) {
+      if(!env.DB || !env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
+      const run=async()=>{
+        const store=new Store(env.DB); const now=clock();
+        const printful=dependencies.printful || new PrintfulClient(env);
+        let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
+        if(!sync && event.cron==='0 */6 * * *') sync=await startCatalogSync(store,printful,now);
+        if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch { /* The retained run is retried by the next scheduled invocation. */ } }
+        if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
+          const orders=await store.all("SELECT id FROM commerce_orders WHERE payment_status='paid' AND live_mode=1 AND fulfillment_status IN ('queued','retry','processing','draft') AND lease_until<=? AND next_retry_at<=? AND fulfillment_attempts<10 ORDER BY created_at LIMIT 3",now,now);
+          if(orders.length) {
+            const stripe=dependencies.stripe || await createStripeClient(env);
+            for(const order of orders) await fulfillOrder(order.id,store,stripe,printful,env,now);
+          }
+        }
+      };
+      if(ctx?.waitUntil) ctx.waitUntil(run()); else await run();
+    }
+  };
+}
+export default createApp();

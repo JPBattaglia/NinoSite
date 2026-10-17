@@ -1,34 +1,11 @@
-# NinoBattaglia Portfolio & Mobile App
+# Nino Battaglia
 
-## Overview
-A portfolio website and companion mobile app designed to showcase creative projects.  
-Demonstrates skills in **cross-platform development** and mobile adaptation of web projects.
+Graphic design portfolio and complete137-shirt storefront. Static pages are in the repository root; all visual styles are in `main.css`. Native cart and checkout controls use `commerce.js`.
 
-## Features
-- Portfolio website showcasing artwork and projects  
-- Mobile app version for Android/iOS users  
-- Responsive design with creative layout  
-- Integrated media galleries  
-- SEO-friendly design
+The complete137-product catalog and optimized garment photos were verified against the authenticated Printful published catalog. Original full-resolution artwork stays in the artist’s source folder.
 
-## Tech Stack
-- HTML5  
-- CSS3  
-- JavaScript  
-- Git & GitHub  
-- Mobile App Conversion Tools (Cordova / React Native)
+The separate `commerce-api/` Worker implements authoritative Printful variants and retail prices, Stripe Checkout, shipping quotes, payment webhooks, and paid-order fulfillment. Follow its configuration instructions before opening checkout. Credentials are never included in browser files or source control.
 
-## Live Demo
-👉 [View Portfolio Site](https://ninobattaglia.com)
+Purchases stay in the site’s cart and use Stripe for payment; Etsy is not required by the buying flow. Current deployment is a review while payment/fulfillment connections and shipping configuration are pending. Do not enable purchases or claim a successful payment without the server’s verified readiness and paid-event handling.
 
-## Screenshots
-*(Insert screenshots of web and mobile versions)*
-
-## Lessons Learned
-- Converted a web project into a mobile app  
-- Enhanced cross-platform testing and debugging skills  
-- Improved responsive layouts for creative content
-
-## Contact
-Created by [Jean Pierre Battaglia](https://menu-made.com)  
-📧 jpbattaglia11@gmail.com
+Preserve `gallery.html` for existing portfolio links and `CNAME` for the GitHub Pages domain. `catalog.json` uses canonical Printful sync product IDs and locally optimized, verified garment images.
