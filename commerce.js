@@ -2,9 +2,12 @@
   'use strict';
   const STORAGE_KEY = 'nino-battaglia-cart-v1';
   const MAX_QUANTITY = 99;
-  const state = { products: new Map(), cart: [], loading: false, ready: false, pending: false, checkoutReady: false, error: '', load: null, loadVersion: 0, storageAvailable: true };
+  const RECEIPT_KEY = STORAGE_KEY + '-receipt';
+  const RECEIPT_DELAYS = [0, 1500, 3000, 5000];
+  const RECEIPT_TOKEN = /^(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){2}$/i;
+  const state = { products: new Map(), cart: [], cartSignature: '', cartVersion: '', loading: false, ready: false, pending: false, checkoutReady: false, error: '', load: null, loadVersion: 0, storageAvailable: true };
   let cartPageBound = false;
-  let config = { apiBase: '', productsPath: '/api/products', checkoutPath: '/api/checkout', checkoutHosts: ['checkout.stripe.com'], maxUnits: 50, maxLines: 20 };
+  let config = { apiBase: '', productsPath: '/api/products', checkoutPath: '/api/checkout', ordersPath: '/api/orders', checkoutHosts: ['checkout.stripe.com'], maxUnits: 50, maxLines: 20 };
   const create = (tag, className, content) => {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -71,9 +74,26 @@
       return [...merged.values()];
     } catch { state.storageAvailable = false; return []; }
   }
+  function cartSignature(items) {
+    return JSON.stringify(items.map(item => ({ product_id: item.product_id, variant_id: item.variant_id, quantity: item.quantity })).sort((a, b) => (a.product_id + ':' + a.variant_id).localeCompare(b.product_id + ':' + b.variant_id)));
+  }
+  function readCartVersion() {
+    try {
+      const previous = localStorage.getItem(STORAGE_KEY + '-version');
+      if (/^[a-f0-9-]{36}$/i.test(previous || '')) return previous;
+      const version = crypto.randomUUID();
+      localStorage.setItem(STORAGE_KEY + '-version', version);
+      return version;
+    } catch { state.storageAvailable = false; return crypto.randomUUID(); }
+  }
   function writeCart() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.cart)); }
-    catch { state.storageAvailable = false; }
+    const signature = cartSignature(state.cart);
+    if (signature !== state.cartSignature) state.cartVersion = crypto.randomUUID();
+    state.cartSignature = signature;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.cart));
+      localStorage.setItem(STORAGE_KEY + '-version', state.cartVersion);
+    } catch { state.storageAvailable = false; }
     refreshCounts();
     document.dispatchEvent(new CustomEvent('nino:cart-change', { detail: { count: state.cart.reduce((sum, item) => sum + item.quantity, 0) } }));
   }
@@ -343,19 +363,133 @@
       if (!state.checkoutReady) throw new Error('Checkout is not open yet. Your selections are saved in your cart.');
       if (!state.cart.length || !totals().allValid) throw new Error('Review the available items in your cart before checking out.');
       const items = state.cart.map(item => ({ product_id: item.product_id, variant_id: item.variant_id, quantity: item.quantity }));
+      const cartVersion = state.cartVersion;
       cartStatus('Opening secure checkout…');
-      const response = await fetch(apiUrl(config.checkoutPath), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items, request_id: checkoutRequestId(items) }) });
+      const requestId = checkoutRequestId(items);
+      const response = await fetch(apiUrl(config.checkoutPath), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items, request_id: requestId }) });
       let data; try { data = await response.json(); } catch { data = null; }
       if (!response.ok) throw new Error(response.status === 409 ? 'A product option changed. Review your cart and try again.' : 'Checkout is unavailable right now. Your cart is saved; please try again.');
       let destination;
       try { destination = new URL(data?.checkout_url); }
       catch { throw new Error('Checkout could not be opened. Please try again.'); }
       if (destination.protocol !== 'https:' || !config.checkoutHosts.includes(destination.hostname)) throw new Error('Checkout could not be opened. Please try again.');
+      saveCheckoutReceipt(data, items, cartVersion, requestId);
       location.assign(destination.href);
     } catch (error) {
       state.pending = false; renderCart();
       cartStatus(error instanceof Error && !(error instanceof TypeError) ? error.message : 'Checkout is unavailable right now. Your cart is saved; please try again.', true);
     }
+  }
+  let receiptRun = 0;
+  let receiptStarted = false;
+  function saveCheckoutReceipt(data, items, cartVersion, requestId) {
+    if (!/^ord_[a-f0-9]{24}$/.test(data?.order_id || '') || !RECEIPT_TOKEN.test(data?.receipt_token || '')) throw new Error('Checkout could not be saved. Please try again.');
+    const receipt = { order_id: data.order_id, receipt_token: data.receipt_token, items, cart_version: cartVersion, request_id: requestId, created_at: Date.now(), cart_cleared: false };
+    try {
+      sessionStorage.setItem(RECEIPT_KEY, JSON.stringify(receipt));
+      const saved = JSON.parse(sessionStorage.getItem(RECEIPT_KEY) || 'null');
+      if (saved?.order_id !== receipt.order_id || saved?.receipt_token !== receipt.receipt_token) throw new Error();
+    } catch { throw new Error('Checkout could not be saved in this browser. Please allow session storage and try again.'); }
+  }
+  function readCheckoutReceipt() {
+    try {
+      const receipt = JSON.parse(sessionStorage.getItem(RECEIPT_KEY) || 'null');
+      if (!/^ord_[a-f0-9]{24}$/.test(receipt?.order_id || '') || !RECEIPT_TOKEN.test(receipt?.receipt_token || '') || !Array.isArray(receipt?.items) || !receipt.items.length || receipt.items.length > 200) return null;
+      if (!receipt.items.every(item => id(item?.product_id) && id(item?.variant_id) && quantity(item?.quantity))) return null;
+      return receipt;
+    } catch { return null; }
+  }
+  function clearUnchangedPurchasedCart(receipt) {
+    if (receipt.cart_cleared) return true;
+    try {
+      const savedCart = readCart();
+      const savedVersion = localStorage.getItem(STORAGE_KEY + '-version');
+      if (!state.storageAvailable || !receipt.cart_version || savedVersion !== receipt.cart_version || cartSignature(savedCart) !== cartSignature(receipt.items)) return false;
+      state.cart = []; writeCart(); renderCart();
+      receipt.cart_cleared = true;
+      sessionStorage.setItem(RECEIPT_KEY, JSON.stringify(receipt));
+      return true;
+    } catch { return false; }
+  }
+  function receiptRegion() {
+    let region = document.querySelector('[data-checkout-receipt]');
+    if (region) return region;
+    const main = document.querySelector('main');
+    if (!main) return null;
+    region = create('section', 'shell checkout-receipt');
+    region.dataset.checkoutReceipt = '';
+    region.setAttribute('aria-labelledby', 'checkout-receipt-title');
+    const title = create('h2'); title.id = 'checkout-receipt-title';
+    const message = create('p', 'receipt-message'); message.dataset.receiptMessage = ''; message.setAttribute('role', 'status'); message.setAttribute('aria-live', 'polite');
+    const reference = create('p', 'receipt-reference'); reference.dataset.receiptReference = '';
+    const retry = create('button', 'button button-outline', 'Check payment status'); retry.type = 'button'; retry.dataset.receiptRetry = ''; retry.hidden = true;
+    retry.addEventListener('click', () => verifyCheckoutReceipt(readCheckoutReceipt()));
+    const cart = create('a', 'text-link', 'Review your cart ↗'); cart.href = 'cart.html';
+    const actions = create('div', 'button-row receipt-actions'); actions.append(retry, cart);
+    region.append(title, message, reference, actions);
+    const intro = main.querySelector('.page-intro');
+    if (intro) intro.after(region); else main.prepend(region);
+    return region;
+  }
+  function showReceipt(heading, message, { retry = false, busy = false, reference = '' } = {}) {
+    const region = receiptRegion();
+    if (!region) return;
+    region.setAttribute('aria-busy', String(busy));
+    region.querySelector('h2').textContent = heading;
+    region.querySelector('[data-receipt-message]').textContent = message;
+    const ref = region.querySelector('[data-receipt-reference]'); ref.textContent = reference; ref.hidden = !reference;
+    const button = region.querySelector('[data-receipt-retry]'); button.hidden = !retry; button.disabled = busy;
+  }
+  async function verifyCheckoutReceipt(receipt) {
+    const run = ++receiptRun;
+    if (!receipt) {
+      showReceipt('Payment status unavailable', 'We cannot verify this checkout in this browser. Your cart has been kept.');
+      return;
+    }
+    showReceipt('Checking your payment', 'Waiting for a verified payment update. Your cart is still saved.', { busy: true });
+    for (let attempt = 0; attempt < RECEIPT_DELAYS.length; attempt++) {
+      if (RECEIPT_DELAYS[attempt]) await new Promise(resolve => setTimeout(resolve, RECEIPT_DELAYS[attempt]));
+      if (run !== receiptRun) return;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      try {
+        const path = String(config.ordersPath).replace(/\/$/, '') + '/' + encodeURIComponent(receipt.order_id);
+        const url = new URL(apiUrl(path)); url.searchParams.set('token', receipt.receipt_token);
+        const response = await fetch(url.href, { credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', headers: { Accept: 'application/json' }, signal: controller.signal });
+        if (!response.ok) throw new Error();
+        const order = await response.json();
+        if (run !== receiptRun) return;
+        if (order?.order_id !== receipt.order_id || !['pending', 'failed', 'paid'].includes(order?.payment_status)) throw new Error();
+        if (order.payment_status === 'paid') {
+          try {
+            const attempt = JSON.parse(sessionStorage.getItem(STORAGE_KEY + '-checkout') || 'null');
+            if (receipt.request_id && attempt?.request_id === receipt.request_id) sessionStorage.removeItem(STORAGE_KEY + '-checkout');
+          } catch {}
+          const test = order.fulfillment_status === 'test_paid';
+          const review = order.fulfillment_status === 'review';
+          const verifiedTotal = money({ amount: order.total_cents, currency: order.currency });
+          const cleared = !test && !review && verifiedTotal && clearUnchangedPurchasedCart(receipt);
+          let message = test ? 'This is a test checkout. Your cart has been kept.' : review ? 'Your payment was received. Your order needs review before fulfillment.' : 'Your payment has been confirmed.';
+          if (!test && !cleared) message += ' Your current cart has been kept.';
+          const total = verifiedTotal ? ' · ' + formatMoney(verifiedTotal) : '';
+          showReceipt(test ? 'Test checkout confirmed' : review ? 'Payment received — order under review' : 'Payment confirmed', message, { reference: 'Order ' + receipt.order_id + total });
+          return;
+        }
+        if (order.payment_status === 'failed') {
+          showReceipt('Payment not completed', 'Payment has not been confirmed. Your cart is still saved; check again or review your selections.', { retry: true, reference: 'Order ' + receipt.order_id });
+          return;
+        }
+        if (attempt === RECEIPT_DELAYS.length - 1) showReceipt('Payment confirmation pending', 'Confirmation is taking longer than usual. Your cart has been kept. Check the payment status again shortly.', { retry: true, reference: 'Order ' + receipt.order_id });
+      } catch {
+        if (run === receiptRun) showReceipt('Payment status unavailable', 'We cannot verify your payment right now. Your cart has been kept. Please check again.', { retry: true });
+        return;
+      } finally { clearTimeout(timeout); }
+    }
+  }
+  function startCheckoutReceipt() {
+    if (receiptStarted || new URLSearchParams(location.search).get('checkout') !== 'success') return;
+    receiptStarted = true;
+    verifyCheckoutReceipt(readCheckoutReceipt());
   }
   function bindCartPage() {
     if (cartPageBound) return;
@@ -367,7 +501,7 @@
     config = { ...config, ...options };
     delete config.checkoutReady;
     if (!Array.isArray(config.checkoutHosts)) config.checkoutHosts = ['checkout.stripe.com'];
-    refreshCounts(); bindCartPage();
+    refreshCounts(); bindCartPage(); startCheckoutReceipt();
     if (Array.isArray(options.products)) {
       state.loadVersion++; state.load = null; state.loading = false;
       state.products = normalizeProducts(options.products); state.ready = true; state.checkoutReady = false; state.error = ''; reconcileCart(); renderCart();
@@ -376,6 +510,12 @@
     return loadProducts();
   }
   state.cart = readCart();
+  state.cartSignature = cartSignature(state.cart);
+  state.cartVersion = readCartVersion();
+  window.addEventListener('storage', event => {
+    if (event.key !== STORAGE_KEY && event.key !== STORAGE_KEY + '-version') return;
+    state.cart = readCart(); state.cartSignature = cartSignature(state.cart); state.cartVersion = readCartVersion(); renderCart();
+  });
   window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()] });
   document.addEventListener('nino:product-open', event => {
     const { product, container } = event.detail || {};
