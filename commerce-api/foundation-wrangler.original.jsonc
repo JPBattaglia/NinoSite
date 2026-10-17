@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nino-commerce-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-21",
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "nino-commerce",
+    "database_id": "REPLACE_AFTER_WRANGLER_D1_CREATE",
+    "migrations_dir": "migrations"
+  }],
+  "vars": {
+    "APP_ENV": "development",
+    "STOREFRONT_ORIGIN": "https://ninobattaglia.com"
+  }
+}

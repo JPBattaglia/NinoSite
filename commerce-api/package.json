@@ -1,0 +1,13 @@
+{
+  "name": "nino-stripe-printful-commerce",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "dev": "wrangler dev --config wrangler.example.jsonc",
+    "check": "wrangler deploy --dry-run --config wrangler.example.jsonc"
+  },
+  "dependencies": { "stripe": "22.6.0" },
+  "devDependencies": { "wrangler": "^4.26.0" }
+}
