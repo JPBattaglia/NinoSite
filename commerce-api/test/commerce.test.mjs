@@ -3,6 +3,73 @@ import assert from 'node:assert/strict';
 import {fixture,rawVariant} from './fixtures.mjs';
 import {normalizeVariant} from '../src/catalog.mjs';
 import {fulfillOrder} from '../src/fulfillment.mjs';
+import {createApp} from '../src/worker.mjs';
+
+function providerConstructionSpy(f) {
+  let constructed=0;
+  const app=createApp({stripeFactory:async()=>{constructed++;throw new Error('Provider must not be constructed');},printful:f.printful,now:f.now});
+  return {
+    constructed:()=>constructed,
+    async request(path,origin=f.env.STOREFRONT_ORIGIN) {
+      const response=await app.fetch(new Request(`https://api.example.com${path}`,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','Stripe-Signature':'fixture-signature'},body:JSON.stringify({items:f.items,request_id:crypto.randomUUID()})}),f.env);
+      return {status:response.status,body:await response.json()};
+    }
+  };
+}
+
+test('missing checkout credentials return503 before SDK construction, while foreign origins still return403 first',async()=>{
+  const f=await fixture({STRIPE_SECRET_KEY:''});const spy=providerConstructionSpy(f);
+  for(const path of ['/api/checkout','/api/shipping-quotes']) {
+    assert.equal((await spy.request(path)).status,503);
+    assert.equal((await spy.request(path,'https://untrusted.example.com')).status,403);
+  }
+  assert.equal(spy.constructed(),0);assert.equal(f.printful.rateCalls,0);assert.equal(f.stripe.calls,0);
+});
+test('webhook checks key/signing-secret configuration before SDK construction',async()=>{
+  for(const missing of ['STRIPE_SECRET_KEY','STRIPE_WEBHOOK_SECRET']) {
+    const f=await fixture({[missing]:''});const spy=providerConstructionSpy(f);
+    assert.equal((await spy.request('/api/webhooks/stripe')).status,503);
+    assert.equal(spy.constructed(),0);assert.equal(f.printful.createCalls,0);
+  }
+});
+test('mismatched or unsupported Stripe key prefixes cannot construct a provider or create a payable session',async()=>{
+  const cases=[['test','sk_live_fixture'],['test','rk_live_fixture'],['live','sk_test_fixture'],['live','rk_test_fixture'],['live','pk_live_fixture'],['test','unprefixed_fixture']];
+  for(const [mode,key] of cases) {
+    const f=await fixture({STRIPE_MODE:mode,STRIPE_SECRET_KEY:key});const spy=providerConstructionSpy(f);
+    for(const path of ['/api/checkout','/api/shipping-quotes','/api/webhooks/stripe']) assert.equal((await spy.request(path)).status,503);
+    assert.equal(spy.constructed(),0);assert.equal(f.stripe.calls,0);assert.equal(f.printful.rateCalls,0);assert.equal(f.printful.createCalls,0);
+    assert.equal((await f.request('/api/products')).body.checkout_ready,false);
+  }
+  for(const [mode,key] of [['test','sk_test_fixture'],['test','rk_test_fixture'],['live','sk_live_fixture'],['live','rk_live_fixture']]) {
+    const f=await fixture({STRIPE_MODE:mode,STRIPE_SECRET_KEY:key});assert.equal((await f.checkout()).status,200);assert.equal(f.stripe.calls,1);
+  }
+});
+test('turning checkout off does not block verification or fulfillment of an existing paid order',async()=>{
+  const f=await fixture();await f.checkout();f.stripe.pay('cs_fixture_1');
+  f.env.CHECKOUT_ENABLED='false';f.env.SHIPPING_MODE='';f.env.STRIPE_TAX_MODE='';
+  assert.equal((await f.checkout()).status,503);
+  assert.equal((await f.webhook()).status,200);
+  assert.equal((await f.store.orderBySession('cs_fixture_1')).fulfillment_status,'confirmed');assert.equal(f.printful.confirmCalls,1);
+});
+
+test('preview/localhost can read public catalog/config/health while writes and private routes stay protected',async()=>{
+  const f=await fixture();
+  for(const origin of ['https://private-preview.example.com','http://localhost:4173']) {
+    for(const path of ['/api/products','/api/commerce-config','/api/health']) {
+      const response=await f.app.fetch(new Request(`https://api.example.com${path}`,{headers:{Origin:origin}}),f.env);
+      assert.equal(response.status,200);assert.equal(response.headers.get('Access-Control-Allow-Origin'),'*');
+    }
+    for(const path of ['/api/checkout','/api/shipping-quotes']) {
+      const response=await f.app.fetch(new Request(`https://api.example.com${path}`,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({items:f.items})}),f.env);
+      assert.equal(response.status,403);assert.equal(response.headers.get('Access-Control-Allow-Origin'),null);
+    }
+  }
+  const privateResponse=await f.app.fetch(new Request('https://api.example.com/api/admin/orders',{headers:{Origin:'https://private-preview.example.com'}}),f.env);
+  assert.equal(privateResponse.status,401);assert.equal(privateResponse.headers.get('Access-Control-Allow-Origin'),null);
+  const receipt=await f.app.fetch(new Request('https://api.example.com/api/orders/ord_000000000000000000000000?token=wrong',{headers:{Origin:'https://private-preview.example.com'}}),f.env);
+  assert.equal(receipt.status,404);assert.equal(receipt.headers.get('Access-Control-Allow-Origin'),null);
+  assert.equal((await f.checkout()).status,200);assert.equal(f.stripe.calls,1);
+});
 
 test('public catalog exposes only explicit USD retail prices and usable synced variants',async()=>{
   const f=await fixture(); const response=await f.request('/api/products');

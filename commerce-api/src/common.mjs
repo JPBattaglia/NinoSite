@@ -68,8 +68,16 @@ export function shippingConfig(env) {
   }
   return {mode,countries:allowed,amount,name:String(env.SHIPPING_RATE_NAME || 'Shipping').slice(0,100)};
 }
+export function stripeConfiguration(env,requireWebhookSecret=false) {
+  if(!['test','live'].includes(env.STRIPE_MODE)) fail(503,'stripe_mode_not_configured');
+  const match=typeof env.STRIPE_SECRET_KEY==='string' && !/\s/.test(env.STRIPE_SECRET_KEY) && env.STRIPE_SECRET_KEY.match(/^(?:sk|rk)_(test|live)_.+$/);
+  if(!match) fail(503,'stripe_key_not_configured');
+  if(match[1]!==env.STRIPE_MODE) fail(503,'stripe_key_mode_mismatch');
+  if(requireWebhookSecret && !env.STRIPE_WEBHOOK_SECRET) fail(503,'webhook_not_configured');
+}
 export function checkoutConfiguration(env) {
   if (env.CHECKOUT_ENABLED !== 'true' || !env.STRIPE_SECRET_KEY || !env.STRIPE_WEBHOOK_SECRET || !env.PRINTFUL_ACCESS_TOKEN || !/^\d+$/.test(env.PRINTFUL_STORE_ID || '') || !['test','live'].includes(env.STRIPE_MODE)) fail(503,'checkout_not_configured','Checkout is not available yet.');
+  stripeConfiguration(env,true);
   const shipping = shippingConfig(env);
   if (env.STRIPE_MODE === 'live' && env.FULFILLMENT_ENABLED !== 'true') fail(503,'fulfillment_not_enabled','Checkout is not available yet.');
   if (!['none','automatic'].includes(env.STRIPE_TAX_MODE) || (env.STRIPE_TAX_MODE === 'automatic' && env.STRIPE_TAX_REGISTRATION_CONFIRMED !== 'true')) fail(503,'tax_not_configured','Tax settings have not been confirmed.');

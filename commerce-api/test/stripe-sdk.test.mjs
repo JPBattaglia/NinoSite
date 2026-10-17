@@ -8,7 +8,7 @@ async function signature(raw,secret,timestamp) {
   return `t=${timestamp},v1=${[...bytes].map(byte=>byte.toString(16).padStart(2,'0')).join('')}`;
 }
 test('actual Stripe SDK verifies raw payload signature, rejects tampering and expired timestamps without network calls',async()=>{
-  const client=await createStripeClient({STRIPE_SECRET_KEY:'rk_test_fixture_not_a_real_key'});
+  const client=await createStripeClient({STRIPE_MODE:'test',STRIPE_SECRET_KEY:'rk_test_fixture_not_a_real_key'});
   const raw=JSON.stringify({id:'evt_sdk_fixture',object:'event',type:'checkout.session.completed',livemode:false,data:{object:{id:'cs_fixture'}}});
   const secret='whsec_fixture_not_a_real_secret';const timestamp=Math.floor(Date.now()/1000);
   const header=await signature(raw,secret,timestamp);

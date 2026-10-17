@@ -1,4 +1,4 @@
-import {fail,cents,money,canonical,recipient} from './common.mjs';
+import {fail,cents,money,canonical,recipient,stripeConfiguration} from './common.mjs';
 import {printFiles,artworkKeys} from './catalog.mjs';
 import {checkedPaidSession} from './checkout.mjs';
 
@@ -62,7 +62,7 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
 }
 
 export async function stripeWebhook(raw,signature,store,stripe,printful,env,now,ctx) {
-  if(!env.STRIPE_WEBHOOK_SECRET || !env.STRIPE_SECRET_KEY) fail(503,'webhook_not_configured');
+  stripeConfiguration(env,true);
   let event;
   try { event=await stripe.verifyWebhook(raw,signature,env.STRIPE_WEBHOOK_SECRET); } catch { fail(400,'invalid_webhook_signature'); }
   if(!event || typeof event.id!=='string' || !event.id.startsWith('evt_') || event.livemode!==(env.STRIPE_MODE==='live')) fail(400,'invalid_webhook_environment');

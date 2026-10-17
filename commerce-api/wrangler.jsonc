@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nino-printful-commerce-api",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-16",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nino-printful-commerce",
+      "database_id": "3b48a25e-1854-48ca-b821-ef1552d385cc",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "* * * * *",
+      "0 */6 * * *"
+    ]
+  },
+  "vars": {
+    "STOREFRONT_ORIGIN": "https://ninobattaglia.com",
+    "STRIPE_MODE": "test",
+    "CHECKOUT_ENABLED": "false",
+    "FULFILLMENT_ENABLED": "false",
+    "PRINTFUL_CATALOG_MODE": "sync",
+    "PRINTFUL_STORE_ID": "",
+    "SHIPPING_MODE": "",
+    "SHIPPING_COUNTRIES": "",
+    "SHIPPING_RATE_CENTS": "",
+    "SHIPPING_RATE_NAME": "Shipping",
+    "STRIPE_TAX_MODE": "",
+    "STRIPE_TAX_REGISTRATION_CONFIRMED": "false",
+    "CHECKOUT_SUCCESS_PATH": "/shop.html?checkout=success&session_id={CHECKOUT_SESSION_ID}",
+    "CHECKOUT_CANCEL_PATH": "/shop.html?checkout=cancelled"
+  }
+}

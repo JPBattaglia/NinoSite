@@ -1,6 +1,7 @@
-import {HttpError} from './common.mjs';
+import {HttpError,stripeConfiguration} from './common.mjs';
 
 export async function createStripeClient(env) {
+  stripeConfiguration(env);
   const {default:Stripe} = await import('stripe');
   const client = new Stripe(env.STRIPE_SECRET_KEY,{apiVersion:'2026-08-26.dahlia',httpClient:Stripe.createFetchHttpClient(),maxNetworkRetries:2,timeout:15000});
   return {

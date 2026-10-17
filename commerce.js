@@ -7,7 +7,9 @@
   const RECEIPT_TOKEN = /^(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){2}$/i;
   const state = { products: new Map(), cart: [], cartSignature: '', cartVersion: '', loading: false, ready: false, pending: false, checkoutReady: false, error: '', load: null, loadVersion: 0, storageAvailable: true };
   let cartPageBound = false;
-  let config = { apiBase: '', productsPath: '/api/products', checkoutPath: '/api/checkout', ordersPath: '/api/orders', checkoutHosts: ['checkout.stripe.com'], maxUnits: 50, maxLines: 20 };
+  const shipping = { mode: null, countries: [], recipient: {}, quote: null, selected: '', loading: false, message: '', version: 0, timer: null, controller: null };
+  let shippingUI = null;
+  let config = { apiBase: '', productsPath: '/api/products', checkoutPath: '/api/checkout', ordersPath: '/api/orders', shippingPath: '/api/shipping-quotes', checkoutHosts: ['checkout.stripe.com'], maxUnits: 50, maxLines: 20 };
   const create = (tag, className, content) => {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -88,7 +90,10 @@
   }
   function writeCart() {
     const signature = cartSignature(state.cart);
-    if (signature !== state.cartSignature) state.cartVersion = crypto.randomUUID();
+    if (signature !== state.cartSignature) {
+      state.cartVersion = crypto.randomUUID();
+      invalidateShipping('Your cart changed. Get updated delivery rates.');
+    }
     state.cartSignature = signature;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.cart));
@@ -149,6 +154,7 @@
         const data = await response.json();
         if (version !== state.loadVersion) return state.products;
         state.products = normalizeProducts(data);
+        setShippingPolicy(data?.shipping_mode, data?.shipping_countries);
         state.checkoutReady = data?.checkout_ready === true;
         state.ready = true;
         const removed = reconcileCart();
@@ -273,6 +279,157 @@
     });
     updateSelection();
   }
+  function forgetCheckoutAttempt() {
+    try { sessionStorage.removeItem(STORAGE_KEY + '-checkout'); } catch {}
+  }
+  function invalidateShipping(message = '') {
+    const hadQuote = Boolean(shipping.quote) || shipping.loading;
+    clearTimeout(shipping.timer); shipping.timer = null;
+    shipping.controller?.abort(); shipping.controller = null;
+    shipping.version++; shipping.quote = null; shipping.selected = ''; shipping.loading = false;
+    shipping.message = hadQuote ? message : '';
+    if (hadQuote) forgetCheckoutAttempt();
+  }
+  function setShippingPolicy(mode, countries) {
+    const nextMode = ['calculated', 'flat', 'free'].includes(mode) ? mode : null;
+    const nextCountries = [...new Set((Array.isArray(countries) ? countries : []).filter(value => typeof value === 'string' && /^[A-Z]{2}$/.test(value)))];
+    if (shipping.mode !== nextMode || JSON.stringify(shipping.countries) !== JSON.stringify(nextCountries)) invalidateShipping('Delivery options changed. Get updated rates.');
+    shipping.mode = nextMode; shipping.countries = nextCountries;
+    if (shipping.recipient.country_code && !nextCountries.includes(shipping.recipient.country_code)) shipping.recipient.country_code = '';
+  }
+  function shippingReady() {
+    if (shipping.mode === 'flat' || shipping.mode === 'free') return true;
+    return shipping.mode === 'calculated' && Boolean(shipping.quote) && shipping.quote.expires > Date.now() && shipping.quote.cart === cartSignature(state.cart) && shipping.quote.address === JSON.stringify(shipping.recipient) && shipping.quote.rates.some(rate => rate.id === shipping.selected);
+  }
+  function countryName(code) {
+    try { return new Intl.DisplayNames(undefined, { type: 'region' }).of(code) || code; } catch { return code; }
+  }
+  function createShippingUI(summary) {
+    const section = create('section', 'shipping-calculator'); section.dataset.shippingCalculator = '';
+    const heading = create('h3', '', 'Delivery address'); heading.id = 'shipping-address-title';
+    const form = create('form', 'shipping-address-form'); form.setAttribute('aria-labelledby', heading.id);
+    const fields = new Map();
+    const definitions = [
+      ['name','Full name','name'],['address1','Street address','address-line1'],['address2','Apartment or suite (optional)','address-line2'],['city','City','address-level2'],['state_code','State / province','address-level1'],['country_code','Country','country'],['zip','Postal code','postal-code']
+    ];
+    for (const [name, title, autocomplete] of definitions) {
+      const wrapper = create('label', 'commerce-field shipping-field shipping-field-' + name);
+      wrapper.append(create('span', '', title));
+      const input = create(name === 'country_code' ? 'select' : 'input'); input.name = name; input.autocomplete = 'shipping ' + autocomplete;
+      if (name !== 'country_code') { input.type = 'text'; input.maxLength = 150; }
+      input.required = !['address2','state_code'].includes(name);
+      input.value = shipping.recipient[name] || '';
+      input.addEventListener(name === 'country_code' ? 'change' : 'input', () => {
+        shipping.recipient = Object.fromEntries([...fields].map(([key, field]) => [key, field.value.trim()]));
+        invalidateShipping('Your address changed. Get updated delivery rates.');
+        updateShippingControls(); renderShippingRates(); updateCheckoutButton();
+      });
+      wrapper.append(input); fields.set(name, input); form.append(wrapper);
+    }
+    const button = create('button', 'button button-outline', 'Get delivery rates'); button.type = 'submit'; form.append(button);
+    const status = create('p', 'shipping-status'); status.setAttribute('role','status'); status.setAttribute('aria-live','polite');
+    const rates = create('div', 'shipping-rates');
+    section.append(heading, form, status, rates);
+    const checkout = summary.querySelector('[data-cart-checkout]'); checkout.before(section);
+    const cost = create('div', 'shipping-summary-line'); cost.dataset.shippingSummary = ''; cost.hidden = true; cost.append(create('dt','','Delivery'),create('dd'));
+    summary.querySelector('dl')?.append(cost);
+    shippingUI = { section, form, fields, button, status, rates, cost };
+    form.addEventListener('submit', event => { event.preventDefault(); requestShippingQuote(); });
+  }
+  function updateCheckoutButton() {
+    const checkout = document.querySelector('[data-cart-checkout]');
+    if (checkout) checkout.disabled = state.pending || state.loading || !state.ready || !totals().allValid || !state.checkoutReady || !shippingReady();
+  }
+  function updateShippingControls() {
+    if (!shippingUI) return;
+    const { fields, button, section } = shippingUI;
+    section.hidden = shipping.mode !== 'calculated';
+    const country = fields.get('country_code');
+    if (country.dataset.allowedCountries !== shipping.countries.join(',')) {
+      country.replaceChildren(new Option('Choose country', ''), ...shipping.countries.map(code => new Option(countryName(code), code)));
+      country.dataset.allowedCountries = shipping.countries.join(',');
+      country.value = shipping.recipient.country_code || '';
+    }
+    for (const field of fields.values()) field.disabled = state.pending || shipping.loading;
+    fields.get('state_code').required = ['US','AU','CA'].includes(country.value);
+    button.disabled = state.pending || state.loading || shipping.loading || !state.ready || !state.checkoutReady || !totals().allValid || !shipping.countries.length;
+    button.textContent = shipping.loading ? 'Getting delivery rates…' : 'Get delivery rates';
+    button.setAttribute('aria-busy', String(shipping.loading));
+  }
+  function renderShippingRates() {
+    if (!shippingUI) return;
+    const { rates, status, cost } = shippingUI;
+    status.textContent = shipping.message;
+    rates.replaceChildren(); cost.hidden = true;
+    if (!shipping.quote || shipping.quote.expires <= Date.now()) return;
+    const address = create('div','shipping-address-review'); address.append(create('h4','','Deliver to'));
+    const recipient = shipping.quote.recipient;
+    address.append(create('p','', [recipient.name, recipient.address1, recipient.address2, [recipient.city,recipient.state_code,recipient.zip].filter(Boolean).join(', '), countryName(recipient.country_code)].filter(Boolean).join('\n')));
+    const group = create('fieldset'); group.append(create('legend','','Delivery options'));
+    for (const rate of shipping.quote.rates) {
+      const row = create('label','shipping-rate');
+      const radio = create('input'); radio.type = 'radio'; radio.name = 'shipping_rate'; radio.value = rate.id; radio.checked = shipping.selected === rate.id; radio.disabled = state.pending;
+      radio.addEventListener('change', () => {
+        shipping.selected = rate.id; forgetCheckoutAttempt();
+        renderShippingRates();
+        [...shippingUI.rates.querySelectorAll('input[name=shipping_rate]')].find(input => input.value === rate.id)?.focus();
+        updateCheckoutButton();
+      });
+      row.append(radio,create('span','',rate.name),create('strong','',formatMoney(rate.price))); group.append(row);
+    }
+    rates.append(address,group);
+    const selected = shipping.quote.rates.find(rate => rate.id === shipping.selected);
+    if (selected) { cost.hidden = false; cost.querySelector('dd').textContent = formatMoney(selected.price); }
+  }
+  function renderShipping() {
+    const summary = document.querySelector('[data-cart-summary]');
+    if (!summary) return;
+    summary.classList.toggle('has-calculated-shipping', shipping.mode === 'calculated');
+    if (!shippingUI && shipping.mode === 'calculated') createShippingUI(summary);
+    if (!shippingUI) return;
+    updateShippingControls(); renderShippingRates();
+    if (shipping.mode !== 'calculated') shippingUI.cost.hidden = true;
+  }
+  async function requestShippingQuote() {
+    if (shipping.mode !== 'calculated' || shipping.loading || state.pending || !state.checkoutReady || !totals().allValid || !shippingUI?.form.reportValidity()) return;
+    shipping.recipient = Object.fromEntries([...shippingUI.fields].map(([key, field]) => [key, field.value.trim()]));
+    const recipient = { ...shipping.recipient };
+    if (!shipping.countries.includes(recipient.country_code)) { shipping.message = 'Choose an available delivery country.'; renderShipping(); return; }
+    invalidateShipping();
+    const version = shipping.version;
+    const cart = cartSignature(state.cart), address = JSON.stringify(recipient);
+    const items = state.cart.map(item => ({ product_id:item.product_id, variant_id:item.variant_id, quantity:item.quantity }));
+    shipping.loading = true; shipping.message = 'Checking delivery options for this address…';
+    const controller = new AbortController(); shipping.controller = controller;
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    renderShipping(); updateCheckoutButton();
+    try {
+      const response = await fetch(apiUrl(config.shippingPath), { method:'POST', credentials:'omit', headers:{'Content-Type':'application/json',Accept:'application/json'}, body:JSON.stringify({items,recipient}), signal:controller.signal });
+      if (!response.ok) throw new Error();
+      const result = await response.json();
+      if (version !== shipping.version || cart !== cartSignature(state.cart) || address !== JSON.stringify(shipping.recipient)) return;
+      const expires = Number(result?.expires_at) * 1000;
+      if (!id(result?.quote_id) || !Number.isSafeInteger(result?.expires_at) || !Number.isFinite(expires) || expires <= Date.now() || !Array.isArray(result?.rates)) throw new Error();
+      const currency = [...totals().sums.keys()][0];
+      const ids = new Set();
+      const rates = result.rates.flatMap(raw => {
+        const rateId = typeof raw?.id === 'string' ? raw.id : '';
+        const rateName = label(raw?.name), amount = raw?.amount, code = label(raw?.currency).toUpperCase();
+        if (!rateId || rateId.length > 100 || /[\u0000-\u001f]/.test(rateId) || ids.has(rateId) || !rateName || !Number.isSafeInteger(amount) || amount < 0 || code !== currency) return [];
+        ids.add(rateId); return [{id:rateId,name:rateName,price:{amount,currency:code}}];
+      });
+      if (!rates.length) throw new Error();
+      shipping.quote = { id:result.quote_id, expires, rates, cart, address, recipient };
+      shipping.selected = ''; shipping.message = 'Review the delivery address and choose a rate.';
+      forgetCheckoutAttempt();
+      shipping.timer = setTimeout(() => { invalidateShipping('Delivery rates expired. Get updated rates before checkout.'); renderShipping(); updateCheckoutButton(); }, Math.min(2147483647, expires - Date.now()));
+    } catch {
+      if (version === shipping.version) shipping.message = 'Delivery rates are unavailable for this address right now. Check the address and try again.';
+    } finally {
+      clearTimeout(timeout);
+      if (version === shipping.version) { shipping.loading = false; shipping.controller = null; renderShipping(); updateCheckoutButton(); }
+    }
+  }
   function totals() {
     const sums = new Map();
     let allValid = state.cart.length > 0;
@@ -296,7 +453,8 @@
     const count = state.cart.length;
     empty.hidden = count > 0 || state.loading || Boolean(state.error);
     summary.hidden = count === 0;
-    checkout.disabled = state.pending || state.loading || !state.ready || !totals().allValid || !state.checkoutReady;
+    checkout.disabled = state.pending || state.loading || !state.ready || !totals().allValid || !state.checkoutReady || !shippingReady();
+    renderShipping();
     checkout.textContent = state.pending ? 'Opening checkout…' : 'Continue to checkout ↗';
     checkout.setAttribute('aria-busy', String(state.pending));
     if (retry) retry.hidden = !state.error;
@@ -345,7 +503,7 @@
     else if (count && !totals().allValid) cartStatus('Remove unavailable options before checking out.', true);
   }
   function checkoutRequestId(items) {
-    const signature = JSON.stringify([...items].sort((a, b) => (a.product_id + ':' + a.variant_id).localeCompare(b.product_id + ':' + b.variant_id)));
+    const signature = JSON.stringify({ items: cartSignature(items), shipping_quote_id: shipping.mode === 'calculated' ? shipping.quote?.id : null, shipping_rate_id: shipping.mode === 'calculated' ? shipping.selected : null });
     try {
       const previous = JSON.parse(sessionStorage.getItem(STORAGE_KEY + '-checkout') || 'null');
       if (previous?.signature === signature && /^[a-f0-9-]{36}$/i.test(previous.request_id)) return previous.request_id;
@@ -362,13 +520,22 @@
       await loadProducts(true);
       if (!state.checkoutReady) throw new Error('Checkout is not open yet. Your selections are saved in your cart.');
       if (!state.cart.length || !totals().allValid) throw new Error('Review the available items in your cart before checking out.');
+      if (!shippingReady()) throw new Error(shipping.mode === 'calculated' ? 'Review your address and choose a current delivery rate before checkout.' : 'Shipping options are not ready for checkout.');
       const items = state.cart.map(item => ({ product_id: item.product_id, variant_id: item.variant_id, quantity: item.quantity }));
       const cartVersion = state.cartVersion;
       cartStatus('Opening secure checkout…');
       const requestId = checkoutRequestId(items);
-      const response = await fetch(apiUrl(config.checkoutPath), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items, request_id: requestId }) });
+      const payload = { items, request_id: requestId };
+      if (shipping.mode === 'calculated') { payload.shipping_quote_id = shipping.quote.id; payload.shipping_rate_id = shipping.selected; }
+      const response = await fetch(apiUrl(config.checkoutPath), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
       let data; try { data = await response.json(); } catch { data = null; }
-      if (!response.ok) throw new Error(response.status === 409 ? 'A product option changed. Review your cart and try again.' : 'Checkout is unavailable right now. Your cart is saved; please try again.');
+      if (!response.ok) {
+        if (['shipping_quote_expired','invalid_shipping_rate','shipping_quote_required'].includes(data?.error)) {
+          invalidateShipping('Delivery rates changed. Get updated rates before checkout.');
+          throw new Error('Get updated delivery rates before checkout.');
+        }
+        throw new Error(response.status === 409 ? 'A product option changed. Review your cart and try again.' : 'Checkout is unavailable right now. Your cart is saved; please try again.');
+      }
       let destination;
       try { destination = new URL(data?.checkout_url); }
       catch { throw new Error('Checkout could not be opened. Please try again.'); }
@@ -504,6 +671,7 @@
     refreshCounts(); bindCartPage(); startCheckoutReceipt();
     if (Array.isArray(options.products)) {
       state.loadVersion++; state.load = null; state.loading = false;
+      setShippingPolicy(null, []);
       state.products = normalizeProducts(options.products); state.ready = true; state.checkoutReady = false; state.error = ''; reconcileCart(); renderCart();
       return state.products;
     }
@@ -514,7 +682,10 @@
   state.cartVersion = readCartVersion();
   window.addEventListener('storage', event => {
     if (event.key !== STORAGE_KEY && event.key !== STORAGE_KEY + '-version') return;
-    state.cart = readCart(); state.cartSignature = cartSignature(state.cart); state.cartVersion = readCartVersion(); renderCart();
+    const previous = state.cartSignature;
+    state.cart = readCart(); state.cartSignature = cartSignature(state.cart); state.cartVersion = readCartVersion();
+    if (previous !== state.cartSignature) invalidateShipping('Your cart changed. Get updated delivery rates.');
+    renderCart();
   });
   window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()] });
   document.addEventListener('nino:product-open', event => {

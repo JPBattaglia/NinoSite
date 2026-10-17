@@ -1,5 +1,5 @@
 import {Store} from './db.mjs';
-import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,countries,nowSeconds} from './common.mjs';
+import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,stripeConfiguration,countries,nowSeconds} from './common.mjs';
 import {createStripeClient,PrintfulClient} from './providers.mjs';
 import {publicCatalog,startCatalogSync,continueCatalogSync} from './catalog.mjs';
 import {shippingQuote,createCheckout} from './checkout.mjs';
@@ -24,11 +24,13 @@ function commerceReadiness(env,catalog) {
 
 export function createApp(dependencies={}) {
   const clock=dependencies.now || nowSeconds;
-  const gateways=async env=>({stripe:dependencies.stripe || await createStripeClient(env),printful:dependencies.printful || new PrintfulClient(env)});
+  const stripeFactory=dependencies.stripeFactory || createStripeClient;
+  const gateways=async env=>({stripe:dependencies.stripe || await stripeFactory(env),printful:dependencies.printful || new PrintfulClient(env)});
   return {
     async fetch(request,env,ctx) {
       const url=new URL(request.url); const origin=request.headers.get('Origin');
-      const cors=origin===env.STOREFRONT_ORIGIN ? {'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Idempotency-Key, Authorization'} : {};
+      const publicRead=request.method==='GET' && ['/api/products','/api/commerce-config','/api/health'].includes(url.pathname);
+      const cors=publicRead ? {'Access-Control-Allow-Origin':'*'} : origin===env.STOREFRONT_ORIGIN ? {'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Idempotency-Key, Authorization'} : {};
       try {
         if(request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
         if(!env.DB) fail(503,'database_not_configured');
@@ -46,12 +48,14 @@ export function createApp(dependencies={}) {
           return json({...commerceReadiness(env,catalog),catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
         }
         if(request.method==='POST' && url.pathname==='/api/webhooks/stripe') {
+          stripeConfiguration(env,true);
           const raw=await limitedText(request,1048576);
           const {stripe,printful}=await gateways(env);
           return json(await stripeWebhook(raw,request.headers.get('Stripe-Signature'),store,stripe,printful,env,now,ctx));
         }
         if(request.method==='POST' && ['/api/checkout','/api/shipping-quotes'].includes(url.pathname)) {
           if(origin!==env.STOREFRONT_ORIGIN) fail(403,'origin_not_allowed');
+          checkoutConfiguration(env);
           const body=await requestJson(request); const {stripe,printful}=await gateways(env);
           const result=url.pathname==='/api/checkout' ? await createCheckout(body,request,store,stripe,printful,env,now) : await shippingQuote(body,store,printful,env,now);
           return json(result,200,cors);

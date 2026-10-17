@@ -65,7 +65,7 @@ export class StripeFixture {
 export async function fixture(overrides={}){
   let time=Math.floor(Date.now()/1000);
   const db=new D1Fixture();const store=new Store(db);const stripe=new StripeFixture();const printful=new PrintfulFixture();
-  const env={DB:db,STOREFRONT_ORIGIN:'https://shop.example.com',STRIPE_MODE:'live',CHECKOUT_ENABLED:'true',FULFILLMENT_ENABLED:'true',STRIPE_SECRET_KEY:'rk_live_fixture_not_a_key',STRIPE_WEBHOOK_SECRET:'whsec_fixture_not_a_key',PRINTFUL_ACCESS_TOKEN:'fixture_not_a_token',PRINTFUL_STORE_ID:'77',ADMIN_API_TOKEN:'fixture_admin_not_a_token',SHIPPING_MODE:'flat',SHIPPING_COUNTRIES:'US',SHIPPING_RATE_CENTS:'500',STRIPE_TAX_MODE:'none',...overrides};
+  const env={DB:db,STOREFRONT_ORIGIN:'https://shop.example.com',STRIPE_MODE:'live',CHECKOUT_ENABLED:'true',FULFILLMENT_ENABLED:'true',STRIPE_SECRET_KEY:`rk_${overrides.STRIPE_MODE || 'live'}_fixture_not_a_key`,STRIPE_WEBHOOK_SECRET:'whsec_fixture_not_a_key',PRINTFUL_ACCESS_TOKEN:'fixture_not_a_token',PRINTFUL_STORE_ID:'77',ADMIN_API_TOKEN:'fixture_admin_not_a_token',SHIPPING_MODE:'flat',SHIPPING_COUNTRIES:'US',SHIPPING_RATE_CENTS:'500',STRIPE_TAX_MODE:'none',...overrides};
   stripe.live=env.STRIPE_MODE==='live';
   await store.run("INSERT INTO catalog_sync_runs(id,product_ids_json,status,created_at,updated_at) VALUES('initial','[101]','complete',?,?)",time,time);
   await store.run("INSERT INTO commerce_settings(key,value) VALUES('active_catalog','initial')");
