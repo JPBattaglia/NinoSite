@@ -275,6 +275,7 @@
       if (existing) existing.quantity = total;
       else state.cart.push({ product_id: productId, variant_id: selected.id, quantity: count });
       writeCart(); renderCart();
+      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: productId } }));
       status.textContent = state.storageAvailable ? 'Added to your cart.' : 'Added to this page’s cart. Your browser cannot save the cart between pages.';
       viewCart.hidden = false;
     });
@@ -517,6 +518,7 @@
     if (state.pending) return;
     if (!state.checkoutReady) { cartStatus('Checkout is not open yet. Your selections are saved in your cart.'); return; }
     state.pending = true; renderCart();
+    document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'checkout_attempt' } }));
     try {
       await loadProducts(true);
       if (!state.checkoutReady) throw new Error('Checkout is not open yet. Your selections are saved in your cart.');
@@ -542,6 +544,7 @@
       catch { throw new Error('Checkout could not be opened. Please try again.'); }
       if (destination.protocol !== 'https:' || !config.checkoutHosts.includes(destination.hostname)) throw new Error('Checkout could not be opened. Please try again.');
       saveCheckoutReceipt(data, items, cartVersion, requestId);
+      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'checkout_opened' } }));
       location.assign(destination.href);
     } catch (error) {
       state.pending = false; renderCart();
