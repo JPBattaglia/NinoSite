@@ -1,5 +1,6 @@
 import {recordMeasurement,measurementReport} from './measurement.mjs';
 import {Store} from './db.mjs';
+import {resolveShippingCountries} from './countries.mjs';
 import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,stripeConfiguration,countries,nowSeconds} from './common.mjs';
 import {createStripeClient,PrintfulClient} from './providers.mjs';
 import {publicCatalog,startCatalogSync,continueCatalogSync} from './catalog.mjs';
@@ -23,6 +24,17 @@ function commerceReadiness(env,catalog) {
   return {checkout_ready:ready && catalog.catalog_ready && catalog.products.some(product=>product.variants.some(variant=>variant.available)),shipping_mode:env.SHIPPING_MODE || null,shipping_countries:countries(env)};
 }
 
+
+async function publicReadiness(env,catalog,store,printful,now) {
+  try {
+    const shippingEnv=await resolveShippingCountries(env,store,printful,now);
+    return commerceReadiness(shippingEnv,catalog);
+  } catch(error) {
+    if(error instanceof HttpError && error.code==='shipping_countries_unavailable') return {checkout_ready:false,shipping_mode:env.SHIPPING_MODE || null,shipping_countries:[]};
+    throw error;
+  }
+}
+
 export function createApp(dependencies={}) {
   const clock=dependencies.now || nowSeconds;
   const stripeFactory=dependencies.stripeFactory || createStripeClient;
@@ -42,11 +54,13 @@ export function createApp(dependencies={}) {
         }
         if(request.method==='GET' && url.pathname==='/api/products') {
           const catalog=await publicCatalog(store,env,now);
-          return json({...catalog,...commerceReadiness(env,catalog)},200,cors);
+          const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
+          return json({...catalog,...readiness},200,cors);
         }
         if(request.method==='GET' && url.pathname==='/api/commerce-config') {
           const catalog=await publicCatalog(store,env,now);
-          return json({...commerceReadiness(env,catalog),catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
+          const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
+          return json({...readiness,catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
         }
         if(request.method==='POST' && url.pathname==='/api/measurement') return json(await recordMeasurement(request,store,env,now),200,cors);
         if(request.method==='POST' && url.pathname==='/api/webhooks/stripe') {
@@ -57,9 +71,13 @@ export function createApp(dependencies={}) {
         }
         if(request.method==='POST' && ['/api/checkout','/api/shipping-quotes'].includes(url.pathname)) {
           if(origin!==env.STOREFRONT_ORIGIN) fail(403,'origin_not_allowed');
-          checkoutConfiguration(env);
-          const body=await requestJson(request); const {stripe,printful}=await gateways(env);
-          const result=url.pathname==='/api/checkout' ? await createCheckout(body,request,store,stripe,printful,env,now) : await shippingQuote(body,store,printful,env,now);
+          stripeConfiguration(env);
+          const printful=dependencies.printful || new PrintfulClient(env);
+          const shippingEnv=await resolveShippingCountries(env,store,printful,now);
+          checkoutConfiguration(shippingEnv);
+          const body=await requestJson(request);
+          const stripe=url.pathname==='/api/checkout' ? dependencies.stripe || await stripeFactory(shippingEnv) : null;
+          const result=url.pathname==='/api/checkout' ? await createCheckout(body,request,store,stripe,printful,shippingEnv,now) : await shippingQuote(body,store,printful,shippingEnv,now);
           return json(result,200,cors);
         }
         const receipt=url.pathname.match(/^\/api\/orders\/(ord_[a-f0-9]{24})$/);

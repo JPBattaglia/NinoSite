@@ -88,6 +88,7 @@ test('server calculates price and shipping; rejects client price tampering',asyn
   const result=await f.checkout();assert.equal(result.status,200);
   const params=f.stripe.sessions.get('cs_fixture_1').params;
   assert.equal(params.line_items[0].price_data.unit_amount,3200);
+  assert.equal('tax_code' in params.line_items[0].price_data.product_data,false);
   assert.equal(params.shipping_options[0].shipping_rate_data.fixed_amount.amount,500);
   assert.equal(params.ui_mode,'hosted_page');assert.equal('payment_method_types' in params,false);
   assert.match(params.integration_identifier,/-[a-z]{8}$/);
@@ -112,6 +113,8 @@ test('missing shipping/tax decisions and untrusted origins block checkout withou
   f.env.SHIPPING_MODE='free';f.env.STRIPE_TAX_MODE='automatic';assert.equal((await f.checkout()).status,503);
   f.env.STRIPE_TAX_MODE='none';
   assert.equal((await f.request('/api/checkout',{items:f.items},{headers:{Origin:'https://untrusted.example'}})).status,403);
+  f.env.STRIPE_PRODUCT_TAX_CODE='invalid_tax_code';assert.equal((await f.checkout()).status,503);
+  assert.equal((await f.request('/api/products')).body.checkout_ready,false);
   assert.equal(f.stripe.calls,0);
 });
 test('readiness is server-authoritative on products and closes for disabled fulfillment or stale catalog',async()=>{
@@ -217,8 +220,8 @@ test('refunded or partially refunded payments never reach Printful',async()=>{
   f.stripe.sessions.get('cs_fixture_1').payment_intent.latest_charge.amount_refunded=100;
   await f.webhook();assert.equal((await f.store.orderBySession('cs_fixture_1')).fulfillment_status,'review');assert.equal(f.printful.createCalls,0);
 });
-test('calculated quote is bound to cart and exact recipient, with no second Stripe shipping collection',async()=>{
-  const f=await fixture({SHIPPING_MODE:'calculated'});
+test('automatic-tax shirt checkout preserves calculated amount, classification and exact recipient without second address collection',async()=>{
+  const f=await fixture({SHIPPING_MODE:'calculated',STRIPE_TAX_MODE:'automatic',STRIPE_TAX_REGISTRATION_CONFIRMED:'true',STRIPE_PRODUCT_TAX_CODE:'txcd_30011000'});
   const recipient={name:'Test Customer',address1:'123 Test Street',address2:'',city:'Test City',state_code:'CA',country_code:'US',zip:'90001'};
   const quote=(await f.request('/api/shipping-quotes',{items:f.items,recipient})).body;
   assert.equal(quote.rates[0].amount,725);
@@ -228,6 +231,9 @@ test('calculated quote is bound to cart and exact recipient, with no second Stri
   const params=f.stripe.sessions.get('cs_fixture_1').params;
   assert.equal(params.shipping_address_collection,undefined);assert.equal(params.payment_intent_data.shipping.address.line1,recipient.address1);
   assert.equal(params.shipping_options[0].shipping_rate_data.fixed_amount.amount,725);
+  assert.deepEqual(params.automatic_tax,{enabled:true});assert.equal(params.customer,'cus_fixture');
+  assert.equal(params.line_items[0].price_data.unit_amount,3200);
+  assert.equal(params.line_items[0].price_data.product_data.tax_code,'txcd_30011000');
   f.stripe.pay('cs_fixture_1');await f.webhook();assert.equal(f.printful.confirmCalls,1);
 });
 test('expired shipping quotes and altered shipping destinations cannot reach fulfillment',async()=>{

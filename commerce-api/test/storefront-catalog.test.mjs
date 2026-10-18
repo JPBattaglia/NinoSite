@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {storefrontProducts} from '../../catalog-sync.mjs';
+import {existsSync} from 'node:fs';
+const catalogModule=[new URL('../../catalog-sync.mjs',import.meta.url),new URL('../../dist/catalog-sync.mjs',import.meta.url)].find(url=>existsSync(url));
+if(!catalogModule) throw new Error('Storefront catalog module was not found in the public or private layout');
+const {storefrontProducts}=await import(catalogModule.href);
 import {fixture} from './fixtures.mjs';
 import {normalizeVariant} from '../src/catalog.mjs';
 import {rawVariant} from './fixtures.mjs';

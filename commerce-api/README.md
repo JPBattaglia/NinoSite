@@ -2,7 +2,7 @@
 
 Cloudflare Worker + D1 backend for the storefront's native cart, Stripe-hosted payment, and Printful fulfillment. Etsy is not involved in checkout or order creation. Existing Printful sync products can be read from the selected store, including an existing linked store.
 
-The dedicated `nino-printful-commerce` D1 database is deployed with the migration applied. The Worker is deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; `wrangler.jsonc` records its nonsecret binding and disabled activation settings. Provider credentials, Stripe account authorization and the owner's shipping choice remain pending; no live charge or print order has been submitted. Checkout and fulfillment remain disabled until activation is configured and verified.
+The dedicated `nino-printful-commerce` D1 database is deployed with the migration applied. The Worker is deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; `wrangler.jsonc` records its nonsecret binding and disabled activation settings. The owner selected calculated shipping worldwide wherever Printful offers delivery. Stripe account access has been confirmed; the live account’s Tax setup is active. Secure server credentials and tax verification for the server’s selected test/live environment remain pending; no live charge or print order has been submitted. Checkout and fulfillment remain disabled until activation is configured and verified.
 
 ## Files and validation
 
@@ -39,15 +39,18 @@ Set these nonsecret variables explicitly:
 | `PRINTFUL_STORE_ID` | Numeric ID of the existing store whose synced variants will be sold. |
 | `PRINTFUL_CATALOG_MODE` | `sync` for an existing ecommerce-linked store; `store` for a Manual order/API store. Both use real configured sync variants, not product-template IDs. |
 | `STRIPE_MODE` | `test` or `live`, matching the API key and webhook endpoint. Only `sk_test_`/`rk_test_` keys are accepted in test mode, and `sk_live_`/`rk_live_` keys in live mode. Missing/mismatched keys return 503 before SDK construction or provider requests. Mismatched events are rejected. |
-| `SHIPPING_MODE` | Owner's selected `flat`, `free`, or `calculated`. Empty means checkout remains unavailable. |
-| `SHIPPING_COUNTRIES` | Comma-separated country codes explicitly approved for delivery. There is no default country list. |
+| `SHIPPING_MODE` | The owner selected `calculated`. Other supported modes are `flat` and `free`; empty means checkout remains unavailable. |
+| `SHIPPING_COUNTRIES` | `PRINTFUL` uses Printful’s current accepted country list for worldwide delivery. An explicit comma-separated list of ISO country codes is also supported. The accepted list is read from Printful’s `/countries` endpoint and cached for six hours in the existing D1 settings table. Missing credentials or unusable expired/malformed country data keep checkout closed. A valid current rate is still required for the actual cart and address; the country list alone never promises delivery. |
 | `SHIPPING_RATE_CENTS` | Positive integer minor-unit amount approved by the owner when mode is `flat`. No guessed rate is supplied. Ignored for `free` or `calculated`. |
 | `SHIPPING_RATE_NAME` | Customer-facing name for the configured flat/free rate. |
-| `STRIPE_TAX_MODE` | Explicit `none` or `automatic`. Empty means checkout remains unavailable. |
-| `STRIPE_TAX_REGISTRATION_CONFIRMED` | `true` only after the owner confirms active Stripe Tax registration(s) when using automatic tax. The code does not register a business or jurisdiction. |
+| `STRIPE_PRODUCT_TAX_CODE` | Optional store-specific Stripe product tax classification. The dedicated ordinary adult/unisex shirt catalog uses `txcd_30011000` (Clothing & Footwear), explicitly on Checkout line items. Unset preserves the generic behavior; no Stripe account default is changed. |
+| `STRIPE_TAX_MODE` | The owner selected automatic tax. The deployment records `automatic`; empty means checkout remains unavailable. |
+| `STRIPE_TAX_REGISTRATION_CONFIRMED` | Keep `false` until active Tax settings/registrations are verified in the same Stripe account and test/live environment as the installed server key. Live account Tax setup has been completed, but the server remains in test mode without its credentials. The code does not register a business or jurisdiction. |
 | `CHECKOUT_SUCCESS_PATH`, `CHECKOUT_CANCEL_PATH` | Same-origin storefront return paths. The default success path includes Stripe's Checkout Session placeholder. Update these to the actual frontend routes. |
 | `CHECKOUT_ENABLED` | Keep `false` until the account, catalog, shipping, tax choice and event endpoint are configured and reviewed. |
 | `FULFILLMENT_ENABLED` | Keep `false` during sandbox payment testing. Live checkout also requires this to be `true`. Turning it off pauses new supplier submissions while retaining paid orders for recovery. |
+
+The configured product tax code is scoped to this current shirt catalog. Future different product types need their correct Stripe tax classifications before being sold; do not assume this code is appropriate for every item. The classification is stored in each new order snapshot so a retry uses the same value. It does not enable automatic tax, confirm a registration, change account defaults, or open checkout.
 
 Optional `CATALOG_MAX_AGE_SECONDS` defaults to 86400. Older catalogs cannot create checkouts and their variants become unavailable. Optional `PRINTFUL_MAX_ORDER_COST_CENTS` can impose a lower supplier-cost ceiling; otherwise the paid order total minus customer tax is the ceiling. Supplier costs beyond the ceiling are held for review, never silently confirmed.
 
@@ -72,13 +75,13 @@ The public read-only `GET /api/products`, `GET /api/commerce-config` and `GET /a
   "checkout_ready": false,
   "catalog_ready": false,
   "catalog_complete": false,
-  "shipping_mode": null,
+  "shipping_mode": "calculated",
   "shipping_countries": [],
   "products": []
 }
 ```
 
-When configured and synced, each product has `id`, `external_id`, `title`, `image`, and `variants`. Each variant has `id`, actual `name`/`size`/`color` labels, `image`, `price:{amount,currency}`, `available`, and `max_quantity:10`. **Amounts are integer cents.** Only USD variants with an explicit retail price, an active/synced mapping and ready print files enter this catalog; other currencies are rejected, never relabeled or converted. Public responses omit print files and provider credentials. Treat absent/false `checkout_ready` as closed.
+When configured and synced, each product has `id`, `external_id`, `title`, `image`, and `variants`. Each variant has `id`, actual `name`/`size`/`color` labels, `image`, `price:{amount,currency}`, `available`, and `max_quantity:10`. **Amounts are integer cents.** Only USD variants with an explicit retail price, an active/synced mapping and ready print files enter this catalog; other currencies are rejected, never relabeled or converted. Public responses omit print files and provider credentials. Treat absent/false `checkout_ready` as closed. Public catalog/config reads retain HTTP 200 with `shipping_countries:[]` and closed readiness when the worldwide country source is unavailable; checkout and fulfillment still require a fresh accepted list.
 
 `GET /api/commerce-config` exposes the same readiness and shipping settings plus cart limits. Maximums are 10 units per variant, 50 total units and 20 distinct variants.
 
@@ -93,7 +96,7 @@ When configured and synced, each product has `id`, `external_id`, `title`, `imag
 
 The example IDs above are fixtures, not real store IDs. Do not send prices, totals, artwork URLs or customer payment data. The server rechecks the current Printful mapping, availability and retail price. Response: `{checkout_url,order_id,receipt_token,request_id}`. Redirect only to the returned Stripe-hosted URL. Keep the request UUID across a failed/retried attempt; generate a new one when the cart changes. `Idempotency-Key` can supply the same value instead. Reusing one ID for different items returns 409. An expired checkout attempt requires a new ID. Stripe Session creation has its own stable idempotency key, and saved order snapshots cannot be updated.
 
-Flat/free shipping collects the delivery address in hosted Checkout. Calculated shipping requires the additional address-review flow below; it is not silently enabled in the current frontend before the owner chooses it.
+Flat/free shipping collects the delivery address in hosted Checkout. Calculated shipping requires the additional address-review flow below; the frontend follows the server’s calculated-shipping policy chosen by the owner.
 
 ### Calculated shipping
 
@@ -119,7 +122,7 @@ New catalog data is staged under a generation ID. Only a completed generation re
 
 Paid orders are durably queued before webhook acknowledgement. Supplier work uses a per-order lease, the order ID as Printful's external ID, a draft first, and a separate confirmation call. Before confirmation it checks exact variant/quantity, artwork identities, destination and supplier cost. If creation or confirmation times out, retries first retrieve the same external order instead of creating a new print order. Refunds, changed artwork/address or inconsistent amounts hold the order for owner review. Printful's [Orders and sync API documentation](https://developers.printful.com/docs/) defines the draft/confirmation and external-ID behavior used here.
 
-Before enabling live checkout, the remaining concrete work is owner authorization/configuration of the existing Stripe account, the private Printful token and store ID, the chosen shipping/tax policy, webhook registration, the actual return routes, and an approved end-to-end proof. No live commerce readiness is claimed while those are missing.
+Before enabling live checkout, the remaining concrete work is owner authorization/configuration of the existing Stripe account, the private Printful token and store ID, tax configuration and verification of Printful’s current delivery destinations, webhook registration, the actual return routes, and an approved end-to-end proof. No live commerce readiness is claimed while those are missing.
 
 ## Optional storefront measurement
 

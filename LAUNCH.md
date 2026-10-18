@@ -1,6 +1,8 @@
 # Nino storefront release status — October 17, 2026
 
-The implementation is on `codex/nino-studio-storefront`. This document describes prepared code, not a successful public release or live purchase.
+This checklist tracks commerce activation. The public portfolio exists; no successful live purchase or supplier order is claimed.
+
+The live Stripe account’s Tax settings are active with the owner-confirmed company address and existing California registration. Account-wide tax defaults are unchanged. This shirt store selects automatic tax with the verified Clothing & Footwear classification, and Printful-calculated shipping worldwide wherever a valid rate is available. Server activation confirmation remains off until credentials and tax readiness are verified in the same test/live environment. D1 migrations 0001 and 0002 are applied.
 
 ## Prepared
 
@@ -29,11 +31,11 @@ Browser measurement starts off. The opt-in is under `support.html#privacy`; no n
 
 ## Outstanding evidence
 
-The public-domain switch, authenticated catalog sync, account-specific shipping/tax decisions, finalized policies, visual phone QA, and real/test payment-provider integration must be verified in the deployment environment. Local tests and a Worker dry-run do not prove those steps happened.
+The public-domain switch, authenticated catalog sync, server-mode tax verification, finalized policies, visual phone QA, and real/test payment-provider integration must be verified in the deployment environment. Local tests and a Worker dry-run do not prove those steps happened.
 
 ## Validation performed for this change
 
-- 40 automated commerce/catalog/measurement tests passed, including origin/privacy guards, bounded payloads/counts, retention, authenticated reports, duplicate payment handling, and immutable payment-observation dates.
+- 50 automated commerce/catalog/measurement/destination tests passed, including origin/privacy guards, bounded payloads/counts, retention, authenticated reports, duplicate payment handling, and immutable payment-observation dates.
 - 20 DOM/privacy interaction checks passed for search/reset/sort URLs, pagination, previews, product links, contextual support, image fallbacks, consent withdrawal, and GPC override. These used a simulated DOM and do not establish visual layout or real provider integration.
 - Every internal page/asset reference and catalog photo reference resolved to a repository path across 137 products and 20 artworks.
-- JavaScript syntax checks and the Worker deployment dry-run passed. The available browser could not reach the local preview, so visual phone QA remains pending.
+- JavaScript syntax checks and the Worker deployment dry-run passed. Subsequent merged browser checks at 390/1440px confirmed module/image loading and closed checkout readiness; a pre-existing 10px narrow-screen overflow remains a separate layout follow-up.

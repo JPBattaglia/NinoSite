@@ -75,9 +75,16 @@ export function stripeConfiguration(env,requireWebhookSecret=false) {
   if(match[1]!==env.STRIPE_MODE) fail(503,'stripe_key_mode_mismatch');
   if(requireWebhookSecret && !env.STRIPE_WEBHOOK_SECRET) fail(503,'webhook_not_configured');
 }
+export function productTaxCode(env) {
+  const code=env.STRIPE_PRODUCT_TAX_CODE;
+  if(code==null || code==='') return undefined;
+  if(typeof code!=='string' || !/^txcd_\d{8}$/.test(code)) fail(503,'product_tax_code_not_configured','Product tax classification is not configured correctly.');
+  return code;
+}
 export function checkoutConfiguration(env) {
   if (env.CHECKOUT_ENABLED !== 'true' || !env.STRIPE_SECRET_KEY || !env.STRIPE_WEBHOOK_SECRET || !env.PRINTFUL_ACCESS_TOKEN || !/^\d+$/.test(env.PRINTFUL_STORE_ID || '') || !['test','live'].includes(env.STRIPE_MODE)) fail(503,'checkout_not_configured','Checkout is not available yet.');
   stripeConfiguration(env,true);
+  productTaxCode(env);
   const shipping = shippingConfig(env);
   if (env.STRIPE_MODE === 'live' && env.FULFILLMENT_ENABLED !== 'true') fail(503,'fulfillment_not_enabled','Checkout is not available yet.');
   if (!['none','automatic'].includes(env.STRIPE_TAX_MODE) || (env.STRIPE_TAX_MODE === 'automatic' && env.STRIPE_TAX_REGISTRATION_CONFIRMED !== 'true')) fail(503,'tax_not_configured','Tax settings have not been confirmed.');
