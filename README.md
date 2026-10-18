@@ -1,8 +1,8 @@
 # Nino Battaglia
 
-Graphic design portfolio and complete 137-shirt storefront. Static pages are in the repository root; all visual styles are in `main.css`. Native cart and checkout controls use `commerce.js`.
+Graphic design portfolio and complete 136-shirt storefront. Static pages are in the repository root; all visual styles are in `main.css`. Native cart and checkout controls use `commerce.js`.
 
-The complete 137-product catalog and optimized garment photos were verified against the authenticated Printful published catalog. Original full-resolution artwork stays in the artist’s source folder.
+The complete 136-product catalog and optimized garment photos were verified against the authenticated Printful published catalog. Original full-resolution artwork stays in the artist’s source folder.
 
 The separate `commerce-api/` Worker implements authoritative Printful variants and retail prices, Stripe Checkout, shipping quotes, payment webhooks, and paid-order fulfillment. Its server and order database are deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; the frontend uses that public endpoint. Stripe and Printful secrets, catalog synchronization, merchant tax settings, and the live Printful destination list still need verification before checkout can open. Follow its configuration instructions before opening checkout. Credentials are never included in browser files or source control.
 
@@ -14,7 +14,7 @@ Preserve `gallery.html` for existing portfolio links and `CNAME` for the GitHub 
 
 The storefront reads the completed Printful catalog on page load. Published products added to the configured Printful store appear after the scheduled six-hour sync finishes, without editing `catalog.json` or rebuilding the site. Sync batches resume every minute. This covers that store's published/synced products, not unpublished design templates or another Printful store.
 
-The existing 137 verified designs remain the fallback until the first complete sync or during an API outage. A completed snapshot becomes authoritative, including removals. Existing curated photos and categories are retained for matching IDs; new designs use the supplier image. Designs without eligible variants remain visible with purchasing unavailable. Server-verified variants, prices and checkout readiness still control purchasing. A page refresh picks up a newly completed sync; browsing is not interrupted by background polling. If the API takes longer than three seconds, the page shows the fallback collection for that visit.
+The existing 136 verified designs remain the fallback until the first complete sync or during an API outage. A completed snapshot becomes authoritative, including removals. Existing curated photos and categories are retained for matching IDs; new designs use the supplier image. Designs without eligible variants remain visible with purchasing unavailable. Server-verified variants, prices and checkout readiness still control purchasing. A page refresh picks up a newly completed sync; browsing is not interrupted by background polling. If the API takes longer than three seconds, the page shows the fallback collection for that visit.
 
 Activation still requires the private Printful token and selected store ID on the deployed commerce Worker. A saved browser sign-in does not supply an API token. Stripe, shipping and tax setup are separate requirements for accepting payments. No live payment or supplier order is authorized by this catalog change.
 
