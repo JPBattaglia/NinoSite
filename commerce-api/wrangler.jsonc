@@ -23,7 +23,7 @@
     "CHECKOUT_ENABLED": "false",
     "FULFILLMENT_ENABLED": "false",
     "PRINTFUL_CATALOG_MODE": "store",
-    "PRINTFUL_STORE_ID": "",
+    "PRINTFUL_STORE_ID": "18919013",
     "SHIPPING_MODE": "calculated",
     "SHIPPING_COUNTRIES": "PRINTFUL",
     "SHIPPING_RATE_CENTS": "",
