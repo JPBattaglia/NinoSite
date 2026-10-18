@@ -12,7 +12,7 @@ export function storefrontProducts(existing, live, complete) {
   const curated = new Map(existing.map(product => [String(product.id), product]));
   const products = [];
   for (const product of live.values()) {
-    const previous = curated.get(String(product.id));
+    const previous = curated.get(String(product.id)) || (product.external_id != null ? curated.get(String(product.external_id)) : undefined);
     const photo = independentPhoto(previous?.image) || independentPhoto(product.image);
     const record = {
       ...previous,
