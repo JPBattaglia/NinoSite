@@ -2,7 +2,7 @@
 
 Cloudflare Worker + D1 backend for the storefront's native cart, Stripe-hosted payment, and Printful fulfillment. Etsy is not involved in checkout or order creation. Existing Printful sync products can be read from the selected store, including an existing linked store.
 
-The dedicated `nino-printful-commerce` D1 database is deployed with the migration applied. The Worker is deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; `wrangler.jsonc` records its nonsecret binding and disabled activation settings. The owner selected calculated shipping worldwide wherever Printful offers delivery. Stripe account access has been confirmed; secure server credentials and tax verification remain pending; no live charge or print order has been submitted. Checkout and fulfillment remain disabled until activation is configured and verified.
+The dedicated `nino-printful-commerce` D1 database is deployed with the migration applied. The Worker is deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; `wrangler.jsonc` records its nonsecret binding and disabled activation settings. The owner selected calculated shipping worldwide wherever Printful offers delivery. Stripe account access has been confirmed; the live account’s Tax setup is active. Secure server credentials and tax verification for the server’s selected test/live environment remain pending; no live charge or print order has been submitted. Checkout and fulfillment remain disabled until activation is configured and verified.
 
 ## Files and validation
 
@@ -44,8 +44,8 @@ Set these nonsecret variables explicitly:
 | `SHIPPING_RATE_CENTS` | Positive integer minor-unit amount approved by the owner when mode is `flat`. No guessed rate is supplied. Ignored for `free` or `calculated`. |
 | `SHIPPING_RATE_NAME` | Customer-facing name for the configured flat/free rate. |
 | `STRIPE_PRODUCT_TAX_CODE` | Optional store-specific Stripe product tax classification. The dedicated ordinary adult/unisex shirt catalog uses `txcd_30011000` (Clothing & Footwear), explicitly on Checkout line items. Unset preserves the generic behavior; no Stripe account default is changed. |
-| `STRIPE_TAX_MODE` | Explicit `none` or `automatic`. Empty means checkout remains unavailable. |
-| `STRIPE_TAX_REGISTRATION_CONFIRMED` | `true` only after the owner confirms active Stripe Tax registration(s) when using automatic tax. The code does not register a business or jurisdiction. |
+| `STRIPE_TAX_MODE` | The owner selected automatic tax. The deployment records `automatic`; empty means checkout remains unavailable. |
+| `STRIPE_TAX_REGISTRATION_CONFIRMED` | Keep `false` until active Tax settings/registrations are verified in the same Stripe account and test/live environment as the installed server key. Live account Tax setup has been completed, but the server remains in test mode without its credentials. The code does not register a business or jurisdiction. |
 | `CHECKOUT_SUCCESS_PATH`, `CHECKOUT_CANCEL_PATH` | Same-origin storefront return paths. The default success path includes Stripe's Checkout Session placeholder. Update these to the actual frontend routes. |
 | `CHECKOUT_ENABLED` | Keep `false` until the account, catalog, shipping, tax choice and event endpoint are configured and reviewed. |
 | `FULFILLMENT_ENABLED` | Keep `false` during sandbox payment testing. Live checkout also requires this to be `true`. Turning it off pauses new supplier submissions while retaining paid orders for recovery. |

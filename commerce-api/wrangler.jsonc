@@ -28,7 +28,7 @@
     "SHIPPING_COUNTRIES": "PRINTFUL",
     "SHIPPING_RATE_CENTS": "",
     "SHIPPING_RATE_NAME": "Shipping",
-    "STRIPE_TAX_MODE": "",
+    "STRIPE_TAX_MODE": "automatic",
     "STRIPE_PRODUCT_TAX_CODE": "txcd_30011000",
     "STRIPE_TAX_REGISTRATION_CONFIRMED": "false",
     "CHECKOUT_SUCCESS_PATH": "/shop.html?checkout=success&session_id={CHECKOUT_SESSION_ID}",
