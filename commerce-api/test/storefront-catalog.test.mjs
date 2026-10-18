@@ -21,6 +21,33 @@ test('a completed sync adds future products, removes deleted designs and retains
   assert.equal('price' in products[1],false);
 });
 
+test('a copied native product retains its source presentation while using destination commerce IDs and prices',()=>{
+  const curated=[{...base[0],category:'Illustration',description:'Original artwork from the artist’s collection.'}];
+  const destination={...record('901',[{id:'9501',purchasable:true,price:{amount:3400,currency:'USD'}}]),external_id:'101'};
+  const [product]=storefrontProducts(curated,new Map([['901',destination]]),true);
+  assert.equal(product.id,'901');
+  assert.equal(product.title,'Design 901');
+  assert.equal(product.image,'assets/curated.webp');
+  assert.deepEqual(product.gallery,['assets/curated.webp']);
+  assert.equal(product.category,'Illustration');
+  assert.equal(product.description,curated[0].description);
+  assert.equal(product.featured,true);
+  assert.deepEqual(product.price,{amount:3400,currency:'USD'});
+  assert.equal(curated[0].id,'101');
+});
+
+test('destination-specific curation takes precedence over an external source match',()=>{
+  const destinationCurated={id:'901',image:'assets/destination.webp',gallery:['assets/destination.webp'],category:'Identity',description:'Destination presentation',featured:false};
+  const destination={...record('901'),external_id:'101'};
+  const [product]=storefrontProducts([...base,destinationCurated],new Map([['901',destination]]),true);
+  assert.equal(product.id,'901');
+  assert.equal(product.image,'assets/destination.webp');
+  assert.deepEqual(product.gallery,['assets/destination.webp']);
+  assert.equal(product.category,'Identity');
+  assert.equal(product.description,'Destination presentation');
+  assert.equal(product.featured,false);
+});
+
 test('missing initial sync keeps all curated designs; a completed empty store does not resurrect deleted products',()=>{
   assert.equal(storefrontProducts(base,new Map(),false),base);
   assert.deepEqual(storefrontProducts(base,new Map(),true),[]);
