@@ -43,11 +43,14 @@ Set these nonsecret variables explicitly:
 | `SHIPPING_COUNTRIES` | `PRINTFUL` uses Printful’s current accepted country list for worldwide delivery. An explicit comma-separated list of ISO country codes is also supported. The accepted list is read from Printful’s `/countries` endpoint and cached for six hours in the existing D1 settings table. Missing credentials or unusable expired/malformed country data keep checkout closed. A valid current rate is still required for the actual cart and address; the country list alone never promises delivery. |
 | `SHIPPING_RATE_CENTS` | Positive integer minor-unit amount approved by the owner when mode is `flat`. No guessed rate is supplied. Ignored for `free` or `calculated`. |
 | `SHIPPING_RATE_NAME` | Customer-facing name for the configured flat/free rate. |
+| `STRIPE_PRODUCT_TAX_CODE` | Optional store-specific Stripe product tax classification. The dedicated ordinary adult/unisex shirt catalog uses `txcd_30011000` (Clothing & Footwear), explicitly on Checkout line items. Unset preserves the generic behavior; no Stripe account default is changed. |
 | `STRIPE_TAX_MODE` | Explicit `none` or `automatic`. Empty means checkout remains unavailable. |
 | `STRIPE_TAX_REGISTRATION_CONFIRMED` | `true` only after the owner confirms active Stripe Tax registration(s) when using automatic tax. The code does not register a business or jurisdiction. |
 | `CHECKOUT_SUCCESS_PATH`, `CHECKOUT_CANCEL_PATH` | Same-origin storefront return paths. The default success path includes Stripe's Checkout Session placeholder. Update these to the actual frontend routes. |
 | `CHECKOUT_ENABLED` | Keep `false` until the account, catalog, shipping, tax choice and event endpoint are configured and reviewed. |
 | `FULFILLMENT_ENABLED` | Keep `false` during sandbox payment testing. Live checkout also requires this to be `true`. Turning it off pauses new supplier submissions while retaining paid orders for recovery. |
+
+The configured product tax code is scoped to this current shirt catalog. Future different product types need their correct Stripe tax classifications before being sold; do not assume this code is appropriate for every item. The classification is stored in each new order snapshot so a retry uses the same value. It does not enable automatic tax, confirm a registration, change account defaults, or open checkout.
 
 Optional `CATALOG_MAX_AGE_SECONDS` defaults to 86400. Older catalogs cannot create checkouts and their variants become unavailable. Optional `PRINTFUL_MAX_ORDER_COST_CENTS` can impose a lower supplier-cost ceiling; otherwise the paid order total minus customer tax is the ceiling. Supplier costs beyond the ceiling are held for review, never silently confirmed.
 

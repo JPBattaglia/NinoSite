@@ -1,4 +1,4 @@
-import {fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,stripeShipping,nowSeconds} from './common.mjs';
+import {fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,productTaxCode,stripeShipping,nowSeconds} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 
@@ -55,7 +55,7 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     const subtotal=lines.reduce((sum,line)=>sum+line.line_total_cents,0);
     if(subtotal+shipping.amount>1000000) fail(400,'order_total_limit');
     const id=`ord_${(await hash(requestKey)).slice(0,24)}`;
-    const snapshot={lines,subtotal_cents:subtotal,currency:'usd',shipping,tax_mode:env.STRIPE_TAX_MODE,created_at:now};
+    const snapshot={lines,subtotal_cents:subtotal,currency:'usd',shipping,tax_mode:env.STRIPE_TAX_MODE,product_tax_code:productTaxCode(env),created_at:now};
     const token=crypto.randomUUID()+crypto.randomUUID();
     await store.run('INSERT OR IGNORE INTO commerce_orders(id,request_key,request_hash,snapshot_json,receipt_token,live_mode,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',id,requestKey,requestHash,JSON.stringify(snapshot),token,env.STRIPE_MODE==='live'?1:0,now,now);
     order=await store.order(id);
@@ -71,7 +71,7 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     expires_at:order.created_at+3600,
     metadata:{order_id:order.id,cart_hash:order.request_hash},
     payment_intent_data:{metadata:{order_id:order.id}},
-    line_items:snapshot.lines.map(line=>({quantity:line.quantity,price_data:{currency:'usd',unit_amount:line.unit_price_cents,tax_behavior:'exclusive',product_data:{name:line.title,description:line.variant.name || undefined,images:line.image?[line.image]:undefined,metadata:{sync_variant_id:line.variant_id,sync_product_id:line.product_id}}}})),
+    line_items:snapshot.lines.map(line=>({quantity:line.quantity,price_data:{currency:'usd',unit_amount:line.unit_price_cents,tax_behavior:'exclusive',product_data:{...(snapshot.product_tax_code?{tax_code:snapshot.product_tax_code}:{}),name:line.title,description:line.variant.name || undefined,images:line.image?[line.image]:undefined,metadata:{sync_variant_id:line.variant_id,sync_product_id:line.product_id}}}})),
     shipping_options:[{shipping_rate_data:{display_name:snapshot.shipping.name,type:'fixed_amount',fixed_amount:{amount:snapshot.shipping.amount,currency:'usd'},tax_behavior:'exclusive'}}]
   };
   if(snapshot.tax_mode==='automatic') params.automatic_tax={enabled:true};
