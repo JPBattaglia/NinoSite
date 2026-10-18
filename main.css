@@ -171,3 +171,15 @@ body{background:var(--paper);color:var(--ink)}
 /* Shopping help and narrow-screen controls follow the existing palette. */
 .support-section{max-width:1000px;padding-bottom:80px}.support-topics{display:flex;gap:12px 24px;flex-wrap:wrap;padding-bottom:30px}.support-section article{padding-block:32px;border-top:1px solid var(--line);scroll-margin-top:130px}.support-section h2{font:700 clamp(28px,5vw,46px)/1.1 var(--display)}.support-section p{max-width:760px;color:var(--muted)}.support-section details,.product-help details{border-bottom:1px solid var(--line);padding-block:16px}.support-section summary,.product-help summary{cursor:pointer;font-weight:600;min-height:44px;align-content:center}.support-section .button-row{margin-top:32px}.measurement-choice{display:flex;gap:12px;align-items:flex-start;padding-block:14px;cursor:pointer}.measurement-choice input{width:22px;height:22px;accent-color:var(--cyan);flex-shrink:0}.product-help{margin-top:24px;font-size:12px}.product-help .text-link{display:inline-block;margin:14px 16px 0 0;font-size:12px}.share-product{background:none;color:inherit;border:0;border-bottom:1px solid currentColor;padding:0 0 4px;min-height:44px}.product-help p{line-height:1.8;color:var(--muted)}.support-topics a{min-height:44px;display:inline-flex;align-items:center}.search-clear,.gallery-thumbs button,.dialog-close{min-width:44px;min-height:44px}.dialog-copy{min-width:0;overflow-wrap:anywhere}.variant-picker-options>*{min-width:0}.commerce-field select{max-width:100%}button:disabled{opacity:.55}.shop-section .collection-toolbar{gap:16px}.image-unavailable{object-fit:contain!important;padding:22%}
 @media(max-width:460px){.collection-toolbar{flex-wrap:wrap}.collection-toolbar .search-form{width:100%}.sort-label{margin-left:auto}.support-section{padding-bottom:50px}.product-help .text-link{font-size:11px}.dialog-grid{min-width:0}.dialog-copy{padding-inline:20px}.product-help details{padding-block:10px}}
+/* Static identity strip: every phrase stays readable at phone widths. */
+.identity-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 36px;padding:22px 5%;white-space:normal;overflow:visible;text-align:center}
+.identity-strip span{display:block;max-width:100%;white-space:normal;overflow-wrap:break-word}
+.identity-strip span:last-child{display:block}
+@media(max-width:760px){.identity-strip{flex-direction:column;align-items:center;gap:12px;padding:20px 5%;font-size:clamp(18px,5vw,24px);line-height:1.25}}
+
+/* Discreet maker credit using the original Menu-Made wordmark. */
+.footer-bottom{flex-wrap:wrap;align-items:center;gap:14px 24px}
+.footer-credit{display:inline-flex;align-items:center;gap:9px;min-height:44px;text-decoration:none;font-size:11px;color:var(--muted);flex-shrink:0}
+.footer-credit img{width:100px;height:21px;object-fit:contain}
+.footer-credit:hover{color:var(--cyan)}
+@media(max-width:760px){.footer-credit{flex-basis:100%;justify-content:center}.footer-bottom>span:nth-child(2){max-width:45%;text-align:right}.footer-bottom>span:first-child{margin-right:auto}}
