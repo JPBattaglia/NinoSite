@@ -1,7 +1,9 @@
 import {fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,stripeShipping,nowSeconds} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
+import {resolveShippingCountries} from './countries.mjs';
 
 export async function shippingQuote(body,store,printful,env,now) {
+  env=await resolveShippingCountries(env,store,printful,now);
   const config=shippingConfig(env);
   if (config.mode !== 'calculated') fail(409,'calculated_shipping_not_selected');
   if (!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) fail(503,'shipping_not_configured');
@@ -33,6 +35,7 @@ function paidRecipient(input,countries) {
   try { return recipient(input,countries); } catch { fail(409,'payment_shipping_address_unverified'); }
 }
 export async function createCheckout(body,request,store,stripe,printful,env,now) {
+  env=await resolveShippingCountries(env,store,printful,now);
   const shippingPolicy=checkoutConfiguration(env);
   const items=normalizeCart(body);
   if(Object.keys(body).some(key=>!['items','request_id','shipping_quote_id','shipping_rate_id'].includes(key))) fail(400,'invalid_checkout_fields','Prices and totals are calculated by the server.');

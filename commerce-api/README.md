@@ -2,7 +2,7 @@
 
 Cloudflare Worker + D1 backend for the storefront's native cart, Stripe-hosted payment, and Printful fulfillment. Etsy is not involved in checkout or order creation. Existing Printful sync products can be read from the selected store, including an existing linked store.
 
-The dedicated `nino-printful-commerce` D1 database is deployed with the migration applied. The Worker is deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; `wrangler.jsonc` records its nonsecret binding and disabled activation settings. Provider credentials, Stripe account authorization and the owner's shipping choice remain pending; no live charge or print order has been submitted. Checkout and fulfillment remain disabled until activation is configured and verified.
+The dedicated `nino-printful-commerce` D1 database is deployed with the migration applied. The Worker is deployed at `https://nino-printful-commerce-api.ijpbattaglia.workers.dev`; `wrangler.jsonc` records its nonsecret binding and disabled activation settings. The owner selected calculated shipping worldwide wherever Printful offers delivery. Stripe account access has been confirmed; secure server credentials and tax verification remain pending; no live charge or print order has been submitted. Checkout and fulfillment remain disabled until activation is configured and verified.
 
 ## Files and validation
 
@@ -37,8 +37,8 @@ Set these nonsecret variables explicitly:
 | `PRINTFUL_STORE_ID` | Numeric ID of the existing store whose synced variants will be sold. |
 | `PRINTFUL_CATALOG_MODE` | `sync` for an existing ecommerce-linked store; `store` for a Manual order/API store. Both use real configured sync variants, not product-template IDs. |
 | `STRIPE_MODE` | `test` or `live`, matching the API key and webhook endpoint. Only `sk_test_`/`rk_test_` keys are accepted in test mode, and `sk_live_`/`rk_live_` keys in live mode. Missing/mismatched keys return 503 before SDK construction or provider requests. Mismatched events are rejected. |
-| `SHIPPING_MODE` | Owner's selected `flat`, `free`, or `calculated`. Empty means checkout remains unavailable. |
-| `SHIPPING_COUNTRIES` | Comma-separated country codes explicitly approved for delivery. There is no default country list. |
+| `SHIPPING_MODE` | The owner selected `calculated`. Other supported modes are `flat` and `free`; empty means checkout remains unavailable. |
+| `SHIPPING_COUNTRIES` | `PRINTFUL` uses Printful’s current accepted country list for worldwide delivery. An explicit comma-separated list of ISO country codes is also supported. The accepted list is read from Printful’s `/countries` endpoint and cached for six hours in the existing D1 settings table. Missing credentials or unusable expired/malformed country data keep checkout closed. A valid current rate is still required for the actual cart and address; the country list alone never promises delivery. |
 | `SHIPPING_RATE_CENTS` | Positive integer minor-unit amount approved by the owner when mode is `flat`. No guessed rate is supplied. Ignored for `free` or `calculated`. |
 | `SHIPPING_RATE_NAME` | Customer-facing name for the configured flat/free rate. |
 | `STRIPE_TAX_MODE` | Explicit `none` or `automatic`. Empty means checkout remains unavailable. |
@@ -69,13 +69,13 @@ The public read-only `GET /api/products`, `GET /api/commerce-config` and `GET /a
 {
   "checkout_ready": false,
   "catalog_ready": false,
-  "shipping_mode": null,
+  "shipping_mode": "calculated",
   "shipping_countries": [],
   "products": []
 }
 ```
 
-When configured and synced, each product has `id`, `external_id`, `title`, `image`, and `variants`. Each variant has `id`, actual `name`/`size`/`color` labels, `image`, `price:{amount,currency}`, `available`, and `max_quantity:10`. **Amounts are integer cents.** Only USD variants with an explicit retail price, an active/synced mapping and ready print files enter this catalog; other currencies are rejected, never relabeled or converted. Public responses omit print files and provider credentials. Treat absent/false `checkout_ready` as closed.
+When configured and synced, each product has `id`, `external_id`, `title`, `image`, and `variants`. Each variant has `id`, actual `name`/`size`/`color` labels, `image`, `price:{amount,currency}`, `available`, and `max_quantity:10`. **Amounts are integer cents.** Only USD variants with an explicit retail price, an active/synced mapping and ready print files enter this catalog; other currencies are rejected, never relabeled or converted. Public responses omit print files and provider credentials. Treat absent/false `checkout_ready` as closed. Public catalog/config reads retain HTTP 200 with `shipping_countries:[]` and closed readiness when the worldwide country source is unavailable; checkout and fulfillment still require a fresh accepted list.
 
 `GET /api/commerce-config` exposes the same readiness and shipping settings plus cart limits. Maximums are 10 units per variant, 50 total units and 20 distinct variants.
 
@@ -90,7 +90,7 @@ When configured and synced, each product has `id`, `external_id`, `title`, `imag
 
 The example IDs above are fixtures, not real store IDs. Do not send prices, totals, artwork URLs or customer payment data. The server rechecks the current Printful mapping, availability and retail price. Response: `{checkout_url,order_id,receipt_token,request_id}`. Redirect only to the returned Stripe-hosted URL. Keep the request UUID across a failed/retried attempt; generate a new one when the cart changes. `Idempotency-Key` can supply the same value instead. Reusing one ID for different items returns 409. An expired checkout attempt requires a new ID. Stripe Session creation has its own stable idempotency key, and saved order snapshots cannot be updated.
 
-Flat/free shipping collects the delivery address in hosted Checkout. Calculated shipping requires the additional address-review flow below; it is not silently enabled in the current frontend before the owner chooses it.
+Flat/free shipping collects the delivery address in hosted Checkout. Calculated shipping requires the additional address-review flow below; the frontend follows the server’s calculated-shipping policy chosen by the owner.
 
 ### Calculated shipping
 
@@ -116,4 +116,4 @@ New catalog data is staged under a generation ID. Only a completed generation re
 
 Paid orders are durably queued before webhook acknowledgement. Supplier work uses a per-order lease, the order ID as Printful's external ID, a draft first, and a separate confirmation call. Before confirmation it checks exact variant/quantity, artwork identities, destination and supplier cost. If creation or confirmation times out, retries first retrieve the same external order instead of creating a new print order. Refunds, changed artwork/address or inconsistent amounts hold the order for owner review. Printful's [Orders and sync API documentation](https://developers.printful.com/docs/) defines the draft/confirmation and external-ID behavior used here.
 
-Before enabling live checkout, the remaining concrete work is owner authorization/configuration of the existing Stripe account, the private Printful token and store ID, the chosen shipping/tax policy, webhook registration, the actual return routes, and an approved end-to-end proof. No live commerce readiness is claimed while those are missing.
+Before enabling live checkout, the remaining concrete work is owner authorization/configuration of the existing Stripe account, the private Printful token and store ID, tax configuration and verification of Printful’s current delivery destinations, webhook registration, the actual return routes, and an approved end-to-end proof. No live commerce readiness is claimed while those are missing.

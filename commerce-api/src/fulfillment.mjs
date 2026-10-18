@@ -1,6 +1,7 @@
-import {fail,cents,money,canonical,recipient,stripeConfiguration} from './common.mjs';
+import {fail,cents,money,canonical,recipient,countries,stripeConfiguration} from './common.mjs';
 import {printFiles,artworkKeys} from './catalog.mjs';
 import {checkedPaidSession} from './checkout.mjs';
+import {resolveShippingCountries} from './countries.mjs';
 
 const accepted = new Set(['inreview','pending','waiting','waiting_for_stock','inprocess','onhold','partial','fulfilled']);
 
@@ -31,6 +32,10 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
   let order=await store.order(id);
   try {
     const snapshot=JSON.parse(order.snapshot_json);
+    const shippingEnv=await resolveShippingCountries(env,store,printful,now);
+    if(order.recipient_json) {
+      try {recipient(JSON.parse(order.recipient_json),countries(shippingEnv));} catch {fail(409,'shipping_country_requires_review');}
+    }
     const paid=await checkedPaidSession(order,await stripe.retrieveSession(order.stripe_session_id),await stripe.listLineItems(order.stripe_session_id));
     if(!paid) fail(409,'payment_not_paid');
     if(!order.recipient_json || !order.customer_email) fail(409,'fulfillment_address_missing');
