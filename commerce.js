@@ -5,7 +5,7 @@
   const RECEIPT_KEY = STORAGE_KEY + '-receipt';
   const RECEIPT_DELAYS = [0, 1500, 3000, 5000];
   const RECEIPT_TOKEN = /^(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){2}$/i;
-  const state = { products: new Map(), cart: [], cartSignature: '', cartVersion: '', loading: false, ready: false, pending: false, checkoutReady: false, error: '', load: null, loadVersion: 0, storageAvailable: true };
+  const state = { products: new Map(), catalogComplete: false, cart: [], cartSignature: '', cartVersion: '', loading: false, ready: false, pending: false, checkoutReady: false, error: '', load: null, loadVersion: 0, storageAvailable: true };
   let cartPageBound = false;
   const shipping = { mode: null, countries: [], recipient: {}, quote: null, selected: '', loading: false, message: '', version: 0, timer: null, controller: null };
   let shippingUI = null;
@@ -154,6 +154,7 @@
         const data = await response.json();
         if (version !== state.loadVersion) return state.products;
         state.products = normalizeProducts(data);
+        state.catalogComplete = data?.catalog_complete === true || data?.catalog_ready === true;
         setShippingPolicy(data?.shipping_mode, data?.shipping_countries);
         state.checkoutReady = data?.checkout_ready === true;
         state.ready = true;
@@ -274,6 +275,7 @@
       if (existing) existing.quantity = total;
       else state.cart.push({ product_id: productId, variant_id: selected.id, quantity: count });
       writeCart(); renderCart();
+      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: productId } }));
       status.textContent = state.storageAvailable ? 'Added to your cart.' : 'Added to this page’s cart. Your browser cannot save the cart between pages.';
       viewCart.hidden = false;
     });
@@ -516,6 +518,7 @@
     if (state.pending) return;
     if (!state.checkoutReady) { cartStatus('Checkout is not open yet. Your selections are saved in your cart.'); return; }
     state.pending = true; renderCart();
+    document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'checkout_attempt' } }));
     try {
       await loadProducts(true);
       if (!state.checkoutReady) throw new Error('Checkout is not open yet. Your selections are saved in your cart.');
@@ -541,6 +544,7 @@
       catch { throw new Error('Checkout could not be opened. Please try again.'); }
       if (destination.protocol !== 'https:' || !config.checkoutHosts.includes(destination.hostname)) throw new Error('Checkout could not be opened. Please try again.');
       saveCheckoutReceipt(data, items, cartVersion, requestId);
+      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'checkout_opened' } }));
       location.assign(destination.href);
     } catch (error) {
       state.pending = false; renderCart();
@@ -670,6 +674,7 @@
     if (!Array.isArray(config.checkoutHosts)) config.checkoutHosts = ['checkout.stripe.com'];
     refreshCounts(); bindCartPage(); startCheckoutReceipt();
     if (Array.isArray(options.products)) {
+      state.catalogComplete = false;
       state.loadVersion++; state.load = null; state.loading = false;
       setShippingPolicy(null, []);
       state.products = normalizeProducts(options.products); state.ready = true; state.checkoutReady = false; state.error = ''; reconcileCart(); renderCart();
@@ -687,7 +692,7 @@
     if (previous !== state.cartSignature) invalidateShipping('Your cart changed. Get updated delivery rates.');
     renderCart();
   });
-  window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()] });
+  window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()], getCatalogStatus: () => ({ complete: state.ready && state.catalogComplete }) });
   document.addEventListener('nino:product-open', event => {
     const { product, container } = event.detail || {};
     if (container) mountProduct(product, container);

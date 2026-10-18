@@ -1,3 +1,4 @@
+import {recordMeasurement,measurementReport} from './measurement.mjs';
 import {Store} from './db.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,stripeConfiguration,countries,nowSeconds} from './common.mjs';
@@ -20,7 +21,7 @@ function syncSummary(run) { return {sync_id:run.id,status:run.status,processed:r
 function commerceReadiness(env,catalog) {
   let ready=true;
   try { checkoutConfiguration(env); } catch { ready=false; }
-  return {checkout_ready:ready && catalog.catalog_ready && catalog.products.length>0,shipping_mode:env.SHIPPING_MODE || null,shipping_countries:countries(env)};
+  return {checkout_ready:ready && catalog.catalog_ready && catalog.products.some(product=>product.variants.some(variant=>variant.available)),shipping_mode:env.SHIPPING_MODE || null,shipping_countries:countries(env)};
 }
 
 
@@ -61,6 +62,7 @@ export function createApp(dependencies={}) {
           const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
           return json({...readiness,catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
         }
+        if(request.method==='POST' && url.pathname==='/api/measurement') return json(await recordMeasurement(request,store,env,now),200,cors);
         if(request.method==='POST' && url.pathname==='/api/webhooks/stripe') {
           stripeConfiguration(env,true);
           const raw=await limitedText(request,1048576);
@@ -86,6 +88,7 @@ export function createApp(dependencies={}) {
         }
         if(url.pathname.startsWith('/api/admin/')) {
           await admin(request,env);
+          if(request.method==='GET' && url.pathname==='/api/admin/measurement') return json(await measurementReport(store,now),200,cors);
           const printful=dependencies.printful || new PrintfulClient(env);
           if(request.method==='POST' && url.pathname==='/api/admin/catalog/sync') {
             if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) fail(503,'printful_not_configured');
@@ -119,9 +122,11 @@ export function createApp(dependencies={}) {
       }
     },
     async scheduled(event,env,ctx) {
-      if(!env.DB || !env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
+      if(!env.DB) return;
       const run=async()=>{
         const store=new Store(env.DB); const now=clock();
+        if(event.cron==='0 */6 * * *') await store.run('DELETE FROM shopping_measurement WHERE day<?',new Date((now-89*86400)*1000).toISOString().slice(0,10));
+        if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
         const printful=dependencies.printful || new PrintfulClient(env);
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
         if(!sync && event.cron==='0 */6 * * *') sync=await startCatalogSync(store,printful,now);

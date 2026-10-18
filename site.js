@@ -49,6 +49,7 @@
     img.alt = alt;
     img.loading = eager ? 'eager' : 'lazy';
     img.decoding = 'async';
+    img.addEventListener('error', () => { if (img.dataset.fallback) return; img.dataset.fallback = 'true'; img.src = 'assets/brand-mark.webp'; img.alt = 'Image currently unavailable'; img.classList.add('image-unavailable'); });
     return img;
   }
   function priceLabel(product) {
@@ -69,6 +70,21 @@
   let currentGallery = [];
   let galleryIndex = 0;
   let trigger = null;
+  let activeProduct = null;
+  const measure = (event, product_id = '') => document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event, product_id } }));
+  const share = document.querySelector('[data-share-product]');
+  share?.addEventListener('click', async () => {
+    if (!activeProduct) return;
+    const url = new URL('shop.html', location.href); url.searchParams.set('product', activeProduct.id);
+    const status = document.querySelector('[data-share-status]');
+    try { await navigator.clipboard.writeText(url.href); share.textContent = 'Link copied ✓'; if (status) status.textContent = 'Product link copied.'; }
+    catch {
+      let field = document.querySelector('[data-product-link]');
+      if (!field) { field = node('input'); field.type = 'url'; field.readOnly = true; field.dataset.productLink = ''; field.setAttribute('aria-label', 'Product link to copy'); share.after(field); }
+      field.value = url.href; field.focus(); field.select();
+      if (status) status.textContent = 'Select and copy this product link.';
+    }
+  });
   function showImage(index) {
     if (!currentGallery.length) return;
     galleryIndex = (index + currentGallery.length) % currentGallery.length;
@@ -84,6 +100,13 @@
       return;
     }
     trigger = opener || document.activeElement;
+    activeProduct = kind === 'product' ? record : null;
+    if (share) share.textContent = 'Copy product link ↗';
+    document.querySelector('[data-product-link]')?.remove();
+    const shareStatus = document.querySelector('[data-share-status]'); if (shareStatus) shareStatus.textContent = '';
+    const question = document.querySelector('[data-product-question]');
+    if (question) question.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent('Question about ' + title(record.title));
+    if (kind === 'product') measure('product_view', record.id);
     currentGallery = [...new Set((Array.isArray(record.gallery) && record.gallery.length ? record.gallery : [record.image]).filter(Boolean))];
     document.getElementById('dialog-title').textContent = title(record.title);
     document.querySelector('[data-dialog-category]').textContent = record.category || (kind === 'product' ? 'Artwork on shirts' : 'Original artwork');
@@ -93,6 +116,7 @@
     let description = String(record.description || '').replace(/<[^>]+>/g, '').trim().split(/\n\s*\n/)[0];
     if (description.length > 240) description = description.slice(0, 237).trimEnd() + '…';
     if (kind === 'preview') description = 'Original artwork by Nino Battaglia.';
+    if (kind === 'product' && (!description || /— Nino’s Ts shirt collection\.?$/.test(description))) description = title(record.title) + ' — original artwork by Nino Battaglia, on a shirt. Explore the design and check the available garment options below.';
     document.querySelector('[data-dialog-description]').textContent = description;
     document.querySelector('[data-dialog-description]').hidden = !description;
     document.querySelector('[data-product-actions]').hidden = kind !== 'product';
@@ -132,6 +156,7 @@
     if (trigger && document.contains(trigger)) trigger.focus();
   });
   dialog?.addEventListener('keydown', event => {
+    if (event.target.closest('input,select,textarea')) return;
     if (event.key === 'ArrowRight' && currentGallery.length > 1) { event.preventDefault(); showImage(galleryIndex + 1); }
     if (event.key === 'ArrowLeft' && currentGallery.length > 1) { event.preventDefault(); showImage(galleryIndex - 1); }
   });
@@ -143,7 +168,7 @@
     link.href = kind === 'product' ? 'shop.html?product=' + encodeURIComponent(record.id) : kind === 'art' ? 'art.html?art=' + encodeURIComponent(record.id) : 'shop.html';
     link.setAttribute('aria-haspopup', 'dialog');
     link.setAttribute('aria-label', `Preview ${title(record.title)}`);
-    const photo = image(record.image, title(record.title));
+    const photo = image(record.image, record.imageUnavailable ? 'Product image not available yet' : title(record.title));
     if (kind === 'art') { const frame = node('span', 'art-image'); frame.append(photo); link.append(frame); }
     else { link.append(photo); const mark = node('span', 'product-open-mark', '↗'); mark.setAttribute('aria-hidden', 'true'); link.append(mark); }
     link.addEventListener('click', event => { event.preventDefault(); openRecord(record, kind, link); });
@@ -209,6 +234,7 @@
     const loadMore = document.querySelector('[data-load-more]');
     const sort = document.getElementById('product-sort');
     const state = { category: query.get('category') || 'all', search: query.get('q') || '', limit: 24 };
+    sort.value = ['title', 'featured'].includes(query.get('sort')) ? query.get('sort') : 'featured';
     search.value = state.search;
     const categories = [...new Set(catalog.products.map(item => item.category).filter(Boolean))];
     if (!categories.includes(state.category)) state.category = 'all';
@@ -229,6 +255,9 @@
       const showAll = document.querySelector('[data-show-all-products]');
       if (showAll) { showAll.hidden = products.length <= state.limit; showAll.textContent = `Show all ${products.length} shirts`; }
       clear.hidden = !state.search;
+      const next = new URL(location.href);
+      for (const [key, value] of [['q', state.search], ['category', state.category === 'all' ? '' : state.category], ['sort', sort.value === 'featured' ? '' : sort.value]]) { if (value) next.searchParams.set(key, value); else next.searchParams.delete(key); }
+      history.replaceState(null, '', next.pathname + next.search + next.hash);
       document.querySelectorAll('[data-category]').forEach(button => { const active = button.dataset.category === state.category; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active)); });
     }
     search.addEventListener('input', () => { state.search = search.value; state.limit = 24; render(); });
@@ -239,6 +268,11 @@
     document.querySelector('[data-show-all-products]')?.addEventListener('click', () => { state.limit = catalog.products.length; render(); });
     render();
     const requested = catalog.products.find(item => item.id === query.get('product'));
+    if (requested) {
+      document.title = title(requested.title) + ' — Nino Battaglia';
+      document.querySelector('meta[property="og:title"]')?.setAttribute('content', document.title);
+      document.querySelector('meta[property="og:image"]')?.setAttribute('content', new URL(requested.image, location.href).href);
+    }
     if (requested) openRecord(requested, 'product');
   }
   function initializeArt() {
@@ -273,20 +307,24 @@
       };
       document.querySelectorAll('[data-shop-link]').forEach(link => { link.href = catalog.shop.url; });
       if (data.shop?.contactUrl) document.querySelectorAll('[data-contact-instruction]').forEach(item => { item.hidden = true; });
-      initializeProducts(); initializeArt();
-      window.NinoCommerce?.loadProducts().then(records => {
-        for (const product of catalog.products) {
-          const live = records.get(String(product.id));
-          if (!live) continue;
-          const prices = [...live.variants.values()].filter(v => v.purchasable).map(v => v.price);
-          if (prices.length && new Set(prices.map(p => p.currency)).size === 1) product.price = prices.reduce((a,b) => a.amount < b.amount ? a : b);
-        }
-        document.querySelectorAll('.product-card').forEach(card => {
-          const product = catalog.products.find(p => String(p.id) === card.dataset.record);
-          const price = card.querySelector('.product-price');
-          if (price && product) price.textContent = priceLabel(product) || 'View shirt details';
-        });
-      }).catch(() => {});
+      initializeArt();
+      // Completed provider snapshots include future products without a site rebuild.
+      // Keep the curated catalog when credentials, initial sync or the API are unavailable.
+      let timer;
+      try {
+        const synced = await Promise.race([
+          (async () => {
+            if (!window.NinoCommerce) return null;
+            const records = await window.NinoCommerce.loadProducts();
+            const { storefrontProducts } = await import('./catalog-sync.mjs');
+            return storefrontProducts(catalog.products, records, window.NinoCommerce.getCatalogStatus().complete);
+          })(),
+          new Promise(resolve => { timer = setTimeout(() => resolve(null), 3000); })
+        ]);
+        if (synced) catalog.products = synced;
+      } catch { /* The original collection remains browseable during an outage. */ }
+      finally { clearTimeout(timer); }
+      initializeProducts();
     } catch {
       document.querySelectorAll('[data-featured-products],[data-shop-products]').forEach(previewCollection);
       document.querySelectorAll('[data-featured-art],[data-art-grid]').forEach(container => {

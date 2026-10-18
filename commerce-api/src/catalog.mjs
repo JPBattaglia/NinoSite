@@ -1,5 +1,10 @@
 import {fail,cents,hash,httpsImage} from './common.mjs';
 
+function independentImage(value) {
+  const image = httpsImage(value);
+  return image && !/(^|\.)(etsy|etsystatic)\.com$/i.test(new URL(image).hostname) ? image : null;
+}
+
 export function printFiles(files) {
   return (Array.isArray(files) ? files : []).filter(file => file && !['preview','mockup'].includes(file.type) && file.status === 'ok' && (Number.isSafeInteger(file.id) && file.id > 0 || httpsImage(file.url))).map(file => ({
     type:file.type || 'default', id:Number.isSafeInteger(file.id) ? file.id : null,
@@ -21,7 +26,7 @@ export async function normalizeVariant(raw, product) {
     name:typeof raw.name === 'string' ? raw.name.slice(0,250) : '',
     size:typeof raw.size === 'string' ? raw.size.slice(0,100) : '',
     color:typeof raw.color === 'string' ? raw.color.slice(0,100) : '',
-    image:httpsImage(preview?.preview_url) || httpsImage(preview?.url) || httpsImage(product.thumbnail_url) || httpsImage(raw.product?.image),
+    image:[preview?.preview_url,preview?.url,raw.product?.image,product.thumbnail_url].map(independentImage).find(Boolean) || null,
     price_cents:amount,currency:'usd',catalog_variant_id:raw.variant_id,files,options:raw.options || []
   };
   variant.fingerprint = await hash({catalog_variant_id:variant.catalog_variant_id,price_cents:amount,currency:'usd',files:artworkKeys(files),options:variant.options});
@@ -29,18 +34,19 @@ export async function normalizeVariant(raw, product) {
 }
 export async function publicCatalog(store,env,now) {
   const generation = await store.activeGeneration();
-  if (!generation) return {products:[],catalog_ready:false};
+  if (!generation) return {products:[],catalog_ready:false,catalog_complete:false};
   const run = await store.first('SELECT * FROM catalog_sync_runs WHERE id=? AND status=\'complete\'',generation);
+  if (!run) return {products:[],catalog_ready:false,catalog_complete:false};
   const fresh = !!run && now - run.updated_at <= Number(env.CATALOG_MAX_AGE_SECONDS || 86400);
   const products = await store.all('SELECT * FROM catalog_products WHERE generation=? ORDER BY title',generation);
   const variants = await store.all('SELECT * FROM catalog_variants WHERE generation=? ORDER BY product_id,id',generation);
-  return {catalog_ready:fresh,products:products.map(product => ({
-    id:product.id,external_id:product.external_id,title:product.title,image:product.image,
+  return {catalog_ready:fresh,catalog_complete:true,products:products.map(product => ({
+    id:product.id,external_id:product.external_id,title:product.title,image:independentImage(product.image) || variants.filter(v=>v.product_id===product.id).map(v=>independentImage(JSON.parse(v.snapshot_json).image)).find(Boolean) || null,
     variants:variants.filter(v => v.product_id === product.id).map(row => {
       const v = JSON.parse(row.snapshot_json);
-      return {id:v.id,name:v.name,size:v.size,color:v.color,image:v.image,price:{amount:v.price_cents,currency:v.currency},available:fresh,max_quantity:10};
+      return {id:v.id,name:v.name,size:v.size,color:v.color,image:independentImage(v.image),price:{amount:v.price_cents,currency:v.currency},available:fresh,max_quantity:10};
     })
-  })).filter(p => p.variants.length)};
+  }))};
 }
 export async function validatedLines(store,printful,env,items,now) {
   const generation = await store.activeGeneration();

@@ -18,6 +18,8 @@ Tests use SQLite through Node's `node:sqlite` and mocked provider transports. Th
 
 ## Configuration required before activation
 
+Current owner requirement (October 17): the Nino website must operate independently of Etsy. The tracked configuration therefore selects `PRINTFUL_CATALOG_MODE=store`. Configure a dedicated Printful Manual order/API store and its real published products/variants, rather than relying on the previously inspected Etsy-linked store. Existing source-import images are local site assets. New public product images reject Etsy and its image CDN, using independent Printful images when available. A plain unpublished design template is not a purchasable product. The generic `sync` mode remains supported for other explicitly chosen integrations; it is not the selected Nino deployment mode.
+
 Use the dedicated database binding in the deployment's tracked `wrangler.jsonc` and verify the supplied migration has been applied before opening checkout. `wrangler.example.jsonc` remains a disabled template for isolated local setups; it can be copied to an untracked `wrangler.local.jsonc` when needed. Do not point it at the old Gelato database.
 
 Store the following as Worker secrets, outside source control:
@@ -69,6 +71,7 @@ The public read-only `GET /api/products`, `GET /api/commerce-config` and `GET /a
 {
   "checkout_ready": false,
   "catalog_ready": false,
+  "catalog_complete": false,
   "shipping_mode": "calculated",
   "shipping_countries": [],
   "products": []
@@ -117,3 +120,11 @@ New catalog data is staged under a generation ID. Only a completed generation re
 Paid orders are durably queued before webhook acknowledgement. Supplier work uses a per-order lease, the order ID as Printful's external ID, a draft first, and a separate confirmation call. Before confirmation it checks exact variant/quantity, artwork identities, destination and supplier cost. If creation or confirmation times out, retries first retrieve the same external order instead of creating a new print order. Refunds, changed artwork/address or inconsistent amounts hold the order for owner review. Printful's [Orders and sync API documentation](https://developers.printful.com/docs/) defines the draft/confirmation and external-ID behavior used here.
 
 Before enabling live checkout, the remaining concrete work is owner authorization/configuration of the existing Stripe account, the private Printful token and store ID, tax configuration and verification of Printful’s current delivery destinations, webhook registration, the actual return routes, and an approved end-to-end proof. No live commerce readiness is claimed while those are missing.
+
+## Optional storefront measurement
+
+Apply pending migrations including `0002_measurement.sql` to the existing dedicated Nino D1 database **before** deploying this release's Worker. Do not change database bindings or enable checkout/fulfillment as part of the migration.
+
+`POST /api/measurement` accepts only five action names and an optional validated product ID. It requires the exact storefront origin, honors DNT/GPC headers, rejects additional fields, bounds request size, and stores only UTC day/mode/action/product aggregate totals. Unknown product IDs are skipped. The frontend sends actions only after an explicit browser opt-in; this is a browser privacy control, not cryptographic proof of consent against malicious clients. Counts are untrusted actions, never purchase proof. Daily caps limit stored counts, not incoming request costs. Retention cleanup runs on the six-hour schedule even without Printful credentials.
+
+`GET /api/admin/measurement` uses the existing admin token and returns the last 30 days. Live confirmed purchases come from paid database rows with validated totals/payment intents and a first-observed timestamp. Test payments, unverified review-only rows and historical rows without a reliable timestamp do not count. The migration records that timestamp once so fulfillment retries cannot change purchase dates. Gross payment totals include shipping/tax, are not refund-adjusted net revenue, and cannot be divided by opt-in action counts to infer a population conversion rate.

@@ -22,7 +22,7 @@
     "STRIPE_MODE": "test",
     "CHECKOUT_ENABLED": "false",
     "FULFILLMENT_ENABLED": "false",
-    "PRINTFUL_CATALOG_MODE": "sync",
+    "PRINTFUL_CATALOG_MODE": "store",
     "PRINTFUL_STORE_ID": "",
     "SHIPPING_MODE": "calculated",
     "SHIPPING_COUNTRIES": "PRINTFUL",
