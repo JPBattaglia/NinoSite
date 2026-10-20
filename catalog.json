@@ -8,1633 +8,1633 @@
   "products": [
     {
       "id": "480532409",
-      "title": "Nostalgic Television T",
+      "title": "Nostalgic Television",
       "image": "assets/products/480532409.webp",
       "gallery": [
         "assets/products/480532409.webp"
       ],
       "category": "Graphic tees",
-      "description": "Nostalgic Television T — Nino’s Ts shirt collection.",
+      "description": "A retro music-TV style logo badge in bold primary colors — a throwback for anyone raised on late-night videos.",
       "featured": false,
       "variants": []
     },
     {
       "id": "480336908",
-      "title": "Moms Day T",
+      "title": "Mom's Day",
       "image": "assets/products/480336908.webp",
       "gallery": [
         "assets/products/480336908.webp"
       ],
       "category": "Graphic tees",
-      "description": "Moms Day T — Nino’s Ts shirt collection.",
+      "description": "A quilted pink heart frame around a mother-and-child silhouette, finished with a Mother's Day script.",
       "featured": false,
       "variants": []
     },
     {
       "id": "479280580",
-      "title": "Dec 25 Big Nick T",
+      "title": "December 25",
       "image": "assets/products/479280580.webp",
       "gallery": [
         "assets/products/479280580.webp"
       ],
       "category": "Seasonal",
-      "description": "Dec 25 Big Nick T — Nino’s Ts shirt collection.",
+      "description": "Varsity-style “December 25” lettering in deep red with a small Santa emblem — a holiday shirt with team-jersey attitude.",
       "featured": false,
       "variants": []
     },
     {
       "id": "478772161",
-      "title": "Headless Horseman T",
+      "title": "Headless Horseman",
       "image": "assets/products/478772161.webp",
       "gallery": [
         "assets/products/478772161.webp"
       ],
       "category": "Seasonal",
-      "description": "Headless Horseman T — Nino’s Ts shirt collection.",
+      "description": "A skeletal horse and its headless rider charging forward with a glowing jack-o'-lantern in hand.",
       "featured": false,
       "variants": []
     },
     {
       "id": "478463906",
-      "title": "Dr. Doom T",
+      "title": "Dr. Doom",
       "image": "assets/products/478463906.webp",
       "gallery": [
         "assets/products/478463906.webp"
       ],
       "category": "Graphic tees",
-      "description": "Dr. Doom T — Nino’s Ts shirt collection.",
+      "description": "A hooded villain rising behind a bat-wing logo that spells DR. DOOM in bright green.",
       "featured": false,
       "variants": []
     },
     {
       "id": "478393321",
-      "title": "Monster Mash Shultz T",
+      "title": "Monster Mash",
       "image": "assets/products/478393321.webp",
       "gallery": [
         "assets/products/478393321.webp"
       ],
       "category": "Graphic tees",
-      "description": "Monster Mash Shultz T — Nino’s Ts shirt collection.",
+      "description": "A comic-strip-style Frankenstein's monster and his bride sharing a sweet, slightly spooky moment.",
       "featured": false,
       "variants": []
     },
     {
       "id": "478207707",
-      "title": "Spooky Owl T",
+      "title": "Spooky Owl",
       "image": "assets/products/478207707.webp",
       "gallery": [
         "assets/products/478207707.webp"
       ],
       "category": "Seasonal",
-      "description": "Spooky Owl T — Nino’s Ts shirt collection.",
+      "description": "A skeletal owl perched on a bone, set in a blue circular badge with a red rim.",
       "featured": false,
       "variants": []
     },
     {
       "id": "477827285",
-      "title": "Capitalism Molotovs T",
+      "title": "Capitalism Molotovs",
       "image": "assets/products/477827285.webp",
       "gallery": [
         "assets/products/477827285.webp"
       ],
       "category": "Graphic tees",
-      "description": "Capitalism Molotovs T — Nino’s Ts shirt collection.",
+      "description": "A row of classic red soda bottles turned into lit molotov cocktails — pop-art protest with a punchline.",
       "featured": false,
       "variants": []
     },
     {
       "id": "477816620",
-      "title": "Capitalism T",
+      "title": "Capitalism",
       "image": "assets/products/477816620.webp",
       "gallery": [
         "assets/products/477816620.webp"
       ],
       "category": "Graphic tees",
-      "description": "Capitalism T — Nino’s Ts shirt collection.",
+      "description": "“Enjoy Capitalism” in flowing script on a wave ribbon — a cola-ad parody with a pointed tagline.",
       "featured": false,
       "variants": []
     },
     {
       "id": "476596641",
-      "title": "Glock Automatic 1985 T",
+      "title": "Automatic 1985",
       "image": "assets/products/476596641.webp",
       "gallery": [
         "assets/products/476596641.webp"
       ],
       "category": "Graphic tees",
-      "description": "Glock Automatic 1985 T — Nino’s Ts shirt collection.",
+      "description": "A vintage patent-drawing style pistol diagram in deep red linework, dated 1985.",
       "featured": false,
       "variants": []
     },
     {
       "id": "474612220",
-      "title": "Ai Kill All Humans T",
+      "title": "Kill All Humans",
       "image": "assets/products/474612220.webp",
       "gallery": [
         "assets/products/474612220.webp"
       ],
       "category": "Graphic tees",
-      "description": "Ai Kill All Humans T — Nino’s Ts shirt collection.",
+      "description": "A grinning robot in a round yellow badge with the line KILL ALL HUMANS — dark humor for the AI age.",
       "featured": false,
       "variants": []
     },
     {
       "id": "471860753",
-      "title": "Nerd T",
+      "title": "Nerd",
       "image": "assets/products/471860753.webp",
       "gallery": [
         "assets/products/471860753.webp"
       ],
       "category": "Graphic tees",
-      "description": "Nerd T — Nino’s Ts shirt collection.",
+      "description": "NERD in chunky yellow foam-dart toy lettering, worn as a badge of honor.",
       "featured": false,
       "variants": []
     },
     {
       "id": "471858066",
-      "title": "Show Ticket T",
+      "title": "Show Ticket",
       "image": "assets/products/471858066.webp",
       "gallery": [
         "assets/products/471858066.webp"
       ],
       "category": "Graphic tees",
-      "description": "Show Ticket T — Nino’s Ts shirt collection.",
+      "description": "A bright orange admit-one ticket stub announcing exactly what kind of show it's going to be.",
       "featured": false,
       "variants": []
     },
     {
       "id": "471181683",
-      "title": "Joker T",
+      "title": "Joker",
       "image": "assets/products/471181683.webp",
       "gallery": [
         "assets/products/471181683.webp"
       ],
       "category": "Graphic tees",
-      "description": "Joker T — Nino’s Ts shirt collection.",
+      "description": "A slender, crouching jester figure flanked by vertical lettering in a muted purple and red.",
       "featured": false,
       "variants": []
     },
     {
       "id": "470875986",
-      "title": "Skater Brown - Schulz Tribute",
+      "title": "Skater Brown",
       "image": "assets/products/470875986.webp",
       "gallery": [
         "assets/products/470875986.webp"
       ],
       "category": "Graphic tees",
-      "description": "Skater Brown - Schulz Tribute — Nino’s Ts shirt collection.",
+      "description": "A comic-strip tribute: a beanie-wearing kid with a skateboard and his dog skating off the roof of a red doghouse.",
       "featured": false,
       "variants": []
     },
     {
       "id": "470762628",
-      "title": "Super Food - Eggcelsior",
+      "title": "Super Food — Eggcelsior",
       "image": "assets/products/470762628.webp",
       "gallery": [
         "assets/products/470762628.webp"
       ],
       "category": "Graphic tees",
-      "description": "Super Food - Eggcelsior — Nino’s Ts shirt collection.",
+      "description": "A caped superhero egg striking a pose under the SUPER FOOD banner.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468479160",
-      "title": "PB 500 T",
+      "title": "PB 500",
       "image": "assets/products/468479160.webp",
       "gallery": [
         "assets/products/468479160.webp"
       ],
       "category": "Graphic tees",
-      "description": "PB 500 T — Nino’s Ts shirt collection.",
+      "description": "A blue medallion marking a 500-year firearms anniversary, 1526–2026, in a clean circular layout.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468468013",
-      "title": "Undead Mummy T",
+      "title": "Undead Mummy",
       "image": "assets/products/468468013.webp",
       "gallery": [
         "assets/products/468468013.webp"
       ],
       "category": "Seasonal",
-      "description": "Undead Mummy T — Nino’s Ts shirt collection.",
+      "description": "A detailed, golden-toned mummy skull wrapped in bandages and baring its teeth.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468463012",
-      "title": "Turkey Day T",
+      "title": "Turkey Day",
       "image": "assets/products/468463012.webp",
       "gallery": [
         "assets/products/468463012.webp"
       ],
       "category": "Seasonal",
-      "description": "Turkey Day T — Nino’s Ts shirt collection.",
+      "description": "A cartoon turkey face framed by a sunburst of orange and yellow feathers.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468456093",
-      "title": "Talk Turkey T",
+      "title": "Talk Turkey",
       "image": "assets/products/468456093.webp",
       "gallery": [
         "assets/products/468456093.webp"
       ],
       "category": "Seasonal",
-      "description": "Talk Turkey T — Nino’s Ts shirt collection.",
+      "description": "A carved pumpkin between autumn maple leaves over TALK TURKEY lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468128883",
-      "title": "Nosferatu T",
+      "title": "Nosferatu",
       "image": "assets/products/468128883.webp",
       "gallery": [
         "assets/products/468128883.webp"
       ],
       "category": "Seasonal",
-      "description": "Nosferatu T — Nino’s Ts shirt collection.",
+      "description": "Bat-wing NOSFERATU lettering in red and black, crowned by the silent-film vampire's face.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468124746",
-      "title": "New Wave Zombie T",
+      "title": "New Wave Zombie",
       "image": "assets/products/468124746.webp",
       "gallery": [
         "assets/products/468124746.webp"
       ],
       "category": "Graphic tees",
-      "description": "New Wave Zombie T — Nino’s Ts shirt collection.",
+      "description": "A pale blue skull face with a sharp new-wave haircut and hollow eyes.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468111010",
-      "title": "Halloween Harmony T",
+      "title": "Halloween Harmony",
       "image": "assets/products/468111010.webp",
       "gallery": [
         "assets/products/468111010.webp"
       ],
       "category": "Seasonal",
-      "description": "Halloween Harmony T — Nino’s Ts shirt collection.",
+      "description": "A yin-yang circle of two ghosts, ringed with bones and paired with a cluster of small skulls.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468106144",
-      "title": "Frank T",
+      "title": "Frank",
       "image": "assets/products/468106144.webp",
       "gallery": [
         "assets/products/468106144.webp"
       ],
       "category": "Graphic tees",
-      "description": "Frank T — Nino’s Ts shirt collection.",
+      "description": "A classic green monster portrait with neck bolts and FRANK beneath in tall serif type.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468101651",
-      "title": "Halloween Vibe T",
+      "title": "Halloween Vibe",
       "image": "assets/products/468101651.webp",
       "gallery": [
         "assets/products/468101651.webp"
       ],
       "category": "Seasonal",
-      "description": "Halloween Vibe T — Nino’s Ts shirt collection.",
+      "description": "A howling werewolf silhouetted against a huge orange moon with bats and jack-o'-lanterns.",
       "featured": false,
       "variants": []
     },
     {
       "id": "468014210",
-      "title": "Wolfman Moon T",
+      "title": "Wolfman Moon",
       "image": "assets/products/468014210.webp",
       "gallery": [
         "assets/products/468014210.webp"
       ],
       "category": "Seasonal",
-      "description": "Wolfman Moon T — Nino’s Ts shirt collection.",
+      "description": "A snarling werewolf in silhouette against a golden full moon.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467998346",
-      "title": "Stay Spooky T",
+      "title": "Stay Spooky",
       "image": "assets/products/467998346.webp",
       "gallery": [
         "assets/products/467998346.webp"
       ],
       "category": "Seasonal",
-      "description": "Stay Spooky T — Nino’s Ts shirt collection.",
+      "description": "A grinning, glowing jack-o'-lantern above flame-lettered STAY SPOOKY.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467475207",
-      "title": "Turkey Daze T",
+      "title": "Turkey Daze",
       "image": "assets/products/467475207.webp",
       "gallery": [
         "assets/products/467475207.webp"
       ],
       "category": "Seasonal",
-      "description": "Turkey Daze T — Nino’s Ts shirt collection.",
+      "description": "A purple hand-turkey monster with a wide toothy grin over TURKEY DAZE lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467468797",
-      "title": "Fat Pants Season T",
+      "title": "Fat Pants Season",
       "image": "assets/products/467468797.webp",
       "gallery": [
         "assets/products/467468797.webp"
       ],
       "category": "Seasonal",
-      "description": "Fat Pants Season T — Nino’s Ts shirt collection.",
+      "description": "A roast turkey on a platter with FOOD COMA and FAT PANTS SEASON lettering for the holiday table.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467459295",
-      "title": "Tis The Season T",
+      "title": "’Tis the Season",
       "image": "assets/products/467459295.webp",
       "gallery": [
         "assets/products/467459295.webp"
       ],
       "category": "Seasonal",
-      "description": "Tis The Season T — Nino’s Ts shirt collection.",
+      "description": "Skull snowflakes, a lit Christmas tree and dancing skeletons over ’Tis the Season script.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467441340",
-      "title": "Skullflake T",
+      "title": "Skullflake",
       "image": "assets/products/467441340.webp",
       "gallery": [
         "assets/products/467441340.webp"
       ],
       "category": "Seasonal",
-      "description": "Skullflake T — Nino’s Ts shirt collection.",
+      "description": "A snowflake built from red skulls and bones — holiday cheer with a dark side.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467270476",
-      "title": "Snowmies T",
+      "title": "Snowmies",
       "image": "assets/products/467270476.webp",
       "gallery": [
         "assets/products/467270476.webp"
       ],
       "category": "Seasonal",
-      "description": "Snowmies T — Nino’s Ts shirt collection.",
+      "description": "A trio of snowmen under arched HOLIDAYS WITH MY lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467260824",
-      "title": "Stink, Stank, Stunk T",
+      "title": "Stink, Stank, Stunk",
       "image": "assets/products/467260824.webp",
       "gallery": [
         "assets/products/467260824.webp"
       ],
       "category": "Graphic tees",
-      "description": "Stink, Stank, Stunk T — Nino’s Ts shirt collection.",
+      "description": "A green holiday grump in a Santa hat with Stink. Stank. Stunk. in red script.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467255838",
-      "title": "Merry Santa T",
+      "title": "Merry Santa",
       "image": "assets/products/467255838.webp",
       "gallery": [
         "assets/products/467255838.webp"
       ],
       "category": "Seasonal",
-      "description": "Merry Santa T — Nino’s Ts shirt collection.",
+      "description": "A vintage engraved-style Santa portrait in red under arched MERRY lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467251816",
-      "title": "Krampus Christmas T",
+      "title": "Krampus Christmas",
       "image": "assets/products/467251816.webp",
       "gallery": [
         "assets/products/467251816.webp"
       ],
       "category": "Seasonal",
-      "description": "Krampus Christmas T — Nino’s Ts shirt collection.",
+      "description": "An ornate red Krampus head with curled horns framed by KRAMPUS CHRISTMAS lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "467245421",
-      "title": "Holiday Holly T",
+      "title": "Holiday Holly",
       "image": "assets/products/467245421.webp",
       "gallery": [
         "assets/products/467245421.webp"
       ],
       "category": "Seasonal",
-      "description": "Holiday Holly T — Nino’s Ts shirt collection.",
+      "description": "Glossy red holly berries and leaves over arched MERRY lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "465951721",
-      "title": "Beretta 500 T",
+      "title": "Beretta 500",
       "image": "assets/products/465951721.webp",
       "gallery": [
         "assets/products/465951721.webp"
       ],
       "category": "Graphic tees",
-      "description": "Beretta 500 T — Nino’s Ts shirt collection.",
+      "description": "A blue 500-year anniversary medallion with the trident mark and the BERETTA wordmark.",
       "featured": false,
       "variants": []
     },
     {
       "id": "465315345",
-      "title": "Weyland Corp T",
+      "title": "Weyland Corp",
       "image": "assets/products/465315345.webp",
       "gallery": [
         "assets/products/465315345.webp"
       ],
       "category": "Graphic tees",
-      "description": "Weyland Corp T — Nino’s Ts shirt collection.",
+      "description": "A sci-fi corporate logo with stacked chevron wings — a nod to the film franchise's fictional company.",
       "featured": false,
       "variants": []
     },
     {
       "id": "464690144",
-      "title": "Major F Bomb T",
+      "title": "Major F Bomb",
       "image": "assets/products/464690144.webp",
       "gallery": [
         "assets/products/464690144.webp"
       ],
       "category": "Graphic tees",
-      "description": "Major F Bomb T — Nino’s Ts shirt collection.",
+      "description": "A gold-and-green aerial bomb stamped with a big F.",
       "featured": false,
       "variants": []
     },
     {
       "id": "464592428",
-      "title": "Protected T",
+      "title": "Protected",
       "image": "assets/products/464592428.webp",
       "gallery": [
         "assets/products/464592428.webp"
       ],
       "category": "Graphic tees",
-      "description": "Protected T — Nino’s Ts shirt collection.",
+      "description": "A grid of classic firearms maker logos topped with a single word: Protected.",
       "featured": false,
       "variants": []
     },
     {
       "id": "464534921",
-      "title": "Love Molotov T",
+      "title": "Love Molotov",
       "image": "assets/products/464534921.webp",
       "gallery": [
         "assets/products/464534921.webp"
       ],
       "category": "Graphic tees",
-      "description": "Love Molotov T — Nino’s Ts shirt collection.",
+      "description": "A street-art figure winding up to throw a flaming bottle.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463850565",
-      "title": "Alice Reaching For Love T",
+      "title": "Alice Reaching for Love",
       "image": "assets/products/463850565.webp",
       "gallery": [
         "assets/products/463850565.webp"
       ],
       "category": "Graphic tees",
-      "description": "Alice Reaching For Love T — Nino’s Ts shirt collection.",
+      "description": "A street-art girl in a dress reaching toward a floating heart notification.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463840346",
-      "title": "Ace of Hearts T",
+      "title": "Ace of Hearts",
       "image": "assets/products/463840346.webp",
       "gallery": [
         "assets/products/463840346.webp"
       ],
       "category": "Graphic tees",
-      "description": "Ace of Hearts T — Nino’s Ts shirt collection.",
+      "description": "An oversized playing card — the ace of hearts with an ornate filigree heart.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463833139",
-      "title": "You Suck Candy T",
+      "title": "You Suck Candy",
       "image": "assets/products/463833139.webp",
       "gallery": [
         "assets/products/463833139.webp"
       ],
       "category": "Graphic tees",
-      "description": "You Suck Candy T — Nino’s Ts shirt collection.",
+      "description": "A heart-shaped lollipop and candy heart stamped with a not-so-sweet message.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463782958",
-      "title": "Supermom T",
+      "title": "Supermom",
       "image": "assets/products/463782958.webp",
       "gallery": [
         "assets/products/463782958.webp"
       ],
       "category": "Graphic tees",
-      "description": "Supermom T — Nino’s Ts shirt collection.",
+      "description": "SUPERMOM above a sunset-gradient superhero shield with a big S.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463766389",
-      "title": "Shenanigans and Malarkey T",
+      "title": "Shenanigans and Malarkey",
       "image": "assets/products/463766389.webp",
       "gallery": [
         "assets/products/463766389.webp"
       ],
       "category": "Graphic tees",
-      "description": "Shenanigans and Malarkey T — Nino’s Ts shirt collection.",
+      "description": "Dancing skeletons among clovers between SHENANIGANS and AND MALARKEY in green.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463752121",
-      "title": "Leprechaun Skull T",
+      "title": "Leprechaun Skull",
       "image": "assets/products/463752121.webp",
       "gallery": [
         "assets/products/463752121.webp"
       ],
       "category": "Graphic tees",
-      "description": "Leprechaun Skull T — Nino’s Ts shirt collection.",
+      "description": "A bearded skull in a green top hat and shamrock sunglasses.",
       "featured": false,
       "variants": []
     },
     {
       "id": "463741074",
-      "title": "Irish Ace T",
+      "title": "Irish Ace",
       "image": "assets/products/463741074.webp",
       "gallery": [
         "assets/products/463741074.webp"
       ],
       "category": "Graphic tees",
-      "description": "Irish Ace T — Nino’s Ts shirt collection.",
+      "description": "An ace playing card with a Celtic-knot shamrock in green.",
       "featured": false,
       "variants": []
     },
     {
       "id": "460078188",
-      "title": "Thulsa Doom T",
+      "title": "Thulsa Doom",
       "image": "assets/products/460078188.webp",
       "gallery": [
         "assets/products/460078188.webp"
       ],
       "category": "Graphic tees",
-      "description": "Thulsa Doom T — Nino’s Ts shirt collection.",
+      "description": "A red and black emblem of two serpents facing a dark sun, from the sword-and-sorcery classic.",
       "featured": false,
       "variants": []
     },
     {
       "id": "460064445",
-      "title": "Hawk Man Skull T",
+      "title": "Hawk Man Skull",
       "image": "assets/products/460064445.webp",
       "gallery": [
         "assets/products/460064445.webp"
       ],
       "category": "Graphic tees",
-      "description": "Hawk Man Skull T — Nino’s Ts shirt collection.",
+      "description": "A stylized hawk skull in bronze tones inside a red-and-black checkered ring.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459897365",
-      "title": "Helmet Mohawk T",
+      "title": "Helmet Mohawk",
       "image": "assets/products/459897365.webp",
       "gallery": [
         "assets/products/459897365.webp"
       ],
       "category": "Graphic tees",
-      "description": "Helmet Mohawk T — Nino’s Ts shirt collection.",
+      "description": "A glossy mohawk motorcycle helmet in a round badge with RIDE OR DIE lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459400868",
-      "title": "Light Cycle Tron T",
+      "title": "Light Cycle",
       "image": "assets/products/459400868.webp",
       "gallery": [
         "assets/products/459400868.webp"
       ],
       "category": "Graphic tees",
-      "description": "Light Cycle Tron T — Nino’s Ts shirt collection.",
+      "description": "A neon cyan light cycle and grid lettering straight out of a classic sci-fi film.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459399272",
-      "title": "The Bear - Yes Chef T",
+      "title": "The Bear — Yes Chef",
       "image": "assets/products/459399272.webp",
       "gallery": [
         "assets/products/459399272.webp"
       ],
       "category": "Graphic tees",
-      "description": "The Bear - Yes Chef T — Nino’s Ts shirt collection.",
+      "description": "Bold Chicagoland restaurant lettering with a hand-written YES CHEF beneath.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459398272",
-      "title": "Favorite Dino Pterodactyl T",
+      "title": "Favorite Dino: Pterodactyl",
       "image": "assets/products/459398272.webp",
       "gallery": [
         "assets/products/459398272.webp"
       ],
       "category": "Graphic tees",
-      "description": "Favorite Dino Pterodactyl T — Nino’s Ts shirt collection.",
+      "description": "A gliding pterodactyl under golden MY FAVORITE DINOSAUR lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459396590",
-      "title": "Bullshido T",
+      "title": "Bullshido",
       "image": "assets/products/459396590.webp",
       "gallery": [
         "assets/products/459396590.webp"
       ],
       "category": "Graphic tees",
-      "description": "Bullshido T — Nino’s Ts shirt collection.",
+      "description": "A fierce bull in a silver samurai helmet, rendered in black, white and blue.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459304245",
-      "title": "Bat Hang T",
+      "title": "Bat Hang",
       "image": "assets/products/459304245.webp",
       "gallery": [
         "assets/products/459304245.webp"
       ],
       "category": "Graphic tees",
-      "description": "Bat Hang T — Nino’s Ts shirt collection.",
+      "description": "A single bat hanging upside down above a small yellow BAT tag.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459225539",
-      "title": "True Hero Coffee T",
+      "title": "True Hero Coffee",
       "image": "assets/products/459225539.webp",
       "gallery": [
         "assets/products/459225539.webp"
       ],
       "category": "Graphic tees",
-      "description": "True Hero Coffee T — Nino’s Ts shirt collection.",
+      "description": "A caped coffee cup flexing as the hero of every morning, over TRUE HERO lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459220813",
-      "title": "SpacEx T",
+      "title": "SpacEx",
       "image": "assets/products/459220813.webp",
       "gallery": [
         "assets/products/459220813.webp"
       ],
       "category": "Graphic tees",
-      "description": "SpacEx T — Nino’s Ts shirt collection.",
+      "description": "A space-company name set in a familiar delivery-logo style, purple and orange with the hidden arrow.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459216918",
-      "title": "50 Something Transformers T",
+      "title": "Fifty Something",
       "image": "assets/products/459216918.webp",
       "gallery": [
         "assets/products/459216918.webp"
       ],
       "category": "Graphic tees",
-      "description": "50 Something Transformers T — Nino’s Ts shirt collection.",
+      "description": "Chrome eighties-toy lettering reading FIFTY SOMETHING, with a CHILDREN IN DISGUISE tag.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459109078",
-      "title": "North Beach SF Ferrari Logo T",
+      "title": "North Beach SF",
       "image": "assets/products/459109078.webp",
       "gallery": [
         "assets/products/459109078.webp"
       ],
       "category": "Originals",
-      "description": "North Beach SF Ferrari Logo T — Nino’s Ts shirt collection.",
+      "description": "A prancing-horse shield in yellow and black reworked for San Francisco's North Beach.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459105626",
-      "title": "Funny Guy T",
+      "title": "Funny Guy",
       "image": "assets/products/459105626.webp",
       "gallery": [
         "assets/products/459105626.webp"
       ],
       "category": "Graphic tees",
-      "description": "Funny Guy T — Nino’s Ts shirt collection.",
+      "description": "A grinning portrait beside the line “I think you're a funny guy” in stacked orange type.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459091768",
-      "title": "In My Prime Val Kilmer T",
+      "title": "In My Prime",
       "image": "assets/products/459091768.webp",
       "gallery": [
         "assets/products/459091768.webp"
       ],
       "category": "Graphic tees",
-      "description": "In My Prime Val Kilmer T — Nino’s Ts shirt collection.",
+      "description": "A gunslinger in a black hat and long coat above IN MY PRIME.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459085083",
-      "title": "Steamboat Willie The Kid T",
+      "title": "Wanted: Willie the Kid",
       "image": "assets/products/459085083.webp",
       "gallery": [
         "assets/products/459085083.webp"
       ],
       "category": "Graphic tees",
-      "description": "Steamboat Willie The Kid T — Nino’s Ts shirt collection.",
+      "description": "A vintage steamboat-era cartoon mouse as a gun-slinging outlaw on a WANTED poster.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459078689",
-      "title": "Chemical Lab Assistant Beaker T",
+      "title": "Chemical Lab Assistant",
       "image": "assets/products/459078689.webp",
       "gallery": [
         "assets/products/459078689.webp"
       ],
       "category": "Graphic tees",
-      "description": "Chemical Lab Assistant Beaker T — Nino’s Ts shirt collection.",
+      "description": "A frazzled orange-haired lab assistant puppet with MEEPERS GONNA MEEP lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459061208",
-      "title": "Make America Skate Again T",
+      "title": "Make America Skate Again",
       "image": "assets/products/459061208.webp",
       "gallery": [
         "assets/products/459061208.webp"
       ],
       "category": "Graphic tees",
-      "description": "Make America Skate Again T — Nino’s Ts shirt collection.",
+      "description": "A suited skateboarder mid-trick inside a blue framed poster with Make America Skate Again lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459039221",
-      "title": "Trumpster T",
+      "title": "Trumpster",
       "image": "assets/products/459039221.webp",
       "gallery": [
         "assets/products/459039221.webp"
       ],
       "category": "Graphic tees",
-      "description": "Trumpster T — Nino’s Ts shirt collection.",
+      "description": "Flame-lettered skate-magazine style logo above a cartoon presidential portrait.",
       "featured": false,
       "variants": []
     },
     {
       "id": "459037155",
-      "title": "Bad Guys Gen X T",
+      "title": "Bad Guys Gen X",
       "image": "assets/products/459037155.webp",
       "gallery": [
         "assets/products/459037155.webp"
       ],
       "category": "Graphic tees",
-      "description": "Bad Guys Gen X T — Nino’s Ts shirt collection.",
+      "description": "A circular emblem of eighties cartoon villain insignias in red, black and gray.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458584403",
-      "title": "The City SF T",
+      "title": "The City SF",
       "image": "assets/products/458584403.webp",
       "gallery": [
         "assets/products/458584403.webp"
       ],
       "category": "Graphic tees",
-      "description": "The City SF T — Nino’s Ts shirt collection.",
+      "description": "A red Golden Gate badge reading SAN FRANCISCO — THE CITY.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458561208",
-      "title": "Zig Zag T",
+      "title": "Zig Zag",
       "image": "assets/products/458561208.webp",
       "gallery": [
         "assets/products/458561208.webp"
       ],
       "category": "Graphic tees",
-      "description": "Zig Zag T — Nino’s Ts shirt collection.",
+      "description": "A rolling-paper package design with the classic bearded soldier portrait.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458557893",
-      "title": "Skynet Cyberdyne Systems T",
+      "title": "Skynet",
       "image": "assets/products/458557893.webp",
       "gallery": [
         "assets/products/458557893.webp"
       ],
       "category": "Graphic tees",
-      "description": "Skynet Cyberdyne Systems T — Nino’s Ts shirt collection.",
+      "description": "A sci-fi defense-network logo in red and blue: automated AI, official intelligence.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458552678",
-      "title": "Xenomorph T",
+      "title": "Xenomorph",
       "image": "assets/products/458552678.webp",
       "gallery": [
         "assets/products/458552678.webp"
       ],
       "category": "Graphic tees",
-      "description": "Xenomorph T — Nino’s Ts shirt collection.",
+      "description": "A mint-green, ribbed alien head in profile with its skeletal neck.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458539270",
-      "title": "Pew Pew T",
+      "title": "Pew Pew",
       "image": "assets/products/458539270.webp",
       "gallery": [
         "assets/products/458539270.webp"
       ],
       "category": "Graphic tees",
-      "description": "Pew Pew T — Nino’s Ts shirt collection.",
+      "description": "A dark red pin-up silhouette holding two pistols up high.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458531516",
-      "title": "Jack T",
+      "title": "Jack",
       "image": "assets/products/458531516.webp",
       "gallery": [
         "assets/products/458531516.webp"
       ],
       "category": "Graphic tees",
-      "description": "Jack T — Nino’s Ts shirt collection.",
+      "description": "A wild-eyed movie-villain portrait in black ink with a red glow.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458509127",
-      "title": "Smiley Earphones T",
+      "title": "Smiley Earphones",
       "image": "assets/products/458509127.webp",
       "gallery": [
         "assets/products/458509127.webp"
       ],
       "category": "Graphic tees",
-      "description": "Smiley Earphones T — Nino’s Ts shirt collection.",
+      "description": "A yellow smiley face wearing headphones inside a spiked sun ring.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458494692",
-      "title": "The Police Ghost in the Machine T",
+      "title": "Ghost in the Machine",
       "image": "assets/products/458494692.webp",
       "gallery": [
         "assets/products/458494692.webp"
       ],
       "category": "Graphic tees",
-      "description": "The Police Ghost in the Machine T — Nino’s Ts shirt collection.",
+      "description": "A red digital-segment album-cover tribute to a classic eighties rock record.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458480512",
-      "title": "NIN Sin T",
+      "title": "Sin",
       "image": "assets/products/458480512.webp",
       "gallery": [
         "assets/products/458480512.webp"
       ],
       "category": "Graphic tees",
-      "description": "NIN Sin T — Nino’s Ts shirt collection.",
+      "description": "A purple stencil monogram from an industrial-rock era icon.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458475712",
-      "title": "DD Rio T",
+      "title": "Rio",
       "image": "assets/products/458475712.webp",
       "gallery": [
         "assets/products/458475712.webp"
       ],
       "category": "Graphic tees",
-      "description": "DD Rio T — Nino’s Ts shirt collection.",
+      "description": "An eighties album-art tribute: a sleek pop-art woman's face in a framed square.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458245026",
-      "title": "Cartoon Character - Booger T",
+      "title": "Booger",
       "image": "assets/products/458245026.webp",
       "gallery": [
         "assets/products/458245026.webp"
       ],
       "category": "Graphic tees",
-      "description": "Cartoon Character - Booger T — Nino’s Ts shirt collection.",
+      "description": "A cartoon kid in sunglasses and a blue shirt picking his nose with total confidence.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458233906",
-      "title": "Where's The Food T",
+      "title": "Where's the Food",
       "image": "assets/products/458233906.webp",
       "gallery": [
         "assets/products/458233906.webp"
       ],
       "category": "Graphic tees",
-      "description": "Where's The Food T — Nino’s Ts shirt collection.",
+      "description": "Pizza-print WTF letters in a music-TV logo style asking the real question: Where's the food?",
       "featured": false,
       "variants": []
     },
     {
       "id": "458224177",
-      "title": "Gen X Cassette T",
+      "title": "Gen X Cassette",
       "image": "assets/products/458224177.webp",
       "gallery": [
         "assets/products/458224177.webp"
       ],
       "category": "Graphic tees",
-      "description": "Gen X Cassette T — Nino’s Ts shirt collection.",
+      "description": "A purple cassette tape outline labeled GEN X.",
       "featured": false,
       "variants": []
     },
     {
       "id": "458218827",
-      "title": "Shelby Cobra T",
+      "title": "Shelby Cobra",
       "image": "assets/products/458218827.webp",
       "gallery": [
         "assets/products/458218827.webp"
       ],
       "category": "Graphic tees",
-      "description": "Shelby Cobra T — Nino’s Ts shirt collection.",
+      "description": "Chrome line art of a classic roadster with a SHELBY nameplate.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457910109",
-      "title": "Sex Wax T",
+      "title": "Sex Wax",
       "image": "assets/products/457910109.webp",
       "gallery": [
         "assets/products/457910109.webp"
       ],
       "category": "Graphic tees",
-      "description": "Sex Wax T — Nino’s Ts shirt collection.",
+      "description": "The classic surf-wax badge in red, green and blue.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457557350",
-      "title": "Neil Blender Tribute T",
+      "title": "Neil Blender Tribute",
       "image": "assets/products/457557350.webp",
       "gallery": [
         "assets/products/457557350.webp"
       ],
       "category": "Graphic tees",
-      "description": "Neil Blender Tribute T — Nino’s Ts shirt collection.",
+      "description": "A sketchy skateboard-graphic character in a framed card, a tribute to the eighties skate artist.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457395534",
-      "title": "Planet Over Profit T",
+      "title": "Planet Over Profit",
       "image": "assets/products/457395534.webp",
       "gallery": [
         "assets/products/457395534.webp"
       ],
       "category": "Graphic tees",
-      "description": "Planet Over Profit T — Nino’s Ts shirt collection.",
+      "description": "PLANET OVER PROFIT in earthy blue and green lettering with a globe for the O.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457387165",
-      "title": "Pink Freud T",
+      "title": "Pink Freud",
       "image": "assets/products/457387165.webp",
       "gallery": [
         "assets/products/457387165.webp"
       ],
       "category": "Graphic tees",
-      "description": "Pink Freud T — Nino’s Ts shirt collection.",
+      "description": "A pink sketch of the father of psychoanalysis with PINK FREUD and THE DARKSIDE OF YOUR MOM.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457378772",
-      "title": "Moto GP T",
+      "title": "MotoGP",
       "image": "assets/products/457378772.webp",
       "gallery": [
         "assets/products/457378772.webp"
       ],
       "category": "Moto",
-      "description": "Moto GP T — Nino’s Ts shirt collection.",
+      "description": "A winged motorcycle maker logo in red over a checkered racing flag.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457370818",
-      "title": "Born 2 Ride T",
+      "title": "Born 2 Ride",
       "image": "assets/products/457370818.webp",
       "gallery": [
         "assets/products/457370818.webp"
       ],
       "category": "Moto",
-      "description": "Born 2 Ride T — Nino’s Ts shirt collection.",
+      "description": "A vintage motorcycle club badge: crossed pistons, a skull, BORN TO RIDE, RIDE TO LIVE.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457365998",
-      "title": "Honda Moto T",
+      "title": "Honda Moto",
       "image": "assets/products/457365998.webp",
       "gallery": [
         "assets/products/457365998.webp"
       ],
       "category": "Moto",
-      "description": "Honda Moto T — Nino’s Ts shirt collection.",
+      "description": "A white-outlined panel with a winged motorcycle logo above a cruiser.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457362842",
-      "title": "Teller-Morrow Cycles Motor Oil T",
+      "title": "Teller-Morrow Motor Oil",
       "image": "assets/products/457362842.webp",
       "gallery": [
         "assets/products/457362842.webp"
       ],
       "category": "Moto",
-      "description": "Teller-Morrow Cycles Motor Oil T — Nino’s Ts shirt collection.",
+      "description": "A vintage motor-oil can label for the fictional motorcycle garage.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457355919",
-      "title": "Sons Of A T",
+      "title": "Sons of A",
       "image": "assets/products/457355919.webp",
       "gallery": [
         "assets/products/457355919.webp"
       ],
       "category": "Graphic tees",
-      "description": "Sons Of A T — Nino’s Ts shirt collection.",
+      "description": "A biker-club back patch with a scythe-wielding reaper and FEAR NONE.",
       "featured": false,
       "variants": []
     },
     {
       "id": "457010609",
-      "title": "Sunset Moto T",
+      "title": "Sunset Moto",
       "image": "assets/products/457010609.webp",
       "gallery": [
         "assets/products/457010609.webp"
       ],
       "category": "Moto",
-      "description": "Sunset Moto T — Nino’s Ts shirt collection.",
+      "description": "A cruiser motorcycle filled with a purple-to-orange sunset gradient.",
       "featured": false,
       "variants": []
     },
     {
       "id": "456359214",
-      "title": "Felix The Rider T",
+      "title": "Felix the Rider",
       "image": "assets/products/456359214.webp",
       "gallery": [
         "assets/products/456359214.webp"
       ],
       "category": "Moto",
-      "description": "Felix The Rider T — Nino’s Ts shirt collection.",
+      "description": "A classic cartoon cat in goggles kicking up dust on a vintage motorcycle.",
       "featured": false,
       "variants": []
     },
     {
       "id": "456354908",
-      "title": "Hell's Angel T",
+      "title": "Hell's Angel",
       "image": "assets/products/456354908.webp",
       "gallery": [
         "assets/products/456354908.webp"
       ],
       "category": "Moto",
-      "description": "Hell's Angel T — Nino’s Ts shirt collection.",
+      "description": "A rider in a red helmet leaning into a long, low custom chopper.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455969808",
-      "title": "Dirt Bike Dimension T",
+      "title": "Dirt Bike Dimension",
       "image": "assets/products/455969808.webp",
       "gallery": [
         "assets/products/455969808.webp"
       ],
       "category": "Moto",
-      "description": "Dirt Bike Dimension T — Nino’s Ts shirt collection.",
+      "description": "A dirt-bike rider in a rainbow-gradient oval.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455961018",
-      "title": "Retro Bike Logo T",
+      "title": "Retro Bike Logo",
       "image": "assets/products/455961018.webp",
       "gallery": [
         "assets/products/455961018.webp"
       ],
       "category": "Moto",
-      "description": "Retro Bike Logo T — Nino’s Ts shirt collection.",
+      "description": "A motorcycle silhouette against a striped retro sunset circle.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455826015",
-      "title": "Daredevil Rider T",
+      "title": "Daredevil Rider",
       "image": "assets/products/455826015.webp",
       "gallery": [
         "assets/products/455826015.webp"
       ],
       "category": "Moto",
-      "description": "Daredevil Rider T — Nino’s Ts shirt collection.",
+      "description": "A caped stunt rider popping a wheelie in purple and pink.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455825044",
-      "title": "Prez Dogs T",
+      "title": "Prez Dogs",
       "image": "assets/products/455825044.webp",
       "gallery": [
         "assets/products/455825044.webp"
       ],
       "category": "Graphic tees",
-      "description": "Prez Dogs T — Nino’s Ts shirt collection.",
+      "description": "A line of suited presidents walking in slow motion, crime-film style, over PREZ DOGS.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455814259",
-      "title": "Skull Cap T",
+      "title": "Skull Cap",
       "image": "assets/products/455814259.webp",
       "gallery": [
         "assets/products/455814259.webp"
       ],
       "category": "Graphic tees",
-      "description": "Skull Cap T — Nino’s Ts shirt collection.",
+      "description": "A teal skull in a backward ball cap, laughing, with pink highlights.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455813575",
-      "title": "Logo T",
+      "title": "Logo",
       "image": "assets/products/455813575.webp",
       "gallery": [
         "assets/products/455813575.webp"
       ],
       "category": "Originals",
-      "description": "Logo T — Nino’s Ts shirt collection.",
+      "description": "The word LOGO in a red and yellow building-brick style badge.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455812087",
-      "title": "E=MC2 T",
+      "title": "E=MC2",
       "image": "assets/products/455812087.webp",
       "gallery": [
         "assets/products/455812087.webp"
       ],
       "category": "Graphic tees",
-      "description": "E=MC2 T — Nino’s Ts shirt collection.",
+      "description": "A wild-haired genius in a racing helmet: Energy = Motor Cycle².",
       "featured": false,
       "variants": []
     },
     {
       "id": "455800335",
-      "title": "Dead Inside T",
+      "title": "Dead Inside",
       "image": "assets/products/455800335.webp",
       "gallery": [
         "assets/products/455800335.webp"
       ],
       "category": "Graphic tees",
-      "description": "Dead Inside T — Nino’s Ts shirt collection.",
+      "description": "A swirled chip-maker style badge reading dead inside, in burgundy.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455799066",
-      "title": "Whiskey Neat T",
+      "title": "Whiskey Neat",
       "image": "assets/products/455799066.webp",
       "gallery": [
         "assets/products/455799066.webp"
       ],
       "category": "Graphic tees",
-      "description": "Whiskey Neat T — Nino’s Ts shirt collection.",
+      "description": "A glowing glass of whiskey with NEAT in gold.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455759125",
-      "title": "Kung Fu Master T",
+      "title": "Kung Fu Master",
       "image": "assets/products/455759125.webp",
       "gallery": [
         "assets/products/455759125.webp"
       ],
       "category": "Graphic tees",
-      "description": "Kung Fu Master T — Nino’s Ts shirt collection.",
+      "description": "A blue-toned martial-arts master with a topknot and long mustache.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455757431",
-      "title": "Motopsycho Helmet Skull Wrench T",
+      "title": "Motopsycho",
       "image": "assets/products/455757431.webp",
       "gallery": [
         "assets/products/455757431.webp"
       ],
       "category": "Moto",
-      "description": "Motopsycho Helmet Skull Wrench T — Nino’s Ts shirt collection.",
+      "description": "Nino's helmet skull over crossed wrenches with MOTOPSYCHO in teal.",
       "featured": true,
       "variants": []
     },
     {
       "id": "455753743",
-      "title": "Bay Area MUNI T",
+      "title": "Bay Area MUNI",
       "image": "assets/products/455753743.webp",
       "gallery": [
         "assets/products/455753743.webp"
       ],
       "category": "Graphic tees",
-      "description": "Bay Area MUNI T — Nino’s Ts shirt collection.",
+      "description": "Seventies-striped MUNI letters in orange and red with BAY AREA TRAVELER.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455744995",
-      "title": "Sunset Silhouette T",
+      "title": "Sunset Silhouette",
       "image": "assets/products/455744995.webp",
       "gallery": [
         "assets/products/455744995.webp"
       ],
       "category": "Graphic tees",
-      "description": "Sunset Silhouette T — Nino’s Ts shirt collection.",
+      "description": "A pop-art flame silhouette in sunset colors inside a framed panel.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455737205",
-      "title": "ACME MOTO T",
+      "title": "ACME Moto",
       "image": "assets/products/455737205.webp",
       "gallery": [
         "assets/products/455737205.webp"
       ],
       "category": "Moto",
-      "description": "ACME MOTO T — Nino’s Ts shirt collection.",
+      "description": "A cartoon jet bike in an ACME MOTORCYCLES oval badge.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455733885",
-      "title": "Notorious Trouble Moto T",
+      "title": "Notorious Trouble",
       "image": "assets/products/455733885.webp",
       "gallery": [
         "assets/products/455733885.webp"
       ],
       "category": "Moto",
-      "description": "Notorious Trouble Moto T — Nino’s Ts shirt collection.",
+      "description": "A skull-faced motorcycle front end between Notorious and Trouble in brown script.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455729983",
-      "title": "Rock Star Mode T",
+      "title": "Rock Star Mode",
       "image": "assets/products/455729983.webp",
       "gallery": [
         "assets/products/455729983.webp"
       ],
       "category": "Graphic tees",
-      "description": "Rock Star Mode T — Nino’s Ts shirt collection.",
+      "description": "ROCK STAR MODE in chrome blue above an ON switch with a rock-hands icon.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455727920",
-      "title": "Military Brat Logo T",
+      "title": "Military Brat",
       "image": "assets/products/455727920.webp",
       "gallery": [
         "assets/products/455727920.webp"
       ],
       "category": "Originals",
-      "description": "Military Brat Logo T — Nino’s Ts shirt collection.",
+      "description": "A winged star emblem in red, white and blue.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455724737",
-      "title": "Favorite Dino Triceratops T",
+      "title": "Favorite Dino: Triceratops",
       "image": "assets/products/455724737.webp",
       "gallery": [
         "assets/products/455724737.webp"
       ],
       "category": "Graphic tees",
-      "description": "Favorite Dino Triceratops T — Nino’s Ts shirt collection.",
+      "description": "A triceratops under golden MY FAVORITE DINOSAUR lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455722787",
-      "title": "Live/Love Power T",
+      "title": "Live/Love Power",
       "image": "assets/products/455722787.webp",
       "gallery": [
         "assets/products/455722787.webp"
       ],
       "category": "Originals",
-      "description": "Live/Love Power T — Nino’s Ts shirt collection.",
+      "description": "LOVE in rounded pink letters with a power-button O.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455691193",
-      "title": "Artificial Intel T",
+      "title": "Artificial Intel",
       "image": "assets/products/455691193.webp",
       "gallery": [
         "assets/products/455691193.webp"
       ],
       "category": "Originals",
-      "description": "Artificial Intel T — Nino’s Ts shirt collection.",
+      "description": "A circuit-board skull in copper and pink with ARTIFICIAL above it.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455689737",
-      "title": "Yin Yang Ouroboros T",
+      "title": "Yin Yang Ouroboros",
       "image": "assets/products/455689737.webp",
       "gallery": [
         "assets/products/455689737.webp"
       ],
       "category": "Originals",
-      "description": "Yin Yang Ouroboros T — Nino’s Ts shirt collection.",
+      "description": "A serpent coiled around a moonlit yin-yang ocean — Nino's original Oroboros artwork.",
       "featured": true,
       "variants": []
     },
     {
       "id": "455685696",
-      "title": "Crypto Coin Zero T",
+      "title": "CryptoCoin Zero",
       "image": "assets/products/455685696.webp",
       "gallery": [
         "assets/products/455685696.webp"
       ],
       "category": "Graphic tees",
-      "description": "Crypto Coin Zero T — Nino’s Ts shirt collection.",
+      "description": "CryptoCoin zero in a classic cola-script parody.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455678626",
-      "title": "Fowl Person T",
+      "title": "Fowl Person",
       "image": "assets/products/455678626.webp",
       "gallery": [
         "assets/products/455678626.webp"
       ],
       "category": "Graphic tees",
-      "description": "Fowl Person T — Nino’s Ts shirt collection.",
+      "description": "A rooster head in a cream circle over FOWL PERSON in Asian-inspired lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455677610",
-      "title": "Honda/Norton Mashup T",
+      "title": "Honda/Norton Mashup",
       "image": "assets/products/455677610.webp",
       "gallery": [
         "assets/products/455677610.webp"
       ],
       "category": "Moto",
-      "description": "Honda/Norton Mashup T — Nino’s Ts shirt collection.",
+      "description": "A winged motorcycle logo reworked in purple and red script.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455676569",
-      "title": "Insert Coin T",
+      "title": "Insert Coin",
       "image": "assets/products/455676569.webp",
       "gallery": [
         "assets/products/455676569.webp"
       ],
       "category": "Graphic tees",
-      "description": "Insert Coin T — Nino’s Ts shirt collection.",
+      "description": "A red arcade coin-slot panel: 25¢, INSERT COIN TO PLAY.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455607826",
-      "title": "Bat Mask T",
+      "title": "Bat Mask",
       "image": "assets/products/455607826.webp",
       "gallery": [
         "assets/products/455607826.webp"
       ],
       "category": "Graphic tees",
-      "description": "Bat Mask T — Nino’s Ts shirt collection.",
+      "description": "A dark winged mask with glowing blue eyes.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455606329",
-      "title": "American Experiment T",
+      "title": "American Experiment",
       "image": "assets/products/455606329.webp",
       "gallery": [
         "assets/products/455606329.webp"
       ],
       "category": "Graphic tees",
-      "description": "American Experiment T — Nino’s Ts shirt collection.",
+      "description": "AMERICAN in chrome over a circular, patterned Lady Liberty emblem.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455604571",
-      "title": "Grumpy Frog  T",
+      "title": "Grumpy Frog",
       "image": "assets/products/455604571.webp",
       "gallery": [
         "assets/products/455604571.webp"
       ],
       "category": "Originals",
-      "description": "Grumpy Frog  T — Nino’s Ts shirt collection.",
+      "description": "Nino's bright green grumpy frog, sitting with a tiny peace-sign charm.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455602708",
-      "title": "Santa Biker T",
+      "title": "Santa Biker",
       "image": "assets/products/455602708.webp",
       "gallery": [
         "assets/products/455602708.webp"
       ],
       "category": "Seasonal",
-      "description": "Santa Biker T — Nino’s Ts shirt collection.",
+      "description": "Santa on a motorcycle seen head-on inside a green and gold wreath.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455597876",
-      "title": "Skull Wave T",
+      "title": "Skull Wave",
       "image": "assets/products/455597876.webp",
       "gallery": [
         "assets/products/455597876.webp"
       ],
       "category": "Originals",
-      "description": "Skull Wave T — Nino’s Ts shirt collection.",
+      "description": "Nino's original artwork: a blue ocean wave curling into a skull.",
       "featured": true,
       "variants": []
     },
     {
       "id": "455595530",
-      "title": "G Carlin T",
+      "title": "G Carlin",
       "image": "assets/products/455595530.webp",
       "gallery": [
         "assets/products/455595530.webp"
       ],
       "category": "Graphic tees",
-      "description": "G Carlin T — Nino’s Ts shirt collection.",
+      "description": "A black-and-white portrait of a legendary comedian beside his quote about the power of stupid people in large groups.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455594497",
-      "title": "Grinch Make Christmas Again T",
+      "title": "Grinch: Make Christmas Great Again",
       "image": "assets/products/455594497.webp",
       "gallery": [
         "assets/products/455594497.webp"
       ],
       "category": "Seasonal",
-      "description": "Grinch Make Christmas Again T — Nino’s Ts shirt collection.",
+      "description": "A green holiday grump with a golden comb-over making a heart with his hands.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455591241",
-      "title": "Gold Star T",
+      "title": "Gold Star",
       "image": "assets/products/455591241.webp",
       "gallery": [
         "assets/products/455591241.webp"
       ],
       "category": "Graphic tees",
-      "description": "Gold Star T — Nino’s Ts shirt collection.",
+      "description": "A faceted gold, blue and red star.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455589960",
-      "title": "Xmas Yeti T",
+      "title": "Xmas Yeti",
       "image": "assets/products/455589960.webp",
       "gallery": [
         "assets/products/455589960.webp"
       ],
       "category": "Seasonal",
-      "description": "Xmas Yeti T — Nino’s Ts shirt collection.",
+      "description": "A grinning white abominable snowman face from a classic holiday special.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455587402",
-      "title": "Crescent Moon T",
+      "title": "Crescent Moon",
       "image": "assets/products/455587402.webp",
       "gallery": [
         "assets/products/455587402.webp"
       ],
       "category": "Graphic tees",
-      "description": "Crescent Moon T — Nino’s Ts shirt collection.",
+      "description": "A crescent moon, stars and a lotus inside a thin purple circle.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455584192",
-      "title": "CBGB Punk Rock Skull Mohawk – Since 1973 Underground Music Apparel T",
+      "title": "CBGB Punk Rock Skull Mohawk — Since 1973",
       "image": "assets/products/455584192.webp",
       "gallery": [
         "assets/products/455584192.webp"
       ],
       "category": "Graphic tees",
-      "description": "CBGB Punk Rock Skull Mohawk – Since 1973 Underground Music Apparel T — Nino’s Ts shirt collection.",
+      "description": "A mohawked punk skull bursting out of a vintage CBGB-style badge, SINCE 1973.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455581523",
-      "title": "People Face T",
+      "title": "People Face",
       "image": "assets/products/455581523.webp",
       "gallery": [
         "assets/products/455581523.webp"
       ],
       "category": "Originals",
-      "description": "People Face T — Nino’s Ts shirt collection.",
+      "description": "A continuous-line face drawing in warm orange on a deep tone.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455417956",
-      "title": "All Hallow's Eve T",
+      "title": "All Hallows Eve",
       "image": "assets/products/455417956.webp",
       "gallery": [
         "assets/products/455417956.webp"
       ],
       "category": "Seasonal",
-      "description": "All Hallow's Eve T — Nino’s Ts shirt collection.",
+      "description": "A glowing jack-o'-lantern over All Hallows Eve lettering.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455416290",
-      "title": "Lil Devil T",
+      "title": "Lil Devil",
       "image": "assets/products/455416290.webp",
       "gallery": [
         "assets/products/455416290.webp"
       ],
       "category": "Graphic tees",
-      "description": "Lil Devil T — Nino’s Ts shirt collection.",
+      "description": "A sharp-featured red devil face with blue hair and a toothy grin.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455414453",
-      "title": "Dark Mode T",
+      "title": "Dark Mode",
       "image": "assets/products/455414453.webp",
       "gallery": [
         "assets/products/455414453.webp"
       ],
       "category": "Graphic tees",
-      "description": "Dark Mode T — Nino’s Ts shirt collection.",
+      "description": "DARK MODE IS MY DEFAULT with a moon toggle switch set to ON.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455413244",
-      "title": "Apple Byte T",
+      "title": "Apple Byte",
       "image": "assets/products/455413244.webp",
       "gallery": [
         "assets/products/455413244.webp"
       ],
       "category": "Graphic tees",
-      "description": "Apple Byte T — Nino’s Ts shirt collection.",
+      "description": "A red apple with a skull-shaped bite taken out of it.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455411071",
-      "title": "Ai Icon T",
+      "title": "AI Icon",
       "image": "assets/products/455411071.webp",
       "gallery": [
         "assets/products/455411071.webp"
       ],
       "category": "Originals",
-      "description": "Ai Icon T — Nino’s Ts shirt collection.",
+      "description": "A bold black and blue microchip with a lowercase i.",
       "featured": false,
       "variants": []
     },
     {
       "id": "455339787",
-      "title": "Moto Ride T",
+      "title": "Moto Ride",
       "image": "assets/products/455339787.webp",
       "gallery": [
         "assets/products/455339787.webp"
       ],
       "category": "Moto",
-      "description": "Moto Ride T — Nino’s Ts shirt collection.",
+      "description": "A neon rider leaning into a curve above RIDE! in pink and blue.",
       "featured": false,
       "variants": []
     }

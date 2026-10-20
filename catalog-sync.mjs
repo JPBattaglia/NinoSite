@@ -16,7 +16,7 @@ export function storefrontProducts(existing, live, complete) {
     const photo = independentPhoto(previous?.image) || independentPhoto(product.image);
     const record = {
       ...previous,
-      id: String(product.id), title: product.title,
+      id: String(product.id), title: previous?.title || String(product.title || '').replace(/\s+T$/, ''),
       image: photo || 'assets/brand-mark.webp',
       imageUnavailable: !photo,
       gallery: previous?.gallery?.some(independentPhoto) ? previous.gallery.filter(independentPhoto) : photo ? [photo] : [],

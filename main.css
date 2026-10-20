@@ -183,3 +183,50 @@ body{background:var(--paper);color:var(--ink)}
 .footer-credit img{width:100px;height:21px;object-fit:contain}
 .footer-credit:hover{color:var(--cyan)}
 @media(max-width:760px){.footer-credit{flex-basis:100%;justify-content:center}.footer-bottom>span:nth-child(2){max-width:45%;text-align:right}.footer-bottom>span:first-child{margin-right:auto}}
+
+/* Shirt photos fill their tile so the artwork reads larger on the dark theme. */
+.product-image-link{background:#fff}
+.product-image-link img:not(.image-unavailable){object-fit:cover;object-position:50% 38%;transform:scale(1.08)}
+.product-image-link:hover img:not(.image-unavailable){transform:scale(1.13)}
+.dialog-image img{background:#fff;border-radius:10px}
+
+/* Ordering-opens-soon state (hidden automatically once checkout is live). */
+.shop-notice{margin:26px 0 0;padding:14px 18px;border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.6;color:var(--muted);max-width:760px}
+.shop-notice strong{color:var(--ink)}
+html[data-checkout=open] .shop-notice{display:none}
+.coming-soon{border:1px solid var(--line);border-radius:12px;padding:18px 18px 20px}
+.coming-soon-title{font:700 22px/1.1 var(--display);margin:0 0 8px;color:var(--ink)}
+.coming-soon .commerce-option-status{margin:0 0 16px}
+.coming-soon .button{width:100%}
+
+/* Project inquiry form. */
+.inquiry-form{display:grid;gap:16px;margin-top:10px}
+.inquiry-form label{display:grid;gap:6px;font-size:12px;font-weight:600}
+.inquiry-form input,.inquiry-form select,.inquiry-form textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:transparent;color:var(--ink);padding:12px 14px;font:inherit;font-size:14px}
+.inquiry-form textarea{min-height:130px;resize:vertical}
+.inquiry-form select option{background:var(--paper)}
+.inquiry-form .button{justify-self:start}
+.inquiry-note{font-size:11px;color:var(--muted);margin:0}
+
+/* Static shirt pages. */
+.shirt-page{display:grid;grid-template-columns:1fr 1fr;gap:6%;align-items:start;padding-top:50px;padding-bottom:80px}
+.shirt-page img{width:100%;border-radius:14px;background:#fff}
+.shirt-page h1{font:800 clamp(48px,6vw,88px)/.9 var(--display);letter-spacing:-.02em;margin:16px 0 22px}
+.shirt-page .lead{font-size:16px;line-height:1.7;color:var(--muted);max-width:480px}
+.shirt-page .button-row{margin-top:28px}
+.shirt-facts{margin-top:30px;border-top:1px solid var(--line);padding-top:18px;font-size:13px;color:var(--muted);line-height:1.8}
+.shirt-more{padding-bottom:80px}
+@media(max-width:760px){.shirt-page{grid-template-columns:1fr;gap:28px;padding-top:30px}}
+
+/* Custom not-found page. */
+.not-found{padding-top:80px;padding-bottom:110px}
+
+/* Project case study. */
+.case-study{padding-bottom:85px}
+.case-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start}
+.case-video{width:100%;height:auto;border-radius:14px;background:#000;aspect-ratio:16/9}
+.case-copy .lead{font-size:17px;line-height:1.6;margin-top:0}
+.case-copy h3{font:700 22px/1.1 var(--display);margin:26px 0 10px}
+.case-copy ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.9;font-size:14px}
+.case-copy p{color:var(--muted);font-size:14px;line-height:1.8}
+@media(max-width:760px){.case-grid{grid-template-columns:1fr;gap:24px}.case-study{padding-bottom:55px}}

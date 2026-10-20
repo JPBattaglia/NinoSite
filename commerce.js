@@ -57,7 +57,7 @@
           purchasable: raw.available === true && Boolean(price) && Boolean(size || color || name)
         });
       }
-      products.set(productId, { id: productId, external_id: id(record.external_id), title: label(record.title), image: label(record.image), variants });
+      products.set(productId, { id: productId, external_id: id(record.external_id), title: label(record.title).replace(/\s+T$/, ''), image: label(record.image), variants });
     }
     return products;
   }
@@ -157,6 +157,7 @@
         state.catalogComplete = data?.catalog_complete === true || data?.catalog_ready === true;
         setShippingPolicy(data?.shipping_mode, data?.shipping_countries);
         state.checkoutReady = data?.checkout_ready === true;
+        document.documentElement.dataset.checkout = state.checkoutReady && state.catalogComplete ? 'open' : 'soon';
         state.ready = true;
         const removed = reconcileCart();
         state.loading = false;
@@ -187,6 +188,16 @@
       container.append(button);
     }
   }
+  function mountComingSoon(container, title) {
+    const name = label(title).replace(/\s+T$/, '');
+    const note = create('div', 'coming-soon');
+    note.append(create('p', 'coming-soon-title', 'Online ordering opens soon'));
+    note.append(create('p', 'commerce-option-status', 'Sizes, colors and prices appear here as soon as the shop opens. Want this design? Ask Nino to hold it for you or to let you know when it is ready.'));
+    const ask = create('a', 'button button-cyan', 'Email me when it’s ready ↗');
+    ask.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent('Notify me: ' + (name || 'shirt shop')) + '&body=' + encodeURIComponent('Hi Nino, please let me know when ' + (name ? '“' + name + '”' : 'the shirt shop') + ' is available to order.\n\nSize (S–2XL):\nColor:\n');
+    note.append(ask);
+    container.replaceChildren(note);
+  }
   async function mountProduct(recordOrId, container) {
     if (!container) return;
     const requestedId = id(typeof recordOrId === 'object' ? (recordOrId?.printful_id || recordOrId?.printful_product_id || recordOrId?.id) : recordOrId);
@@ -206,7 +217,10 @@
     const product = state.products.get(requestedId) || [...state.products.values()].find(item => item.external_id && (item.external_id === requestedId || item.external_id === requestedExternalId));
     const productId = product?.id;
     const variants = product ? [...product.variants.values()].filter(item => item.purchasable) : [];
-    if (!variants.length) { mountUnavailable(container, 'This design is not available to purchase right now.'); return; }
+    if (!variants.length) {
+      if (!state.catalogComplete || !state.checkoutReady) { mountComingSoon(container, typeof recordOrId === 'object' ? recordOrId?.title : ''); return; }
+      mountUnavailable(container, 'This design is not available to purchase right now.'); return;
+    }
     const form = create('form', 'variant-picker');
     form.setAttribute('aria-label', 'Choose your product options');
     const chooser = create('div', 'variant-picker-options');

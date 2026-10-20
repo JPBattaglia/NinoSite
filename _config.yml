@@ -1,0 +1,14 @@
+# GitHub Pages build settings for ninobattaglia.com.
+# The site is plain HTML; this file only keeps internal files off the public site.
+exclude:
+  - commerce-api
+  - nino-commerce-worker
+  - NinoSiteApp
+  - LAUNCH.md
+  - README.md
+  - CLAUDE.md
+  - ECOMMERCE_FOUNDATION.md
+  - gelato-integration-notes.md
+  - gelato-checkout.example.js
+  - products.json
+  - node_modules

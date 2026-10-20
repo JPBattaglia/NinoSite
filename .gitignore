@@ -17,6 +17,15 @@
 !CNAME
 !README.md
 !.gitignore
+!_config.yml
+!404.html
+!favicon.ico
+!apple-touch-icon.png
+!catalog-sync.mjs
+!measurement.js
+!support.html
+!shirts/
+!shirts/**
 !assets/
 !assets/**
 !commerce-api/

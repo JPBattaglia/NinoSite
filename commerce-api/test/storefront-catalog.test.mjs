@@ -26,7 +26,7 @@ test('a copied native product retains its source presentation while using destin
   const destination={...record('901',[{id:'9501',purchasable:true,price:{amount:3400,currency:'USD'}}]),external_id:'101'};
   const [product]=storefrontProducts(curated,new Map([['901',destination]]),true);
   assert.equal(product.id,'901');
-  assert.equal(product.title,'Design 901');
+  assert.equal(product.title,'Original');
   assert.equal(product.image,'assets/curated.webp');
   assert.deepEqual(product.gallery,['assets/curated.webp']);
   assert.equal(product.category,'Illustration');
@@ -75,4 +75,11 @@ test('completed public catalog includes designs without sellable variants but ke
   assert.equal(result.body.products.length,1);
   assert.deepEqual(result.body.products[0].variants,[]);
   assert.equal(result.body.checkout_ready,false);
+});
+
+test('curated titles win over supplier titles and new supplier titles drop the trailing T',()=>{
+  const live=new Map([['101',{...record('101'),title:'Skull Wave T'}],['777',{...record('777'),title:'New Design T'}]]);
+  const products=storefrontProducts([{...base[0],title:'Skull Wave'}],live,true);
+  assert.equal(products.find(p=>p.id==='101').title,'Skull Wave');
+  assert.equal(products.find(p=>p.id==='777').title,'New Design');
 });
