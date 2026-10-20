@@ -56,7 +56,7 @@
     if (!product.price || !product.price.currency || product.price.amount === null) return '';
     const amount = Number(product.price.amount);
     if (!Number.isFinite(amount)) return '';
-    try { const formatter = new Intl.NumberFormat(undefined, { style: 'currency', currency: product.price.currency }); return formatter.format(amount / (10 ** formatter.resolvedOptions().maximumFractionDigits)); }
+    try { const formatter = new Intl.NumberFormat(undefined, { style: 'currency', currency: product.price.currency }); const digits = formatter.resolvedOptions().maximumFractionDigits; const value = amount / (10 ** digits); const text = Number.isInteger(value) ? new Intl.NumberFormat(undefined, { style: 'currency', currency: product.price.currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value) : formatter.format(value); return 'From ' + text; }
     catch { return ''; }
   }
   const previewDesigns = [
@@ -346,5 +346,15 @@
     const body = ['Name: ' + field('name'), 'Reply to: ' + field('email'), 'Project: ' + field('type'), 'Timing: ' + (field('timing') || 'Not specified'), '', field('message')].join('\n');
     location.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   });
+  (function reveal() {
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const targets = document.querySelectorAll('main > section, .art-tile, .product-card, .service-detail, .contact-card');
+    if (!targets.length) return;
+    document.documentElement.classList.add('js-reveal');
+    const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    const watch = el => { if (el.classList.contains('reveal')) return; el.classList.add('reveal'); const r = el.getBoundingClientRect(); if (r.top < innerHeight) el.classList.add('is-visible'); else io.observe(el); };
+    targets.forEach(watch);
+    new MutationObserver(() => document.querySelectorAll('.art-tile, .product-card').forEach(watch)).observe(document.querySelector('main') || document.body, { childList: true, subtree: true });
+  })();
   initializeCatalog();
 })();

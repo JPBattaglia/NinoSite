@@ -230,3 +230,114 @@ html[data-checkout=open] .shop-notice{display:none}
 .case-copy ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.9;font-size:14px}
 .case-copy p{color:var(--muted);font-size:14px;line-height:1.8}
 @media(max-width:760px){.case-grid{grid-template-columns:1fr;gap:24px}.case-study{padding-bottom:55px}}
+
+/* Color & size preview before checkout opens. */
+.preview-options{display:grid;gap:16px;margin-bottom:16px}
+.preview-options fieldset{border:0;padding:0;margin:0;min-width:0}
+.preview-options legend{font-size:12px;font-weight:600;margin-bottom:10px;padding:0}
+.preview-chosen{font-weight:400;color:var(--muted)}
+.swatch-row,.size-row{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{width:32px;height:32px;min-width:32px;border-radius:50%;border:2px solid var(--line);background:var(--swatch);padding:0;box-shadow:inset 0 0 0 2px var(--paper)}
+.swatch[aria-pressed=true]{border-color:var(--cyan)}
+.size-chip{min-width:48px;min-height:40px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font-size:12px;font-weight:600}
+.size-chip[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.coming-soon-price{font:700 22px/1 var(--display);margin:4px 0 14px;color:var(--ink)}
+.shirt-options{margin-top:24px}
+.shirt-options .swatch{cursor:default;width:24px;height:24px;min-width:24px}
+.shirt-price{font:700 28px/1 var(--display);margin:0 0 18px}
+
+/* ================================================================
+   Studio refresh — Oct 2026. Darker gallery wall, film grain, soft
+   light, sharper type and hover states. Brand colors unchanged.
+   ================================================================ */
+:root{--paper:#0c1011;--paper-2:#121819;--panel:#151c1d;--ink:#f2efe7;--muted:#9fb0ae;--line:#263234;--line-2:#34474a;--cyan:#4ce3e6;--cyan-dark:#63e4e3;--red:#f26b59;--glow:rgba(76,227,230,.16)}
+html{background:var(--paper)}
+body{background:radial-gradient(1200px 700px at 8% -10%,rgba(76,227,230,.10),transparent 60%),radial-gradient(900px 700px at 105% 35%,rgba(242,107,89,.07),transparent 60%),var(--paper);background-attachment:fixed;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::before{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:var(--cyan);color:#0c1011}
+html{scrollbar-color:#2b3a3c var(--paper)}
+:focus-visible{outline-color:var(--cyan)!important}
+
+/* Header: quiet glass bar. */
+.announcement-bar{background:#070a0b;color:#8fa19f;letter-spacing:.12em;text-transform:uppercase;font-size:9px;border-bottom:1px solid var(--line)}
+.site-header{background:rgba(12,16,17,.72)!important;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid var(--line)}
+.site-nav>a:not(.button){position:relative;color:#d9dcd6;letter-spacing:.02em}
+.site-nav>a:not(.button)::after{content:'';position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.site-nav>a:not(.button):hover::after,.site-nav>a[aria-current]::after{transform:scaleX(1)}
+.site-nav>a[aria-current]{text-decoration:none}
+
+/* Type: tighter, poster-like display. */
+.hero-copy h1,.page-intro h1,.about-intro h1,h2{letter-spacing:-.025em}
+.hero-copy h1{line-height:.8}
+.page-intro h1 span,.about-intro h1 span,.hero-copy h1 span{background:linear-gradient(100deg,var(--cyan) 10%,#b8fbfc 55%,var(--cyan) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:0}
+.eyebrow{letter-spacing:.22em;color:#b9c4c2}
+.eyebrow::before{content:'';display:inline-block;width:22px;height:1px;background:var(--cyan);vertical-align:middle;margin-right:12px}
+.hero-copy .eyebrow::before,.footer-support .eyebrow::before{display:none}
+.text-link{color:var(--cyan);border-bottom-color:rgba(76,227,230,.45);transition:border-color .2s,color .2s}
+.text-link:hover{color:#b8fbfc;border-bottom-color:#b8fbfc}
+
+/* Buttons: crisp with a soft glow. */
+.button{border-radius:10px;letter-spacing:.02em;transition:transform .2s ease,box-shadow .25s ease,background .2s,color .2s}
+.button-cyan{box-shadow:0 0 0 1px rgba(76,227,230,.35),0 10px 30px -12px rgba(76,227,230,.55)}
+.button-cyan:hover{background:#7ff0f2;transform:translateY(-2px);box-shadow:0 0 0 1px rgba(127,240,242,.6),0 16px 40px -14px rgba(76,227,230,.75)}
+.button-outline{border-color:var(--line-2);color:var(--ink)}
+.button-outline:hover{background:var(--ink);color:#0c1011}
+
+/* Hero artwork: lit like a gallery piece. */
+.hero-art,.studio-canvas{background:linear-gradient(160deg,#182122,#0f1415)!important;border:1px solid var(--line);box-shadow:0 40px 80px -40px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.02) inset}
+.hero-art:before{border-color:rgba(76,227,230,.12)}
+
+/* Identity strip: a printed rule, not a banner. */
+.identity-strip{background:transparent!important;color:var(--ink)!important;border-block:1px solid var(--line)!important;gap:14px 46px;font-size:clamp(18px,2.2vw,26px);letter-spacing:.06em}
+.identity-strip span{position:relative}
+.identity-strip span+span::before{content:'✦';position:absolute;left:-30px;color:var(--cyan);font-size:.6em;top:50%;transform:translateY(-50%)}
+.identity-strip span:nth-child(2){color:var(--cyan)}
+
+/* Work tiles: framed, lifted on hover. */
+.art-image,.product-image-link,.artist-feature-image{border:1px solid var(--line);transition:border-color .3s ease,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease}
+.art-image{background:linear-gradient(160deg,#172021,#101617)}
+.art-open:hover .art-image,.product-image-link:hover{border-color:rgba(76,227,230,.55);transform:translateY(-4px);box-shadow:0 26px 50px -28px rgba(0,0,0,.9),0 0 0 1px rgba(76,227,230,.15),0 0 40px -10px var(--glow)}
+.art-open:hover .art-image img{transform:scale(1.045)}
+.art-tile h3,.product-card h3{letter-spacing:.005em}
+.art-tile p,.product-category{color:#7f9290;letter-spacing:.14em}
+.product-open-mark{background:#0c1011;color:var(--cyan);border:1px solid var(--line-2);transition:transform .3s,background .3s}
+.product-image-link:hover .product-open-mark{transform:rotate(45deg);background:var(--cyan);color:#0c1011}
+.product-price{color:var(--cyan);font-weight:600;letter-spacing:.02em}
+
+/* Sections: alternate wall tones with fine rules. */
+.design-services-preview,.artist-feature,.about-statement{background:linear-gradient(180deg,#101617,#0d1213)!important;border-block:1px solid var(--line)}
+.closing-banner{background:radial-gradient(700px 400px at 85% 30%,rgba(76,227,230,.12),transparent 70%),radial-gradient(600px 400px at 10% 100%,rgba(242,107,89,.08),transparent 70%),#0a0e0f!important;border-top:1px solid var(--line)}
+.closing-banner h2{background:linear-gradient(180deg,#f2efe7 30%,#9fb0ae);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-heading{border-bottom:1px solid var(--line);padding-bottom:22px}
+
+/* Cards & panels. */
+.contact-card,.coming-soon,.case-study .case-video,.shop-notice{background:rgba(21,28,29,.7);border-color:var(--line)!important}
+.contact-art-card{background:linear-gradient(160deg,#1b2526,#111718)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
+.contact-art-card p,.contact-art-card .contact-number{color:var(--muted)!important}
+.filter-button{border-color:var(--line-2);color:#cfd6d3;transition:all .2s}
+.filter-button:hover{border-color:var(--cyan);color:var(--cyan)}
+.filter-button.is-active{background:var(--cyan)!important;color:#0c1011!important;border-color:var(--cyan)!important}
+.product-dialog{background:#0f1415;border:1px solid var(--line);box-shadow:0 60px 120px -40px rgba(0,0,0,.95)}
+.dialog-visual{background:#0b0f10}
+.dialog-close{background:#0c1011;color:var(--ink);border-color:var(--line-2)}
+
+/* Footer: oversized outlined wordmark. */
+.site-footer{background:#070a0b;border-top:1px solid var(--line)}
+.footer-wordmark{color:transparent;-webkit-text-stroke:1px rgba(242,239,231,.75);transition:color .4s}
+.footer-wordmark:hover{color:var(--ink)}
+.footer-wordmark span{-webkit-text-stroke:0;color:#8fa19f}
+
+/* Gentle reveal on scroll (only when JS is running; respects reduced motion). */
+html.js-reveal .reveal{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+html.js-reveal .reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html.js-reveal .reveal{opacity:1;transform:none;transition:none}*{scroll-behavior:auto!important}}
+@media(max-width:760px){.identity-strip span+span::before{display:none}.site-nav{background:#0c1011!important}.eyebrow::before{width:14px;margin-right:8px}}
+.selected-work-grid .art-image,.work-grid .art-image,.selected-work-grid .art-tile:first-child .art-image{background:radial-gradient(120% 90% at 30% 20%,#1d2829,#0f1516 70%)}
+.capability-grid>a{border-top-color:var(--line-2);padding:24px 20px 36px;margin:0 -20px;border-radius:0 0 12px 12px;transition:background .3s,border-color .3s}
+.capability-grid>a:hover{background:linear-gradient(180deg,rgba(76,227,230,.07),transparent);border-top-color:var(--cyan)}
+.capability-grid>a>span{color:var(--cyan);letter-spacing:.14em}
+/* Contact brief: align with cards, give the heading weight. */
+.contact-section .contact-brief{width:auto;max-width:none;margin-inline:0;padding-inline:0}
+.contact-brief .contact-policy{padding-inline:0}
+.contact-brief h3{font-size:clamp(28px,3.4vw,44px);line-height:1;letter-spacing:-.02em;text-transform:uppercase}
+.policy-list{margin:0 0 18px;padding-left:18px;display:grid;gap:8px;color:var(--muted)}

@@ -188,14 +188,73 @@
       container.append(button);
     }
   }
-  function mountComingSoon(container, title) {
-    const name = label(title).replace(/\s+T$/, '');
+  function mountComingSoon(container, record) {
+    const name = label(record?.title).replace(/\s+T$/, '');
+    const options = record?.options && typeof record.options === 'object' ? record.options : null;
+    const colors = Array.isArray(options?.colors) ? options.colors.filter(c => c && typeof c.name === 'string') : [];
+    const sizes = Array.isArray(options?.sizes) ? options.sizes.filter(s => typeof s === 'string') : [];
+    const prices = options?.prices && typeof options.prices === 'object' ? options.prices : {};
+    const money = cents => '$' + (Number(cents) / 100).toFixed(2).replace(/\.00$/, '');
     const note = create('div', 'coming-soon');
+    let color = '', size = '';
+    if (colors.length || sizes.length) {
+      const picker = create('div', 'preview-options');
+      if (colors.length) {
+        const group = create('fieldset', 'preview-colors');
+        const legend = create('legend', '', 'Color: ');
+        const chosen = create('span', 'preview-chosen', 'choose one');
+        legend.append(chosen); group.append(legend);
+        const swatches = create('div', 'swatch-row');
+        colors.forEach(c => {
+          const button = create('button', 'swatch');
+          button.type = 'button';
+          button.style.setProperty('--swatch', /^#[0-9a-f]{6}$/i.test(c.hex || '') ? c.hex : '#888888');
+          button.setAttribute('aria-label', c.name);
+          button.setAttribute('aria-pressed', 'false');
+          button.title = c.name;
+          button.addEventListener('click', () => {
+            color = c.name; chosen.textContent = c.name;
+            swatches.querySelectorAll('.swatch').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+            update();
+          });
+          swatches.append(button);
+        });
+        group.append(swatches); picker.append(group);
+      }
+      if (sizes.length) {
+        const group = create('fieldset', 'preview-sizes');
+        group.append(create('legend', '', 'Size'));
+        const row = create('div', 'size-row');
+        sizes.forEach(s => {
+          const button = create('button', 'size-chip', s);
+          button.type = 'button';
+          button.setAttribute('aria-pressed', 'false');
+          button.addEventListener('click', () => {
+            size = s;
+            row.querySelectorAll('.size-chip').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+            update();
+          });
+          row.append(button);
+        });
+        group.append(row); picker.append(group);
+      }
+      note.append(picker);
+    }
+    const price = create('p', 'coming-soon-price');
+    note.append(price);
     note.append(create('p', 'coming-soon-title', 'Online ordering opens soon'));
-    note.append(create('p', 'commerce-option-status', 'Sizes, colors and prices appear here as soon as the shop opens. Want this design? Ask Nino to hold it for you or to let you know when it is ready.'));
+    note.append(create('p', 'commerce-option-status', 'Pick your color and size, then ask Nino to hold it for you — he’ll let you know as soon as it’s ready to order.'));
     const ask = create('a', 'button button-cyan', 'Email me when it’s ready ↗');
-    ask.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent('Notify me: ' + (name || 'shirt shop')) + '&body=' + encodeURIComponent('Hi Nino, please let me know when ' + (name ? '“' + name + '”' : 'the shirt shop') + ' is available to order.\n\nSize (S–2XL):\nColor:\n');
     note.append(ask);
+    function update() {
+      const cents = size && prices[size] ? prices[size] : Object.values(prices).map(Number).filter(Number.isFinite).sort((a, b) => a - b)[0];
+      price.textContent = cents ? (size ? money(cents) : 'From ' + money(cents)) : '';
+      price.hidden = !price.textContent;
+      const subject = 'Notify me: ' + (name || 'shirt shop');
+      const body = 'Hi Nino, please let me know when ' + (name ? '“' + name + '”' : 'the shirt shop') + ' is available to order.\n\nColor: ' + (color || '') + '\nSize: ' + (size || '') + '\n';
+      ask.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    }
+    update();
     container.replaceChildren(note);
   }
   async function mountProduct(recordOrId, container) {
@@ -218,7 +277,7 @@
     const productId = product?.id;
     const variants = product ? [...product.variants.values()].filter(item => item.purchasable) : [];
     if (!variants.length) {
-      if (!state.catalogComplete || !state.checkoutReady) { mountComingSoon(container, typeof recordOrId === 'object' ? recordOrId?.title : ''); return; }
+      if (!state.catalogComplete || !state.checkoutReady) { mountComingSoon(container, typeof recordOrId === 'object' ? recordOrId : null); return; }
       mountUnavailable(container, 'This design is not available to purchase right now.'); return;
     }
     const form = create('form', 'variant-picker');
