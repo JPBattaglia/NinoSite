@@ -366,3 +366,10 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 .contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#8fb0b3}
 .contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 3px rgba(76,227,230,.18)}
 .contact-form-card label{color:var(--ink)}
+/* Contact form as a distinct raised card. */
+.contact-form-card{position:relative;background:linear-gradient(180deg,#1d2a2c 0%,#152022 100%);border:1px solid rgba(76,227,230,.55);border-top:3px solid var(--cyan);border-radius:16px;padding:0 40px 40px;gap:18px;box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 6px rgba(76,227,230,.06),0 0 80px -20px rgba(76,227,230,.4);transform:translateY(-6px)}
+.form-card-head{margin:0 -40px 8px;padding:26px 40px 22px;border-bottom:1px solid rgba(76,227,230,.25);background:rgba(76,227,230,.06);border-radius:13px 13px 0 0}
+.form-card-kicker{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.form-card-head h3{font:700 30px/1 var(--display);letter-spacing:-.01em;margin:0;color:var(--ink)}
+.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#0d1314;border-color:#5b7679}
+@media(max-width:760px){.contact-form-card{padding:0 22px 26px;transform:none}.form-card-head{margin:0 -22px 6px;padding:20px 22px 18px}.form-card-head h3{font-size:24px}}
