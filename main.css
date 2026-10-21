@@ -341,3 +341,16 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 .contact-brief .contact-policy{padding-inline:0}
 .contact-brief h3{font-size:clamp(28px,3.4vw,44px);line-height:1;letter-spacing:-.02em;text-transform:uppercase}
 .policy-list{margin:0 0 18px;padding-left:18px;display:grid;gap:8px;color:var(--muted)}
+/* Contact v2: form-first. */
+.contact-layout{display:grid;grid-template-columns:.85fr 1.15fr;gap:6%;align-items:start;border-top:1px solid var(--line);padding-top:50px}
+.contact-side h2{font-size:clamp(46px,5vw,78px);line-height:.92;margin:0 0 26px}
+.contact-side p{font-size:14px;line-height:1.75;color:var(--muted);max-width:420px;margin:0 0 18px}
+.contact-side .contact-how{font-size:12px}
+.contact-alts{margin-top:34px;border-top:1px solid var(--line);padding-top:22px;display:grid;gap:14px}
+.contact-alts p{display:flex;flex-direction:column;gap:4px;margin:0;font-size:13px}
+.contact-alts span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.contact-alts a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2);align-self:start;padding-bottom:2px}
+.contact-alts a:hover{color:var(--cyan);border-color:var(--cyan)}
+.contact-form-card{margin:0;background:rgba(21,28,29,.7);border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 30px 80px -40px rgba(91,233,234,.25)}
+.contact-form-card .button{justify-self:stretch;justify-content:center;gap:14px;min-height:54px;font-size:14px}
+@media(max-width:760px){.contact-layout{grid-template-columns:1fr;gap:34px;padding-top:34px}.contact-form-card{padding:22px}.contact-side h2{font-size:52px}}

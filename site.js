@@ -342,7 +342,7 @@
     if (!form.reportValidity()) return;
     const data = new FormData(form);
     const field = key => String(data.get(key) || '').trim();
-    const subject = 'Project inquiry: ' + field('type') + ' — ' + field('name');
+    const subject = (/order/i.test(field('type')) ? 'Order question' : 'Project inquiry: ' + field('type')) + ' — ' + field('name');
     const body = ['Name: ' + field('name'), 'Reply to: ' + field('email'), 'Project: ' + field('type'), 'Timing: ' + (field('timing') || 'Not specified'), '', field('message')].join('\n');
     location.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   });
