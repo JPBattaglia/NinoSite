@@ -395,3 +395,10 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 .contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(76,227,230,.45)}
 .contact-form-card .button{background:var(--cyan);border-color:var(--cyan);color:#0c1011}
 .contact-form-card .button:hover{background:#f2efe8;border-color:#f2efe8;color:#0c1011}
+/* Contact form: no white — dark fields on the gray panel. */
+.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#141b1c;color:var(--ink);border:1.5px solid #4f6467}
+.contact-form-card input::placeholder,.contact-form-card textarea::placeholder{color:#7f9294}
+.contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#7d9497}
+.contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(76,227,230,.3)}
+.contact-form-card select option{background:#141b1c;color:var(--ink)}
+.contact-form-card .button:hover{background:#7af0f2;border-color:#7af0f2;color:#0c1011}
