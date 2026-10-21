@@ -373,3 +373,17 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 .form-card-head h3{font:700 30px/1 var(--display);letter-spacing:-.01em;margin:0;color:var(--ink)}
 .contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#0d1314;border-color:#5b7679}
 @media(max-width:760px){.contact-form-card{padding:0 22px 26px;transform:none}.form-card-head{margin:0 -22px 6px;padding:20px 22px 18px}.form-card-head h3{font-size:24px}}
+/* Contact form: bright inverted card — the one light object on the page. */
+.contact-form-card{background:#f2efe8;color:#0c1011;border:0;border-radius:18px;box-shadow:0 0 0 2px var(--cyan),0 0 0 10px rgba(76,227,230,.14),0 0 120px -10px rgba(76,227,230,.55),0 50px 100px -40px rgba(0,0,0,.95);transform:translateY(-8px)}
+.form-card-head{background:#0c1011;border-bottom:0;border-radius:16px 16px 0 0;padding:28px 40px 24px}
+.form-card-head h3{color:#f2efe8;font-size:34px}
+.form-card-kicker{color:var(--cyan)}
+.contact-form-card label{color:#0c1011;font-weight:700}
+.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#fff;color:#0c1011;border:1.5px solid #b9c2c0;border-radius:10px}
+.contact-form-card input::placeholder,.contact-form-card textarea::placeholder{color:#7d8785}
+.contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#5e6a68}
+.contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:#0c1011;box-shadow:0 0 0 3px rgba(76,227,230,.6)}
+.contact-form-card select option{background:#fff;color:#0c1011}
+.contact-form-card .button{background:#0c1011;border-color:#0c1011;color:var(--cyan);box-shadow:none;font-size:15px;min-height:58px}
+.contact-form-card .button:hover{background:var(--cyan);border-color:var(--cyan);color:#0c1011}
+@media(max-width:760px){.form-card-head{padding:22px 22px 18px}.form-card-head h3{font-size:26px}.contact-form-card{transform:none}}
