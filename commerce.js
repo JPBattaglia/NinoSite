@@ -252,7 +252,7 @@
       price.hidden = !price.textContent;
       const subject = 'Notify me: ' + (name || 'shirt shop');
       const body = 'Hi Nino, please let me know when ' + (name ? '“' + name + '”' : 'the shirt shop') + ' is available to order.\n\nColor: ' + (color || '') + '\nSize: ' + (size || '') + '\n';
-      ask.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      ask.href = 'mailto:hello@ninobattaglia.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     }
     update();
     container.replaceChildren(note);

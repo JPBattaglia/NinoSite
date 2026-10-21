@@ -105,7 +105,7 @@
     document.querySelector('[data-product-link]')?.remove();
     const shareStatus = document.querySelector('[data-share-status]'); if (shareStatus) shareStatus.textContent = '';
     const question = document.querySelector('[data-product-question]');
-    if (question) question.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent('Question about ' + title(record.title));
+    if (question) question.href = 'mailto:hello@ninobattaglia.com?subject=' + encodeURIComponent('Question about ' + title(record.title));
     if (kind === 'product') measure('product_view', record.id);
     currentGallery = [...new Set((Array.isArray(record.gallery) && record.gallery.length ? record.gallery : [record.image]).filter(Boolean))];
     document.getElementById('dialog-title').textContent = title(record.title);
@@ -344,7 +344,7 @@
     const field = key => String(data.get(key) || '').trim();
     const subject = (/order/i.test(field('type')) ? 'Order question' : 'Project inquiry: ' + field('type')) + ' — ' + field('name');
     const body = ['Name: ' + field('name'), 'Reply to: ' + field('email'), 'Project: ' + field('type'), 'Timing: ' + (field('timing') || 'Not specified'), '', field('message')].join('\n');
-    location.href = 'mailto:thenino69@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    location.href = 'mailto:hello@ninobattaglia.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   });
   (function reveal() {
     if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
