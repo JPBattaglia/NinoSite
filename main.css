@@ -354,3 +354,9 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 .contact-form-card{margin:0;background:rgba(21,28,29,.7);border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 30px 80px -40px rgba(91,233,234,.25)}
 .contact-form-card .button{justify-self:stretch;justify-content:center;gap:14px;min-height:54px;font-size:14px}
 @media(max-width:760px){.contact-layout{grid-template-columns:1fr;gap:34px;padding-top:34px}.contact-form-card{padding:22px}.contact-side h2{font-size:52px}}
+/* Same hover treatment for every featured image (services, about, home feature, shirt pages, case video). */
+.service-detail-image,.about-art img,.artist-feature-image,.shirt-page>img,.case-study .case-video{border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .3s ease,transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s ease}
+.service-detail-image img,.artist-feature-image img{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.service-detail-image:hover,.about-art img:hover,.artist-feature-image:hover,.shirt-page>img:hover,.case-study .case-video:hover{border-color:rgba(76,227,230,.55)!important;transform:translateY(-4px);box-shadow:0 26px 50px -28px rgba(0,0,0,.9),0 0 0 1px rgba(76,227,230,.15),0 0 40px -10px var(--glow)}
+.service-detail-image:hover img,.artist-feature-image:hover img{transform:scale(1.045)}
+@media (prefers-reduced-motion:reduce){.service-detail-image,.about-art img,.artist-feature-image,.shirt-page>img,.case-study .case-video,.service-detail-image img,.artist-feature-image img{transition:none}.service-detail-image:hover,.about-art img:hover,.artist-feature-image:hover,.shirt-page>img:hover,.case-study .case-video:hover,.service-detail-image:hover img,.artist-feature-image:hover img{transform:none}}
