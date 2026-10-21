@@ -15583,11 +15583,11 @@
       "id": "design-motion-poster",
       "title": "Photo animation study",
       "category": "Motion",
-      "image": "assets/design-motion-poster.webp",
+      "image": "assets/design-motion-preview.webp",
       "gallery": [
-        "assets/design-motion-poster.webp"
+        "assets/design-motion-preview.webp"
       ],
-      "description": "A still from an animated face and ocean composition.",
+      "description": "An animated face and ocean composition — a photo animation study.",
       "featured": false
     },
     {
