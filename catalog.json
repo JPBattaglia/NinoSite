@@ -2632,7 +2632,8 @@
       "title": "Halloween Harmony",
       "image": "assets/products/468111010.webp",
       "gallery": [
-        "assets/products/468111010.webp"
+        "assets/products/468111010.webp",
+        "assets/art-halloween-harmony.webp"
       ],
       "category": "Seasonal",
       "description": "A yin-yang circle of two ghosts, ringed with bones and paired with a cluster of small skulls.",
@@ -12069,7 +12070,8 @@
       "title": "Motopsycho",
       "image": "assets/products/455757431.webp",
       "gallery": [
-        "assets/products/455757431.webp"
+        "assets/products/455757431.webp",
+        "assets/art-motopsycho.webp"
       ],
       "category": "Moto",
       "collections": [
@@ -13118,7 +13120,8 @@
       "title": "Artificial Intel",
       "image": "assets/products/455691193.webp",
       "gallery": [
-        "assets/products/455691193.webp"
+        "assets/products/455691193.webp",
+        "assets/art-artificial-intelligence.webp"
       ],
       "category": "Originals",
       "collections": [
@@ -13237,7 +13240,10 @@
       "title": "Yin Yang Ouroboros",
       "image": "assets/products/455689737.webp",
       "gallery": [
-        "assets/products/455689737.webp"
+        "assets/products/455689737.webp",
+        "assets/shirt-oroboros.webp",
+        "assets/shirt-oroboros-olive.webp",
+        "assets/art-oroboros.webp"
       ],
       "category": "Originals",
       "collections": [
@@ -14060,7 +14066,8 @@
       "title": "Grumpy Frog",
       "image": "assets/products/455604571.webp",
       "gallery": [
-        "assets/products/455604571.webp"
+        "assets/products/455604571.webp",
+        "assets/art-grumpy-frog.webp"
       ],
       "category": "Originals",
       "collections": [
@@ -14295,7 +14302,9 @@
       "title": "Skull Wave",
       "image": "assets/products/455597876.webp",
       "gallery": [
-        "assets/products/455597876.webp"
+        "assets/products/455597876.webp",
+        "assets/shirt-skull-wave.webp",
+        "assets/art-skull-wave.webp"
       ],
       "category": "Originals",
       "collections": [
@@ -15111,7 +15120,9 @@
       "title": "People Face",
       "image": "assets/products/455581523.webp",
       "gallery": [
-        "assets/products/455581523.webp"
+        "assets/products/455581523.webp",
+        "assets/shirt-face-peeps.webp",
+        "assets/art-face-lines.webp"
       ],
       "category": "Originals",
       "collections": [

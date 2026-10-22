@@ -554,3 +554,10 @@ body{overflow-x:clip}
 .shop-hero-actions .text-link{display:none}
 }
 @media(prefers-reduced-motion:reduce){.product-image-link:focus-visible{transform:none}.band::before,.shop-section::before,.toast,.sticky-cart{transition:none}}
+/* Extra photos and original artwork on the standalone shirt pages. */
+.shirt-media{min-width:0}
+.shirt-media>img{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;display:block}
+.shirt-more-images{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.shirt-more-images a{display:block;width:96px;height:96px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b0f10;transition:border-color .2s}
+.shirt-more-images a:hover{border-color:var(--cyan)}
+.shirt-page .shirt-more-images img{width:100%;height:100%;object-fit:contain;border-radius:0;background:transparent}
