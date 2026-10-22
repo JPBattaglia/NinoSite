@@ -3,7 +3,49 @@
     "name": "Nino’s Ts",
     "url": "shop.html",
     "checkout": "stripe",
-    "catalog_count": 136
+    "catalog_count": 136,
+    "collections": [
+      {
+        "id": "ninos-picks",
+        "name": "Nino’s Picks",
+        "blurb": "Nino’s own favorites"
+      },
+      {
+        "id": "retro",
+        "name": "Rewind",
+        "blurb": "80s and retro"
+      },
+      {
+        "id": "scifi",
+        "name": "Beam Me Out",
+        "blurb": "Sci-fi and AI"
+      },
+      {
+        "id": "monsters",
+        "name": "Things That Go Bump",
+        "blurb": "Monsters, any time of year"
+      },
+      {
+        "id": "snacks",
+        "name": "Snack Attack",
+        "blurb": "Food and drink"
+      },
+      {
+        "id": "skate",
+        "name": "Board Stuff",
+        "blurb": "Skate and surf"
+      },
+      {
+        "id": "pop-satire",
+        "name": "Turn It Up",
+        "blurb": "Satire and slogans"
+      },
+      {
+        "id": "bay-area",
+        "name": "The City",
+        "blurb": "SF and the Bay Area"
+      }
+    ]
   },
   "products": [
     {
@@ -14,6 +56,9 @@
         "assets/products/480532409.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "A retro music-TV style logo badge in bold primary colors — a throwback for anyone raised on late-night videos.",
       "featured": false,
       "variants": [],
@@ -118,7 +163,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#e8a731",
+      "slug": "nostalgic-television"
     },
     {
       "id": "480336908",
@@ -232,7 +279,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#ed302c",
+      "slug": "mom-s-day"
     },
     {
       "id": "479280580",
@@ -346,7 +395,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#1ffa96",
+      "slug": "december-25"
     },
     {
       "id": "478772161",
@@ -460,7 +511,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#e66138",
+      "slug": "headless-horseman"
     },
     {
       "id": "478463906",
@@ -470,6 +523,9 @@
         "assets/products/478463906.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A hooded villain rising behind a bat-wing logo that spells DR. DOOM in bright green.",
       "featured": false,
       "variants": [],
@@ -574,7 +630,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#53cb4d",
+      "slug": "dr-doom"
     },
     {
       "id": "478393321",
@@ -584,6 +642,9 @@
         "assets/products/478393321.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A comic-strip-style Frankenstein's monster and his bride sharing a sweet, slightly spooky moment.",
       "featured": false,
       "variants": [],
@@ -688,7 +749,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb734d",
+      "slug": "monster-mash"
     },
     {
       "id": "478207707",
@@ -802,7 +865,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4da4cb",
+      "slug": "spooky-owl"
     },
     {
       "id": "477827285",
@@ -812,6 +877,9 @@
         "assets/products/477827285.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "A row of classic red soda bottles turned into lit molotov cocktails — pop-art protest with a punchline.",
       "featured": false,
       "variants": [],
@@ -916,7 +984,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6f4d",
+      "slug": "capitalism-molotovs"
     },
     {
       "id": "477816620",
@@ -926,6 +996,9 @@
         "assets/products/477816620.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "“Enjoy Capitalism” in flowing script on a wave ribbon — a cola-ad parody with a pointed tagline.",
       "featured": false,
       "variants": [],
@@ -1030,7 +1103,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#d26587",
+      "slug": "capitalism"
     },
     {
       "id": "476596641",
@@ -1144,7 +1219,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "automatic-1985"
     },
     {
       "id": "474612220",
@@ -1154,6 +1230,9 @@
         "assets/products/474612220.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "A grinning robot in a round yellow badge with the line KILL ALL HUMANS — dark humor for the AI age.",
       "featured": false,
       "variants": [],
@@ -1258,7 +1337,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#2eaeea",
+      "slug": "kill-all-humans"
     },
     {
       "id": "471860753",
@@ -1268,6 +1349,9 @@
         "assets/products/471860753.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "NERD in chunky yellow foam-dart toy lettering, worn as a badge of honor.",
       "featured": false,
       "variants": [],
@@ -1372,7 +1456,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#30d2e8",
+      "slug": "nerd"
     },
     {
       "id": "471858066",
@@ -1486,7 +1572,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "show-ticket"
     },
     {
       "id": "471181683",
@@ -1600,7 +1687,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d77",
+      "slug": "joker"
     },
     {
       "id": "470875986",
@@ -1610,6 +1699,9 @@
         "assets/products/470875986.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "skate"
+      ],
       "description": "A comic-strip tribute: a beanie-wearing kid with a skateboard and his dog skating off the roof of a red doghouse.",
       "featured": false,
       "variants": [],
@@ -1714,7 +1806,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "skater-brown"
     },
     {
       "id": "470762628",
@@ -1724,6 +1817,9 @@
         "assets/products/470762628.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "A caped superhero egg striking a pose under the SUPER FOOD banner.",
       "featured": false,
       "variants": [],
@@ -1828,7 +1924,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#d84377",
+      "slug": "super-food-eggcelsior"
     },
     {
       "id": "468479160",
@@ -1942,7 +2040,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d93cc",
+      "slug": "pb-500"
     },
     {
       "id": "468468013",
@@ -2056,7 +2156,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cba94d",
+      "slug": "undead-mummy"
     },
     {
       "id": "468463012",
@@ -2170,7 +2272,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#f0b45a",
+      "slug": "turkey-day"
     },
     {
       "id": "468456093",
@@ -2284,7 +2388,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#eb502e",
+      "slug": "talk-turkey"
     },
     {
       "id": "468128883",
@@ -2398,7 +2504,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6e4d",
+      "slug": "nosferatu"
     },
     {
       "id": "468124746",
@@ -2408,6 +2516,9 @@
         "assets/products/468124746.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A pale blue skull face with a sharp new-wave haircut and hollow eyes.",
       "featured": false,
       "variants": [],
@@ -2512,7 +2623,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4db7cb",
+      "slug": "new-wave-zombie"
     },
     {
       "id": "468111010",
@@ -2626,7 +2739,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#f2a768",
+      "slug": "halloween-harmony"
     },
     {
       "id": "468106144",
@@ -2636,6 +2751,9 @@
         "assets/products/468106144.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A classic green monster portrait with neck bolts and FRANK beneath in tall serif type.",
       "featured": false,
       "variants": [],
@@ -2740,7 +2858,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#afcb4d",
+      "slug": "frank"
     },
     {
       "id": "468101651",
@@ -2854,7 +2974,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#dab877",
+      "slug": "halloween-vibe"
     },
     {
       "id": "468014210",
@@ -2968,7 +3090,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb7d4d",
+      "slug": "wolfman-moon"
     },
     {
       "id": "467998346",
@@ -3082,7 +3206,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb624d",
+      "slug": "stay-spooky"
     },
     {
       "id": "467475207",
@@ -3196,7 +3322,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4db0",
+      "slug": "turkey-daze"
     },
     {
       "id": "467468797",
@@ -3310,7 +3438,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb744d",
+      "slug": "fat-pants-season"
     },
     {
       "id": "467459295",
@@ -3424,7 +3554,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "tis-the-season"
     },
     {
       "id": "467441340",
@@ -3538,7 +3669,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#e04239",
+      "slug": "skullflake"
     },
     {
       "id": "467270476",
@@ -3648,7 +3781,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6f4d",
+      "slug": "snowmies"
     },
     {
       "id": "467260824",
@@ -3762,7 +3897,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#bbd264",
+      "slug": "stink-stank-stunk"
     },
     {
       "id": "467255838",
@@ -3876,7 +4013,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#c5da81",
+      "slug": "merry-santa"
     },
     {
       "id": "467251816",
@@ -3990,7 +4129,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d6a",
+      "slug": "krampus-christmas"
     },
     {
       "id": "467245421",
@@ -4104,7 +4245,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#64cb4d",
+      "slug": "holiday-holly"
     },
     {
       "id": "465951721",
@@ -4218,7 +4361,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d95cb",
+      "slug": "beretta-500"
     },
     {
       "id": "465315345",
@@ -4228,6 +4373,9 @@
         "assets/products/465315345.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "A sci-fi corporate logo with stacked chevron wings — a nod to the film franchise's fictional company.",
       "featured": false,
       "variants": [],
@@ -4332,7 +4480,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d70cb",
+      "slug": "weyland-corp"
     },
     {
       "id": "464690144",
@@ -4446,7 +4596,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cbb14d",
+      "slug": "major-f-bomb"
     },
     {
       "id": "464592428",
@@ -4560,7 +4712,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "protected"
     },
     {
       "id": "464534921",
@@ -4674,7 +4827,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb714d",
+      "slug": "love-molotov"
     },
     {
       "id": "463850565",
@@ -4788,7 +4943,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d73",
+      "slug": "alice-reaching-for-love"
     },
     {
       "id": "463840346",
@@ -4902,7 +5059,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "ace-of-hearts"
     },
     {
       "id": "463833139",
@@ -4912,6 +5070,9 @@
         "assets/products/463833139.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "A heart-shaped lollipop and candy heart stamped with a not-so-sweet message.",
       "featured": false,
       "variants": [],
@@ -5016,7 +5177,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#f0283f",
+      "slug": "you-suck-candy"
     },
     {
       "id": "463782958",
@@ -5130,7 +5293,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#e8be73",
+      "slug": "supermom"
     },
     {
       "id": "463766389",
@@ -5244,7 +5409,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4dcb6b",
+      "slug": "shenanigans-and-malarkey"
     },
     {
       "id": "463752121",
@@ -5358,7 +5525,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4dcb7a",
+      "slug": "leprechaun-skull"
     },
     {
       "id": "463741074",
@@ -5472,7 +5641,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "irish-ace"
     },
     {
       "id": "460078188",
@@ -5586,7 +5756,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "thulsa-doom"
     },
     {
       "id": "460064445",
@@ -5700,7 +5871,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6f4d",
+      "slug": "hawk-man-skull"
     },
     {
       "id": "459897365",
@@ -5814,7 +5987,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#f06ba5",
+      "slug": "helmet-mohawk"
     },
     {
       "id": "459400868",
@@ -5824,6 +5999,9 @@
         "assets/products/459400868.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "A neon cyan light cycle and grid lettering straight out of a classic sci-fi film.",
       "featured": false,
       "variants": [],
@@ -5928,7 +6106,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4dbdcb",
+      "slug": "light-cycle"
     },
     {
       "id": "459399272",
@@ -5938,6 +6118,9 @@
         "assets/products/459399272.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "Bold Chicagoland restaurant lettering with a hand-written YES CHEF beneath.",
       "featured": false,
       "variants": [],
@@ -6042,7 +6225,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "the-bear-yes-chef"
     },
     {
       "id": "459398272",
@@ -6156,7 +6340,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "favorite-dino-pterodactyl"
     },
     {
       "id": "459396590",
@@ -6166,6 +6351,9 @@
         "assets/products/459396590.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "ninos-picks"
+      ],
       "description": "A fierce bull in a silver samurai helmet, rendered in black, white and blue.",
       "featured": false,
       "variants": [],
@@ -6270,7 +6458,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "bullshido"
     },
     {
       "id": "459304245",
@@ -6280,6 +6469,9 @@
         "assets/products/459304245.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A single bat hanging upside down above a small yellow BAT tag.",
       "featured": false,
       "variants": [],
@@ -6384,7 +6576,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb724d",
+      "slug": "bat-hang"
     },
     {
       "id": "459225539",
@@ -6394,6 +6588,9 @@
         "assets/products/459225539.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "A caped coffee cup flexing as the hero of every morning, over TRUE HERO lettering.",
       "featured": false,
       "variants": [],
@@ -6490,7 +6687,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "true-hero-coffee"
     },
     {
       "id": "459220813",
@@ -6500,6 +6698,9 @@
         "assets/products/459220813.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "A space-company name set in a familiar delivery-logo style, purple and orange with the hidden arrow.",
       "featured": false,
       "variants": [],
@@ -6596,7 +6797,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "spacex"
     },
     {
       "id": "459216918",
@@ -6606,6 +6808,9 @@
         "assets/products/459216918.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "Chrome eighties-toy lettering reading FIFTY SOMETHING, with a CHILDREN IN DISGUISE tag.",
       "featured": false,
       "variants": [],
@@ -6702,7 +6907,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#7bb3d9",
+      "slug": "fifty-something"
     },
     {
       "id": "459109078",
@@ -6712,6 +6919,10 @@
         "assets/products/459109078.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "ninos-picks",
+        "bay-area"
+      ],
       "description": "A prancing-horse shield in yellow and black reworked for San Francisco's North Beach.",
       "featured": false,
       "variants": [],
@@ -6816,7 +7027,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6f4d",
+      "slug": "north-beach-sf"
     },
     {
       "id": "459105626",
@@ -6930,7 +7143,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#ec9f6f",
+      "slug": "funny-guy"
     },
     {
       "id": "459091768",
@@ -7044,7 +7259,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb734d",
+      "slug": "in-my-prime"
     },
     {
       "id": "459085083",
@@ -7158,7 +7375,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "wanted-willie-the-kid"
     },
     {
       "id": "459078689",
@@ -7272,7 +7490,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "chemical-lab-assistant"
     },
     {
       "id": "459061208",
@@ -7282,6 +7501,9 @@
         "assets/products/459061208.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "skate"
+      ],
       "description": "A suited skateboarder mid-trick inside a blue framed poster with Make America Skate Again lettering.",
       "featured": false,
       "variants": [],
@@ -7386,7 +7608,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d9fcb",
+      "slug": "make-america-skate-again"
     },
     {
       "id": "459039221",
@@ -7396,6 +7620,9 @@
         "assets/products/459039221.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "Flame-lettered skate-magazine style logo above a cartoon presidential portrait.",
       "featured": false,
       "variants": [],
@@ -7500,7 +7727,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#e5ab34",
+      "slug": "trumpster"
     },
     {
       "id": "459037155",
@@ -7510,6 +7739,9 @@
         "assets/products/459037155.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "A circular emblem of eighties cartoon villain insignias in red, black and gray.",
       "featured": false,
       "variants": [],
@@ -7614,7 +7846,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#dd483c",
+      "slug": "bad-guys-gen-x"
     },
     {
       "id": "458584403",
@@ -7624,6 +7858,9 @@
         "assets/products/458584403.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "bay-area"
+      ],
       "description": "A red Golden Gate badge reading SAN FRANCISCO — THE CITY.",
       "featured": false,
       "variants": [],
@@ -7724,7 +7961,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "the-city-sf"
     },
     {
       "id": "458561208",
@@ -7838,7 +8076,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6f4d",
+      "slug": "zig-zag"
     },
     {
       "id": "458557893",
@@ -7848,6 +8088,9 @@
         "assets/products/458557893.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "A sci-fi defense-network logo in red and blue: automated AI, official intelligence.",
       "featured": false,
       "variants": [],
@@ -7952,7 +8195,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4869d0",
+      "slug": "skynet"
     },
     {
       "id": "458552678",
@@ -7962,6 +8207,9 @@
         "assets/products/458552678.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "A mint-green, ribbed alien head in profile with its skeletal neck.",
       "featured": false,
       "variants": [],
@@ -8066,7 +8314,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4dcba0",
+      "slug": "xenomorph"
     },
     {
       "id": "458539270",
@@ -8180,7 +8430,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#de413b",
+      "slug": "pew-pew"
     },
     {
       "id": "458531516",
@@ -8190,6 +8442,9 @@
         "assets/products/458531516.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A wild-eyed movie-villain portrait in black ink with a red glow.",
       "featured": false,
       "variants": [],
@@ -8294,7 +8549,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb634d",
+      "slug": "jack"
     },
     {
       "id": "458509127",
@@ -8408,7 +8665,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#dcb13c",
+      "slug": "smiley-earphones"
     },
     {
       "id": "458494692",
@@ -8418,6 +8677,9 @@
         "assets/products/458494692.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "A red digital-segment album-cover tribute to a classic eighties rock record.",
       "featured": false,
       "variants": [],
@@ -8522,7 +8784,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d73",
+      "slug": "ghost-in-the-machine"
     },
     {
       "id": "458480512",
@@ -8532,6 +8796,9 @@
         "assets/products/458480512.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "A purple stencil monogram from an industrial-rock era icon.",
       "featured": false,
       "variants": [],
@@ -8636,7 +8903,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6f4d",
+      "slug": "sin"
     },
     {
       "id": "458475712",
@@ -8646,6 +8915,9 @@
         "assets/products/458475712.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "An eighties album-art tribute: a sleek pop-art woman's face in a framed square.",
       "featured": false,
       "variants": [],
@@ -8750,7 +9022,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cf4968",
+      "slug": "rio"
     },
     {
       "id": "458245026",
@@ -8864,7 +9138,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d6fcb",
+      "slug": "booger"
     },
     {
       "id": "458233906",
@@ -8874,6 +9150,9 @@
         "assets/products/458233906.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "Pizza-print WTF letters in a music-TV logo style asking the real question: Where's the food?",
       "featured": false,
       "variants": [],
@@ -8978,7 +9257,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#99cf58",
+      "slug": "where-s-the-food"
     },
     {
       "id": "458224177",
@@ -8988,6 +9269,9 @@
         "assets/products/458224177.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "A purple cassette tape outline labeled GEN X.",
       "featured": false,
       "variants": [],
@@ -9092,7 +9376,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4da9cb",
+      "slug": "gen-x-cassette"
     },
     {
       "id": "458218827",
@@ -9206,7 +9492,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "shelby-cobra"
     },
     {
       "id": "457910109",
@@ -9216,6 +9503,9 @@
         "assets/products/457910109.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "skate"
+      ],
       "description": "The classic surf-wax badge in red, green and blue.",
       "featured": false,
       "variants": [],
@@ -9320,7 +9610,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#47b0d1",
+      "slug": "sex-wax"
     },
     {
       "id": "457557350",
@@ -9330,6 +9622,9 @@
         "assets/products/457557350.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "skate"
+      ],
       "description": "A sketchy skateboard-graphic character in a framed card, a tribute to the eighties skate artist.",
       "featured": false,
       "variants": [],
@@ -9434,7 +9729,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4da3",
+      "slug": "neil-blender-tribute"
     },
     {
       "id": "457395534",
@@ -9444,6 +9741,9 @@
         "assets/products/457395534.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "PLANET OVER PROFIT in earthy blue and green lettering with a globe for the O.",
       "featured": false,
       "variants": [],
@@ -9548,7 +9848,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d9ecb",
+      "slug": "planet-over-profit"
     },
     {
       "id": "457387165",
@@ -9558,6 +9860,9 @@
         "assets/products/457387165.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "A pink sketch of the father of psychoanalysis with PINK FREUD and THE DARKSIDE OF YOUR MOM.",
       "featured": false,
       "variants": [],
@@ -9662,7 +9967,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#da81b4",
+      "slug": "pink-freud"
     },
     {
       "id": "457378772",
@@ -9776,7 +10083,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb774d",
+      "slug": "motogp"
     },
     {
       "id": "457370818",
@@ -9890,7 +10199,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6e4d",
+      "slug": "born-2-ride"
     },
     {
       "id": "457365998",
@@ -10004,7 +10315,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "honda-moto"
     },
     {
       "id": "457362842",
@@ -10118,7 +10430,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d74cb",
+      "slug": "teller-morrow-motor-oil"
     },
     {
       "id": "457355919",
@@ -10232,7 +10546,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb544d",
+      "slug": "sons-of-a"
     },
     {
       "id": "457010609",
@@ -10346,7 +10662,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "sunset-moto"
     },
     {
       "id": "456359214",
@@ -10460,7 +10777,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "felix-the-rider"
     },
     {
       "id": "456354908",
@@ -10574,7 +10892,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "hell-s-angel"
     },
     {
       "id": "455969808",
@@ -10688,7 +11007,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cbb04d",
+      "slug": "dirt-bike-dimension"
     },
     {
       "id": "455961018",
@@ -10802,7 +11123,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#debf3a",
+      "slug": "retro-bike-logo"
     },
     {
       "id": "455826015",
@@ -10916,7 +11239,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#ad49d0",
+      "slug": "daredevil-rider"
     },
     {
       "id": "455825044",
@@ -10926,6 +11251,9 @@
         "assets/products/455825044.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "A line of suited presidents walking in slow motion, crime-film style, over PREZ DOGS.",
       "featured": false,
       "variants": [],
@@ -11030,7 +11358,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "prez-dogs"
     },
     {
       "id": "455814259",
@@ -11040,6 +11369,9 @@
         "assets/products/455814259.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "skate"
+      ],
       "description": "A teal skull in a backward ball cap, laughing, with pink highlights.",
       "featured": false,
       "variants": [],
@@ -11144,7 +11476,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d79cb",
+      "slug": "skull-cap"
     },
     {
       "id": "455813575",
@@ -11258,7 +11592,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cd4c79",
+      "slug": "logo"
     },
     {
       "id": "455812087",
@@ -11372,7 +11708,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "e-mc2"
     },
     {
       "id": "455800335",
@@ -11382,6 +11719,9 @@
         "assets/products/455800335.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "A swirled chip-maker style badge reading dead inside, in burgundy.",
       "featured": false,
       "variants": [],
@@ -11486,7 +11826,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d79",
+      "slug": "dead-inside"
     },
     {
       "id": "455799066",
@@ -11496,6 +11838,9 @@
         "assets/products/455799066.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "A glowing glass of whiskey with NEAT in gold.",
       "featured": false,
       "variants": [],
@@ -11600,7 +11945,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "whiskey-neat"
     },
     {
       "id": "455759125",
@@ -11714,7 +12060,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4db3cb",
+      "slug": "kung-fu-master"
     },
     {
       "id": "455757431",
@@ -11724,6 +12072,9 @@
         "assets/products/455757431.webp"
       ],
       "category": "Moto",
+      "collections": [
+        "ninos-picks"
+      ],
       "description": "Nino's helmet skull over crossed wrenches with MOTOPSYCHO in teal.",
       "featured": true,
       "variants": [],
@@ -11828,7 +12179,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4db9cb",
+      "slug": "motopsycho"
     },
     {
       "id": "455753743",
@@ -11838,6 +12191,9 @@
         "assets/products/455753743.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "bay-area"
+      ],
       "description": "Seventies-striped MUNI letters in orange and red with BAY AREA TRAVELER.",
       "featured": false,
       "variants": [],
@@ -11942,7 +12298,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#de603b",
+      "slug": "bay-area-muni"
     },
     {
       "id": "455744995",
@@ -12056,7 +12414,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "sunset-silhouette"
     },
     {
       "id": "455737205",
@@ -12170,7 +12529,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d83cb",
+      "slug": "acme-moto"
     },
     {
       "id": "455733885",
@@ -12284,7 +12645,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb744d",
+      "slug": "notorious-trouble"
     },
     {
       "id": "455729983",
@@ -12398,7 +12761,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#854dcb",
+      "slug": "rock-star-mode"
     },
     {
       "id": "455727920",
@@ -12512,7 +12877,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d64cb",
+      "slug": "military-brat"
     },
     {
       "id": "455724737",
@@ -12626,7 +12993,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6e4d",
+      "slug": "favorite-dino-triceratops"
     },
     {
       "id": "455722787",
@@ -12740,7 +13109,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d71",
+      "slug": "live-love-power"
     },
     {
       "id": "455691193",
@@ -12750,6 +13121,10 @@
         "assets/products/455691193.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "ninos-picks",
+        "scifi"
+      ],
       "description": "A circuit-board skull in copper and pink with ARTIFICIAL above it.",
       "featured": false,
       "variants": [],
@@ -12854,7 +13229,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "artificial-intel"
     },
     {
       "id": "455689737",
@@ -12864,6 +13240,9 @@
         "assets/products/455689737.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "ninos-picks"
+      ],
       "description": "A serpent coiled around a moonlit yin-yang ocean — Nino's original Oroboros artwork.",
       "featured": true,
       "variants": [],
@@ -12968,7 +13347,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#589fcf",
+      "slug": "yin-yang-ouroboros"
     },
     {
       "id": "455685696",
@@ -12978,6 +13359,9 @@
         "assets/products/455685696.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "CryptoCoin zero in a classic cola-script parody.",
       "featured": false,
       "variants": [],
@@ -13082,7 +13466,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d7a",
+      "slug": "cryptocoin-zero"
     },
     {
       "id": "455678626",
@@ -13196,7 +13582,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#e45835",
+      "slug": "fowl-person"
     },
     {
       "id": "455677610",
@@ -13310,7 +13698,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#704dcb",
+      "slug": "honda-norton-mashup"
     },
     {
       "id": "455676569",
@@ -13320,6 +13710,9 @@
         "assets/products/455676569.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "retro"
+      ],
       "description": "A red arcade coin-slot panel: 25¢, INSERT COIN TO PLAY.",
       "featured": false,
       "variants": [],
@@ -13424,7 +13817,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "insert-coin"
     },
     {
       "id": "455607826",
@@ -13434,6 +13828,9 @@
         "assets/products/455607826.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A dark winged mask with glowing blue eyes.",
       "featured": false,
       "variants": [],
@@ -13538,7 +13935,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#36cfe3",
+      "slug": "bat-mask"
     },
     {
       "id": "455606329",
@@ -13652,7 +14051,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb704d",
+      "slug": "american-experiment"
     },
     {
       "id": "455604571",
@@ -13662,6 +14063,9 @@
         "assets/products/455604571.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "ninos-picks"
+      ],
       "description": "Nino's bright green grumpy frog, sitting with a tiny peace-sign charm.",
       "featured": false,
       "variants": [],
@@ -13766,7 +14170,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#bacd4b",
+      "slug": "grumpy-frog"
     },
     {
       "id": "455602708",
@@ -13880,7 +14286,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cba64d",
+      "slug": "santa-biker"
     },
     {
       "id": "455597876",
@@ -13890,6 +14298,9 @@
         "assets/products/455597876.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "ninos-picks"
+      ],
       "description": "Nino's original artwork: a blue ocean wave curling into a skull.",
       "featured": true,
       "variants": [],
@@ -13994,7 +14405,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d9acb",
+      "slug": "skull-wave"
     },
     {
       "id": "455595530",
@@ -14004,6 +14417,9 @@
         "assets/products/455595530.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "pop-satire"
+      ],
       "description": "A black-and-white portrait of a legendary comedian beside his quote about the power of stupid people in large groups.",
       "featured": false,
       "variants": [],
@@ -14108,7 +14524,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "g-carlin"
     },
     {
       "id": "455594497",
@@ -14222,7 +14639,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#acd367",
+      "slug": "grinch-make-christmas-great-again"
     },
     {
       "id": "455591241",
@@ -14336,7 +14755,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb6e4d",
+      "slug": "gold-star"
     },
     {
       "id": "455589960",
@@ -14450,7 +14871,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#81b3da",
+      "slug": "xmas-yeti"
     },
     {
       "id": "455587402",
@@ -14564,7 +14987,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d95cb",
+      "slug": "crescent-moon"
     },
     {
       "id": "455584192",
@@ -14678,7 +15103,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "cbgb-punk-rock-skull-mohawk-since-1973"
     },
     {
       "id": "455581523",
@@ -14688,6 +15114,9 @@
         "assets/products/455581523.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "ninos-picks"
+      ],
       "description": "A continuous-line face drawing in warm orange on a deep tone.",
       "featured": false,
       "variants": [],
@@ -14792,7 +15221,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "people-face"
     },
     {
       "id": "455417956",
@@ -14906,7 +15336,8 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "slug": "all-hallows-eve"
     },
     {
       "id": "455416290",
@@ -14916,6 +15347,9 @@
         "assets/products/455416290.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "monsters"
+      ],
       "description": "A sharp-featured red devil face with blue hair and a toothy grin.",
       "featured": false,
       "variants": [],
@@ -15020,7 +15454,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d5dcb",
+      "slug": "lil-devil"
     },
     {
       "id": "455414453",
@@ -15030,6 +15466,9 @@
         "assets/products/455414453.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "scifi"
+      ],
       "description": "DARK MODE IS MY DEFAULT with a moon toggle switch set to ON.",
       "featured": false,
       "variants": [],
@@ -15134,7 +15573,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d9ccb",
+      "slug": "dark-mode"
     },
     {
       "id": "455413244",
@@ -15144,6 +15585,9 @@
         "assets/products/455413244.webp"
       ],
       "category": "Graphic tees",
+      "collections": [
+        "snacks"
+      ],
       "description": "A red apple with a skull-shaped bite taken out of it.",
       "featured": false,
       "variants": [],
@@ -15248,7 +15692,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb4d6b",
+      "slug": "apple-byte"
     },
     {
       "id": "455411071",
@@ -15258,6 +15704,9 @@
         "assets/products/455411071.webp"
       ],
       "category": "Originals",
+      "collections": [
+        "scifi"
+      ],
       "description": "A bold black and blue microchip with a lowercase i.",
       "featured": false,
       "variants": [],
@@ -15362,7 +15811,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#cb714d",
+      "slug": "ai-icon"
     },
     {
       "id": "455339787",
@@ -15476,7 +15927,9 @@
       "price": {
         "amount": 2500,
         "currency": "USD"
-      }
+      },
+      "accent": "#4d96cb",
+      "slug": "moto-ride"
     }
   ],
   "artworks": [

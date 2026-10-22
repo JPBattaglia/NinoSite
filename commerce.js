@@ -256,6 +256,9 @@
     }
     update();
     container.replaceChildren(note);
+    // A color picked on the product card arrives preselected.
+    const preferred = label(record?.preferredColor);
+    if (preferred) [...note.querySelectorAll('.swatch')].find(button => button.getAttribute('aria-label') === preferred)?.click();
   }
   async function mountProduct(recordOrId, container) {
     if (!container) return;
@@ -352,6 +355,9 @@
       status.textContent = state.storageAvailable ? 'Added to your cart.' : 'Added to this page’s cart. Your browser cannot save the cart between pages.';
       viewCart.hidden = false;
     });
+    // A color picked on the product card arrives preselected.
+    const preferred = typeof recordOrId === 'object' ? label(recordOrId?.preferredColor) : '';
+    if (preferred && fields.has('color') && colorValues.includes(preferred)) fields.get('color').value = preferred;
     updateSelection();
   }
   function forgetCheckoutAttempt() {
