@@ -50,8 +50,10 @@
         const color = label(raw.color ?? raw.options?.color);
         const name = label(raw.name ?? raw.title);
         const price = money(raw.price);
+        const image = label(raw.image);
         variants.set(variantId, {
           id: variantId, size, color, name, price,
+          image: /^https:\/\/[^/]+\/./.test(image) ? image : '',
           available: raw.available === true,
           maximum: quantity(raw.max_quantity) || MAX_QUANTITY,
           purchasable: raw.available === true && Boolean(price) && Boolean(size || color || name)
@@ -188,7 +190,20 @@
       container.append(button);
     }
   }
-  function mountComingSoon(container, record) {
+  // Printful's photo of the shirt in the chosen color, shown in place of the main product photo.
+  function colorImageUrl(product, color) {
+    return (color && product ? [...product.variants.values()].find(item => item.color === color && item.image)?.image : '') || '';
+  }
+  function showColorImage(product, color) {
+    const image = colorImageUrl(product, color);
+    if (image) document.dispatchEvent(new CustomEvent('nino:color-image', { detail: { image, color } }));
+  }
+  function findProduct(record) {
+    const productId = id(record?.printful_id || record?.printful_product_id || record?.id);
+    const externalId = id(record?.external_id);
+    return state.products.get(productId) || [...state.products.values()].find(item => item.external_id && (item.external_id === productId || item.external_id === externalId)) || null;
+  }
+  function mountComingSoon(container, record, product) {
     const name = label(record?.title).replace(/\s+T$/, '');
     const options = record?.options && typeof record.options === 'object' ? record.options : null;
     const colors = Array.isArray(options?.colors) ? options.colors.filter(c => c && typeof c.name === 'string') : [];
@@ -215,6 +230,7 @@
           button.addEventListener('click', () => {
             color = c.name; chosen.textContent = c.name;
             swatches.querySelectorAll('.swatch').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+            showColorImage(product, c.name);
             update();
           });
           swatches.append(button);
@@ -279,8 +295,8 @@
     const product = state.products.get(requestedId) || [...state.products.values()].find(item => item.external_id && (item.external_id === requestedId || item.external_id === requestedExternalId));
     const productId = product?.id;
     const variants = product ? [...product.variants.values()].filter(item => item.purchasable) : [];
-    if (!variants.length) {
-      if (!state.catalogComplete || !state.checkoutReady) { mountComingSoon(container, typeof recordOrId === 'object' ? recordOrId : null); return; }
+    if (!variants.length || !state.catalogComplete || !state.checkoutReady) {
+      if (!state.catalogComplete || !state.checkoutReady) { mountComingSoon(container, typeof recordOrId === 'object' ? recordOrId : null, product); return; }
       mountUnavailable(container, 'This design is not available to purchase right now.'); return;
     }
     const form = create('form', 'variant-picker');
@@ -319,8 +335,11 @@
     form.append(chooser, price, add, viewCart, status);
     container.replaceChildren(form);
     let selected = null;
+    let shownColor = '';
     function updateSelection() {
       selected = null;
+      const chosenColor = fields.has('color') ? fields.get('color').value : fields.has('variant') ? product.variants.get(fields.get('variant').value)?.color || '' : '';
+      if (chosenColor !== shownColor) { shownColor = chosenColor; showColorImage(product, chosenColor); }
       if (fields.has('variant')) selected = variants.find(item => item.id === fields.get('variant').value) || null;
       else if ([...fields.values()].every(field => field.value)) selected = variants.find(item => [...fields].every(([key, field]) => item[key] === field.value)) || null;
       if (fields.has('color') && fields.has('size')) {
@@ -771,7 +790,7 @@
     if (previous !== state.cartSignature) invalidateShipping('Your cart changed. Get updated delivery rates.');
     renderCart();
   });
-  window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()], getCatalogStatus: () => ({ complete: state.ready && state.catalogComplete }) });
+  window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()], getCatalogStatus: () => ({ complete: state.ready && state.catalogComplete }), colorImage: (record, color) => colorImageUrl(findProduct(record), label(color)) });
   document.addEventListener('nino:product-open', event => {
     const { product, container } = event.detail || {};
     if (container) mountProduct(product, container);

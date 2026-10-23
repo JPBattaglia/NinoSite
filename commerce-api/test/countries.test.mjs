@@ -123,3 +123,10 @@ test('PRINTFUL public reads without a token retain catalog and calculated readin
   assert.equal(calls(),0);assert.equal(stripeConstructed,0);assert.equal(f.stripe.calls,0);
   assert.equal((await f.request('/api/shipping-quotes',{items:f.items,recipient:address})).status,503);assert.equal((await f.checkout()).status,503);assert.equal(calls(),0);
 });
+
+test('default Printful fetch is not invoked as a method of the client (Workers reject that as Illegal invocation)', async () => {
+  const original=globalThis.fetch;
+  globalThis.fetch=function(){ if(this!==undefined && this!==globalThis) throw new TypeError('Illegal invocation'); return Promise.resolve(new Response(JSON.stringify({code:200,result:[]}),{status:200})); };
+  try { assert.deepEqual(await new PrintfulClient({PRINTFUL_ACCESS_TOKEN:'t',PRINTFUL_STORE_ID:'1'}).getCountries(),[]); }
+  finally { globalThis.fetch=original; }
+});

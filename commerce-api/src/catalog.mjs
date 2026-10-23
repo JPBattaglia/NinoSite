@@ -2,7 +2,10 @@ import {fail,cents,hash,httpsImage} from './common.mjs';
 
 function independentImage(value) {
   const image = httpsImage(value);
-  return image && !/(^|\.)(etsy|etsystatic)\.com$/i.test(new URL(image).hostname) ? image : null;
+  if (!image) return null;
+  // Printful sends a bare CDN origin as the thumbnail of products it has no thumbnail for.
+  const url = new URL(image);
+  return url.pathname.length > 1 && !/(^|\.)(etsy|etsystatic)\.com$/i.test(url.hostname) ? image : null;
 }
 
 export function printFiles(files) {

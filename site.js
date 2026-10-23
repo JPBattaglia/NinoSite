@@ -73,6 +73,7 @@
   let galleryIndex = 0;
   let trigger = null;
   let activeProduct = null;
+  let colorPhoto = null;
   const measure = (event, product_id = '') => document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event, product_id } }));
   // Browser storage can be unavailable (private modes, blocked site data); every feature still works without it.
   function readList(store, key) { try { const value = JSON.parse(window[store].getItem(key) || '[]'); return Array.isArray(value) ? value : []; } catch { return []; } }
@@ -203,6 +204,7 @@
     document.querySelector('[data-dialog-description]').hidden = !description;
     document.querySelector('[data-product-actions]').hidden = kind !== 'product';
     document.querySelector('[data-art-actions]').hidden = kind === 'product';
+    colorPhoto = null;
     if (kind === 'product') document.dispatchEvent(new CustomEvent('nino:product-open', { detail: { product: record, container: document.querySelector('[data-native-purchase]') } }));
     const browse = document.querySelector('[data-art-actions] .button');
     if (kind === 'preview') {
@@ -229,12 +231,23 @@
       thumbs.append(button);
     });
     showImage(0);
+    // A color preselected while the purchase options mounted arrives before the gallery is drawn.
+    if (colorPhoto) showColorPhoto();
     document.body.classList.add('modal-open');
     if (dialog.open) {
       const heading = document.getElementById('dialog-title');
       heading.tabIndex = -1; dialog.scrollTop = 0; heading.focus({ preventScroll: true });
     } else dialog.showModal();
   }
+  function showColorPhoto() {
+    document.querySelector('[data-dialog-image]').replaceChildren(image(colorPhoto.image, document.getElementById('dialog-title').textContent + ' in ' + colorPhoto.color, true));
+    document.querySelectorAll('[data-gallery-index]').forEach(button => button.setAttribute('aria-pressed', 'false'));
+  }
+  document.addEventListener('nino:color-image', event => {
+    if (!event.detail?.image) return;
+    colorPhoto = event.detail;
+    if (dialog?.open) showColorPhoto();
+  });
   document.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
   dialog?.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
@@ -271,6 +284,10 @@
           if (group.dataset.product !== record.id) return;
           group.querySelectorAll('.card-swatch').forEach(item => item.setAttribute('aria-pressed', String(chosen && item.getAttribute('aria-label') === color.name)));
           const label = group.querySelector('.card-swatch-name'); if (label) label.textContent = chosen ? color.name : '';
+          // Show Printful's photo of the shirt in that color once the live catalog has it.
+          const photo = group.closest('article')?.querySelector('.product-image-link img');
+          const colored = chosen ? window.NinoCommerce?.colorImage?.(record, color.name) : '';
+          if (photo && !photo.dataset.fallback) photo.src = colored || record.image;
         });
       });
       row.append(button);

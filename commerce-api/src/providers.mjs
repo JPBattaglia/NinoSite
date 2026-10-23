@@ -13,9 +13,11 @@ export async function createStripeClient(env) {
   };
 }
 export class PrintfulClient {
-  constructor(env,fetcher = fetch) { this.env=env; this.fetcher=fetcher; }
+  constructor(env,fetcher = (...args) => fetch(...args)) { this.env=env; this.fetcher=fetcher; }
   async call(method,path,data) {
-    const response = await this.fetcher(`https://api.printful.com${path}`,{
+    // Workers reject fetch invoked as a method of another object (Illegal invocation).
+    const fetcher = this.fetcher;
+    const response = await fetcher(`https://api.printful.com${path}`,{
       method,headers:{Authorization:`Bearer ${this.env.PRINTFUL_ACCESS_TOKEN}`,'X-PF-Store-Id':this.env.PRINTFUL_STORE_ID,'Content-Type':'application/json'},
       body:data == null ? undefined : JSON.stringify(data),signal:AbortSignal.timeout(15000)
     });
