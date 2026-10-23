@@ -81,6 +81,12 @@ export async function startCatalogSync(store,printful,now) {
   await store.run('INSERT OR IGNORE INTO catalog_sync_runs(id,product_ids_json,status,created_at,updated_at) VALUES(?,?,\'running\',?,?)',id,JSON.stringify([...new Set(ids)]),now,now);
   return await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
 }
+// Keep the real cause of a failed batch so it can be diagnosed from the database.
+// Messages come from Printful responses, D1 or the runtime; credentials are never part of them.
+function syncErrorLabel(error) {
+  const detail = error?.code ? String(error.code) : `${error?.name || 'Error'}: ${error?.message || 'unknown'}`;
+  return detail.replace(/Bearer\s+\S+/gi,'Bearer [hidden]').slice(0,300) || 'provider_error';
+}
 export async function continueCatalogSync(store,printful,id,now) {
   const claim = crypto.randomUUID();
   const lock = await store.run("UPDATE catalog_sync_runs SET lease_until=?,claim_id=? WHERE id=? AND status='running' AND lease_until<=?",now+300,claim,id,now);
@@ -111,7 +117,7 @@ export async function continueCatalogSync(store,printful,id,now) {
     } else await store.run('UPDATE catalog_sync_runs SET cursor=?,claim_id=NULL,lease_until=0,last_error=NULL,updated_at=? WHERE id=? AND claim_id=?',next,now,id,claim);
     return {sync_id:id,processed:next,total:ids.length,complete:next===ids.length};
   } catch (error) {
-    await store.run('UPDATE catalog_sync_runs SET claim_id=NULL,lease_until=0,last_error=?,updated_at=? WHERE id=? AND claim_id=?',String(error.code || 'provider_error'),now,id,claim);
+    await store.run('UPDATE catalog_sync_runs SET claim_id=NULL,lease_until=0,last_error=?,updated_at=? WHERE id=? AND claim_id=?',syncErrorLabel(error),now,id,claim);
     throw error;
   }
 }
