@@ -318,7 +318,7 @@
     if (kind === 'art') { const frame = node('span', 'art-image'); frame.append(photo); link.append(frame); }
     else {
       link.append(photo); const mark = node('span', 'product-open-mark', '↗'); mark.setAttribute('aria-hidden', 'true'); link.append(mark);
-      const badge = kind === 'product' ? (record.new === true ? 'New' : record.featured ? 'Featured' : '') : '';
+      const badge = kind === 'product' && record.new === true ? 'New' : '';
       if (badge) { link.append(node('span', 'product-badge', badge)); link.setAttribute('aria-label', `Preview ${title(record.title)} (${badge.toLowerCase()})`); }
     }
     link.addEventListener('click', event => { event.preventDefault(); openRecord(record, kind, link); });
@@ -480,7 +480,7 @@
     picture.href = 'shop.html?product=' + encodeURIComponent(record.id);
     picture.setAttribute('aria-haspopup', 'dialog');
     picture.setAttribute('aria-label', 'Preview ' + title(record.title));
-    picture.append(image(record.image, title(record.title), true), node('span', 'product-badge', 'Featured'));
+    picture.append(image(record.image, title(record.title), true));
     picture.addEventListener('click', event => { event.preventDefault(); openRecord(record, 'product', picture); });
     const copy = node('div', 'shop-hero-copy');
     const heading = node('h2', '', title(record.title));
