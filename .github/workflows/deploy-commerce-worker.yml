@@ -1,0 +1,60 @@
+# Deploys the nino-printful-commerce-api Cloudflare Worker whenever its code changes on master.
+# Requires the repository secret CLOUDFLARE_API_TOKEN (Cloudflare "Edit Cloudflare Workers" token).
+# CLOUDFLARE_ACCOUNT_ID is optional; set it only if the token can see more than one account.
+# D1 migrations are NOT applied here: apply them by hand before deploying a release that adds one
+# (see commerce-api/README.md).
+name: Deploy commerce worker
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'commerce-api/**'
+      - '.github/workflows/deploy-commerce-worker.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-commerce-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: commerce-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: commerce-api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Check Cloudflare token is configured
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_API_TOKEN repository secret (Settings > Secrets and variables > Actions), then re-run this workflow."
+            exit 1
+          fi
+
+      - name: Deploy worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: |
+          if [ -n "$ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$ACCOUNT_ID"; fi
+          npx wrangler deploy --config wrangler.jsonc
