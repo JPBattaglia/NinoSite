@@ -561,3 +561,20 @@ body{overflow-x:clip}
 .shirt-more-images a{display:block;width:96px;height:96px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0b0f10;transition:border-color .2s}
 .shirt-more-images a:hover{border-color:var(--cyan)}
 .shirt-page .shirt-more-images img{width:100%;height:100%;object-fit:contain;border-radius:0;background:transparent}
+/* Big buttons are brand cyan everywhere. */
+:root{--button-cyan:#35e6eb;--button-cyan-hover:#8ff2f5;--on-button-cyan:#06191b}
+.button:not(.button-outline),.button-coral,.button-cyan,.variant-picker button[type=submit],.coming-soon .button,.cart-summary .button[data-cart-checkout],.sticky-cart{background:var(--button-cyan)!important;border-color:var(--button-cyan)!important;color:var(--on-button-cyan)!important;box-shadow:0 0 0 1px rgba(53,230,235,.35),0 10px 30px -12px rgba(53,230,235,.5)!important}
+.button:not(.button-outline):hover,.button-coral:hover,.button-cyan:hover,.variant-picker button[type=submit]:hover:not(:disabled),.coming-soon .button:hover,.cart-summary .button[data-cart-checkout]:hover:not(:disabled),.sticky-cart:hover{background:var(--button-cyan-hover)!important;border-color:var(--button-cyan-hover)!important;color:var(--on-button-cyan)!important}
+.button:disabled,.variant-picker button[type=submit]:disabled,.cart-summary .button[data-cart-checkout]:disabled{opacity:.55;box-shadow:none!important}
+.button-outline{border-color:var(--button-cyan)!important;color:var(--on-button-cyan)!important;background:var(--button-cyan)!important}
+.button-outline:hover{background:var(--button-cyan-hover)!important;border-color:var(--button-cyan-hover)!important;color:var(--on-button-cyan)!important}
+/* Every shirt card uses the same arrow and the same hover highlight. */
+.product-card,.shop-hero{--accent:#f26b59;--accent-rgb:242,107,89}
+.product-open-mark{background:#0c1011!important;color:var(--accent)!important;border:1px solid var(--line-2)!important}
+.product-image-link:hover .product-open-mark,.product-image-link:focus-visible .product-open-mark{background:var(--accent)!important;border-color:var(--accent)!important;color:#0c1011!important}
+/* Quiz and Surprise me sit up top in the shop intro. */
+.shop-intro-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.shop-intro-actions .button{min-height:50px}
+@media(max-width:600px){.shop-intro-actions .button{width:100%;justify-content:center}}
+@media(min-width:981px){.shop-intro{grid-template-rows:auto auto auto auto auto 1fr}.shop-hero{grid-row:1/span 6}}
+@media(max-width:600px){.page-intro.shop-intro h1{font-size:min(60px,12.5vw)}}

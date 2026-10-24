@@ -791,9 +791,21 @@
     renderCart();
   });
   window.NinoCommerce = Object.freeze({ initialize, loadProducts, mountProduct, renderCart, checkout, getCart: () => state.cart.map(item => ({ ...item })), getProducts: () => [...state.products.values()], getCatalogStatus: () => ({ complete: state.ready && state.catalogComplete }), colorImage: (record, color) => colorImageUrl(findProduct(record), label(color)) });
-  document.addEventListener('nino:product-open', event => {
+  // Printful's photo of the shirt in each available color, in catalog order, one per color.
+  function colorGallery(product) {
+    const photos = []; const seen = new Set();
+    for (const variant of product ? product.variants.values() : []) {
+      if (!variant.image || seen.has(variant.image) || (variant.color && photos.some(photo => photo.color === variant.color))) continue;
+      seen.add(variant.image); photos.push({ image: variant.image, color: variant.color });
+    }
+    return photos;
+  }
+  document.addEventListener('nino:product-open', async event => {
     const { product, container } = event.detail || {};
     if (container) mountProduct(product, container);
+    try { await loadProducts(); } catch { return; }
+    const photos = colorGallery(findProduct(product));
+    if (photos.length) document.dispatchEvent(new CustomEvent('nino:color-gallery', { detail: { id: String(product?.id || ''), photos } }));
   });
   function start() { initialize(window.NINO_COMMERCE_CONFIG || {}).catch(() => {}); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });

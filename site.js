@@ -71,6 +71,7 @@
   const catalogReady = new Promise(resolve => { resolveCatalog = resolve; });
   let currentGallery = [];
   let galleryIndex = 0;
+  let galleryLabels = [];
   let trigger = null;
   let activeProduct = null;
   let colorPhoto = null;
@@ -161,12 +162,20 @@
     document.getElementById('product-search')?.focus();
   });
   // The open product is reflected in the shop URL so it can be shared or bookmarked.
-  function setProductParam(id) {
-    if (!document.querySelector('[data-shop-products]')) return;
+  // Opening the preview adds a history entry, so the browser's Back button closes it and
+  // returns to the shop instead of leaving for the previous page.
+  let dialogEntry = false, closingFromHistory = false;
+  function setProductParam(id, push = false) {
+    const shop = Boolean(document.querySelector('[data-shop-products]'));
     const next = new URL(location.href);
-    if (id) next.searchParams.set('product', id); else next.searchParams.delete('product');
-    history.replaceState(null, '', next.pathname + next.search + next.hash);
+    if (shop) { if (id) next.searchParams.set('product', id); else next.searchParams.delete('product'); }
+    const url = next.pathname + next.search + next.hash;
+    if (push) { history.pushState({ ninoDialog: true }, '', url); dialogEntry = true; }
+    else if (shop) history.replaceState(dialogEntry && id ? { ninoDialog: true } : null, '', url);
   }
+  addEventListener('popstate', () => {
+    if (dialog?.open && !history.state?.ninoDialog) { closingFromHistory = true; dialog.close(); }
+  });
   function showImage(index) {
     if (!currentGallery.length) return;
     galleryIndex = (index + currentGallery.length) % currentGallery.length;
@@ -188,7 +197,8 @@
     const shareStatus = document.querySelector('[data-share-status]'); if (shareStatus) shareStatus.textContent = '';
     const question = document.querySelector('[data-product-question]');
     if (question) question.href = 'mailto:hello@ninobattaglia.com?subject=' + encodeURIComponent('Question about ' + title(record.title));
-    if (kind === 'product') { measure('product_view', record.id); rememberViewed(record); setProductParam(record.id); }
+    if (kind === 'product') { measure('product_view', record.id); rememberViewed(record); setProductParam(record.id, !dialog.open); }
+    else if (!dialog.open) setProductParam('', true);
     renderViewed();
     currentGallery = [...new Set((Array.isArray(record.gallery) && record.gallery.length ? record.gallery : [record.image]).filter(Boolean))];
     document.getElementById('dialog-title').textContent = title(record.title);
@@ -218,18 +228,8 @@
       browse.removeAttribute('target');
       browse.removeAttribute('rel');
     }
-    const thumbs = document.querySelector('[data-gallery-thumbs]');
-    thumbs.replaceChildren();
-    thumbs.hidden = currentGallery.length < 2;
-    currentGallery.forEach((src, index) => {
-      const button = node('button');
-      button.type = 'button';
-      button.dataset.galleryIndex = index;
-      button.setAttribute('aria-label', `View image ${index + 1} of ${currentGallery.length}`);
-      button.append(image(src, ''));
-      button.addEventListener('click', () => showImage(index));
-      thumbs.append(button);
-    });
+    galleryLabels = [];
+    renderThumbs();
     showImage(0);
     // A color preselected while the purchase options mounted arrives before the gallery is drawn.
     if (colorPhoto) showColorPhoto();
@@ -239,6 +239,34 @@
       heading.tabIndex = -1; dialog.scrollTop = 0; heading.focus({ preventScroll: true });
     } else dialog.showModal();
   }
+  function renderThumbs() {
+    const thumbs = document.querySelector('[data-gallery-thumbs]');
+    thumbs.replaceChildren();
+    thumbs.hidden = currentGallery.length < 2;
+    currentGallery.forEach((src, index) => {
+      const button = node('button');
+      button.type = 'button';
+      button.dataset.galleryIndex = index;
+      const color = galleryLabels[index];
+      button.setAttribute('aria-label', color ? `View it in ${color}` : `View image ${index + 1} of ${currentGallery.length}`);
+      if (color) button.title = color;
+      button.append(image(src, ''));
+      button.addEventListener('click', () => showImage(index));
+      thumbs.append(button);
+    });
+    document.querySelectorAll('[data-gallery-index]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.galleryIndex) === galleryIndex)));
+  }
+  // Every shirt also shows Printful's photo of it in each available color.
+  document.addEventListener('nino:color-gallery', event => {
+    const { id, photos } = event.detail || {};
+    if (!dialog?.open || !activeProduct || String(activeProduct.id) !== id || !Array.isArray(photos)) return;
+    let added = false;
+    for (const photo of photos) {
+      if (!photo?.image || currentGallery.includes(photo.image)) continue;
+      currentGallery.push(photo.image); galleryLabels[currentGallery.length - 1] = photo.color || ''; added = true;
+    }
+    if (added) renderThumbs();
+  });
   function showColorPhoto() {
     document.querySelector('[data-dialog-image]').replaceChildren(image(colorPhoto.image, document.getElementById('dialog-title').textContent + ' in ' + colorPhoto.color, true));
     document.querySelectorAll('[data-gallery-index]').forEach(button => button.setAttribute('aria-pressed', 'false'));
@@ -251,7 +279,9 @@
   document.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
   dialog?.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
-    if (activeProduct) setProductParam('');
+    if (dialogEntry && !closingFromHistory && history.state?.ninoDialog) history.back();
+    else if (activeProduct) setProductParam('');
+    dialogEntry = false; closingFromHistory = false;
     if (trigger && document.contains(trigger)) trigger.focus();
   });
   dialog?.addEventListener('keydown', event => {
@@ -316,17 +346,10 @@
     row.append(picked);
     return row;
   }
-  function applyAccent(element, record) {
-    const accent = hexColor(record.accent);
-    if (!accent) return;
-    element.style.setProperty('--accent', accent);
-    element.style.setProperty('--accent-rgb', [1, 3, 5].map(index => parseInt(accent.slice(index, index + 2), 16)).join(','));
-  }
   function recordCard(record, kind) {
     const article = node('article', kind === 'art' ? 'art-tile' : 'product-card');
     article.dataset.record = record.id;
     article.dataset.discipline = record.category || '';
-    if (kind === 'product') applyAccent(article, record);
     const link = node('a', kind === 'art' ? 'art-open' : 'product-image-link');
     link.href = kind === 'product' ? 'shop.html?product=' + encodeURIComponent(record.id) : kind === 'art' ? 'art.html?art=' + encodeURIComponent(record.id) : 'shop.html';
     link.setAttribute('aria-haspopup', 'dialog');
@@ -457,9 +480,9 @@
     }
     // Shuffle: a random shirt from whatever is currently filtered, avoiding the last ten picks.
     const SHUFFLE_KEY = 'nino-shuffle-recent';
-    document.querySelector('[data-shuffle]')?.addEventListener('click', event => {
+    document.querySelectorAll('[data-shuffle]').forEach(shuffleButton => shuffleButton.addEventListener('click', event => {
       const button = event.currentTarget;
-      spinGear(button.querySelector('img'));
+      const gear = button.querySelector('img'); if (gear) spinGear(gear);
       const pool = filtered();
       if (!pool.length) { toast('No shirts match these filters yet.'); return; }
       let recent = readList('sessionStorage', SHUFFLE_KEY);
@@ -468,7 +491,7 @@
       const pick = options[Math.floor(Math.random() * options.length)];
       writeList('sessionStorage', SHUFFLE_KEY, [pick.id, ...recent].slice(0, 10));
       openRecord(pick, 'product', button);
-    });
+    }));
     renderHero();
     search.addEventListener('input', () => { state.search = search.value; state.limit = 24; render(); });
     document.querySelector('[data-search-form]').addEventListener('submit', event => event.preventDefault());
@@ -492,7 +515,6 @@
     const choices = catalog.products.filter(item => item.featured);
     if (!hero || !choices.length) return;
     const record = choices[Math.floor(Math.random() * choices.length)];
-    applyAccent(hero, record);
     const picture = node('a', 'shop-hero-image');
     picture.href = 'shop.html?product=' + encodeURIComponent(record.id);
     picture.setAttribute('aria-haspopup', 'dialog');
