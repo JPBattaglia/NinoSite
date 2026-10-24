@@ -578,3 +578,12 @@ body{overflow-x:clip}
 @media(max-width:600px){.shop-intro-actions .button{width:100%;justify-content:center}}
 @media(min-width:981px){.shop-intro{grid-template-rows:auto auto auto auto auto 1fr}.shop-hero{grid-row:1/span 6}}
 @media(max-width:600px){.page-intro.shop-intro h1{font-size:min(60px,12.5vw)}}
+/* Color dots in the product options. */
+.commerce-field-color{grid-column:1/-1}
+.commerce-swatch-name{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink)}
+.commerce-swatches{display:flex;flex-wrap:wrap;gap:10px;padding:4px 2px}
+.commerce-swatch{width:30px;height:30px;padding:0;border-radius:50%;background:var(--swatch);border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);cursor:pointer;transition:transform .15s ease}
+.commerce-swatch:hover{transform:scale(1.1)}
+.commerce-swatch[aria-checked=true]{outline:2px solid var(--button-cyan);outline-offset:3px}
+.commerce-swatch.is-text{width:auto;height:auto;min-height:30px;border-radius:999px;padding:4px 12px;background:transparent;color:var(--ink);font-size:12px}
+@media(max-width:600px){.commerce-swatch{width:34px;height:34px}}

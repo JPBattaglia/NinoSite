@@ -308,14 +308,51 @@
     const sizeValues = [...new Set(variants.map(item => item.size).filter(Boolean))];
     const colorValues = [...new Set(variants.map(item => item.color).filter(Boolean))];
     const fields = new Map();
+    // Colors are chosen from dots in the garment's actual color; the hidden select keeps the value.
+    const colorHex = new Map((Array.isArray(recordOrId?.options?.colors) ? recordOrId.options.colors : [])
+      .filter(color => color && typeof color.name === 'string' && /^#[0-9a-f]{6}$/i.test(String(color.hex || '')))
+      .map(color => [color.name, color.hex]));
+    let syncSwatches = () => {};
+    function addSwatches(select, values, wrapper, chosenName) {
+      select.hidden = true;
+      const group = create('div', 'commerce-swatches');
+      group.setAttribute('role', 'radiogroup'); group.setAttribute('aria-label', 'Color');
+      const buttons = values.map(value => {
+        const button = create('button', 'commerce-swatch');
+        button.type = 'button'; button.dataset.value = value; button.title = value;
+        button.setAttribute('role', 'radio'); button.setAttribute('aria-label', value);
+        const hex = colorHex.get(value);
+        if (hex) button.style.setProperty('--swatch', hex); else { button.classList.add('is-text'); button.textContent = value; }
+        button.addEventListener('click', () => { select.value = value; select.dispatchEvent(new Event('change')); });
+        return button;
+      });
+      group.addEventListener('keydown', event => {
+        if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp'].includes(event.key)) return;
+        event.preventDefault();
+        const current = Math.max(0, buttons.findIndex(button => button.dataset.value === select.value));
+        const next = buttons[(current + (['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1) + buttons.length) % buttons.length];
+        next.click(); next.focus();
+      });
+      group.append(...buttons); wrapper.append(group);
+      syncSwatches = () => {
+        buttons.forEach((button, index) => {
+          const checked = button.dataset.value === select.value;
+          button.setAttribute('aria-checked', String(checked));
+          button.tabIndex = checked || (!select.value && index === 0) ? 0 : -1;
+        });
+        chosenName.textContent = select.value ? ': ' + select.value : '';
+      };
+    }
     function addSelect(key, heading, values) {
-      const wrapper = create('label', 'commerce-field');
-      wrapper.append(create('span', '', heading));
+      const swatches = key === 'color' && colorHex.size > 0;
+      const wrapper = create(swatches ? 'div' : 'label', 'commerce-field' + (swatches ? ' commerce-field-color' : ''));
+      const title = create('span', '', heading); wrapper.append(title);
       const select = create('select'); select.name = key;
       select.append(new Option('Choose ' + heading.toLowerCase(), ''));
       values.forEach(value => select.append(new Option(value, value)));
       wrapper.append(select); chooser.append(wrapper); fields.set(key, select);
       select.addEventListener('change', updateSelection);
+      if (swatches) { const chosenName = create('span', 'commerce-swatch-name'); title.append(chosenName); addSwatches(select, values, wrapper, chosenName); }
     }
     const uniqueDimensions = new Set(variants.map(item => item.size + '\u0000' + item.color)).size === variants.length;
     const useDimensions = uniqueDimensions && variants.every(item => Boolean(item.size || item.color)) && !(variants.some(item => !item.size) && sizeValues.length) && !(variants.some(item => !item.color) && colorValues.length);
@@ -337,6 +374,7 @@
     let selected = null;
     let shownColor = '';
     function updateSelection() {
+      syncSwatches();
       selected = null;
       const chosenColor = fields.has('color') ? fields.get('color').value : fields.has('variant') ? product.variants.get(fields.get('variant').value)?.color || '' : '';
       if (chosenColor !== shownColor) { shownColor = chosenColor; showColorImage(product, chosenColor); }
