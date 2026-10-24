@@ -625,3 +625,12 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .gallery-thumbs img[src*="printful.com"]{transform:scale(1.85);transform-origin:50% 37.5%;background:#fff}
 /* Generated model photos (one per color) get the same framing as the main model photo. */
 .dialog-image img[src*="/api/mockups/"],.gallery-thumbs img[src*="/api/mockups/"]{transform:scale(1.6);transform-origin:50% 40%}
+
+/* Back-to-top button (back-to-top.js): bottom-right, lifts above the floating cart when it's showing. */
+.back-to-top{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:61;display:grid;place-items:center;width:48px;height:48px;padding:0;border-radius:999px;border:1px solid rgba(53,230,235,.55);background:#000;color:var(--button-cyan,#35e6eb);box-shadow:0 10px 30px -12px rgba(0,0,0,.6),0 0 18px -6px rgba(53,230,235,.55);opacity:0;transform:translateY(16px);pointer-events:none;visibility:hidden;transition:opacity .25s ease,transform .25s ease,bottom .25s ease,visibility 0s linear .25s}
+.back-to-top.is-visible{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity .25s ease,transform .25s ease,bottom .25s ease}
+.back-to-top:hover{background:var(--button-cyan,#35e6eb);color:#000}
+body:has(.sticky-cart.has-items) .back-to-top{bottom:calc(78px + env(safe-area-inset-bottom))}
+body.modal-open .back-to-top{opacity:0;pointer-events:none;visibility:hidden}
+@media(prefers-reduced-motion:reduce){.back-to-top,.back-to-top.is-visible{transition:none;transform:none}}
+@media print{.back-to-top{display:none}}
