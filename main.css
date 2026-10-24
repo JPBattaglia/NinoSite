@@ -595,8 +595,9 @@ body{overflow-x:clip}
 /* Deeper mahogany: darker toward the bottom, faint warm light at the top, less glow behind text. */
 body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba(150,30,20,.22),transparent 65%),linear-gradient(180deg,#1d0504 0%,#120302 45%,#0a0101 100%)!important;background-repeat:repeat,no-repeat,no-repeat!important;background-attachment:scroll,fixed,fixed!important}
 
-/* Knurled mahogany texture in the top nav bar. */
-.site-header{background-color:#2e0a08!important;background-image:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.35)),repeating-linear-gradient(45deg,#0e0201 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,#0e0201 0 1px,transparent 1px 5px),repeating-linear-gradient(45deg,rgba(255,196,180,.22) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,rgba(255,196,180,.22) 0 1px,transparent 1px 5px)!important;background-position:0 0,0 0,0 0,1px 0,1px 0!important;border-bottom:1px solid #4a1712!important;box-shadow:0 8px 20px -12px #000}
+/* Knurled mahogany texture in the top nav bar: lighter, high-contrast, with a beveled metal edge. */
+.site-header{background-color:#5c1913!important;background-image:linear-gradient(180deg,rgba(255,235,225,.10),rgba(0,0,0,.28)),repeating-linear-gradient(45deg,rgba(20,3,2,.85) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,rgba(20,3,2,.85) 0 1px,transparent 1px 5px),repeating-linear-gradient(45deg,rgba(255,214,200,.34) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,rgba(255,214,200,.34) 0 1px,transparent 1px 5px)!important;background-position:0 0,0 0,0 0,1px 0,1px 0!important;border-top:1px solid rgba(255,220,205,.35)!important;border-bottom:2px solid #ff6a1f!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(0,0,0,.5),0 2px 14px -2px rgba(255,106,31,.55),0 10px 24px -14px #000!important}
+.site-header .brand-symbol{box-shadow:0 0 0 1px rgba(255,220,205,.35)}
 
 /* Sunset neon: red-orange-gold headline gradient with a glow, glowing accent fills. */
 .page-intro h1 span,.about-intro h1 span,.hero-copy h1 span{background:linear-gradient(100deg,#ff3a2f 0%,#ff6a1f 38%,#ffb03a 72%,#ff6a1f 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;filter:drop-shadow(0 0 18px rgba(255,106,31,.45))}
