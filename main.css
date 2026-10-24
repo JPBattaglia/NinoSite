@@ -608,6 +608,5 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .site-header{background:#000!important;background-image:none!important;border-top:0!important;border-bottom:0!important;box-shadow:none!important}
 /* Logo mark without the square tile behind it. */
 .brand-symbol,.site-header .brand-symbol{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important}
-/* "BATTAGLIA" spans exactly the width of "NINO". */
-.brand-wordmark{display:inline-flex!important;flex-direction:column;align-items:stretch}
-.brand-wordmark small{display:flex!important;justify-content:space-between;letter-spacing:0!important}
+/* "BATTAGLIA" sized (not spaced) to the width of "NINO": 0.272em of the wordmark with .1em tracking. */
+.brand-wordmark small{font-size:.272em!important;letter-spacing:.1em!important;margin-right:-.1em;line-height:1!important;margin-top:.18em!important}
