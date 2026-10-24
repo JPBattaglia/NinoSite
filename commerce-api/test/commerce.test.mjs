@@ -120,7 +120,7 @@ test('missing shipping/tax decisions and untrusted origins block checkout withou
 test('readiness is server-authoritative on products and closes for disabled fulfillment or stale catalog',async()=>{
   const f=await fixture();assert.equal((await f.request('/api/products')).body.checkout_ready,true);
   f.env.FULFILLMENT_ENABLED='false';assert.equal((await f.request('/api/products')).body.checkout_ready,false);
-  f.env.FULFILLMENT_ENABLED='true';f.advance(86401);
+  f.env.FULFILLMENT_ENABLED='true';f.advance(172801);
   const response=await f.request('/api/products');assert.equal(response.body.checkout_ready,false);assert.equal(response.body.products[0].variants[0].available,false);
 });
 test('unchanged retry returns the same order/session; changed cart cannot reuse request key',async()=>{
@@ -245,12 +245,50 @@ test('expired shipping quotes and altered shipping destinations cannot reach ful
   await f.webhook();assert.equal(f.printful.confirmCalls,0);assert.equal((await f.store.orderBySession('cs_fixture_1')).fulfillment_status,'review');
   f.advance(901);assert.equal((await f.checkout({shipping_quote_id:quote.quote_id,shipping_rate_id:'STANDARD'})).status,409);
 });
-test('catalog generation stays unchanged until all resumable batches finish',async()=>{
+test('a partial sync never removes live products; removals happen only when every batch has finished',async()=>{
   const f=await fixture();f.printful.products.clear();
   for(let i=201;i<=212;i++)f.printful.products.set(String(i),{sync_product:{id:i,external_id:`external-${i}`,name:`Fixture ${i}`,thumbnail_url:'https://example.com/mockup.png'},sync_variants:[rawVariant(i+1000,i)]});
   const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
   const first=await f.request('/api/admin/catalog/sync',{},auth);assert.equal(first.body.complete,false);assert.equal(first.body.processed,10);
-  assert.equal((await f.request('/api/products')).body.products[0].id,'101');
+  assert.ok((await f.request('/api/products')).body.products.some(p=>p.id==='101'));
   const second=await f.request(`/api/admin/catalog/sync/${first.body.sync_id}`,{},auth);assert.equal(second.body.complete,true);
-  assert.equal((await f.request('/api/products')).body.products.length,12);
+  const products=(await f.request('/api/products')).body.products;
+  assert.equal(products.length,12);assert.ok(!products.some(p=>p.id==='101'));
+});
+test('a sync of an unchanged catalog writes no catalog rows but refreshes catalog freshness',async()=>{
+  const f=await fixture();const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
+  f.advance(172000);
+  const writes=[];const original=f.db.prepare.bind(f.db);
+  f.db.prepare=sql=>{if(/^\s*(INSERT|DELETE)/i.test(sql)&&/catalog_(variants|products)/.test(sql))writes.push(sql);return original(sql);};
+  const result=await f.request('/api/admin/catalog/sync',{},auth);assert.equal(result.body.complete,true);
+  f.db.prepare=original;
+  assert.deepEqual(writes.filter(sql=>!/NOT IN/.test(sql)),[]);
+  f.advance(1000);assert.equal((await f.request('/api/products')).body.checkout_ready,true);
+  assert.equal((await f.store.all('SELECT * FROM catalog_variants')).length,1);
+});
+test('a changed price is written in place to the live catalog',async()=>{
+  const f=await fixture();const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
+  f.printful.products.get('101').sync_variants[0].retail_price='35.00';
+  await f.request('/api/admin/catalog/sync',{},auth);
+  const rows=(await f.store.all('SELECT generation,price_cents FROM catalog_variants')).map(r=>({...r}));
+  assert.deepEqual(rows,[{generation:'initial',price_cents:3500}]);
+});
+test('daily schedule prunes old catalog generations a bounded amount at a time and never the live one',async()=>{
+  const f=await fixture({PRINTFUL_ACCESS_TOKEN:'',PRINTFUL_STORE_ID:''});
+  await f.store.run("INSERT INTO catalog_sync_runs(id,product_ids_json,status,created_at,updated_at) VALUES('old','[101]','complete',0,0)");
+  await f.store.run("INSERT INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES('old','101',NULL,'Old',NULL,0)");
+  for(let i=0;i<7;i++)await f.store.run("INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES('old',?,'101',100,'usd','{}')",String(i));
+  const {pruneCatalogHistory}=await import('../src/catalog.mjs');
+  assert.equal((await pruneCatalogHistory(f.store,f.now(),5)).variants_deleted,5);
+  assert.equal((await f.store.all("SELECT * FROM catalog_products WHERE generation='old'")).length,1);
+  await f.app.scheduled({cron:'0 10 * * *'},f.env);
+  assert.equal((await f.store.all("SELECT * FROM catalog_variants WHERE generation='old'")).length,0);
+  assert.equal((await f.store.all("SELECT * FROM catalog_products WHERE generation='old'")).length,0);
+  assert.equal((await f.store.all("SELECT * FROM catalog_sync_runs WHERE id='old'")).length,0);
+  assert.equal((await f.store.all("SELECT * FROM catalog_variants WHERE generation='initial'")).length,1);
+});
+test('wrangler daily cron matches the scheduled handler',async()=>{
+  const {DAILY_CRON}=await import('../src/worker.mjs');
+  const {readFileSync}=await import('node:fs');
+  for(const file of ['../wrangler.jsonc','../wrangler.example.jsonc'])assert.ok(readFileSync(new URL(file,import.meta.url),'utf8').includes(`"${DAILY_CRON}"`),file);
 });

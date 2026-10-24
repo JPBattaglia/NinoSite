@@ -3,7 +3,9 @@ import {Store} from './db.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,stripeConfiguration,countries,nowSeconds} from './common.mjs';
 import {createStripeClient,PrintfulClient} from './providers.mjs';
-import {publicCatalog,startCatalogSync,continueCatalogSync} from './catalog.mjs';
+import {publicCatalog,startCatalogSync,continueCatalogSync,pruneCatalogHistory} from './catalog.mjs';
+// Must match the daily entry in wrangler.jsonc `triggers.crons`.
+export const DAILY_CRON='0 10 * * *';
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
@@ -125,11 +127,13 @@ export function createApp(dependencies={}) {
       if(!env.DB) return;
       const run=async()=>{
         const store=new Store(env.DB); const now=clock();
-        if(event.cron==='0 */6 * * *') await store.run('DELETE FROM shopping_measurement WHERE day<?',new Date((now-89*86400)*1000).toISOString().slice(0,10));
+        const daily=event.cron===DAILY_CRON;
+        if(daily) await store.run('DELETE FROM shopping_measurement WHERE day<?',new Date((now-89*86400)*1000).toISOString().slice(0,10));
+        if(daily) await pruneCatalogHistory(store,now);
         if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
         const printful=dependencies.printful || new PrintfulClient(env);
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
-        if(!sync && event.cron==='0 */6 * * *') sync=await startCatalogSync(store,printful,now);
+        if(!sync && daily) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch { /* The retained run is retried by the next scheduled invocation. */ } }
         if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
           const orders=await store.all("SELECT id FROM commerce_orders WHERE payment_status='paid' AND live_mode=1 AND fulfillment_status IN ('queued','retry','processing','draft') AND lease_until<=? AND next_retry_at<=? AND fulfillment_attempts<10 ORDER BY created_at LIMIT 3",now,now);

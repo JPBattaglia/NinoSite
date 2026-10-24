@@ -47,6 +47,6 @@ test('admin report is protected; live purchases count once and retain their firs
 test('scheduled retention cleanup works even before Printful credentials are configured',async()=>{
   const f=await fixture({PRINTFUL_ACCESS_TOKEN:'',PRINTFUL_STORE_ID:''});
   await f.store.run("INSERT INTO shopping_measurement VALUES('2000-01-01','live','page_view','',1)");
-  await f.app.scheduled({cron:'0 */6 * * *'},f.env);
+  await f.app.scheduled({cron:'0 10 * * *'},f.env);
   assert.equal((await f.store.all('SELECT * FROM shopping_measurement')).length,0);
 });

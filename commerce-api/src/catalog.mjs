@@ -1,5 +1,10 @@
 import {fail,cents,hash,httpsImage} from './common.mjs';
 
+// The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
+// Checkout still re-verifies every variant against Printful before charging.
+export const CATALOG_MAX_AGE_DEFAULT = 172800;
+function catalogMaxAge(env) { return Number(env.CATALOG_MAX_AGE_SECONDS || CATALOG_MAX_AGE_DEFAULT); }
+
 function independentImage(value) {
   const image = httpsImage(value);
   if (!image) return null;
@@ -40,7 +45,7 @@ export async function publicCatalog(store,env,now) {
   if (!generation) return {products:[],catalog_ready:false,catalog_complete:false};
   const run = await store.first('SELECT * FROM catalog_sync_runs WHERE id=? AND status=\'complete\'',generation);
   if (!run) return {products:[],catalog_ready:false,catalog_complete:false};
-  const fresh = !!run && now - run.updated_at <= Number(env.CATALOG_MAX_AGE_SECONDS || 86400);
+  const fresh = !!run && now - run.updated_at <= catalogMaxAge(env);
   const products = await store.all('SELECT * FROM catalog_products WHERE generation=? ORDER BY title',generation);
   const variants = await store.all('SELECT * FROM catalog_variants WHERE generation=? ORDER BY product_id,id',generation);
   return {catalog_ready:fresh,catalog_complete:true,products:products.map(product => ({
@@ -54,7 +59,7 @@ export async function publicCatalog(store,env,now) {
 export async function validatedLines(store,printful,env,items,now) {
   const generation = await store.activeGeneration();
   const run = generation && await store.first('SELECT * FROM catalog_sync_runs WHERE id=? AND status=\'complete\'',generation);
-  if (!run || now - run.updated_at > Number(env.CATALOG_MAX_AGE_SECONDS || 86400)) fail(503,'catalog_not_ready','The product catalog is being updated.');
+  if (!run || now - run.updated_at > catalogMaxAge(env)) fail(503,'catalog_not_ready','The product catalog is being updated.');
   const lines = [];
   for (const item of items) {
     const row = await store.first(`SELECT v.*,p.title,p.image FROM catalog_variants v JOIN catalog_products p ON p.generation=v.generation AND p.id=v.product_id WHERE v.generation=? AND v.id=? AND v.product_id=?`,generation,item.variant_id,item.product_id);
@@ -90,29 +95,70 @@ function syncErrorLabel(error) {
   const detail = error?.code ? String(error.code) : `${error?.name || 'Error'}: ${error?.message || 'unknown'}`;
   return detail.replace(/Bearer\s+\S+/gi,'Bearer [hidden]').slice(0,300) || 'provider_error';
 }
+async function productUnchanged(store,generation,productId,row,variants) {
+  const stored = await store.first('SELECT external_id,title,image FROM catalog_products WHERE generation=? AND id=?',generation,productId);
+  if (!stored || stored.external_id !== row.external_id || stored.title !== row.title || stored.image !== row.image) return false;
+  const current = (await store.all('SELECT id,price_cents,currency,snapshot_json FROM catalog_variants WHERE generation=? AND product_id=? ORDER BY id',generation,productId))
+    .map(v => `${v.id}|${v.price_cents}|${v.currency}|${v.snapshot_json}`);
+  const fetched = variants.map(v => `${v.id}|${v.price_cents}|${v.currency}|${JSON.stringify(v)}`).sort();
+  return current.length === fetched.length && current.every((value,i) => value === fetched[i]);
+}
+// Older catalog generations are deleted gradually: deleting rows also counts against D1's daily write quota,
+// so each scheduled run removes at most `limit` variant rows. Sync records are kept for a week for diagnosis.
+export const CATALOG_PRUNE_ROWS_PER_RUN = 5000;
+export async function pruneCatalogHistory(store,now,limit = CATALOG_PRUNE_ROWS_PER_RUN) {
+  const active = await store.activeGeneration();
+  if (!active) return {variants_deleted:0};
+  const variants = await store.run('DELETE FROM catalog_variants WHERE rowid IN (SELECT rowid FROM catalog_variants WHERE generation<>? LIMIT ?)',active,limit);
+  await store.run('DELETE FROM catalog_products WHERE generation<>? AND NOT EXISTS (SELECT 1 FROM catalog_variants v WHERE v.generation=catalog_products.generation AND v.product_id=catalog_products.id)',active);
+  await store.run("DELETE FROM catalog_sync_runs WHERE id<>? AND status<>'running' AND updated_at<? AND NOT EXISTS (SELECT 1 FROM catalog_products p WHERE p.generation=catalog_sync_runs.id)",active,now - 7 * 86400);
+  return {variants_deleted:variants.meta.changes};
+}
 export async function continueCatalogSync(store,printful,id,now) {
   const claim = crypto.randomUUID();
   const lock = await store.run("UPDATE catalog_sync_runs SET lease_until=?,claim_id=? WHERE id=? AND status='running' AND lease_until<=?",now+300,claim,id,now);
   if (!lock.meta.changes) return {sync_id:id,busy:true};
   const run = await store.first('SELECT * FROM catalog_sync_runs WHERE id=?',id);
   const ids = JSON.parse(run.product_ids_json); const next = Math.min(ids.length,run.cursor+10);
+  // D1 bills every row written (index entries included), so a full re-copy of the catalog on each sync
+  // exhausts the free daily quota. Once a catalog is live, a sync updates it in place and only writes
+  // products whose data actually changed. Each product is replaced in one atomic batch, and products that
+  // left the store are removed only when the whole sync completes, so a partial sync never erases stock.
+  // The very first sync still stages a full generation and activates it when complete.
+  const active = await store.activeGeneration();
+  const target = active && active !== id && await store.first('SELECT id FROM catalog_sync_runs WHERE id=?',active) ? active : id;
   try {
     for (const productId of ids.slice(run.cursor,next)) {
       const detail = await printful.getProduct(productId);
-      if (!detail) continue;
-      const product = detail.sync_product;
-      if (!product || String(product.id) !== productId || product.is_ignored === true) continue;
+      const product = detail?.sync_product;
+      if (!product || String(product.id) !== productId || product.is_ignored === true) {
+        if (target !== id) await store.batch([
+          ['DELETE FROM catalog_variants WHERE generation=? AND product_id=?',target,productId],
+          ['DELETE FROM catalog_products WHERE generation=? AND id=?',target,productId]
+        ]);
+        continue;
+      }
       const variants = [];
       for (const raw of detail.sync_variants || []) {
         const v = await normalizeVariant(raw,product); if (v) variants.push(v);
       }
+      const row = {external_id:product.external_id == null ? null : String(product.external_id),title:String(product.name || '').slice(0,250),image:httpsImage(product.thumbnail_url)};
+      if (await productUnchanged(store,target,productId,row,variants)) continue;
       await store.batch([
-        ['INSERT OR REPLACE INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES(?,?,?,?,?,?)',id,productId,product.external_id == null ? null : String(product.external_id),String(product.name || '').slice(0,250),httpsImage(product.thumbnail_url),now],
-        ['DELETE FROM catalog_variants WHERE generation=? AND product_id=?',id,productId],
-        ...variants.map(v => ['INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES(?,?,?,?,?,?)',id,v.id,productId,v.price_cents,v.currency,JSON.stringify(v)])
+        ['INSERT OR REPLACE INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES(?,?,?,?,?,?)',target,productId,row.external_id,row.title,row.image,now],
+        ['DELETE FROM catalog_variants WHERE generation=? AND product_id=?',target,productId],
+        ...variants.map(v => ['INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES(?,?,?,?,?,?)',target,v.id,productId,v.price_cents,v.currency,JSON.stringify(v)])
       ]);
     }
-    if (next === ids.length) {
+    if (next === ids.length && target !== id) {
+      await store.batch([
+        ['DELETE FROM catalog_variants WHERE generation=? AND product_id NOT IN (SELECT value FROM json_each(?))',target,run.product_ids_json],
+        ['DELETE FROM catalog_products WHERE generation=? AND id NOT IN (SELECT value FROM json_each(?))',target,run.product_ids_json],
+        ["UPDATE catalog_sync_runs SET cursor=?,status='complete',claim_id=NULL,lease_until=0,last_error=NULL,updated_at=? WHERE id=? AND claim_id=?",next,now,id,claim],
+        // The live catalog was just verified against Printful, so it counts as fresh again.
+        ['UPDATE catalog_sync_runs SET updated_at=? WHERE id=?',now,target]
+      ]);
+    } else if (next === ids.length) {
       await store.batch([
         ["UPDATE catalog_sync_runs SET cursor=?,status='complete',claim_id=NULL,lease_until=0,last_error=NULL,updated_at=? WHERE id=? AND claim_id=?",next,now,id,claim],
         ["INSERT INTO commerce_settings(key,value) SELECT 'active_catalog',id FROM catalog_sync_runs WHERE id=? AND status='complete' ON CONFLICT(key) DO UPDATE SET value=excluded.value",id]
