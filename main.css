@@ -572,7 +572,7 @@ body{overflow-x:clip}
 .product-card,.shop-hero{--accent:#ff6a1f;--accent-rgb:255,106,31}
 .product-open-mark{background:#200705!important;color:var(--accent)!important;border:1px solid var(--line-2)!important}
 .product-image-link:hover .product-open-mark,.product-image-link:focus-visible .product-open-mark{background:var(--accent)!important;border-color:var(--accent)!important;color:#200705!important}
-/* Quiz and Surprise me sit up top in the shop intro. */
+/* The quiz button sits up top in the shop intro. */
 .shop-intro-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .shop-intro-actions .button{min-height:50px}
 @media(max-width:600px){.shop-intro-actions .button{width:100%;justify-content:center}}
