@@ -623,3 +623,5 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .gallery-thumbs button{overflow:hidden}
 .gallery-thumbs img[src*="assets/products/"]{transform:scale(1.6);transform-origin:50% 47%}
 .gallery-thumbs img[src*="printful.com"]{transform:scale(1.85);transform-origin:50% 37.5%;background:#fff}
+/* Generated model photos (one per color) get the same framing as the main model photo. */
+.dialog-image img[src*="/api/mockups/"],.gallery-thumbs img[src*="/api/mockups/"]{transform:scale(1.6);transform-origin:50% 40%}
