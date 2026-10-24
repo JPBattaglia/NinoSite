@@ -605,4 +605,4 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .product-price,.shop-hero .product-price{text-shadow:0 0 12px rgba(255,106,31,.45)}
 
 /* Plain black nav bar. */
-.site-header{background:#000!important;background-image:none!important;border-top:0!important;border-bottom:1.5px solid #ff6a1f!important;box-shadow:0 2px 12px -3px rgba(255,106,31,.45)!important}
+.site-header{background:#000!important;background-image:none!important;border-top:0!important;border-bottom:0!important;box-shadow:none!important}
