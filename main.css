@@ -587,3 +587,7 @@ body{overflow-x:clip}
 .commerce-swatch[aria-checked=true]{outline:2px solid var(--button-cyan);outline-offset:3px}
 .commerce-swatch.is-text{width:auto;height:auto;min-height:30px;border-radius:999px;padding:4px 12px;background:transparent;color:var(--ink);font-size:12px}
 @media(max-width:600px){.commerce-swatch{width:34px;height:34px}}
+/* Zoom shirt photos in on the chest so the artwork reads at card size. */
+.product-image-link img:not(.image-unavailable){object-fit:cover;object-position:50% 38%;transform-origin:50% 47%;transform:scale(1.6)}
+.product-image-link:hover img:not(.image-unavailable),.product-image-link:focus-visible img:not(.image-unavailable){transform:scale(1.68)}
+.shop-hero-image img:not(.image-unavailable){object-fit:cover;transform-origin:50% 47%;transform:scale(1.5)}
