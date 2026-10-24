@@ -57,4 +57,9 @@ jobs:
           WRANGLER_SEND_METRICS: 'false'
         run: |
           if [ -n "$ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$ACCOUNT_ID"; fi
-          npx wrangler deploy --config wrangler.jsonc
+          set -o pipefail
+          if ! npx wrangler deploy --config wrangler.jsonc 2>&1 | tee deploy.log; then
+            # Surface wrangler's own error lines as annotations so they show on the run summary.
+            grep -iE 'error|✘|code:|failed|permission|authentication' deploy.log | head -10 | while IFS= read -r line; do echo "::error title=wrangler::$line"; done
+            exit 1
+          fi
