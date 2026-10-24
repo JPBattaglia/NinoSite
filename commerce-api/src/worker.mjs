@@ -7,6 +7,7 @@ import {publicCatalog,startCatalogSync,continueCatalogSync,pruneCatalogHistory} 
 // Must match the daily entry in wrangler.jsonc `triggers.crons`.
 export const DAILY_CRON='0 10 * * *';
 import {shippingQuote,createCheckout} from './checkout.mjs';
+import {runPrintfulProbes} from './probe.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
@@ -137,6 +138,7 @@ export function createApp(dependencies={}) {
         if(daily) await store.run('DELETE FROM shopping_measurement WHERE day<?',new Date((now-89*86400)*1000).toISOString().slice(0,10));
         if(daily) await pruneCatalogHistory(store,now);
         if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
+        try { await runPrintfulProbes(store,env,now); } catch { /* research helper must never block sync or fulfillment */ }
         const printful=dependencies.printful || new PrintfulClient(env);
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
         if(!sync && daily) sync=await startCatalogSync(store,printful,now);
