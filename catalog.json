@@ -407,6 +407,9 @@
         "assets/products/478772161.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A skeletal horse and its headless rider charging forward with a glowing jack-o'-lantern in hand.",
       "featured": false,
       "variants": [],
@@ -761,6 +764,9 @@
         "assets/products/478207707.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A skeletal owl perched on a bone, set in a blue circular badge with a red rim.",
       "featured": false,
       "variants": [],
@@ -2052,6 +2058,9 @@
         "assets/products/468468013.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A detailed, golden-toned mummy skull wrapped in bandages and baring its teeth.",
       "featured": false,
       "variants": [],
@@ -2400,6 +2409,9 @@
         "assets/products/468128883.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "Bat-wing NOSFERATU lettering in red and black, crowned by the silent-film vampire's face.",
       "featured": false,
       "variants": [],
@@ -2636,6 +2648,9 @@
         "assets/art-halloween-harmony.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A yin-yang circle of two ghosts, ringed with bones and paired with a cluster of small skulls.",
       "featured": false,
       "variants": [],
@@ -2871,6 +2886,9 @@
         "assets/products/468101651.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A howling werewolf silhouetted against a huge orange moon with bats and jack-o'-lanterns.",
       "featured": false,
       "variants": [],
@@ -2987,6 +3005,9 @@
         "assets/products/468014210.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A snarling werewolf in silhouette against a golden full moon.",
       "featured": false,
       "variants": [],
@@ -3103,6 +3124,9 @@
         "assets/products/467998346.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A grinning, glowing jack-o'-lantern above flame-lettered STAY SPOOKY.",
       "featured": false,
       "variants": [],
@@ -8215,7 +8239,8 @@
       ],
       "category": "Graphic tees",
       "collections": [
-        "scifi"
+        "scifi",
+        "monsters"
       ],
       "description": "A mint-green, ribbed alien head in profile with its skeletal neck.",
       "featured": false,
@@ -10795,6 +10820,9 @@
         "assets/products/456354908.webp"
       ],
       "category": "Moto",
+      "collections": [
+        "monsters"
+      ],
       "description": "A rider in a red helmet leaning into a long, low custom chopper.",
       "featured": false,
       "variants": [],
@@ -15243,6 +15271,9 @@
         "assets/products/455417956.webp"
       ],
       "category": "Seasonal",
+      "collections": [
+        "monsters"
+      ],
       "description": "A glowing jack-o'-lantern over All Hallows Eve lettering.",
       "featured": false,
       "variants": [],
