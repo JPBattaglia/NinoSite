@@ -9,8 +9,10 @@ export const DAILY_CRON='0 10 * * *';
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
+const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
+const productBodies=new WeakMap();
 function json(value,status=200,headers={}) {
-  return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...headers}});
+  return Response.json(value,{status,headers:{...JSON_HEADERS,...headers}});
 }
 async function admin(request,env) {
   if(!env.ADMIN_API_TOKEN) fail(503,'admin_not_configured');
@@ -57,7 +59,11 @@ export function createApp(dependencies={}) {
         if(request.method==='GET' && url.pathname==='/api/products') {
           const catalog=await publicCatalog(store,env,now);
           const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
-          return json({...catalog,...readiness},200,cors);
+          // Serializing ~13,500 variants is the expensive part, so the body is reused while nothing changed.
+          const readinessKey=JSON.stringify(readiness);
+          let cached=productBodies.get(catalog);
+          if(!cached || cached.readinessKey!==readinessKey) { cached={readinessKey,body:JSON.stringify({...catalog,...readiness})}; productBodies.set(catalog,cached); }
+          return new Response(cached.body,{status:200,headers:{'Content-Type':'application/json; charset=utf-8',...JSON_HEADERS,...cors}});
         }
         if(request.method==='GET' && url.pathname==='/api/commerce-config') {
           const catalog=await publicCatalog(store,env,now);

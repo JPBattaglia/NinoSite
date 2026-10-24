@@ -292,3 +292,11 @@ test('wrangler daily cron matches the scheduled handler',async()=>{
   const {readFileSync}=await import('node:fs');
   for(const file of ['../wrangler.jsonc','../wrangler.example.jsonc'])assert.ok(readFileSync(new URL(file,import.meta.url),'utf8').includes(`"${DAILY_CRON}"`),file);
 });
+test('cached public catalog reflects in-place sync changes',async()=>{
+  const f=await fixture();const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
+  const first=await f.request('/api/products');assert.equal(first.body.products[0].variants[0].price.amount,3200);
+  assert.deepEqual((await f.request('/api/products')).body,first.body);
+  f.advance(5);f.printful.products.get('101').sync_variants[0].retail_price='35.00';
+  await f.request('/api/admin/catalog/sync',{},auth);
+  assert.equal((await f.request('/api/products')).body.products[0].variants[0].price.amount,3500);
+});
