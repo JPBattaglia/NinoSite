@@ -5761,14 +5761,20 @@
       "slug": "thulsa-doom"
     },
     {
-      "id": "460064445",
-      "title": "Hawk Man Skull",
-      "image": "assets/products/460064445.webp",
+      "id": "455689737",
+      "title": "Yin Yang Ouroboros",
+      "image": "assets/products/455689737.webp",
       "gallery": [
-        "assets/products/460064445.webp"
+        "assets/products/455689737.webp",
+        "assets/shirt-oroboros.webp",
+        "assets/shirt-oroboros-olive.webp",
+        "assets/art-oroboros.webp"
       ],
-      "category": "Graphic tees",
-      "description": "A stylized hawk skull in bronze tones inside a red-and-black checkered ring.",
+      "category": "Originals",
+      "collections": [
+        "ninos-picks"
+      ],
+      "description": "A serpent coiled around a moonlit yin-yang ocean — Nino's original Oroboros artwork.",
       "featured": false,
       "variants": [],
       "options": {
@@ -5802,24 +5808,20 @@
             "hex": "#6a6967"
           },
           {
+            "name": "Dark Chocolate",
+            "hex": "#463b33"
+          },
+          {
+            "name": "Dark Heather",
+            "hex": "#595959"
+          },
+          {
             "name": "Forest Green",
             "hex": "#1a3b23"
           },
           {
-            "name": "Graphite Heather",
-            "hex": "#858585"
-          },
-          {
             "name": "Heliconia",
             "hex": "#e33f7a"
-          },
-          {
-            "name": "Light Blue",
-            "hex": "#d9efff"
-          },
-          {
-            "name": "Light Pink",
-            "hex": "#ffd4d5"
           },
           {
             "name": "Maroon",
@@ -5834,10 +5836,6 @@
             "hex": "#1a2330"
           },
           {
-            "name": "Orange",
-            "hex": "#ff5f2e"
-          },
-          {
             "name": "Purple",
             "hex": "#48197d"
           },
@@ -5850,8 +5848,16 @@
             "hex": "#007ab3"
           },
           {
+            "name": "Sky",
+            "hex": "#8ee0ff"
+          },
+          {
             "name": "Tropical Blue",
             "hex": "#00a0b3"
+          },
+          {
+            "name": "Turf Green",
+            "hex": "#187532"
           }
         ],
         "sizes": [
@@ -5873,8 +5879,8 @@
         "amount": 2500,
         "currency": "USD"
       },
-      "accent": "#cb6f4d",
-      "slug": "hawk-man-skull"
+      "accent": "#589fcf",
+      "slug": "yin-yang-ouroboros"
     },
     {
       "id": "459897365",
@@ -13236,20 +13242,14 @@
       "slug": "artificial-intel"
     },
     {
-      "id": "455689737",
-      "title": "Yin Yang Ouroboros",
-      "image": "assets/products/455689737.webp",
+      "id": "460064445",
+      "title": "Hawk Man Skull",
+      "image": "assets/products/460064445.webp",
       "gallery": [
-        "assets/products/455689737.webp",
-        "assets/shirt-oroboros.webp",
-        "assets/shirt-oroboros-olive.webp",
-        "assets/art-oroboros.webp"
+        "assets/products/460064445.webp"
       ],
-      "category": "Originals",
-      "collections": [
-        "ninos-picks"
-      ],
-      "description": "A serpent coiled around a moonlit yin-yang ocean — Nino's original Oroboros artwork.",
+      "category": "Graphic tees",
+      "description": "A stylized hawk skull in bronze tones inside a red-and-black checkered ring.",
       "featured": true,
       "variants": [],
       "options": {
@@ -13283,20 +13283,24 @@
             "hex": "#6a6967"
           },
           {
-            "name": "Dark Chocolate",
-            "hex": "#463b33"
-          },
-          {
-            "name": "Dark Heather",
-            "hex": "#595959"
-          },
-          {
             "name": "Forest Green",
             "hex": "#1a3b23"
           },
           {
+            "name": "Graphite Heather",
+            "hex": "#858585"
+          },
+          {
             "name": "Heliconia",
             "hex": "#e33f7a"
+          },
+          {
+            "name": "Light Blue",
+            "hex": "#d9efff"
+          },
+          {
+            "name": "Light Pink",
+            "hex": "#ffd4d5"
           },
           {
             "name": "Maroon",
@@ -13311,6 +13315,10 @@
             "hex": "#1a2330"
           },
           {
+            "name": "Orange",
+            "hex": "#ff5f2e"
+          },
+          {
             "name": "Purple",
             "hex": "#48197d"
           },
@@ -13323,16 +13331,8 @@
             "hex": "#007ab3"
           },
           {
-            "name": "Sky",
-            "hex": "#8ee0ff"
-          },
-          {
             "name": "Tropical Blue",
             "hex": "#00a0b3"
-          },
-          {
-            "name": "Turf Green",
-            "hex": "#187532"
           }
         ],
         "sizes": [
@@ -13354,8 +13354,8 @@
         "amount": 2500,
         "currency": "USD"
       },
-      "accent": "#589fcf",
-      "slug": "yin-yang-ouroboros"
+      "accent": "#cb6f4d",
+      "slug": "hawk-man-skull"
     },
     {
       "id": "455685696",
