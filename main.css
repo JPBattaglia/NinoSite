@@ -100,17 +100,17 @@
 .canvas-mark{top:57%;width:34%}
 @media(max-width:760px){.canvas-type{top:50%;width:27%}.canvas-mark{top:57%;width:34%}}
 /* Dark studio palette: artwork retains its original colors. */
-:root{--paper:#170403;--ink:#f2efe7;--muted:#d0aaa2;--cyan:#ff6a1f;--cyan-dark:#ff6a1f;--red:#ff6a1f;--line:#521c17;--dark:#210706}
+:root{--paper:#260907;--ink:#f2efe7;--muted:#d0aaa2;--cyan:#ff6a1f;--cyan-dark:#ff6a1f;--red:#ff6a1f;--line:#521c17;--dark:#310e0b}
 body{background:var(--paper);color:var(--ink)}
 .site-header{background:rgba(18,23,24,.97);border-color:var(--line)}
 .announcement-bar{background:#0c0201;color:#c8d1cd;border-bottom:1px solid #4a1712}
 .brand-symbol{background:#0c0201}
-.button{background:var(--cyan);color:#120302;border-color:var(--cyan)}
-.button:hover{background:#ff8a3d;color:#120302}
+.button{background:var(--cyan);color:#200705;border-color:var(--cyan)}
+.button:hover{background:#ff8a3d;color:#200705}
 .button-outline{background:transparent;color:var(--cyan);border-color:var(--cyan)}
-.button-outline:hover{background:var(--cyan);color:#120302}
-.button-cyan{background:var(--cyan);color:#120302}
-.button-cyan:hover{background:#ff8a3d;color:#120302}
+.button-outline:hover{background:var(--cyan);color:#200705}
+.button-cyan{background:var(--cyan);color:#200705}
+.button-cyan:hover{background:#ff8a3d;color:#200705}
 .text-link:hover{color:#ffa13a}
 .studio-canvas{background:#242c2d;border:1px solid #3c4849;color:var(--ink)}
 .canvas-label,.canvas-piece>span{color:#f2efe7}
@@ -118,8 +118,8 @@ body{background:var(--paper);color:var(--ink)}
 .nav-toggle img{filter:saturate(.82) brightness(1.13)}
 .hero-disciplines{border-color:#4f5b5c;color:#b3bfbd}
 .studio-hero .hero-description{color:#d6dedb}
-.identity-strip{color:#120302}
-.identity-strip span:nth-child(2){color:#120302}
+.identity-strip{color:#200705}
+.identity-strip span:nth-child(2){color:#200705}
 .selected-work-grid .art-image,.work-grid .art-image{background:#263031}
 .selected-work-grid .art-tile:first-child .art-image{background:#322827}
 .selected-work-grid .art-tile:nth-child(2) .art-image{background:#282729}
@@ -139,8 +139,8 @@ body{background:var(--paper);color:var(--ink)}
 .product-dialog{background:#192123;color:var(--ink);border:1px solid #476064}
 .dialog-close{background:#253235;color:var(--ink);border-color:#577276}
 .gallery-thumbs button{background:#1c2425;border-color:#4d666b}
-.skip-link{color:#120302}
-@media(max-width:760px){.site-nav{background:#192123;border-color:var(--line)}.site-nav>a.nav-project{color:#120302}}
+.skip-link{color:#200705}
+@media(max-width:760px){.site-nav{background:#192123;border-color:var(--line)}.site-nav>a.nav-project{color:#200705}}
 .nav-toggle{display:none;place-items:center;width:48px;height:48px}
 .nav-toggle img{width:38px;height:38px;transition:none}
 .nav-toggle[aria-expanded=true] img{transform:none}
@@ -152,9 +152,9 @@ body{background:var(--paper);color:var(--ink)}
 .collection-results{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px}
 .collection-results .collection-count{margin:0}
 .collection-results .show-all-products{font-size:12px;flex-shrink:0}
-.variant-picker .button:disabled:hover{color:#120302}
+.variant-picker .button:disabled:hover{color:#200705}
 @media(max-width:460px){.collection-results{gap:12px}.collection-results .show-all-products{font-size:10px}.collection-results .collection-count{font-size:10px}}
-@media(min-width:761px) and (max-width:980px){.nav-toggle{display:grid}.site-nav{display:none;position:absolute;top:100%;left:0;right:0;background:#192123;border-bottom:1px solid var(--line);padding:22px 5% 30px;flex-direction:column;align-items:stretch;gap:0}.site-nav.is-open{display:flex}.site-nav>a{padding:13px 0;font-size:17px;border-bottom:1px solid var(--line)}.site-nav>a.nav-project{margin-top:20px;padding:15px 20px;min-height:50px;color:#120302}.site-nav .nav-cart{justify-content:space-between}}
+@media(min-width:761px) and (max-width:980px){.nav-toggle{display:grid}.site-nav{display:none;position:absolute;top:100%;left:0;right:0;background:#192123;border-bottom:1px solid var(--line);padding:22px 5% 30px;flex-direction:column;align-items:stretch;gap:0}.site-nav.is-open{display:flex}.site-nav>a{padding:13px 0;font-size:17px;border-bottom:1px solid var(--line)}.site-nav>a.nav-project{margin-top:20px;padding:15px 20px;min-height:50px;color:#200705}.site-nav .nav-cart{justify-content:space-between}}
 
 /* Native shirt cart */
 /* Merge into the unified main.css after the studio theme */
@@ -250,17 +250,17 @@ html[data-checkout=open] .shop-notice{display:none}
    Studio refresh — Oct 2026. Darker gallery wall, film grain, soft
    light, sharper type and hover states. Brand colors unchanged.
    ================================================================ */
-:root{--paper:#120302;--paper-2:#170403;--panel:#1b0504;--ink:#f2efe7;--muted:#d0aaa2;--line:#4a1712;--line-2:#5c211b;--cyan:#ff6a1f;--cyan-dark:#ff6a1f;--red:#ff6a1f;--glow:rgba(255,106,31,.16)}
+:root{--paper:#200705;--paper-2:#260907;--panel:#2b0b09;--ink:#f2efe7;--muted:#d0aaa2;--line:#4a1712;--line-2:#5c211b;--cyan:#ff6a1f;--cyan-dark:#ff6a1f;--red:#ff6a1f;--glow:rgba(255,106,31,.16)}
 html{background:var(--paper)}
 body{background:radial-gradient(1200px 700px at 8% -10%,rgba(255,106,31,.10),transparent 60%),radial-gradient(900px 700px at 105% 35%,rgba(255,106,31,.07),transparent 60%),var(--paper);background-attachment:fixed;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body::before{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-::selection{background:var(--cyan);color:#120302}
+::selection{background:var(--cyan);color:#200705}
 html{scrollbar-color:#4d1914 var(--paper)}
 :focus-visible{outline-color:var(--cyan)!important}
 
 /* Header: quiet glass bar. */
 .announcement-bar{background:#0c0201;color:#c99f97;letter-spacing:.12em;text-transform:uppercase;font-size:9px;border-bottom:1px solid var(--line)}
-.site-header{background:rgba(18,3,2,.72)!important;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid var(--line)}
+.site-header{background:rgba(32,7,5,.72)!important;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid var(--line)}
 .site-nav>a:not(.button){position:relative;color:#d9dcd6;letter-spacing:.02em}
 .site-nav>a:not(.button)::after{content:'';position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
 .site-nav>a:not(.button):hover::after,.site-nav>a[aria-current]::after{transform:scaleX(1)}
@@ -281,7 +281,7 @@ html{scrollbar-color:#4d1914 var(--paper)}
 .button-cyan{box-shadow:0 0 0 1px rgba(255,106,31,.35),0 10px 30px -12px rgba(255,106,31,.55)}
 .button-cyan:hover{background:#ff8a3d;transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,138,61,.6),0 16px 40px -14px rgba(255,106,31,.75)}
 .button-outline{border-color:var(--line-2);color:var(--ink)}
-.button-outline:hover{background:var(--ink);color:#120302}
+.button-outline:hover{background:var(--ink);color:#200705}
 
 /* Hero artwork: lit like a gallery piece. */
 .hero-art,.studio-canvas{background:linear-gradient(160deg,#182122,#0f1415)!important;border:1px solid var(--line);box-shadow:0 40px 80px -40px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.02) inset}
@@ -300,8 +300,8 @@ html{scrollbar-color:#4d1914 var(--paper)}
 .art-open:hover .art-image img{transform:scale(1.045)}
 .art-tile h3,.product-card h3{letter-spacing:.005em}
 .art-tile p,.product-category{color:#7f9290;letter-spacing:.14em}
-.product-open-mark{background:#120302;color:var(--cyan);border:1px solid var(--line-2);transition:transform .3s,background .3s}
-.product-image-link:hover .product-open-mark{transform:rotate(45deg);background:var(--cyan);color:#120302}
+.product-open-mark{background:#200705;color:var(--cyan);border:1px solid var(--line-2);transition:transform .3s,background .3s}
+.product-image-link:hover .product-open-mark{transform:rotate(45deg);background:var(--cyan);color:#200705}
 .product-price{color:var(--cyan);font-weight:600;letter-spacing:.02em}
 
 /* Sections: alternate wall tones with fine rules. */
@@ -311,15 +311,15 @@ html{scrollbar-color:#4d1914 var(--paper)}
 .section-heading{border-bottom:1px solid var(--line);padding-bottom:22px}
 
 /* Cards & panels. */
-.contact-card,.coming-soon,.case-study .case-video,.shop-notice{background:rgba(27,5,4,.7);border-color:var(--line)!important}
+.contact-card,.coming-soon,.case-study .case-video,.shop-notice{background:rgba(43,11,9,.7);border-color:var(--line)!important}
 .contact-art-card{background:linear-gradient(160deg,#1b2526,#111718)!important;color:var(--ink)!important;border-color:var(--line-2)!important}
 .contact-art-card p,.contact-art-card .contact-number{color:var(--muted)!important}
 .filter-button{border-color:var(--line-2);color:#cfd6d3;transition:all .2s}
 .filter-button:hover{border-color:var(--cyan);color:var(--cyan)}
-.filter-button.is-active{background:var(--cyan)!important;color:#120302!important;border-color:var(--cyan)!important}
+.filter-button.is-active{background:var(--cyan)!important;color:#200705!important;border-color:var(--cyan)!important}
 .product-dialog{background:#0f1415;border:1px solid var(--line);box-shadow:0 60px 120px -40px rgba(0,0,0,.95)}
 .dialog-visual{background:#0b0f10}
-.dialog-close{background:#120302;color:var(--ink);border-color:var(--line-2)}
+.dialog-close{background:#200705;color:var(--ink);border-color:var(--line-2)}
 
 /* Footer: oversized outlined wordmark. */
 .site-footer{background:#0c0201;border-top:1px solid var(--line)}
@@ -331,7 +331,7 @@ html{scrollbar-color:#4d1914 var(--paper)}
 html.js-reveal .reveal{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
 html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){html.js-reveal .reveal{opacity:1;transform:none;transition:none}*{scroll-behavior:auto!important}}
-@media(max-width:760px){.identity-strip span+span::before{display:none}.site-nav{background:#120302!important}.eyebrow::before{width:14px;margin-right:8px}}
+@media(max-width:760px){.identity-strip span+span::before{display:none}.site-nav{background:#200705!important}.eyebrow::before{width:14px;margin-right:8px}}
 .selected-work-grid .art-image,.work-grid .art-image,.selected-work-grid .art-tile:first-child .art-image{background:radial-gradient(120% 90% at 30% 20%,#1d2829,#0f1516 70%)}
 .capability-grid>a{border-top-color:var(--line-2);padding:24px 20px 36px;margin:0 -20px;border-radius:0 0 12px 12px;transition:background .3s,border-color .3s}
 .capability-grid>a:hover{background:linear-gradient(180deg,rgba(255,106,31,.07),transparent);border-top-color:var(--cyan)}
@@ -351,7 +351,7 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 .contact-alts span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .contact-alts a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2);align-self:start;padding-bottom:2px}
 .contact-alts a:hover{color:var(--cyan);border-color:var(--cyan)}
-.contact-form-card{margin:0;background:rgba(27,5,4,.7);border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 30px 80px -40px rgba(255,106,31,.25)}
+.contact-form-card{margin:0;background:rgba(43,11,9,.7);border:1px solid var(--line);border-radius:14px;padding:36px;box-shadow:0 30px 80px -40px rgba(255,106,31,.25)}
 .contact-form-card .button{justify-self:stretch;justify-content:center;gap:14px;min-height:54px;font-size:14px}
 @media(max-width:760px){.contact-layout{grid-template-columns:1fr;gap:34px;padding-top:34px}.contact-form-card{padding:22px}.contact-side h2{font-size:52px}}
 /* Same hover treatment for every featured image (services, about, home feature, shirt pages, case video). */
@@ -362,48 +362,48 @@ html.js-reveal .reveal.is-visible{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.service-detail-image,.about-art img,.artist-feature-image,.shirt-page>img,.case-study .case-video,.service-detail-image img,.artist-feature-image img{transition:none}.service-detail-image:hover,.about-art img:hover,.artist-feature-image:hover,.shirt-page>img:hover,.case-study .case-video:hover,.service-detail-image:hover img,.artist-feature-image:hover img{transform:none}}
 /* Contact form: brighter frame so it reads as the main action. */
 .contact-form-card{border:1px solid rgba(255,106,31,.65);box-shadow:0 0 0 1px rgba(255,106,31,.12),0 0 60px -20px rgba(255,106,31,.35),0 30px 80px -40px rgba(255,106,31,.35)}
-.contact-form-card input,.contact-form-card select,.contact-form-card textarea{border-color:#64808a;background:rgba(18,3,2,.55)}
+.contact-form-card input,.contact-form-card select,.contact-form-card textarea{border-color:#64808a;background:rgba(32,7,5,.55)}
 .contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#8fb0b3}
 .contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 3px rgba(255,106,31,.18)}
 .contact-form-card label{color:var(--ink)}
 /* Contact form as a distinct raised card. */
-.contact-form-card{position:relative;background:linear-gradient(180deg,#210706 0%,#190504 100%);border:1px solid rgba(255,106,31,.55);border-top:3px solid var(--cyan);border-radius:16px;padding:0 40px 40px;gap:18px;box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 6px rgba(255,106,31,.06),0 0 80px -20px rgba(255,106,31,.4);transform:translateY(-6px)}
+.contact-form-card{position:relative;background:linear-gradient(180deg,#310e0b 0%,#280a08 100%);border:1px solid rgba(255,106,31,.55);border-top:3px solid var(--cyan);border-radius:16px;padding:0 40px 40px;gap:18px;box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 6px rgba(255,106,31,.06),0 0 80px -20px rgba(255,106,31,.4);transform:translateY(-6px)}
 .form-card-head{margin:0 -40px 8px;padding:26px 40px 22px;border-bottom:1px solid rgba(255,106,31,.25);background:rgba(255,106,31,.06);border-radius:13px 13px 0 0}
 .form-card-kicker{display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
 .form-card-head h3{font:700 30px/1 var(--display);letter-spacing:-.01em;margin:0;color:var(--ink)}
 .contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#0d1314;border-color:#5b7679}
 @media(max-width:760px){.contact-form-card{padding:0 22px 26px;transform:none}.form-card-head{margin:0 -22px 6px;padding:20px 22px 18px}.form-card-head h3{font-size:24px}}
 /* Contact form: bright inverted card — the one light object on the page. */
-.contact-form-card{background:#f2efe8;color:#120302;border:0;border-radius:18px;box-shadow:0 0 0 2px var(--cyan),0 0 0 10px rgba(255,106,31,.14),0 0 120px -10px rgba(255,106,31,.55),0 50px 100px -40px rgba(0,0,0,.95);transform:translateY(-8px)}
-.form-card-head{background:#120302;border-bottom:0;border-radius:16px 16px 0 0;padding:28px 40px 24px}
+.contact-form-card{background:#f2efe8;color:#200705;border:0;border-radius:18px;box-shadow:0 0 0 2px var(--cyan),0 0 0 10px rgba(255,106,31,.14),0 0 120px -10px rgba(255,106,31,.55),0 50px 100px -40px rgba(0,0,0,.95);transform:translateY(-8px)}
+.form-card-head{background:#200705;border-bottom:0;border-radius:16px 16px 0 0;padding:28px 40px 24px}
 .form-card-head h3{color:#f2efe8;font-size:34px}
 .form-card-kicker{color:var(--cyan)}
-.contact-form-card label{color:#120302;font-weight:700}
-.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#fff;color:#120302;border:1.5px solid #b9c2c0;border-radius:10px}
+.contact-form-card label{color:#200705;font-weight:700}
+.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#fff;color:#200705;border:1.5px solid #b9c2c0;border-radius:10px}
 .contact-form-card input::placeholder,.contact-form-card textarea::placeholder{color:#7d8785}
 .contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#5e6a68}
-.contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:#120302;box-shadow:0 0 0 3px rgba(255,106,31,.6)}
-.contact-form-card select option{background:#fff;color:#120302}
-.contact-form-card .button{background:#120302;border-color:#120302;color:var(--cyan);box-shadow:none;font-size:15px;min-height:58px}
-.contact-form-card .button:hover{background:var(--cyan);border-color:var(--cyan);color:#120302}
+.contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:#200705;box-shadow:0 0 0 3px rgba(255,106,31,.6)}
+.contact-form-card select option{background:#fff;color:#200705}
+.contact-form-card .button{background:#200705;border-color:#200705;color:var(--cyan);box-shadow:none;font-size:15px;min-height:58px}
+.contact-form-card .button:hover{background:var(--cyan);border-color:var(--cyan);color:#200705}
 @media(max-width:760px){.form-card-head{padding:22px 22px 18px}.form-card-head h3{font-size:26px}.contact-form-card{transform:none}}
 /* Contact form: gray panel (same gray as the image frames on Services/Work). */
 .contact-form-card{background:#263031;color:var(--ink)}
 .contact-form-card label{color:var(--ink)}
-.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#f2efe8;color:#120302;border:1.5px solid #f2efe8}
+.contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#f2efe8;color:#200705;border:1.5px solid #f2efe8}
 .contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#b9c2c0}
 .contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(255,106,31,.45)}
-.contact-form-card .button{background:var(--cyan);border-color:var(--cyan);color:#120302}
-.contact-form-card .button:hover{background:#f2efe8;border-color:#f2efe8;color:#120302}
+.contact-form-card .button{background:var(--cyan);border-color:var(--cyan);color:#200705}
+.contact-form-card .button:hover{background:#f2efe8;border-color:#f2efe8;color:#200705}
 /* Contact form: no white — dark fields on the gray panel. */
 .contact-form-card input,.contact-form-card select,.contact-form-card textarea{background:#141b1c;color:var(--ink);border:1.5px solid #4f6467}
 .contact-form-card input::placeholder,.contact-form-card textarea::placeholder{color:#7f9294}
 .contact-form-card input:hover,.contact-form-card select:hover,.contact-form-card textarea:hover{border-color:#7d9497}
 .contact-form-card input:focus,.contact-form-card select:focus,.contact-form-card textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(255,106,31,.3)}
 .contact-form-card select option{background:#141b1c;color:var(--ink)}
-.contact-form-card .button:hover{background:#ff8a3d;border-color:#ff8a3d;color:#120302}
+.contact-form-card .button:hover{background:#ff8a3d;border-color:#ff8a3d;color:#200705}
 /* ===== Engagement + visual refresh (Oct 21, 2026) ===== */
-:root{--coral:#ff6a1f;--coral-hover:#ff8a3d;--on-coral:#120302;--rule:#521c17;--accent:#ff6a1f;--accent-rgb:255,106,31;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")}
+:root{--coral:#ff6a1f;--coral-hover:#ff8a3d;--on-coral:#200705;--rule:#521c17;--accent:#ff6a1f;--accent-rgb:255,106,31;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")}
 /* V3: faint screen-print grain on the page paper; it is a background layer, so it never sits over text or catches taps. */
 body{background-image:var(--grain),radial-gradient(1200px 700px at 8% -10%,rgba(255,106,31,.10),transparent 60%),radial-gradient(900px 700px at 105% 35%,rgba(255,106,31,.07),transparent 60%);background-repeat:repeat,no-repeat,no-repeat}
 /* O004: nothing may push the page sideways on phones (root causes fixed below; this is the backstop). */
@@ -433,7 +433,7 @@ body{overflow-x:clip}
 .card-swatch{width:26px;height:26px;padding:0;border:0;background:transparent;border-radius:50%;display:grid;place-items:center;cursor:pointer}
 .card-swatch::before{content:'';width:14px;height:14px;border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px rgba(242,239,231,.28)}
 .card-swatch:hover::before{box-shadow:0 0 0 1px rgba(242,239,231,.6)}
-.card-swatch[aria-pressed=true]::before{box-shadow:0 0 0 2px #120302,0 0 0 4px var(--cyan)}
+.card-swatch[aria-pressed=true]::before{box-shadow:0 0 0 2px #200705,0 0 0 4px var(--cyan)}
 .card-swatch:focus-visible{outline-offset:0}
 .card-swatch-more{font-size:10px;color:var(--muted);margin-left:4px;letter-spacing:.04em}
 .card-swatch-name{flex-basis:100%;font-size:10px;color:var(--muted);margin-left:4px;min-height:0}
@@ -441,7 +441,7 @@ body{overflow-x:clip}
 /* L1: featured shirt beside the shop intro. */
 .shop-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,350px);grid-template-rows:auto auto auto 1fr;column-gap:6%;align-items:start}
 .shop-intro>:not(.shop-hero){grid-column:1}
-.shop-hero{grid-column:2;grid-row:1/span 4;align-self:start;margin-top:12px;display:grid;gap:18px;padding:16px;border:1px solid var(--rule);border-radius:14px;background:linear-gradient(160deg,rgba(var(--accent-rgb),.10),rgba(27,5,4,.75) 45%)}
+.shop-hero{grid-column:2;grid-row:1/span 4;align-self:start;margin-top:12px;display:grid;gap:18px;padding:16px;border:1px solid var(--rule);border-radius:14px;background:linear-gradient(160deg,rgba(var(--accent-rgb),.10),rgba(43,11,9,.75) 45%)}
 .shop-hero-image{position:relative;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1;background:#fff;transition:box-shadow .3s ease,border-color .3s ease}
 .shop-hero-image img{width:100%;height:100%;object-fit:cover;display:block}
 .shop-hero-image:hover,.shop-hero-image:focus-visible{border-color:rgba(var(--accent-rgb),.62);box-shadow:0 0 46px -8px rgba(var(--accent-rgb),.42)}
@@ -478,7 +478,7 @@ body{overflow-x:clip}
 .dialog-recent .mini-card{flex-basis:84px}
 .dialog-recent .mini-card img{width:84px;height:84px}
 /* Feature 4: share toast. */
-.toast{position:fixed;left:50%;bottom:24px;z-index:1000;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:#120302;font:600 13px/1 var(--body);padding:13px 18px;border-radius:999px;box-shadow:0 18px 40px -16px rgba(0,0,0,.8);transition:opacity .25s ease,transform .25s ease}
+.toast{position:fixed;left:50%;bottom:24px;z-index:1000;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:#200705;font:600 13px/1 var(--body);padding:13px 18px;border-radius:999px;box-shadow:0 18px 40px -16px rgba(0,0,0,.8);transition:opacity .25s ease,transform .25s ease}
 .toast.is-visible{opacity:1;transform:translate(-50%,0)}
 .product-dialog .toast{position:fixed}
 /* L4: floating cart on phones only, once the cart has something in it. */
@@ -491,7 +491,7 @@ body{overflow-x:clip}
 /* L3: Nino's photo on the About page (appears once assets/nino-portrait.webp exists). */
 .about-art{position:relative}
 .about-portrait{position:absolute;left:-26px;bottom:-34px;width:36%;margin:0;z-index:1}
-.about-portrait img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;border:5px solid #120302;box-shadow:0 30px 60px -30px rgba(0,0,0,.95)}
+.about-portrait img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;border:5px solid #200705;box-shadow:0 30px 60px -30px rgba(0,0,0,.95)}
 .about-portrait img:hover{transform:none}
 .about-portrait figcaption{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:8px}
 /* Quiz page. */
@@ -505,7 +505,7 @@ body{overflow-x:clip}
 .quiz-step{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 .quiz-question{font:700 clamp(38px,5vw,58px)/1 var(--display);letter-spacing:-.015em;margin:0 0 28px;outline:none}
 .quiz-answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
-.quiz-answer{min-height:64px;text-align:left;padding:16px 20px;border:1px solid var(--line-2);border-radius:12px;background:rgba(27,5,4,.7);color:var(--ink);font:500 15px/1.35 var(--body);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.quiz-answer{min-height:64px;text-align:left;padding:16px 20px;border:1px solid var(--line-2);border-radius:12px;background:rgba(43,11,9,.7);color:var(--ink);font:500 15px/1.35 var(--body);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
 .quiz-answer:hover{border-color:var(--cyan);background:rgba(255,106,31,.08);transform:translateY(-2px)}
 .quiz-back{margin-top:24px;background:none;border:0;border-bottom:1px solid currentColor;padding:0 0 3px;cursor:pointer}
 .quiz-result-name{font:800 clamp(52px,7vw,96px)/.9 var(--display);letter-spacing:-.025em;color:var(--cyan);margin:4px 0 16px;outline:none}
@@ -570,8 +570,8 @@ body{overflow-x:clip}
 .button-outline:hover{background:var(--button-cyan-hover)!important;border-color:var(--button-cyan-hover)!important;color:var(--on-button-cyan)!important}
 /* Every shirt card uses the same arrow and the same hover highlight. */
 .product-card,.shop-hero{--accent:#ff6a1f;--accent-rgb:255,106,31}
-.product-open-mark{background:#120302!important;color:var(--accent)!important;border:1px solid var(--line-2)!important}
-.product-image-link:hover .product-open-mark,.product-image-link:focus-visible .product-open-mark{background:var(--accent)!important;border-color:var(--accent)!important;color:#120302!important}
+.product-open-mark{background:#200705!important;color:var(--accent)!important;border:1px solid var(--line-2)!important}
+.product-image-link:hover .product-open-mark,.product-image-link:focus-visible .product-open-mark{background:var(--accent)!important;border-color:var(--accent)!important;color:#200705!important}
 /* Quiz and Surprise me sit up top in the shop intro. */
 .shop-intro-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .shop-intro-actions .button{min-height:50px}
@@ -593,7 +593,7 @@ body{overflow-x:clip}
 .shop-hero-image img:not(.image-unavailable){object-fit:cover;transform-origin:50% 47%;transform:scale(1.5)}
 
 /* Deeper mahogany: darker toward the bottom, faint warm light at the top, less glow behind text. */
-body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba(150,30,20,.22),transparent 65%),linear-gradient(180deg,#1d0504 0%,#120302 45%,#0a0101 100%)!important;background-repeat:repeat,no-repeat,no-repeat!important;background-attachment:scroll,fixed,fixed!important}
+body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba(190,45,28,.26),transparent 65%),linear-gradient(180deg,#36100c 0%,#250907 45%,#180504 100%)!important;background-repeat:repeat,no-repeat,no-repeat!important;background-attachment:scroll,fixed,fixed!important}
 
 /* Knurled mahogany texture in the top nav bar: lighter, high-contrast, with a beveled metal edge. */
 .site-header{background-color:#5c1913!important;background-image:linear-gradient(180deg,rgba(255,235,225,.10),rgba(0,0,0,.28)),repeating-linear-gradient(45deg,rgba(20,3,2,.85) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,rgba(20,3,2,.85) 0 1px,transparent 1px 5px),repeating-linear-gradient(45deg,rgba(255,214,200,.34) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,rgba(255,214,200,.34) 0 1px,transparent 1px 5px)!important;background-position:0 0,0 0,0 0,1px 0,1px 0!important;border-top:1px solid rgba(255,220,205,.35)!important;border-bottom:2px solid #ff6a1f!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(0,0,0,.5),0 2px 14px -2px rgba(255,106,31,.55),0 10px 24px -14px #000!important}
