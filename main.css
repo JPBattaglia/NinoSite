@@ -614,8 +614,12 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .brand-symbol img{transition:transform .9s cubic-bezier(.45,.05,.25,1)}
 .brand:hover .brand-symbol img,.brand:focus-visible .brand-symbol img{transform:rotate(360deg)}
 @media(prefers-reduced-motion:reduce){.brand-symbol img{transition:none}.brand:hover .brand-symbol img,.brand:focus-visible .brand-symbol img{transform:none}}
-/* Printful color photos are flat shots of the whole shirt: zoom in on the chest so the artwork is large. */
+/* Shirt view: the model photo uses the same zoom as the shop cards (1.6x on the chest), and Printful's flat
+   color shots are scaled so the artwork matches it (measured: model-photo artwork is ~1.15x the flat shot's,
+   so 1.6 x 1.15 = 1.85, centred on the print area at 50% / 37.5%). */
 .dialog-image{overflow:hidden;border-radius:10px}
-.dialog-image img[src*="printful.com"]{transform:scale(1.75);transform-origin:50% 38%}
+.dialog-image img[src*="assets/products/"]{transform:scale(1.6);transform-origin:50% 47%}
+.dialog-image img[src*="printful.com"]{transform:scale(1.85);transform-origin:50% 37.5%}
 .gallery-thumbs button{overflow:hidden}
-.gallery-thumbs img[src*="printful.com"]{transform:scale(1.75);transform-origin:50% 38%;background:#fff}
+.gallery-thumbs img[src*="assets/products/"]{transform:scale(1.6);transform-origin:50% 47%}
+.gallery-thumbs img[src*="printful.com"]{transform:scale(1.85);transform-origin:50% 37.5%;background:#fff}
