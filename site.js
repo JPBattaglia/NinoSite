@@ -500,7 +500,8 @@
     loadMore.addEventListener('click', () => { const previous = state.limit; state.limit += 24; render(); grid.querySelectorAll('.product-image-link')[previous]?.focus(); });
     document.querySelector('[data-show-all-products]')?.addEventListener('click', () => { state.limit = catalog.products.length; render(); });
     render();
-    const requested = catalog.products.find(item => item.id === query.get('product'));
+    const requestedId = query.get('product');
+    const requested = catalog.products.find(item => item.id === requestedId) || catalog.products.find(item => (item.aliases || []).includes(requestedId));
     if (requested) {
       document.title = title(requested.title) + ' — Nino Battaglia';
       document.querySelector('meta[property="og:title"]')?.setAttribute('content', document.title);
@@ -578,7 +579,7 @@
           (async () => {
             if (!window.NinoCommerce) return null;
             const records = await window.NinoCommerce.loadProducts();
-            const { storefrontProducts } = await import('./catalog-sync.mjs');
+            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261024w');
             return storefrontProducts(catalog.products, records, window.NinoCommerce.getCatalogStatus().complete);
           })(),
           new Promise(resolve => { timer = setTimeout(() => resolve(null), 3000); })

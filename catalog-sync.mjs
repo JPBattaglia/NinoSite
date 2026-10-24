@@ -16,7 +16,10 @@ export function storefrontProducts(existing, live, complete) {
     const photo = independentPhoto(previous?.image) || independentPhoto(product.image);
     const record = {
       ...previous,
-      id: String(product.id), title: previous?.title || String(product.title || '').replace(/\s+T$/, ''),
+      id: String(product.id),
+      // Older links (shirt pages, shared URLs) use the curated catalog ID or Printful's external ID.
+      aliases: [previous?.id, product.external_id].filter(value => value != null && String(value) !== String(product.id)).map(String),
+      title: previous?.title || String(product.title || '').replace(/\s+T$/, ''),
       image: photo || 'assets/brand-mark.webp',
       imageUnavailable: !photo,
       gallery: previous?.gallery?.some(independentPhoto) ? previous.gallery.filter(independentPhoto) : photo ? [photo] : [],
