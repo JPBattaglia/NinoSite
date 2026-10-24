@@ -2,7 +2,7 @@
 // and stores the responses in D1, so mockup integration can be designed without handling the token.
 // Rows are inserted directly into D1 by the account owner; nothing public can queue requests.
 const ALLOWED = [
-  ['GET', /^\/(mockup-generator\/|product-templates|store\/products|products\/|v2\/catalog-products\/|v2\/mockup-tasks|v2\/mockup-styles)/],
+  ['GET', /^\/(mockup-generator\/|product-templates|store\/products|store\/variants|stores|products\/|v2\/catalog-products\/|v2\/mockup-tasks|v2\/mockup-styles|v2\/stores)/],
   ['POST', /^\/(mockup-generator\/create-task\/\d+$|v2\/mockup-tasks$)/]
 ];
 const MAX_RESPONSE = 1500000;
@@ -21,7 +21,7 @@ export async function runPrintfulProbes(store, env, now, fetcher = (...args) => 
     try {
       const res = await fetcher(`https://api.printful.com${path}`, {
         method, body: method === 'POST' ? probe.body : undefined, signal: AbortSignal.timeout(20000),
-        headers: { Authorization: `Bearer ${env.PRINTFUL_ACCESS_TOKEN}`, 'X-PF-Store-Id': env.PRINTFUL_STORE_ID, 'Content-Type': 'application/json' }
+        headers: { Authorization: `Bearer ${env.PRINTFUL_ACCESS_TOKEN}`, 'X-PF-Store-Id': /^\d+$/.test(String(probe.store_id || '')) ? String(probe.store_id) : env.PRINTFUL_STORE_ID, 'Content-Type': 'application/json' }
       });
       response = `${res.status}\n${(await res.text()).slice(0, MAX_RESPONSE)}`;
     } catch (error) { status = 'error'; response = String(error?.message || error).slice(0, 500); }
