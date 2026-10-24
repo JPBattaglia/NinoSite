@@ -603,3 +603,6 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .page-intro h1 span,.about-intro h1 span,.hero-copy h1 span{background:linear-gradient(100deg,#ff3a2f 0%,#ff6a1f 38%,#ffb03a 72%,#ff6a1f 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;filter:drop-shadow(0 0 18px rgba(255,106,31,.45))}
 .filter-button.is-active,.collection-chips button.is-active,.product-image-link:hover .product-open-mark{box-shadow:0 0 0 1px rgba(255,106,31,.6),0 0 22px -2px rgba(255,106,31,.75)!important}
 .product-price,.shop-hero .product-price{text-shadow:0 0 12px rgba(255,106,31,.45)}
+
+/* Plain black nav bar. */
+.site-header{background:#000!important;background-image:none!important;border-top:0!important;border-bottom:1.5px solid #ff6a1f!important;box-shadow:0 2px 12px -3px rgba(255,106,31,.45)!important}
