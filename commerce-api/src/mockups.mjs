@@ -94,12 +94,20 @@ async function collect(store, env, job, now, fetcher) {
   return true;
 }
 
+// Printful sometimes leaves a mockup task "pending" forever. A submitted job older than this is resubmitted
+// (or parked after 3 attempts) so one stuck shirt can't hold up the rest of the queue.
+export const STALL_SECONDS = 30 * 60;
+
 // Called every minute: collect a submitted job if it's ready, otherwise submit the next pending one.
 export async function processMockups(store, env, now, fetcher = (...args) => fetch(...args)) {
   if (!env.MOCKUPS || !env.PRINTFUL_ACCESS_TOKEN) return 'disabled';
   let submitted;
   try { submitted = await store.first("SELECT * FROM mockup_jobs WHERE status='submitted' ORDER BY updated_at LIMIT 1"); }
   catch { return 'no_table'; }
+  if (submitted && now - submitted.updated_at > STALL_SECONDS) {
+    await store.run("UPDATE mockup_jobs SET status=?,task_id=NULL,last_error='printful_task_stalled',updated_at=? WHERE product_id=?", submitted.attempts < 3 ? 'pending' : 'error', now, submitted.product_id);
+    submitted = null;
+  }
   if (submitted) {
     try { return (await collect(store, env, submitted, now, fetcher)) ? 'collected' : 'waiting'; }
     catch (error) {
@@ -108,7 +116,7 @@ export async function processMockups(store, env, now, fetcher = (...args) => fet
       return 'collect_failed';
     }
   }
-  const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' ORDER BY priority DESC, product_id LIMIT 1");
+  const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' ORDER BY priority DESC, attempts, product_id LIMIT 1");
   if (!next) return 'idle';
   try { await submit(store, env, next, now, fetcher); return 'submitted'; }
   catch (error) {

@@ -60,3 +60,20 @@ test('layers wider or taller than the print area are scaled and kept inside it',
   assert.deepEqual(fitPrintArea({width:13.28,height:10.989,top:1.753,left:-0.527}),{width:12,height:9.93,top:2.283,left:0});
   assert.deepEqual(fitPrintArea({width:5,height:4,top:5,left:3.5}),{width:5,height:4,top:5,left:3.5});
 });
+
+test('a Printful task stuck pending is resubmitted instead of blocking the queue',async()=>{
+  const {f}=await setup();
+  const {STALL_SECONDS}=await import('../src/mockups.mjs');
+  const stuck=async(url,init={})=>url.endsWith('/v2/mockup-tasks')&&init.method==='POST'?new Response(JSON.stringify({data:[{id:88,status:'pending'}]})):new Response(JSON.stringify({data:[{id:88,status:'pending'}]}));
+  await f.store.run("INSERT INTO mockup_jobs(product_id,layer_json) VALUES('202','{\"width\":5,\"height\":4,\"top\":5,\"left\":3.5}')");
+  const start=f.now();
+  assert.equal(await processMockups(f.store,f.env,start,stuck),'submitted');
+  assert.equal(await processMockups(f.store,f.env,start+60,stuck),'waiting');
+  await processMockups(f.store,f.env,start+STALL_SECONDS+61,stuck);
+  const jobs=await f.store.all("SELECT product_id,status,attempts,last_error FROM mockup_jobs ORDER BY product_id");
+  // The stuck shirt goes back in the queue behind untried ones, and the next shirt is attempted.
+  assert.equal(jobs[0].status,'pending');
+  assert.equal(jobs[0].last_error,'printful_task_stalled');
+  assert.equal(jobs[0].attempts,1);
+  assert.equal(jobs[1].attempts,1);
+});
