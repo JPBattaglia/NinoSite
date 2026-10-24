@@ -35,6 +35,15 @@ async function productColors(store, productId) {
   return rows.filter(row => row.color && row.catalog_variant_id);
 }
 
+// Printful requires the whole layer (including transparent margins) inside the 12x16in print area.
+export function fitPrintArea({width, height, top, left}) {
+  const scale = Math.min(1, 12 / width, 16 / height);
+  const w = width * scale, h = height * scale;
+  const cx = left + width / 2, cy = top + height / 2;
+  const round = value => Math.round(value * 1000) / 1000;
+  return { width: round(w), height: round(h), top: round(Math.min(Math.max(cy - h / 2, 0), 16 - h)), left: round(Math.min(Math.max(cx - w / 2, 0), 12 - w)) };
+}
+
 // Alternate men's and women's models across the colors so each shirt shows both.
 export function styleForColor(index) { return index % 2 === 0 ? MEN_STYLE : WOMEN_STYLE; }
 
@@ -42,7 +51,7 @@ async function submit(store, env, job, now, fetcher) {
   const colors = await productColors(store, job.product_id);
   const hash = colors.find(row => row.hash)?.hash;
   if (!colors.length || !hash) throw new Error('no_variants_or_artwork');
-  const layer = JSON.parse(job.layer_json);
+  const layer = fitPrintArea(JSON.parse(job.layer_json));
   const placements = [{ placement: 'front', technique: 'dtg', layers: [{ type: 'file', url: artworkUrl(hash), position: layer }] }];
   const groups = [MEN_STYLE, WOMEN_STYLE].map(style => ({
     source: 'catalog', catalog_product_id: CATALOG_PRODUCT, mockup_style_ids: [style], placements,

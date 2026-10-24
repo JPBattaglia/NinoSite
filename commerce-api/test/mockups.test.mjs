@@ -55,3 +55,8 @@ test('a failed submission is retried and then parked without blocking other work
   assert.equal((await f.store.first("SELECT status FROM mockup_jobs WHERE product_id='101'")).status,'error');
   assert.equal(await processMockups(f.store,f.env,f.now(),failing),'idle');
 });
+test('layers wider or taller than the print area are scaled and kept inside it',async()=>{
+  const {fitPrintArea}=await import('../src/mockups.mjs');
+  assert.deepEqual(fitPrintArea({width:13.28,height:10.989,top:1.753,left:-0.527}),{width:12,height:9.93,top:2.282,left:0});
+  assert.deepEqual(fitPrintArea({width:5,height:4,top:5,left:3.5}),{width:5,height:4,top:5,left:3.5});
+});
