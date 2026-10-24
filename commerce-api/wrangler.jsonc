@@ -11,6 +11,9 @@
       "migrations_dir": "migrations"
     }
   ],
+  "kv_namespaces": [
+    { "binding": "MOCKUPS", "id": "3bd8ca58b3d340da8a1c025ea6f42d12" }
+  ],
   "triggers": {
     "crons": [
       "* * * * *",

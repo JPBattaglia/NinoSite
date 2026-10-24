@@ -8,6 +8,7 @@ import {publicCatalog,startCatalogSync,continueCatalogSync,pruneCatalogHistory} 
 export const DAILY_CRON='0 10 * * *';
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {runPrintfulProbes} from './probe.mjs';
+import {processMockups,serveMockup} from './mockups.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
@@ -53,12 +54,21 @@ export function createApp(dependencies={}) {
         if(request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
         if(!env.DB) fail(503,'database_not_configured');
         const store=new Store(env.DB); const now=clock();
+        const mockup=request.method==='GET' && url.pathname.match(/^\/api\/mockups\/(\d+)\/([a-z0-9-]+)\.jpg$/);
+        if(mockup) {
+          const cache=globalThis.caches?.default; const cached=cache && await cache.match(request);
+          if(cached) return cached;
+          const response=await serveMockup(env,mockup[1],mockup[2]);
+          if(!response) return new Response('Not found',{status:404,headers:{'Access-Control-Allow-Origin':'*'}});
+          if(cache) ctx?.waitUntil?.(cache.put(request,response.clone()));
+          return response;
+        }
         if(request.method==='GET' && url.pathname==='/api/health') {
           const row=await store.first('SELECT 1 AS ok');
           return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured'},200,cors);
         }
         if(request.method==='GET' && url.pathname==='/api/products') {
-          const catalog=await publicCatalog(store,env,now);
+          const catalog=await publicCatalog(store,env,now,url.origin);
           const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
           // Serializing ~13,500 variants is the expensive part, so the body is reused while nothing changed.
           const readinessKey=JSON.stringify(readiness);
@@ -67,7 +77,7 @@ export function createApp(dependencies={}) {
           return new Response(cached.body,{status:200,headers:{'Content-Type':'application/json; charset=utf-8',...JSON_HEADERS,...cors}});
         }
         if(request.method==='GET' && url.pathname==='/api/commerce-config') {
-          const catalog=await publicCatalog(store,env,now);
+          const catalog=await publicCatalog(store,env,now,url.origin);
           const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
           return json({...readiness,catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
         }
@@ -139,6 +149,7 @@ export function createApp(dependencies={}) {
         if(daily) await pruneCatalogHistory(store,now);
         if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
         try { await runPrintfulProbes(store,env,now); } catch { /* research helper must never block sync or fulfillment */ }
+        try { await processMockups(store,env,now); } catch { /* model photos must never block sync or fulfillment */ }
         const printful=dependencies.printful || new PrintfulClient(env);
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
         if(!sync && daily) sync=await startCatalogSync(store,printful,now);

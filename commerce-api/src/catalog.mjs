@@ -1,4 +1,5 @@
 import {fail,cents,hash,httpsImage} from './common.mjs';
+import {mockupColors,colorSlug} from './mockups.mjs';
 
 // The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
 // Checkout still re-verifies every variant against Printful before charging.
@@ -41,7 +42,7 @@ export async function normalizeVariant(raw, product) {
   return variant;
 }
 const catalogMemos = new WeakMap();
-export async function publicCatalog(store,env,now) {
+export async function publicCatalog(store,env,now,origin='') {
   const generation = await store.activeGeneration();
   if (!generation) return {products:[],catalog_ready:false,catalog_complete:false};
   const run = await store.first('SELECT * FROM catalog_sync_runs WHERE id=? AND status=\'complete\'',generation);
@@ -49,7 +50,9 @@ export async function publicCatalog(store,env,now) {
   const fresh = !!run && now - run.updated_at <= catalogMaxAge(env);
   // The catalog only changes when a sync completes, so a warm worker reuses the last build.
   const version = await store.first('SELECT COUNT(*) AS n,MAX(synced_at) AS changed FROM catalog_products WHERE generation=?',generation);
-  const memoKey = `${generation}:${run.updated_at}:${fresh}:${version?.n}:${version?.changed}`;
+  // Generated model photos replace Printful's flat color previews as soon as each shirt's bundle is stored.
+  const mockups = origin ? await mockupColors(store) : {version:'none',map:new Map()};
+  const memoKey = `${generation}:${run.updated_at}:${fresh}:${version?.n}:${version?.changed}:${mockups.version}:${origin}`;
   const memo = catalogMemos.get(store.db);
   if (memo?.key === memoKey) return memo.value;
   // Workers on the free plan get about 10ms of CPU per request, so the database extracts only the
@@ -62,7 +65,8 @@ export async function publicCatalog(store,env,now) {
   for (const row of rows) {
     let list = byProduct.get(row.product_id);
     if (!list) byProduct.set(row.product_id,list = []);
-    list.push({id:row.variant_id,name:row.name,size:row.size,color:row.color,image:safeImage(row.image),price:{amount:row.price_cents,currency:row.currency},available:fresh,max_quantity:10});
+    const modelPhoto = mockups.map.get(row.product_id)?.has(row.color) ? `${origin}/api/mockups/${row.product_id}/${colorSlug(row.color)}.jpg` : null;
+    list.push({id:row.variant_id,name:row.name,size:row.size,color:row.color,image:modelPhoto || safeImage(row.image),price:{amount:row.price_cents,currency:row.currency},available:fresh,max_quantity:10});
   }
   const value = {catalog_ready:fresh,catalog_complete:true,products:products.map(product => {
     const variants = byProduct.get(product.id) || [];
