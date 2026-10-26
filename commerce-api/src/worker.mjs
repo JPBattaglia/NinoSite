@@ -9,6 +9,7 @@ export const DAILY_CRON='0 10 * * *';
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {runPrintfulProbes} from './probe.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
+import {runMirror} from './mirror.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
@@ -151,8 +152,16 @@ export function createApp(dependencies={}) {
         try { await runPrintfulProbes(store,env,now); } catch { /* research helper must never block sync or fulfillment */ }
         try { await processMockups(store,env,now); } catch { /* model photos must never block sync or fulfillment */ }
         const printful=dependencies.printful || new PrintfulClient(env);
+        // New designs made in the source Printful store are copied into the website store before the daily sync,
+        // so the same sync publishes them. The owner can also trigger it by setting commerce_settings 'mirror_run_now'.
+        let mirrored={created:[]};
+        try {
+          const requested=await store.first("SELECT value FROM commerce_settings WHERE key='mirror_run_now'");
+          if(requested) await store.run("DELETE FROM commerce_settings WHERE key='mirror_run_now'");
+          if(daily || requested) mirrored=await runMirror(store,env,now,{destination:printful});
+        } catch { /* copying new designs must never block sync or fulfillment */ }
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
-        if(!sync && daily) sync=await startCatalogSync(store,printful,now);
+        if(!sync && (daily || mirrored.created.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch { /* The retained run is retried by the next scheduled invocation. */ } }
         if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
           const orders=await store.all("SELECT id FROM commerce_orders WHERE payment_status='paid' AND live_mode=1 AND fulfillment_status IN ('queued','retry','processing','draft') AND lease_until<=? AND next_retry_at<=? AND fulfillment_attempts<10 ORDER BY created_at LIMIT 3",now,now);
