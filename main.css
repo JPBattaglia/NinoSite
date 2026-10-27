@@ -659,3 +659,8 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 
 /* Quiz: featured button in the shop intro and the footer (not in the main nav). */
 .footer-support>a.footer-quiz{color:#200705;font-size:13px;text-decoration:none;margin:2px 0 6px}.footer-support>a.footer-quiz:hover{color:var(--ink)}
+
+.statement-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,34%);gap:clamp(28px,5vw,72px);align-items:center}
+.about-statement .statement-portrait{position:relative;left:auto;bottom:auto;width:100%;margin:0}
+.about-statement .statement-portrait img{border-width:1px;border-color:var(--line);border-radius:12px}
+@media(max-width:760px){.statement-grid{grid-template-columns:1fr}.about-statement .statement-portrait{width:72%;max-width:340px;margin:8px 0 0}}
