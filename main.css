@@ -649,6 +649,10 @@ body.modal-open .back-to-top{opacity:0;pointer-events:none;visibility:hidden}
 @media(max-width:760px) and (prefers-reduced-motion:no-preference){.collection-select:not(.is-set){animation:collection-glow 1.6s ease-in-out 3 .6s}}
 /* Rusted metal site background (assets/metal-bg*.webp): image under a dark red wash so text and cards stay readable.
    Phones get the image turned sideways (portrait) on a fixed layer so the whole picture fills the screen. */
-html::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(24,5,4,.62) 0%,rgba(24,5,4,.5) 50%,rgba(24,5,4,.7) 100%),url(assets/metal-bg-portrait.webp) center/cover no-repeat,#180504}
+html::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(24,5,4,.34) 0%,rgba(24,5,4,.22) 50%,rgba(24,5,4,.42) 100%),url(assets/metal-bg-portrait.webp) center/cover no-repeat,#180504}
 body{background-image:var(--grain)!important;background-color:transparent!important;background-repeat:repeat!important;background-size:auto!important;background-position:0 0!important;background-attachment:scroll!important}
 @media(min-width:761px){html::before{background:linear-gradient(180deg,rgba(24,5,4,.62) 0%,rgba(24,5,4,.5) 50%,rgba(24,5,4,.7) 100%),url(assets/metal-bg.webp) center/contain no-repeat,#180504}}
+/* let the metal show through the dark home-page bands */
+.design-services-preview,.artist-feature{background-image:linear-gradient(rgba(16,22,23,.5),rgba(13,18,19,.62))!important}
+.closing-banner{background-color:rgba(10,14,15,.55)!important}
+.band-lift::before,.shop-section[data-band=lift]::before{background-color:rgba(25,6,5,.55)!important}
