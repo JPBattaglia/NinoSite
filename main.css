@@ -664,3 +664,12 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .about-statement .statement-portrait{position:relative;left:auto;bottom:auto;width:100%;margin:0}
 .about-statement .statement-portrait img{border-width:1px;border-color:var(--line);border-radius:12px}
 @media(max-width:760px){.statement-grid{grid-template-columns:1fr}.about-statement .statement-portrait{width:72%;max-width:340px;margin:8px 0 0}}
+
+.built-by{display:grid;grid-template-columns:minmax(200px,.8fr) 1.6fr;gap:clamp(24px,5vw,64px);align-items:center;padding-block:56px;border-top:1px solid var(--line)}
+.built-by-logo{display:flex;align-items:center;justify-content:center;min-height:220px;padding:32px;background:rgba(43,11,9,.7);border:1px solid var(--line);border-radius:12px;transition:border-color .3s ease}
+.built-by-logo:hover{border-color:rgba(255,106,31,.55)}
+.built-by-logo img{width:min(260px,100%);height:auto}
+.built-by-copy h2{font-size:clamp(34px,5.5vw,64px);margin:0 0 16px}
+.built-by-copy p{max-width:56ch}
+.footer-credit-cta{color:var(--cyan);white-space:nowrap}
+@media(max-width:760px){.built-by{grid-template-columns:1fr;padding-block:40px}.built-by-logo{min-height:140px}}
