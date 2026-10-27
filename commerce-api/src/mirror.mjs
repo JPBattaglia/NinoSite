@@ -87,13 +87,14 @@ export async function runMirror(store, env, now, {destination, fetcher = (...arg
   if (!env.PRINTFUL_SOURCE_TOKEN || !env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return {status: 'disabled', created: [], errors: []};
   const sourceStore = env.PRINTFUL_SOURCE_STORE_ID || SOURCE_STORE_DEFAULT;
   // Own reader (not PrintfulClient) so a refusal is recorded with Printful's reason instead of a generic code.
+  // The source is an Etsy-linked store, which Printful only serves through /sync/products (not /store/products).
   const sourceGet = async path => {
     const response = await fetcher(`https://api.printful.com${path}`, {method: 'GET', signal: AbortSignal.timeout(20000), headers: {Authorization: `Bearer ${env.PRINTFUL_SOURCE_TOKEN}`, 'X-PF-Store-Id': sourceStore, 'Content-Type': 'application/json'}});
     const text = await response.text();
     if (!response.ok) throw new Error(`source ${response.status}: ${text.slice(0, 240)}`);
     return JSON.parse(text);
   };
-  const source = {listProducts: (offset, limit) => sourceGet(`/store/products?offset=${offset}&limit=${limit}`), getProduct: async id => (await sourceGet(`/store/products/${encodeURIComponent(id)}`)).result};
+  const source = {listProducts: (offset, limit) => sourceGet(`/sync/products?offset=${offset}&limit=${limit}`), getProduct: async id => (await sourceGet(`/sync/products/${encodeURIComponent(id)}`)).result};
   const result = {status: 'ok', created: [], errors: [], source_total: 0, missing: 0};
   try {
     const [sourceProducts, destinationProducts] = await Promise.all([listAll(source), listAll(destination)]);

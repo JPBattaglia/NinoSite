@@ -18,8 +18,8 @@ async function setup(sourceNames = ['Alpha T', 'Beta &amp; Co T', 'Gamma T'], de
   const fetcher = async (url, init = {}) => {
     const headers = init.headers || {};
     calls.push({url, method: init.method || 'GET', store: headers['X-PF-Store-Id'], auth: headers.Authorization, body: init.body ? JSON.parse(init.body) : null});
-    if (url.includes('/store/products?')) return Response.json({code: 200, result: sources.map(p => p.sync_product), paging: {total: sources.length}});
-    const m = url.match(/\/store\/products\/(\d+)$/);
+    if (url.includes('/sync/products?')) return Response.json({code: 200, result: sources.map(p => p.sync_product), paging: {total: sources.length}});
+    const m = url.match(/\/sync\/products\/(\d+)$/);
     if (m && (init.method || 'GET') === 'GET') return Response.json({code: 200, result: sources.find(p => String(p.sync_product.id) === m[1])});
     if (url.endsWith('/store/products') && init.method === 'POST') return Response.json({code: 200, result: {id: ++createdId}});
     return new Response('{}', {status: 404});
