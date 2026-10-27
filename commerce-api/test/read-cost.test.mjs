@@ -48,14 +48,22 @@ test('a built /api/products response is shared through the edge cache so repeat 
     assert.equal(first.headers.get('Cache-Control'),'no-store');
     const firstBody=await first.json();
     assert.ok(prepares>0,'the first request builds the catalog from D1');
-    const stored=entries.get('https://api.example.com/api/products');
+    const stored=[...entries.values()][0];
     assert.equal(stored.headers.get('Cache-Control'),`public, max-age=${PRODUCTS_EDGE_TTL}`);
     prepares=0;
     const second=await f.app.fetch(new Request('https://api.example.com/api/products?cachebust=1',{headers:{Origin:'https://evil.example'}}),f.env,ctx);
-    assert.equal(prepares,0,'a repeat request is served from the edge cache with zero D1 queries');
+    assert.ok(prepares<=2,`a repeat request makes only the two tiny version lookups, not a catalog rebuild (made ${prepares})`);
     assert.equal(second.status,200);
     assert.equal(second.headers.get('Cache-Control'),'no-store');
     assert.deepEqual(await second.json(),firstBody);
+    // A finished sync changes the version key, so a new design is served immediately instead of after the TTL.
+    await f.store.run("UPDATE catalog_sync_runs SET updated_at=updated_at+60 WHERE id='initial'");
+    await f.store.run("UPDATE catalog_products SET title='Brand new title' WHERE generation='initial'");
+    prepares=0;
+    const third=await f.app.fetch(new Request('https://api.example.com/api/products'),f.env,ctx);
+    await Promise.all(pending);
+    assert.ok(prepares>2,'a new sync version rebuilds the catalog');
+    assert.equal((await third.json()).products[0].title,'Brand new title');
   } finally { delete globalThis.caches; }
 });
 

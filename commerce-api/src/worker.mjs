@@ -73,10 +73,16 @@ export function createApp(dependencies={}) {
         if(request.method==='GET' && url.pathname==='/api/products') {
           // Building the catalog reads every variant row (~13,500), and D1's free plan allows 5,000,000 row reads a day.
           // The catalog only changes when a sync or mockup finishes, so the built response is shared through the
-          // edge cache for PRODUCTS_EDGE_TTL seconds. Visitors and crawlers then cost no D1 reads between rebuilds.
+          // edge cache (at most PRODUCTS_EDGE_TTL seconds, and replaced as soon as a sync completes). Visitors and crawlers then cost no D1 reads between rebuilds.
           // Checkout never trusts this copy: validatedLines re-reads current prices and availability from D1.
-          const edge=globalThis.caches?.default; const edgeKey=new Request(`${url.origin}/api/products`);
-          const hit=edge && await edge.match(edgeKey).catch(()=>null);
+          // The cache key carries the live catalog's generation and last-sync time (two single-row reads), so a finished
+          // sync, or a newly mirrored design, shows up on the very next request instead of after the TTL.
+          const edge=globalThis.caches?.default; let edgeKey=null,hit=null;
+          if(edge) {
+            const generation=await store.activeGeneration();
+            const run=generation && await store.first("SELECT updated_at FROM catalog_sync_runs WHERE id=? AND status='complete'",generation);
+            if(run) { edgeKey=new Request(`${url.origin}/api/products?v=${encodeURIComponent(generation)}.${run.updated_at}`); hit=await edge.match(edgeKey).catch(()=>null); }
+          }
           if(hit) { const headers=new Headers(hit.headers); headers.set('Cache-Control',JSON_HEADERS['Cache-Control']); return new Response(hit.body,{status:hit.status,headers}); }
           const catalog=await publicCatalog(store,env,now,url.origin);
           const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
@@ -85,7 +91,7 @@ export function createApp(dependencies={}) {
           let cached=productBodies.get(catalog);
           if(!cached || cached.readinessKey!==readinessKey) { cached={readinessKey,body:JSON.stringify({...catalog,...readiness})}; productBodies.set(catalog,cached); }
           const response=new Response(cached.body,{status:200,headers:{'Content-Type':'application/json; charset=utf-8',...JSON_HEADERS,...cors}});
-          if(edge && catalog.catalog_complete) { const stored=response.clone(); const headers=new Headers(stored.headers); headers.set('Cache-Control',`public, max-age=${PRODUCTS_EDGE_TTL}`); ctx?.waitUntil?.(edge.put(edgeKey,new Response(stored.body,{status:200,headers})).catch(()=>{})); }
+          if(edge && edgeKey && catalog.catalog_complete) { const stored=response.clone(); const headers=new Headers(stored.headers); headers.set('Cache-Control',`public, max-age=${PRODUCTS_EDGE_TTL}`); ctx?.waitUntil?.(edge.put(edgeKey,new Response(stored.body,{status:200,headers})).catch(()=>{})); }
           return response;
         }
         if(request.method==='GET' && url.pathname==='/api/commerce-config') {
