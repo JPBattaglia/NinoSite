@@ -1,0 +1,25 @@
+# Read-only health check of the live shop, so nobody has to place a test order by hand.
+# It only issues GET requests: no checkout, no Stripe or Printful calls, no orders.
+name: Smoke test live shop
+
+on:
+  schedule:
+    - cron: '17 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: commerce-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run smoke checks
+        run: node scripts/smoke.mjs

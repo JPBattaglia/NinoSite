@@ -41,6 +41,11 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Dry-run the deploy bundle
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+        run: npx wrangler deploy --dry-run --config wrangler.jsonc
+
       - name: Check Cloudflare token is configured
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -48,6 +53,23 @@ jobs:
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
             echo "::error::Add the CLOUDFLARE_API_TOKEN repository secret (Settings > Secrets and variables > Actions), then re-run this workflow."
             exit 1
+          fi
+
+      - name: Warn about pending D1 migrations
+        # Migrations are applied by hand (see commerce-api/README.md). This only warns, so a token without D1 access cannot block a deploy.
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: |
+          if [ -n "$ACCOUNT_ID" ]; then export CLOUDFLARE_ACCOUNT_ID="$ACCOUNT_ID"; fi
+          if out=$(npx wrangler d1 migrations list DB --remote --config wrangler.jsonc 2>&1); then
+            if ! echo "$out" | grep -qi 'no migrations to apply'; then
+              echo "::warning title=Pending D1 migrations::Apply them before relying on this release. $(echo "$out" | tr '\n' ' ' | cut -c1-300)"
+            fi
+          else
+            echo "::warning title=Migration check skipped::Could not read the D1 migration list with this token."
           fi
 
       - name: Deploy worker
@@ -63,3 +85,6 @@ jobs:
             grep -iE 'error|✘|code:|failed|permission|authentication' deploy.log | head -10 | while IFS= read -r line; do echo "::error title=wrangler::$line"; done
             exit 1
           fi
+
+      - name: Smoke test the live shop (read-only, no orders)
+        run: node scripts/smoke.mjs
