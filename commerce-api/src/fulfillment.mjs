@@ -38,6 +38,12 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
     }
     const paid=await checkedPaidSession(order,await stripe.retrieveSession(order.stripe_session_id),await stripe.listLineItems(order.stripe_session_id));
     if(!paid) fail(409,'payment_not_paid');
+    if(!order.recipient_json || !order.customer_email) {
+      // The webhook stores these only after its own payment check passes; an order it sent to review has none of them.
+      // The payment was just re-verified against Stripe above, so save the verified values and let the retry proceed.
+      await store.run('UPDATE commerce_orders SET recipient_json=?,customer_email=?,stripe_payment_intent_id=COALESCE(stripe_payment_intent_id,?),paid_total_cents=?,paid_tax_cents=?,paid_shipping_cents=?,updated_at=? WHERE id=? AND claim_id=?',JSON.stringify(paid.recipient),paid.email,paid.payment_intent_id,paid.total,paid.tax,paid.shipping,now,order.id,claim);
+      order=await store.order(id);
+    }
     if(!order.recipient_json || !order.customer_email) fail(409,'fulfillment_address_missing');
     let draft=await printful.findOrder(order.id);
     if(!draft) {

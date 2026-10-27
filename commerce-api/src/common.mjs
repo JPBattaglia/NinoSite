@@ -53,9 +53,12 @@ export function recipient(input, countries = []) {
 export function stripeShipping(address) {
   return {name:address.name,address:{line1:address.address1,line2:address.address2 || undefined,city:address.city,state:address.state_code || undefined,postal_code:address.zip,country:address.country_code}};
 }
+// Comprehensively embargoed destinations (Cuba, Iran, North Korea, Syria). Never offered for delivery, whatever the
+// configured or Printful-provided list says; every checkout, quote and fulfillment check reads countries() below.
+export const BLOCKED_COUNTRIES = Object.freeze(['CU','IR','KP','SY']);
 export function countries(env) {
   const values = (env.SHIPPING_COUNTRIES || '').split(',').map(v => v.trim().toUpperCase()).filter(Boolean);
-  return values.length && values.every(v => /^[A-Z]{2}$/.test(v)) ? [...new Set(values)] : [];
+  return values.length && values.every(v => /^[A-Z]{2}$/.test(v)) ? [...new Set(values)].filter(v => !BLOCKED_COUNTRIES.includes(v)) : [];
 }
 export function shippingConfig(env) {
   const mode = env.SHIPPING_MODE; const allowed = countries(env);
