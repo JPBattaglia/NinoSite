@@ -7,6 +7,9 @@
 
 export const MIRROR_MAX_PER_RUN = 3;            // each product writes ~100 variants; keep D1 and Printful calls small
 export const SOURCE_STORE_DEFAULT = '18583773'; // NinosTs
+// Designs the owner keeps off the website (they stay in the source store). More can be added without a deploy by
+// setting commerce_settings 'mirror_skip' to a comma-separated list of design names.
+export const MIRROR_EXCLUDED = ['Pizza Planet T'];
 const PRINT_AREA = {width_in: 12, height_in: 16, dpi: 150};
 
 const decode = text => String(text ?? '').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n))).replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
@@ -64,6 +67,15 @@ export function buildPayload(detail) {
   return {payload: {sync_product: {name: decode(product.name)}, sync_variants}, layer};
 }
 
+async function ignoreProduct(env, fetcher, id) {
+  // Ignoring is reversible in Printful and makes the catalog sync drop the product from the site.
+  const response = await fetcher(`https://api.printful.com/store/products/${encodeURIComponent(id)}`, {
+    method: 'PUT', body: JSON.stringify({sync_product: {is_ignored: true}}), signal: AbortSignal.timeout(20000),
+    headers: {Authorization: `Bearer ${env.PRINTFUL_ACCESS_TOKEN}`, 'X-PF-Store-Id': env.PRINTFUL_STORE_ID, 'Content-Type': 'application/json'}
+  });
+  if (!response.ok) throw new Error(`ignore ${response.status}: ${(await response.text()).slice(0, 200)}`);
+}
+
 async function createProduct(env, fetcher, payload) {
   const response = await fetcher('https://api.printful.com/store/products', {
     method: 'POST', body: JSON.stringify(payload), signal: AbortSignal.timeout(25000),
@@ -102,10 +114,19 @@ export async function runMirror(store, env, now, {destination, fetcher = (...arg
     // Diagnostics: lets the owner see which store the source token really reads (IDs differ between stores).
     result.source_newest = sourceProducts.slice(0, 3).map(p => `${p.id} ${decode(p.name)}`);
     result.destination_newest = destinationProducts.slice(0, 3).map(p => `${p.id} ${decode(p.name)}`);
+    const skipSetting = (await store.first("SELECT value FROM commerce_settings WHERE key='mirror_skip'"))?.value || '';
+    const excluded = new Set([...MIRROR_EXCLUDED, ...skipSetting.split(',')].map(nameKey).filter(Boolean));
+    result.ignored = [];
+    for (const product of destinationProducts) {
+      if (excluded.has(nameKey(product.name)) && product.is_ignored !== true) {
+        try { await ignoreProduct(env, fetcher, product.id); result.ignored.push(decode(product.name)); }
+        catch (error) { result.errors.push(`${decode(product.name)}: ${String(error?.message || error).slice(0, 200)}`); }
+      }
+    }
     const have = new Set(destinationProducts.map(p => nameKey(p.name)));
     const copied = new Set((await store.all("SELECT key FROM commerce_settings WHERE key LIKE 'mirror:%'")).map(row => row.key));
     // The newest design has the highest ID; copy those first.
-    const missing = sourceProducts.filter(p => p && p.is_ignored !== true && !have.has(nameKey(p.name)) && !copied.has(settingKey(p.id))).sort((a, b) => Number(b.id) - Number(a.id));
+    const missing = sourceProducts.filter(p => p && p.is_ignored !== true && !have.has(nameKey(p.name)) && !excluded.has(nameKey(p.name)) && !copied.has(settingKey(p.id))).sort((a, b) => Number(b.id) - Number(a.id));
     result.missing = missing.length;
     for (const product of missing.slice(0, max)) {
       try {

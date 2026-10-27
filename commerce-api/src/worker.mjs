@@ -161,7 +161,7 @@ export function createApp(dependencies={}) {
           if(daily || requested) mirrored=await runMirror(store,env,now,{destination:printful});
         } catch { /* copying new designs must never block sync or fulfillment */ }
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
-        if(!sync && (daily || mirrored.created.length)) sync=await startCatalogSync(store,printful,now);
+        if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch { /* The retained run is retried by the next scheduled invocation. */ } }
         if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
           const orders=await store.all("SELECT id FROM commerce_orders WHERE payment_status='paid' AND live_mode=1 AND fulfillment_status IN ('queued','retry','processing','draft') AND lease_until<=? AND next_retry_at<=? AND fulfillment_attempts<10 ORDER BY created_at LIMIT 3",now,now);

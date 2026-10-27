@@ -21,6 +21,7 @@ async function setup(sourceNames = ['Alpha T', 'Beta &amp; Co T', 'Gamma T'], de
     if (url.includes('/sync/products?')) return Response.json({code: 200, result: sources.map(p => p.sync_product), paging: {total: sources.length}});
     const m = url.match(/\/sync\/products\/(\d+)$/);
     if (m && (init.method || 'GET') === 'GET') return Response.json({code: 200, result: sources.find(p => String(p.sync_product.id) === m[1])});
+    if (init.method === 'PUT' && /\/store\/products\/\d+$/.test(url)) return Response.json({code: 200, result: {}});
     if (url.endsWith('/store/products') && init.method === 'POST') return Response.json({code: 200, result: {id: ++createdId}});
     return new Response('{}', {status: 404});
   };
@@ -99,4 +100,17 @@ test('helpers', () => {
   assert.equal(buildPayload({sync_product: {name: 'X'}, sync_variants: [variant(1, {is_ignored: true}), variant(2, {retail_price: '0'}), variant(3, {files: [file({type: 'preview'})]})]}), null);
   const p = placement(file({width: 1000, height: 3000, dpi: 300}));
   assert.equal(p.height, 12); assert.ok(p.width < 10.352);
+});
+
+test('keeps excluded designs off the website: skips them and ignores one already in the store', async () => {
+  const {f, calls, fetcher} = await setup(['Keep T', 'Pizza Planet T', 'Hidden T'], ['Pizza Planet T']);
+  f.printful.products = new Map([['9000', {sync_product: {id: 9000, name: 'Pizza Planet T', is_ignored: false}}]]);
+  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('mirror_skip','hidden t')");
+  const result = await runMirror(f.store, f.env, f.now(), {destination: f.printful, fetcher});
+  assert.deepEqual(result.created, ['Keep T']);
+  assert.deepEqual(result.ignored, ['Pizza Planet T']);
+  const puts = calls.filter(c => c.method === 'PUT');
+  assert.equal(puts.length, 1); assert.match(puts[0].url, /\/store\/products\/9000$/);
+  assert.deepEqual(puts[0].body, {sync_product: {is_ignored: true}});
+  assert.equal(calls.filter(c => c.method === 'POST').length, 1);
 });
