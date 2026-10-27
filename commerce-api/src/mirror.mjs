@@ -90,7 +90,10 @@ export async function runMirror(store, env, now, {destination, fetcher = (...arg
   const result = {status: 'ok', created: [], errors: [], source_total: 0, missing: 0};
   try {
     const [sourceProducts, destinationProducts] = await Promise.all([listAll(source), listAll(destination)]);
-    result.source_total = sourceProducts.length;
+    result.source_total = sourceProducts.length; result.destination_total = destinationProducts.length;
+    // Diagnostics: lets the owner see which store the source token really reads (IDs differ between stores).
+    result.source_newest = sourceProducts.slice(0, 3).map(p => `${p.id} ${decode(p.name)}`);
+    result.destination_newest = destinationProducts.slice(0, 3).map(p => `${p.id} ${decode(p.name)}`);
     const have = new Set(destinationProducts.map(p => nameKey(p.name)));
     const copied = new Set((await store.all("SELECT key FROM commerce_settings WHERE key LIKE 'mirror:%'")).map(row => row.key));
     // The newest design has the highest ID; copy those first.
