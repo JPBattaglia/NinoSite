@@ -4,7 +4,6 @@
 //
 // A design is "new" when no product with the same name exists in the website store and it has not been copied
 // before (commerce_settings key `mirror:<source id>`). Prices, sizes, colors and artwork are copied as they are.
-import {PrintfulClient} from './providers.mjs';
 
 export const MIRROR_MAX_PER_RUN = 3;            // each product writes ~100 variants; keep D1 and Printful calls small
 export const SOURCE_STORE_DEFAULT = '18583773'; // NinosTs
@@ -86,7 +85,15 @@ async function setSetting(store, key, value) {
 // Returns {status, created:[names], errors:[...]} and records it in commerce_settings 'mirror_last'.
 export async function runMirror(store, env, now, {destination, fetcher = (...args) => fetch(...args), max = MIRROR_MAX_PER_RUN} = {}) {
   if (!env.PRINTFUL_SOURCE_TOKEN || !env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return {status: 'disabled', created: [], errors: []};
-  const source = new PrintfulClient({PRINTFUL_ACCESS_TOKEN: env.PRINTFUL_SOURCE_TOKEN, PRINTFUL_STORE_ID: env.PRINTFUL_SOURCE_STORE_ID || SOURCE_STORE_DEFAULT, PRINTFUL_CATALOG_MODE: 'store'}, fetcher);
+  const sourceStore = env.PRINTFUL_SOURCE_STORE_ID || SOURCE_STORE_DEFAULT;
+  // Own reader (not PrintfulClient) so a refusal is recorded with Printful's reason instead of a generic code.
+  const sourceGet = async path => {
+    const response = await fetcher(`https://api.printful.com${path}`, {method: 'GET', signal: AbortSignal.timeout(20000), headers: {Authorization: `Bearer ${env.PRINTFUL_SOURCE_TOKEN}`, 'X-PF-Store-Id': sourceStore, 'Content-Type': 'application/json'}});
+    const text = await response.text();
+    if (!response.ok) throw new Error(`source ${response.status}: ${text.slice(0, 240)}`);
+    return JSON.parse(text);
+  };
+  const source = {listProducts: (offset, limit) => sourceGet(`/store/products?offset=${offset}&limit=${limit}`), getProduct: async id => (await sourceGet(`/store/products/${encodeURIComponent(id)}`)).result};
   const result = {status: 'ok', created: [], errors: [], source_total: 0, missing: 0};
   try {
     const [sourceProducts, destinationProducts] = await Promise.all([listAll(source), listAll(destination)]);
