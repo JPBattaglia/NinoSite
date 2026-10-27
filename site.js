@@ -453,7 +453,7 @@
       // On small screens the chips collapse into a dropdown (see .collection-select in main.css).
       const picker = node('select', 'collection-select');
       picker.setAttribute('aria-labelledby', 'collections-label');
-      picker.append(new Option('All collections', ''), ...collections.map(collection => new Option(collection.name, collection.id)));
+      picker.append(new Option('Browse collections', ''), ...collections.map(collection => new Option(collection.name, collection.id)));
       picker.value = state.collection;
       picker.addEventListener('change', () => { state.collection = picker.value; state.category = 'all'; state.limit = 24; render(); });
       collectionRow.append(picker);
@@ -481,7 +481,7 @@
       for (const [key, value] of [['q', state.search], ['category', state.category === 'all' ? '' : state.category], ['collection', state.collection], ['sort', sort.value === 'featured' ? '' : sort.value]]) { if (value) next.searchParams.set(key, value); else next.searchParams.delete(key); }
       history.replaceState(null, '', next.pathname + next.search + next.hash);
       document.querySelectorAll('[data-category]').forEach(button => { const active = button.dataset.category === state.category; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active)); });
-      const collectionPicker = document.querySelector('.collection-select'); if (collectionPicker) collectionPicker.value = state.collection;
+      const collectionPicker = document.querySelector('.collection-select'); if (collectionPicker) { collectionPicker.value = state.collection; collectionPicker.classList.toggle('is-set', Boolean(state.collection)); }
       document.querySelectorAll('[data-collection]').forEach(button => { const active = button.dataset.collection === state.collection; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active)); });
       // Section tone follows what is on screen: picks lift, originals go teal, seasonal goes warm.
       if (section) section.dataset.band = state.collection === 'ninos-picks' ? 'lift' : state.category === 'Originals' ? 'teal' : state.category === 'Seasonal' ? 'warm' : '';
