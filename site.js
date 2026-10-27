@@ -539,8 +539,7 @@
     shop.type = 'button'; shop.setAttribute('aria-haspopup', 'dialog');
     const arrow = node('span', '', '↗'); arrow.setAttribute('aria-hidden', 'true'); shop.append(arrow);
     shop.addEventListener('click', () => openRecord(record, 'product', shop));
-    const quiz = node('a', 'text-link', 'Which shirt are you? ↗'); quiz.href = 'quiz.html';
-    actions.append(shop, quiz);
+    actions.append(shop);
     copy.append(node('p', 'eyebrow', 'Featured design'), heading, price, actions);
     const swatches = cardSwatches(record); if (swatches) copy.insertBefore(swatches, actions);
     hero.replaceChildren(picture, copy);
