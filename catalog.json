@@ -3,7 +3,7 @@
     "name": "Nino’s Ts",
     "url": "shop.html",
     "checkout": "stripe",
-    "catalog_count": 136,
+    "catalog_count": 137,
     "collections": [
       {
         "id": "ninos-picks",
@@ -15972,6 +15972,21 @@
       },
       "accent": "#4d96cb",
       "slug": "moto-ride"
+    },
+    {
+      "id": "485862119",
+      "title": "Champagne + Candy Canes",
+      "image": "https://nino-printful-commerce-api.ijpbattaglia.workers.dev/api/mockups/485862119/black.jpg",
+      "gallery": [
+        "https://nino-printful-commerce-api.ijpbattaglia.workers.dev/api/mockups/485862119/black.jpg"
+      ],
+      "category": "Seasonal",
+      "description": "Original artwork by Nino Battaglia on a shirt — a festive holiday design.",
+      "featured": false,
+      "variants": [],
+      "options": {
+        "colors": []
+      }
     }
   ],
   "artworks": [

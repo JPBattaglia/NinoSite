@@ -634,3 +634,8 @@ body:has(.sticky-cart.has-items) .back-to-top{bottom:calc(78px + env(safe-area-i
 body.modal-open .back-to-top{opacity:0;pointer-events:none;visibility:hidden}
 @media(prefers-reduced-motion:reduce){.back-to-top,.back-to-top.is-visible{transition:none;transform:none}}
 @media print{.back-to-top{display:none}}
+/* Collections: chips on wide screens, a dropdown on small ones. */
+.collection-select{display:none;color-scheme:dark;flex:1 1 200px;min-width:0;min-height:44px;padding:9px 14px;border:1px solid var(--line-2);border-radius:999px;background:rgba(255,255,255,.03);color:var(--ink);font:500 14px/1.2 var(--body)}
+.collection-select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.collection-select option{background:#1a1110;color:#fff}
+@media(max-width:760px){.collection-filter-row .collection-chips{display:none}.collection-select{display:block}.collection-filter-row{flex-wrap:nowrap}}
