@@ -680,6 +680,7 @@
           invalidateShipping('Delivery rates changed. Get updated rates before checkout.');
           throw new Error('Get updated delivery rates before checkout.');
         }
+        if (data?.error === 'checkout_paused') throw new Error('Checkout is paused for a short time. Your cart is saved; please try again later today.');
         throw new Error(response.status === 409 ? 'A product option changed. Review your cart and try again.' : 'Checkout is unavailable right now. Your cart is saved; please try again.');
       }
       let destination;
