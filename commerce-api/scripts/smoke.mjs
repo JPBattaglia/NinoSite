@@ -34,7 +34,7 @@ export async function runSmoke(fetcher = fetch, options = {}) {
     expect(health.ok === true, 'database check failed');
     return `payment mode ${health.payment_mode}`;
   });
-  await check('Daily payment and fulfilment self-check passed', async () => {
+  if (!config.skipSelfCheck) await check('Daily payment and fulfilment self-check passed', async () => {
     const health = await getJson(`${config.api}/api/health`);
     const result = health.selfcheck;
     expect(result, 'the self-check has not run yet');
@@ -86,6 +86,7 @@ async function main() {
   if (process.env.API_BASE) options.api = process.env.API_BASE.replace(/\/$/, '');
   if (process.env.SITE_BASE) options.site = process.env.SITE_BASE.replace(/\/$/, '');
   if (process.env.MIN_PRODUCTS) options.minProducts = Number(process.env.MIN_PRODUCTS);
+  if (process.env.SKIP_SELFCHECK === '1') options.skipSelfCheck = true;
   // A fresh deploy can take a few seconds to answer everywhere, so a failing run is repeated before it counts.
   let results;
   for (let attempt = 1; attempt <= 3; attempt++) {

@@ -87,4 +87,7 @@ jobs:
           fi
 
       - name: Smoke test the live shop (read-only, no orders)
+        # The daily self-check result is judged by the scheduled smoke test, not by deploys.
+        env:
+          SKIP_SELFCHECK: '1'
         run: node scripts/smoke.mjs
