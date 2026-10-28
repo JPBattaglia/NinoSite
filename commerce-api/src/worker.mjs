@@ -11,6 +11,7 @@ export const PRODUCTS_EDGE_TTL=1800;
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {runPrintfulProbes} from './probe.mjs';
 import {refreshPalette} from './colors.mjs';
+import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {runMirror} from './mirror.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
@@ -69,7 +70,9 @@ export function createApp(dependencies={}) {
         }
         if(request.method==='GET' && url.pathname==='/api/health') {
           const row=await store.first('SELECT 1 AS ok');
-          return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured'},200,cors);
+          const check=await lastSelfCheck(store);
+          const selfcheck=check ? {ok:check.ok===true,checked_at:check.checked_at,failed:(check.checks || []).filter(item=>!item.ok).map(item=>item.name)} : null;
+          return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured',selfcheck},200,cors);
         }
         if(request.method==='GET' && url.pathname==='/api/products') {
           // Building the catalog reads every variant row (~13,500), and D1's free plan allows 5,000,000 row reads a day.
@@ -127,6 +130,7 @@ export function createApp(dependencies={}) {
         if(url.pathname.startsWith('/api/admin/')) {
           await admin(request,env);
           if(request.method==='GET' && url.pathname==='/api/admin/measurement') return json(await measurementReport(store,now),200,cors);
+          if(request.method==='GET' && url.pathname==='/api/admin/selfcheck') return json(await lastSelfCheck(store),200,cors);
           const printful=dependencies.printful || new PrintfulClient(env);
           if(request.method==='POST' && url.pathname==='/api/admin/catalog/sync') {
             if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) fail(503,'printful_not_configured');
@@ -190,6 +194,12 @@ export function createApp(dependencies={}) {
             for(const order of orders) await fulfillOrder(order.id,store,stripe,printful,env,now);
           }
         }
+        // Daily self-check of the live payment and fulfilment setup (see selfcheck.mjs); also on request.
+        try {
+          const requested=await store.first('SELECT value FROM commerce_settings WHERE key=?',SELFCHECK_RUN_NOW);
+          if(requested) await store.run('DELETE FROM commerce_settings WHERE key=?',SELFCHECK_RUN_NOW);
+          if((daily || requested) && env.STRIPE_SECRET_KEY) await runSelfCheck(store,dependencies.stripe || await createStripeClient(env),printful,env,now);
+        } catch(error) { console.error('shop self-check could not run',error?.message || error); }
       };
       if(ctx?.waitUntil) ctx.waitUntil(run()); else await run();
     }

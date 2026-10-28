@@ -22,6 +22,8 @@
   },
   "vars": {
     "STOREFRONT_ORIGIN": "https://ninobattaglia.com",
+    "COMMERCE_API_ORIGIN": "https://nino-printful-commerce-api.ijpbattaglia.workers.dev",
+    "STRIPE_ACCOUNT_ID": "acct_1SPsFVQlpYdvqrua",
     "STRIPE_MODE": "live",
     "CHECKOUT_ENABLED": "true",
     "CHECKOUT_PAUSED": "false",

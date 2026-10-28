@@ -44,12 +44,12 @@ test('a cancelled or unpaid checkout never reaches fulfillment, and a tampered p
   assert.equal(f.printful.createCalls,0);
 });
 
-function fakeSite({products=130,countries=['US','CA'],checkoutReady=true,drop=''}={}) {
+function fakeSite({products=130,countries=['US','CA'],checkoutReady=true,drop='',selfcheck={ok:true,checked_at:Math.floor(Date.now()/1000)-3600,failed:[]}}={}) {
   const list=Array.from({length:products},(_,i)=>({title:`Design ${i}`,image:`https://img.example.com/${i}.jpg`,variants:[{available:true}]}));
   return async url=>{
     url=String(url);
     if(url.includes(drop)&&drop) return new Response('gone',{status:500});
-    if(url.endsWith('/api/health')) return Response.json({ok:true,payment_mode:'live'});
+    if(url.endsWith('/api/health')) return Response.json({ok:true,payment_mode:'live',selfcheck});
     if(url.endsWith('/api/commerce-config')) return Response.json({catalog_ready:true,checkout_ready:checkoutReady,shipping_countries:countries});
     if(url.endsWith('/api/products')) return Response.json({products:list});
     if(url.startsWith('https://img.example.com/')) return new Response('x',{status:200,headers:{'content-type':'image/jpeg'}});
@@ -70,4 +70,7 @@ test('smoke check passes on a healthy shop and reports each kind of breakage',as
   await failing({countries:['US','IR']},/embargoed countries offered: IR/);
   await failing({products:20},/only 20 products/);
   await failing({drop:'/quiz.html'},/quiz\.html answered 500/);
+  await failing({selfcheck:{ok:false,checked_at:Math.floor(Date.now()/1000),failed:['Recent payments reached the shop']}},/failed: Recent payments reached the shop/);
+  await failing({selfcheck:{ok:true,checked_at:Math.floor(Date.now()/1000)-30*3600,failed:[]}},/last ran 30 hours ago/);
+  await failing({selfcheck:null},/has not run yet/);
 });

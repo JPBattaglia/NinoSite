@@ -9,6 +9,9 @@ export async function createStripeClient(env) {
     retrieveSession:id => client.checkout.sessions.retrieve(id,{expand:['payment_intent.latest_charge']}),
     listLineItems:id => client.checkout.sessions.listLineItems(id,{limit:100,expand:['data.price.product']}),
     createCustomer:(params,key) => client.customers.create(params,{idempotencyKey:key}),
+    retrieveAccount:() => client.accounts.retrieveCurrent(),
+    listWebhookEndpoints:() => client.webhookEndpoints.list({limit:100}),
+    listEvents:params => client.events.list(params),
     verifyWebhook:(raw,signature,secret) => client.webhooks.constructEventAsync(raw,signature,secret,300,Stripe.createSubtleCryptoProvider())
   };
 }
@@ -43,5 +46,6 @@ export class PrintfulClient {
   async shippingRates(payload) { return (await this.call('POST','/shipping/rates',payload))?.result; }
   async findOrder(externalId) { return (await this.call('GET',`/orders/@${encodeURIComponent(externalId)}`))?.result || null; }
   async createDraft(payload) { return (await this.call('POST','/orders',payload))?.result; }
+  async deleteOrder(id) { return (await this.call('DELETE',`/orders/${encodeURIComponent(id)}`))?.result; }
   async confirmOrder(id) { return (await this.call('POST',`/orders/${encodeURIComponent(id)}/confirm`,{}))?.result; }
 }

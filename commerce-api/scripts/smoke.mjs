@@ -34,6 +34,15 @@ export async function runSmoke(fetcher = fetch, options = {}) {
     expect(health.ok === true, 'database check failed');
     return `payment mode ${health.payment_mode}`;
   });
+  await check('Daily payment and fulfilment self-check passed', async () => {
+    const health = await getJson(`${config.api}/api/health`);
+    const result = health.selfcheck;
+    expect(result, 'the self-check has not run yet');
+    const age = Math.round((Date.now() / 1000 - result.checked_at) / 3600);
+    expect(age <= 26, `the self-check last ran ${age} hours ago`);
+    expect(result.ok === true, `failed: ${(result.failed || []).join('; ')} (details: GET /api/admin/selfcheck)`);
+    return `ran ${age} hours ago`;
+  });
   await check('Checkout is ready and only offers allowed countries', async () => {
     const conf = await getJson(`${config.api}/api/commerce-config`);
     expect(conf.catalog_ready === true, 'catalog is not ready');

@@ -24,6 +24,7 @@ export class PrintfulFixture {
   async listProducts(offset,limit){const list=[...this.products.values()].map(p=>p.sync_product);return {result:list.slice(offset,offset+limit),paging:{total:list.length}};}
   async getProduct(id){return structuredClone(this.products.get(String(id)) || null);}
   async shippingRates(){this.rateCalls++;return [{id:'STANDARD',name:'Standard fixture delivery',rate:'7.25',currency:'USD'}];}
+  async deleteOrder(id){this.deleted=(this.deleted||[]);this.deleted.push(String(id));for(const [key,order] of this.orders) if(String(order.id)===String(id)) this.orders.delete(key);return {id};}
   async findOrder(id){return structuredClone(this.orders.get(id) || null);}
   async createDraft(payload){
     this.createCalls++;
@@ -64,6 +65,9 @@ export class StripeFixture {
   async listLineItems(id){return {has_more:false,data:this.sessions.get(id).params.line_items.map(line=>({quantity:line.quantity,amount_subtotal:line.quantity*line.price_data.unit_amount,price:{unit_amount:line.price_data.unit_amount,currency:'usd',product:{metadata:line.price_data.product_data.metadata}}}))};}
   async verifyWebhook(raw,signature){if(signature!=='fixture-signature')throw new Error('Invalid signature');return JSON.parse(raw);}
   async createCustomer(){return {id:'cus_fixture'};}
+  async retrieveAccount(){return {id:this.accountId || 'acct_fixtureNino'};}
+  async listWebhookEndpoints(){return {data:this.endpoints || [{id:'we_fixture',url:'https://api.example.com/api/webhooks/stripe',status:'enabled',enabled_events:['checkout.session.completed']}]};}
+  async listEvents(){return {data:this.events || []};}
 }
 export async function fixture(overrides={}){
   let time=Math.floor(Date.now()/1000);
