@@ -11,6 +11,7 @@ export const PRODUCTS_EDGE_TTL=1800;
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {runPrintfulProbes} from './probe.mjs';
 import {refreshPalette} from './colors.mjs';
+import {sendOrderEmails} from './emails.mjs';
 import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {runMirror} from './mirror.mjs';
@@ -193,6 +194,13 @@ export function createApp(dependencies={}) {
             const stripe=dependencies.stripe || await createStripeClient(env);
             for(const order of orders) await fulfillOrder(order.id,store,stripe,printful,env,now);
           }
+        }
+        // Order emails that failed to send (mailer briefly unavailable) are retried for two days.
+        if(env.MAILER) {
+          try {
+            const unsent=await store.all("SELECT o.id FROM commerce_orders o WHERE o.payment_status='paid' AND o.live_mode=1 AND o.fulfillment_status IN ('confirmed','review') AND o.updated_at>? AND NOT EXISTS (SELECT 1 FROM commerce_settings s WHERE s.key IN ('order_email:'||o.id||':owner','order_email:'||o.id||':owner_review')) LIMIT 3",now-2*86400);
+            for(const row of unsent) await sendOrderEmails(store,env,row.id,now);
+          } catch { /* retried on the next run */ }
         }
         // Daily self-check of the live payment and fulfilment setup (see selfcheck.mjs); also on request.
         try {

@@ -11,6 +11,10 @@
       "migrations_dir": "migrations"
     }
   ],
+  // Order emails go out through Menu-made's mailer (menu-checkout worker, NinoMail entrypoint): no email key here.
+  "services": [
+    { "binding": "MAILER", "service": "menu-checkout", "entrypoint": "NinoMail" }
+  ],
   "kv_namespaces": [
     { "binding": "MOCKUPS", "id": "3bd8ca58b3d340da8a1c025ea6f42d12" }
   ],
@@ -24,6 +28,7 @@
     "STOREFRONT_ORIGIN": "https://ninobattaglia.com",
     "COMMERCE_API_ORIGIN": "https://nino-printful-commerce-api.ijpbattaglia.workers.dev",
     "STRIPE_ACCOUNT_ID": "acct_1SPsFVQlpYdvqrua",
+    "OWNER_EMAIL": "info@menu-made.com",
     "STRIPE_MODE": "live",
     "CHECKOUT_ENABLED": "true",
     "CHECKOUT_PAUSED": "false",

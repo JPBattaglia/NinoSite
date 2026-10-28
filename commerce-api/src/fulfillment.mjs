@@ -2,6 +2,7 @@ import {fail,cents,money,canonical,recipient,countries,stripeConfiguration} from
 import {printFiles,artworkKeys} from './catalog.mjs';
 import {checkedPaidSession} from './checkout.mjs';
 import {resolveShippingCountries} from './countries.mjs';
+import {sendOrderEmails} from './emails.mjs';
 
 const accepted = new Set(['inreview','pending','waiting','waiting_for_stock','inprocess','onhold','partial','fulfilled']);
 
@@ -59,6 +60,7 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
       ["UPDATE commerce_orders SET fulfillment_status='confirmed',claim_id=NULL,lease_until=0,last_error=NULL,updated_at=? WHERE id=? AND claim_id=?",now,order.id,claim],
       ['INSERT INTO commerce_fulfillment_attempts(id,order_id,result,printful_order_id,created_at) VALUES(?,?,?,?,?)',crypto.randomUUID(),order.id,'confirmed',String(draft.id),now]
     ]);
+    await sendOrderEmails(store,env,order.id,now);
     return {confirmed:true};
   } catch(error) {
     const review=error.status===409 || order.fulfillment_attempts>=10;
@@ -70,6 +72,7 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
       ["UPDATE commerce_orders SET fulfillment_status=?,claim_id=NULL,lease_until=0,next_retry_at=?,last_error=?,updated_at=? WHERE id=? AND claim_id=?",review?'review':'retry',retryAt,detail,now,order.id,claim],
       ['INSERT INTO commerce_fulfillment_attempts(id,order_id,result,error_code,created_at) VALUES(?,?,?,?,?)',crypto.randomUUID(),order.id,review?'review':'retry',code,now]
     ]);
+    if(review) await sendOrderEmails(store,env,order.id,now);
     return {retry:!review,review,error:code};
   }
 }
@@ -110,6 +113,7 @@ export async function stripeWebhook(raw,signature,store,stripe,printful,env,now,
     if(order && error.status===409) {
       await store.run("UPDATE commerce_orders SET payment_status='paid',fulfillment_status='review',last_error=?,updated_at=? WHERE id=? AND fulfillment_status!='confirmed'",error.code,now,order.id);
       await store.run("UPDATE commerce_webhook_events SET status='processed',claim_id=NULL,lease_until=0,processed_at=?,last_error=? WHERE id=? AND claim_id=?",now,error.code,event.id,claim);
+      await sendOrderEmails(store,env,order.id,now);
       return {received:true,review:true};
     }
     await store.run("UPDATE commerce_webhook_events SET status='failed',claim_id=NULL,lease_until=0,last_error=? WHERE id=? AND claim_id=?",String(error.code || 'webhook_provider_error'),event.id,claim);
