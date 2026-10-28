@@ -24,7 +24,7 @@
     "STOREFRONT_ORIGIN": "https://ninobattaglia.com",
     "STRIPE_MODE": "live",
     "CHECKOUT_ENABLED": "true",
-    "CHECKOUT_PAUSED": "true",
+    "CHECKOUT_PAUSED": "false",
     "FULFILLMENT_ENABLED": "true",
     "PRINTFUL_CATALOG_MODE": "store",
     "PRINTFUL_STORE_ID": "18919013",
