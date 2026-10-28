@@ -94,6 +94,12 @@
     element.textContent = message; element.classList.add('is-visible');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => element.classList.remove('is-visible'), 2600);
   }
+  // commerce.js announces cart confirmations here so they share the one toast.
+  document.addEventListener('nino:toast', event => {
+    const message = typeof event.detail?.message === 'string' ? event.detail.message : '';
+    if (!message) return;
+    event.detail.shown = true; toast(message);
+  });
   const productUrl = record => { const url = new URL('shop.html', location.href); url.searchParams.set('product', record.id); return url.href; };
   async function shareProduct(record, button) {
     if (!record) return;
@@ -586,7 +592,7 @@
           (async () => {
             if (!window.NinoCommerce) return null;
             const records = await window.NinoCommerce.loadProducts();
-            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261024w');
+            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261028colors');
             return storefrontProducts(catalog.products, records, window.NinoCommerce.getCatalogStatus().complete);
           })(),
           new Promise(resolve => { timer = setTimeout(() => resolve(null), 3000); })

@@ -229,12 +229,18 @@ test('automatic-tax shirt checkout preserves calculated amount, classification a
   assert.equal((await f.checkout({items:[{...f.items[0],quantity:2}],shipping_quote_id:quote.quote_id,shipping_rate_id:'STANDARD'})).status,409);
   assert.equal((await f.checkout({shipping_quote_id:quote.quote_id,shipping_rate_id:'STANDARD'})).status,200);
   const params=f.stripe.sessions.get('cs_fixture_1').params;
-  assert.equal(params.shipping_address_collection,undefined);assert.equal(params.payment_intent_data.shipping.address.line1,recipient.address1);
+  assert.equal(params.shipping_address_collection,undefined);assert.equal(params.payment_intent_data.shipping,undefined);
   assert.equal(params.shipping_options[0].shipping_rate_data.fixed_amount.amount,725);
   assert.deepEqual(params.automatic_tax,{enabled:true});assert.equal(params.customer,'cus_fixture');
   assert.equal(params.line_items[0].price_data.unit_amount,3200);
   assert.equal(params.line_items[0].price_data.product_data.tax_code,'txcd_30011000');
   f.stripe.pay('cs_fixture_1');await f.webhook();assert.equal(f.printful.confirmCalls,1);
+});
+test('a Stripe refusal at checkout is recorded on the order instead of disappearing',async()=>{
+  const f=await fixture();f.stripe.refuse='Invalid image URL';
+  const response=await f.checkout();assert.equal(response.status,502);assert.equal(response.body.error,'payment_provider_error');
+  const order=await f.store.first('SELECT last_error,stripe_session_id FROM commerce_orders ORDER BY created_at DESC LIMIT 1');
+  assert.equal(order.stripe_session_id,null);assert.match(order.last_error,/^stripe_checkout: .*Invalid image URL/);
 });
 test('expired shipping quotes and altered shipping destinations cannot reach fulfillment',async()=>{
   const f=await fixture({SHIPPING_MODE:'calculated'});
@@ -299,4 +305,10 @@ test('cached public catalog reflects in-place sync changes',async()=>{
   f.advance(5);f.printful.products.get('101').sync_variants[0].retail_price='35.00';
   await f.request('/api/admin/catalog/sync',{},auth);
   assert.equal((await f.request('/api/products')).body.products[0].variants[0].price.amount,3500);
+});
+
+test('a paused checkout keeps the cart and creates nothing at Stripe',async()=>{
+  const f=await fixture({CHECKOUT_PAUSED:'true'});
+  const response=await f.checkout();assert.equal(response.status,503);assert.equal(response.body.error,'checkout_paused');assert.equal(f.stripe.calls,0);
+  assert.equal((await f.request('/api/commerce-config')).body.checkout_ready,true);
 });

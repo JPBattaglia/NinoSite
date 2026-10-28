@@ -1,4 +1,4 @@
-import {fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,productTaxCode,stripeShipping,nowSeconds} from './common.mjs';
+import {HttpError,fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,productTaxCode,stripeShipping,nowSeconds} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 
@@ -31,12 +31,26 @@ function returnUrl(env,key,fallback) {
   if (!path.startsWith('/') || path.startsWith('//') || path.includes('\\')) fail(503,'return_url_not_configured');
   return new URL(path,env.STOREFRONT_ORIGIN).href.replaceAll('%7BCHECKOUT_SESSION_ID%7D','{CHECKOUT_SESSION_ID}');
 }
+// Record why Stripe refused a call on the order row, so a failed checkout is visible
+// in D1 (/api/admin/orders) instead of only as a generic service_error.
+async function stripeCall(store,order,step,call,now) {
+  try { return await call(); }
+  catch(error) {
+    if(error instanceof HttpError) throw error;
+    const detail=`stripe_${step}: ${error?.code || error?.type || 'error'}: ${error?.message || ''}`.slice(0,500);
+    console.error(`checkout ${order.id} ${detail}`);
+    try { await store.run('UPDATE commerce_orders SET last_error=?,updated_at=? WHERE id=?',detail,now,order.id); } catch { /* logging must not hide the Stripe error */ }
+    fail(502,'payment_provider_error','Payment could not be started. Please try again in a moment.');
+  }
+}
 function paidRecipient(input,countries) {
   try { return recipient(input,countries); } catch { fail(409,'payment_shipping_address_unverified'); }
 }
 export async function createCheckout(body,request,store,stripe,printful,env,now) {
   env=await resolveShippingCountries(env,store,printful,now);
   const shippingPolicy=checkoutConfiguration(env);
+  // Browsing, carts and shipping quotes keep working; only payment is held (e.g. while a Stripe key is replaced).
+  if(env.CHECKOUT_PAUSED==='true') fail(503,'checkout_paused','Checkout is paused for a short time. Your cart is saved; please try again later today.');
   const items=normalizeCart(body);
   if(Object.keys(body).some(key=>!['items','request_id','shipping_quote_id','shipping_rate_id'].includes(key))) fail(400,'invalid_checkout_fields','Prices and totals are calculated by the server.');
   const requestKey=request.headers.get('Idempotency-Key') || body.request_id || crypto.randomUUID();
@@ -76,14 +90,15 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
   };
   if(snapshot.tax_mode==='automatic') params.automatic_tax={enabled:true};
   if(snapshot.shipping.mode==='calculated') {
-    params.payment_intent_data.shipping=stripeShipping(snapshot.shipping.recipient);
     params.custom_text={submit:{message:'Delivery uses the address you reviewed on our site before payment.'}};
     if(snapshot.tax_mode==='automatic') {
-      const customer=await stripe.createCustomer({name:snapshot.shipping.recipient.name,shipping:stripeShipping(snapshot.shipping.recipient)},`${order.id}:customer`);
+      // Stripe refuses automatic tax together with payment_intent_data[shipping]; the quoted
+      // address goes on the customer instead, which Stripe Tax uses as the tax location.
+      const customer=await stripeCall(store,order,'customer',()=>stripe.createCustomer({name:snapshot.shipping.recipient.name,shipping:stripeShipping(snapshot.shipping.recipient)},`${order.id}:customer`),now);
       params.customer=customer.id;
-    }
+    } else params.payment_intent_data.shipping=stripeShipping(snapshot.shipping.recipient);
   } else params.shipping_address_collection={allowed_countries:snapshot.shipping.countries};
-  const session=await stripe.createSession(params,`${order.id}:checkout`);
+  const session=await stripeCall(store,order,'checkout',()=>stripe.createSession(params,`${order.id}:checkout`),now);
   if(!session?.id || !session.url || session.livemode!==(env.STRIPE_MODE==='live')) fail(502,'invalid_checkout_session');
   try { const url=new URL(session.url); if(url.protocol!=='https:' || url.hostname!=='checkout.stripe.com') fail(502,'invalid_checkout_session'); } catch { fail(502,'invalid_checkout_session'); }
   await store.run('UPDATE commerce_orders SET stripe_session_id=?,checkout_url=?,checkout_expires_at=?,updated_at=? WHERE id=?',session.id,session.url,session.expires_at || order.created_at+3600,now,order.id);
@@ -113,7 +128,9 @@ export async function checkedPaidSession(order,session,lineItems) {
     const a=collected?.address;
     address=paidRecipient({name:collected?.name,address1:a?.line1,address2:a?.line2,city:a?.city,state_code:a?.state,country_code:a?.country,zip:a?.postal_code},snapshot.shipping.countries);
   }
-  if(snapshot.shipping.recipient && canonical(intent.shipping)!==canonical(stripeShipping(snapshot.shipping.recipient))) {
+  // With automatic tax the quoted address lives on the customer and the payment has no
+  // shipping of its own; Checkout never collects an address then, so the quote stands.
+  if(snapshot.shipping.recipient && intent.shipping && canonical(intent.shipping)!==canonical(stripeShipping(snapshot.shipping.recipient))) {
     // Stripe can add optional fields, but must not change the quoted destination.
     const a=intent.shipping?.address;
     const actual=paidRecipient({name:intent.shipping?.name,address1:a?.line1,address2:a?.line2,city:a?.city,state_code:a?.state,country_code:a?.country,zip:a?.postal_code},snapshot.shipping.countries);

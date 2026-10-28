@@ -43,6 +43,9 @@ export class StripeFixture {
   constructor(){this.sessions=new Map();this.keys=new Map();this.calls=0;this.live=true;this.timeout=false;this.retrieveFailure=false;}
   async createSession(params,key){
     this.calls++;
+    // Mirrors Stripe's live refusal seen on Oct 28, 2026 (req_6kVk1t61CdZfjH).
+    if(params.automatic_tax?.enabled && params.payment_intent_data?.shipping) throw Object.assign(new Error('You cannot enable automatic tax calculation with `payment_intent_data[shipping]` set.'),{type:'StripeInvalidRequestError',code:'parameter_invalid'});
+    if(this.refuse) throw Object.assign(new Error(this.refuse),{type:'StripeInvalidRequestError'});
     if(!this.keys.has(key)){
       const id=`cs_fixture_${this.keys.size+1}`;
       this.keys.set(key,id);this.sessions.set(id,{params:structuredClone(params),id,url:`https://checkout.stripe.com/c/pay/${id}`,expires_at:params.expires_at,livemode:this.live,payment_status:'unpaid',status:'open'});

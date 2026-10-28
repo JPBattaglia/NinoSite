@@ -1,5 +1,6 @@
 import {fail,cents,hash,httpsImage} from './common.mjs';
 import {mockupColors,colorSlug} from './mockups.mjs';
+import {loadPalette} from './colors.mjs';
 
 // The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
 // Checkout still re-verifies every variant against Printful before charging.
@@ -52,7 +53,10 @@ export async function publicCatalog(store,env,now,origin='') {
   const version = await store.first('SELECT COUNT(*) AS n,MAX(synced_at) AS changed FROM catalog_products WHERE generation=?',generation);
   // Generated model photos replace Printful's flat color previews as soon as each shirt's bundle is stored.
   const mockups = origin ? await mockupColors(store) : {version:'none',map:new Map()};
-  const memoKey = `${generation}:${run.updated_at}:${fresh}:${version?.n}:${version?.changed}:${mockups.version}:${origin}`;
+  // Swatch colors for designs that are not in the curated catalog.json (one settings row).
+  const palette = await loadPalette(store);
+  const paletteVersion = Object.keys(palette).length;
+  const memoKey = `${generation}:${run.updated_at}:${fresh}:${version?.n}:${version?.changed}:${mockups.version}:${paletteVersion}:${origin}`;
   const memo = catalogMemos.get(store.db);
   if (memo?.key === memoKey) return memo.value;
   // Workers on the free plan get about 10ms of CPU per request, so the database extracts only the
@@ -66,7 +70,7 @@ export async function publicCatalog(store,env,now,origin='') {
     let list = byProduct.get(row.product_id);
     if (!list) byProduct.set(row.product_id,list = []);
     const modelPhoto = mockups.map.get(row.product_id)?.has(row.color) ? `${origin}/api/mockups/${row.product_id}/${colorSlug(row.color)}.jpg` : null;
-    list.push({id:row.variant_id,name:row.name,size:row.size,color:row.color,image:modelPhoto || safeImage(row.image),price:{amount:row.price_cents,currency:row.currency},available:fresh,max_quantity:10});
+    list.push({id:row.variant_id,name:row.name,size:row.size,color:row.color,color_hex:row.color ? palette[row.color] || null : null,image:modelPhoto || safeImage(row.image),price:{amount:row.price_cents,currency:row.currency},available:fresh,max_quantity:10});
   }
   const value = {catalog_ready:fresh,catalog_complete:true,products:products.map(product => {
     const variants = byProduct.get(product.id) || [];
@@ -88,7 +92,7 @@ export async function validatedLines(store,printful,env,items,now) {
     const verified = await normalizeVariant(current,{id:item.product_id,thumbnail_url:row.image});
     if (!verified) fail(422,'variant_unavailable','A selected variant is no longer available.');
     if (verified.fingerprint !== snapshot.fingerprint) fail(409,'catalog_changed','A selected product has changed. Refresh the catalog before checkout.');
-    lines.push({...item,title:row.title,image:row.image,variant:snapshot,unit_price_cents:row.price_cents,line_total_cents:row.price_cents * item.quantity});
+    lines.push({...item,title:row.title,image:independentImage(snapshot.image) || independentImage(row.image),variant:snapshot,unit_price_cents:row.price_cents,line_total_cents:row.price_cents * item.quantity});
   }
   return lines;
 }

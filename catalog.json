@@ -15985,7 +15985,88 @@
       "featured": false,
       "variants": [],
       "options": {
-        "colors": []
+        "colors": [
+          {
+            "name": "Black",
+            "hex": "#141313"
+          },
+          {
+            "name": "White",
+            "hex": "#fffefa"
+          },
+          {
+            "name": "Azalea",
+            "hex": "#ff98c6"
+          },
+          {
+            "name": "Charcoal",
+            "hex": "#6a6967"
+          },
+          {
+            "name": "Dark Chocolate",
+            "hex": "#463b33"
+          },
+          {
+            "name": "Forest Green",
+            "hex": "#1a3b23"
+          },
+          {
+            "name": "Gold",
+            "hex": "#ffb22d"
+          },
+          {
+            "name": "Ice Grey",
+            "hex": "#e9dddc"
+          },
+          {
+            "name": "Irish Green",
+            "hex": "#00ba69"
+          },
+          {
+            "name": "Light Pink",
+            "hex": "#ffd4d5"
+          },
+          {
+            "name": "Maroon",
+            "hex": "#47001b"
+          },
+          {
+            "name": "Natural",
+            "hex": "#e8dacd"
+          },
+          {
+            "name": "Navy",
+            "hex": "#1a2330"
+          },
+          {
+            "name": "Purple",
+            "hex": "#48197d"
+          },
+          {
+            "name": "Royal",
+            "hex": "#175ac7"
+          },
+          {
+            "name": "Sapphire",
+            "hex": "#007ab3"
+          },
+          {
+            "name": "Sky",
+            "hex": "#8ee0ff"
+          },
+          {
+            "name": "Sport Grey",
+            "hex": "#c4c0be"
+          },
+          {
+            "name": "Tropical Blue",
+            "hex": "#00a0b3"
+          },
+          {
+            "name": "Turf Green",
+            "hex": "#187532"
+          }
+        ]
       },
       "slug": "champagne-candy-canes"
     }

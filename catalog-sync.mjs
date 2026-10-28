@@ -27,6 +27,14 @@ export function storefrontProducts(existing, live, complete) {
       description: previous?.description || '',
       featured: previous?.featured === true
     };
+    // New designs (not in catalog.json) take their swatch colors from the API's color_hex.
+    if (!(Array.isArray(previous?.options?.colors) && previous.options.colors.length)) {
+      const colors = [];
+      for (const variant of product.variants.values()) {
+        if (variant.color && variant.hex && !colors.some(color => color.name === variant.color)) colors.push({ name: variant.color, hex: variant.hex });
+      }
+      if (colors.length) record.options = { ...(previous?.options || {}), colors };
+    }
     delete record.price;
     const prices = [...product.variants.values()].filter(variant => variant.purchasable).map(variant => variant.price);
     if (prices.length && new Set(prices.map(price => price.currency)).size === 1) {

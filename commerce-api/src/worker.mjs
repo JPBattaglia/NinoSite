@@ -10,6 +10,7 @@ export const DAILY_CRON='0 10 * * *';
 export const PRODUCTS_EDGE_TTL=1800;
 import {shippingQuote,createCheckout} from './checkout.mjs';
 import {runPrintfulProbes} from './probe.mjs';
+import {refreshPalette} from './colors.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {runMirror} from './mirror.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
@@ -180,6 +181,8 @@ export function createApp(dependencies={}) {
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch { /* The retained run is retried by the next scheduled invocation. */ } }
+        // New garment colors get a swatch hex from Printful's catalog (only names not yet known).
+        if(daily) { try { await refreshPalette(store,printful); } catch { /* swatches fall back to color names */ } }
         if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
           const orders=await store.all("SELECT id FROM commerce_orders WHERE payment_status='paid' AND live_mode=1 AND fulfillment_status IN ('queued','retry','processing','draft') AND lease_until<=? AND next_retry_at<=? AND fulfillment_attempts<10 ORDER BY created_at LIMIT 3",now,now);
           if(orders.length) {

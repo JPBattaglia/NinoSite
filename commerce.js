@@ -51,8 +51,9 @@
         const name = label(raw.name ?? raw.title);
         const price = money(raw.price);
         const image = label(raw.image);
+        const hex = /^#[0-9a-f]{6}$/i.test(String(raw.color_hex || '')) ? String(raw.color_hex) : '';
         variants.set(variantId, {
-          id: variantId, size, color, name, price,
+          id: variantId, size, color, name, price, hex,
           image: /^https:\/\/[^/]+\/./.test(image) ? image : '',
           available: raw.available === true,
           maximum: quantity(raw.max_quantity) || MAX_QUANTITY,
@@ -312,6 +313,8 @@
     const colorHex = new Map((Array.isArray(recordOrId?.options?.colors) ? recordOrId.options.colors : [])
       .filter(color => color && typeof color.name === 'string' && /^#[0-9a-f]{6}$/i.test(String(color.hex || '')))
       .map(color => [color.name, color.hex]));
+    // Designs added after the curated catalog get their swatch colors from the API.
+    for (const item of variants) if (item.color && item.hex && !colorHex.has(item.color)) colorHex.set(item.color, item.hex);
     let syncSwatches = () => {};
     function addSwatches(select, values, wrapper, chosenName) {
       select.hidden = true;
@@ -409,7 +412,10 @@
       else state.cart.push({ product_id: productId, variant_id: selected.id, quantity: count });
       writeCart(); renderCart();
       document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: productId } }));
-      status.textContent = state.storageAvailable ? 'Added to your cart.' : 'Added to this page’s cart. Your browser cannot save the cart between pages.';
+      const toastEvent = new CustomEvent('nino:toast', { detail: { message: 'Added to cart' } });
+      document.dispatchEvent(toastEvent);
+      // The status line keeps only what the toast can't say: a warning, or the fallback if no toast exists.
+      status.textContent = !state.storageAvailable ? 'Added to this page’s cart. Your browser cannot save the cart between pages.' : toastEvent.detail.shown ? '' : 'Added to your cart.';
       viewCart.hidden = false;
     });
     // A color picked on the product card arrives preselected.
@@ -604,9 +610,10 @@
       const { product, variant, valid } = details(item);
       if (!product || !variant) continue;
       const row = create('article', 'cart-line');
-      const source = imageUrl(product.image);
+      // Each line shows its own color: the variant's photo, else the product's main photo.
+      const source = imageUrl(variant.image) || imageUrl(product.image);
       if (source) {
-        const image = create('img', 'cart-line-image'); image.src = source; image.alt = product.title; image.loading = 'lazy'; row.append(image);
+        const image = create('img', 'cart-line-image'); image.src = source; image.alt = variant.color ? `${product.title} in ${variant.color}` : product.title; image.loading = 'lazy'; row.append(image);
       }
       const copy = create('div', 'cart-line-copy');
       copy.append(create('h2', '', product.title), create('p', 'cart-line-options', variantLabel(variant)));
