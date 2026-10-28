@@ -12,7 +12,7 @@ Preserve `gallery.html` for existing portfolio links and `CNAME` for the GitHub 
 
 ## Automatic Printful product additions
 
-The storefront reads the completed Printful catalog on page load. Published products added to the configured Printful store appear after the scheduled six-hour sync finishes, without editing `catalog.json` or rebuilding the site. Sync batches resume every minute. This covers that store's published/synced products, not unpublished design templates or another Printful store.
+The storefront reads the completed Printful catalog on page load. Published products added to the configured Printful store appear after the scheduled six-hour sync finishes, without editing `catalog.json` or rebuilding the site. Sync batches resume every 5 minutes. This covers that store's published/synced products, not unpublished design templates or another Printful store.
 
 The existing 136 verified designs remain the fallback until the first complete sync or during an API outage. A completed snapshot becomes authoritative, including removals. Existing curated photos, categories, and descriptions are retained through a matching destination ID or original source `external_id`; new designs use the supplier image. Designs without eligible variants remain visible with purchasing unavailable. Server-verified variants, prices and checkout readiness still control purchasing. A page refresh picks up a newly completed sync; browsing is not interrupted by background polling. If the API takes longer than three seconds, the page shows the fallback collection for that visit.
 

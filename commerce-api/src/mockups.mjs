@@ -98,7 +98,8 @@ async function collect(store, env, job, now, fetcher) {
 // (or parked after 3 attempts) so one stuck shirt can't hold up the rest of the queue.
 export const STALL_SECONDS = 30 * 60;
 
-// Called every minute: collect a submitted job if it's ready, otherwise submit the next pending one.
+// Called every 5 minutes: collect a submitted job if it's ready, then submit the next pending one in the same
+// run (one job in flight at a time keeps each run well inside the free plan's CPU limit).
 export async function processMockups(store, env, now, fetcher = (...args) => fetch(...args)) {
   if (!env.MOCKUPS || !env.PRINTFUL_ACCESS_TOKEN) return 'disabled';
   let submitted;
@@ -108,20 +109,23 @@ export async function processMockups(store, env, now, fetcher = (...args) => fet
     await store.run("UPDATE mockup_jobs SET status=?,task_id=NULL,last_error='printful_task_stalled',updated_at=? WHERE product_id=?", submitted.attempts < 3 ? 'pending' : 'error', now, submitted.product_id);
     submitted = null;
   }
+  let collected = false;
   if (submitted) {
-    try { return (await collect(store, env, submitted, now, fetcher)) ? 'collected' : 'waiting'; }
-    catch (error) {
+    try {
+      if (!(await collect(store, env, submitted, now, fetcher))) return 'waiting';
+      collected = true;
+    } catch (error) {
       const retry = submitted.attempts < 3 ? 'pending' : 'error';
       await store.run('UPDATE mockup_jobs SET status=?,last_error=?,updated_at=? WHERE product_id=?', retry, String(error?.message || error).slice(0, 300), now, submitted.product_id);
       return 'collect_failed';
     }
   }
   const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' ORDER BY priority DESC, attempts, product_id LIMIT 1");
-  if (!next) return 'idle';
-  try { await submit(store, env, next, now, fetcher); return 'submitted'; }
+  if (!next) return collected ? 'collected' : 'idle';
+  try { await submit(store, env, next, now, fetcher); return collected ? 'collected' : 'submitted'; }
   catch (error) {
     await store.run("UPDATE mockup_jobs SET status=?,attempts=attempts+1,last_error=?,updated_at=? WHERE product_id=?", next.attempts < 2 ? 'pending' : 'error', String(error?.message || error).slice(0, 300), now, next.product_id);
-    return 'submit_failed';
+    return collected ? 'collected' : 'submit_failed';
   }
 }
 

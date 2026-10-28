@@ -77,3 +77,15 @@ test('a Printful task stuck pending is resubmitted instead of blocking the queue
   assert.equal(jobs[0].attempts,1);
   assert.equal(jobs[1].attempts,1);
 });
+
+test('one 5-minute run collects a finished job and submits the next pending one',async()=>{
+  const {f,fetcher}=await setup();
+  assert.equal(await processMockups(f.store,f.env,f.now(),fetcher),'submitted');
+  await f.store.run("INSERT INTO mockup_jobs(product_id,layer_json) VALUES('101-next','{\"width\":5,\"height\":4,\"top\":5,\"left\":3.5}')");
+  assert.equal(await processMockups(f.store,f.env,f.now(),fetcher),'collected');
+  assert.equal((await f.store.first("SELECT status FROM mockup_jobs WHERE product_id='101'")).status,'done');
+  // The next job was attempted in the same run (this fixture product has no artwork, so Printful is never called).
+  const next=await f.store.first("SELECT attempts,last_error FROM mockup_jobs WHERE product_id='101-next'");
+  assert.equal(next.attempts,1);
+  assert.equal(next.last_error,'no_variants_or_artwork');
+});

@@ -9,7 +9,7 @@
     "database_id": "REPLACE_WITH_NEW_DATABASE_ID",
     "migrations_dir": "migrations"
   }],
-  "triggers": { "crons": ["* * * * *", "0 10 * * *"] },
+  "triggers": { "crons": ["*/5 * * * *", "0 10 * * *"] },
   "vars": {
     "STOREFRONT_ORIGIN": "https://ninobattaglia.com",
     "STRIPE_MODE": "test",
