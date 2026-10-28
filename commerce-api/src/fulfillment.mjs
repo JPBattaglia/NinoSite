@@ -63,9 +63,10 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
   } catch(error) {
     const review=error.status===409 || order.fulfillment_attempts>=10;
     const code=String(error.code || 'fulfillment_provider_error').slice(0,150);
+    const detail=code==='printful_request_failed' && error.message && error.message!==error.code ? `${code}: ${error.message}`.slice(0,300) : code;
     const retryAt=now+Math.min(3600,30*2**Math.min(order.fulfillment_attempts,7));
     await store.batch([
-      ["UPDATE commerce_orders SET fulfillment_status=?,claim_id=NULL,lease_until=0,next_retry_at=?,last_error=?,updated_at=? WHERE id=? AND claim_id=?",review?'review':'retry',retryAt,code,now,order.id,claim],
+      ["UPDATE commerce_orders SET fulfillment_status=?,claim_id=NULL,lease_until=0,next_retry_at=?,last_error=?,updated_at=? WHERE id=? AND claim_id=?",review?'review':'retry',retryAt,detail,now,order.id,claim],
       ['INSERT INTO commerce_fulfillment_attempts(id,order_id,result,error_code,created_at) VALUES(?,?,?,?,?)',crypto.randomUUID(),order.id,review?'review':'retry',code,now]
     ]);
     return {retry:!review,review,error:code};

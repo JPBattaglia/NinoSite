@@ -22,7 +22,11 @@ export class PrintfulClient {
       body:data == null ? undefined : JSON.stringify(data),signal:AbortSignal.timeout(15000)
     });
     if (response.status===404) return null;
-    if (!response.ok) throw new HttpError(response.status===429 ? 503 : 502,'printful_request_failed');
+    if (!response.ok) {
+      // Keep Printful's own reason (e.g. a missing token scope or a bad address) so fulfillment can record it.
+      let reason=''; try { const body=await response.json(); reason=String(body?.error?.message || body?.result || body?.message || '').slice(0,200); } catch {}
+      throw new HttpError(response.status===429 ? 503 : 502,'printful_request_failed',`${method} ${path.replace(/\/@?[^/]*$/,m=>m.length>12?'/…':m)} ${response.status}${reason?': '+reason:''}`);
+    }
     const body = await response.json();
     if (body.code !== 200 && body.code !== 201) throw new HttpError(502,'printful_invalid_response');
     return body;
