@@ -56,13 +56,13 @@ export async function runSelfCheck(store, stripe, printful, env, now) {
       if (row?.status !== 'processed') missed.push(event.id);
     }
     expect(!missed.length, `${missed.length} paid checkout(s) never reached the shop (${missed.slice(0,3).join(', ')}): check STRIPE_WEBHOOK_SECRET against the webhook's signing secret`);
-    return settled.length ? `${settled.length} in the last 3 days, all received` : 'no paid checkouts in the last 3 days';
+    return settled.length ? `${settled.length} in the last 3 days, all received` : `${recent.length} in the last 3 days, none older than 30 minutes yet`;
   });
 
   await check('Paid orders were sent to Printful', async () => {
     const stuck = await store.all("SELECT id,fulfillment_status,last_error FROM commerce_orders WHERE payment_status='paid' AND live_mode=1 AND fulfillment_status!='confirmed' AND created_at<? ORDER BY created_at LIMIT 5", now - 7200);
     expect(!stuck.length, stuck.map(order => `${order.id} is ${order.fulfillment_status}${order.last_error ? ` (${order.last_error})` : ''}`).join('; '));
-    return 'none waiting';
+    return 'none waiting over 2 hours';
   });
 
   await check('Printful accepts orders from this shop', async () => {
