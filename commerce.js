@@ -412,7 +412,8 @@
       else state.cart.push({ product_id: productId, variant_id: selected.id, quantity: count });
       writeCart(); renderCart();
       document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: productId } }));
-      const toastEvent = new CustomEvent('nino:toast', { detail: { message: 'Added to cart' } });
+      // Back to where the shopper found the shirt: the product view closes (like Back) and the toast confirms.
+      const toastEvent = new CustomEvent('nino:toast', { detail: { message: 'Added to cart', closeProduct: state.storageAvailable } });
       document.dispatchEvent(toastEvent);
       // The status line keeps only what the toast can't say: a warning, or the fallback if no toast exists.
       status.textContent = !state.storageAvailable ? 'Added to this page’s cart. Your browser cannot save the cart between pages.' : toastEvent.detail.shown ? '' : 'Added to your cart.';

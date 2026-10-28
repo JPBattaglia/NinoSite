@@ -98,7 +98,10 @@
   document.addEventListener('nino:toast', event => {
     const message = typeof event.detail?.message === 'string' ? event.detail.message : '';
     if (!message) return;
-    event.detail.shown = true; toast(message);
+    event.detail.shown = true;
+    // Close the product view first so the toast shows over the shop the shopper returns to.
+    if (event.detail.closeProduct && dialog?.open) dialog.close();
+    toast(message);
   });
   const productUrl = record => { const url = new URL('shop.html', location.href); url.searchParams.set('product', record.id); return url.href; };
   async function shareProduct(record, button) {
