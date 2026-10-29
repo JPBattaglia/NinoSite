@@ -11,7 +11,7 @@
 import {HttpError,fail,cents,recipient,countries} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
 import {resolveShippingCountries} from './countries.mjs';
-import {logoProducts,logoOrderItems,productByKey} from './merch-products.mjs';
+import {cleanThreads,logoProducts,logoOrderItems,productByKey} from './merch-products.mjs';
 
 export const MERCH_LIMITS=Object.freeze({max_lines:30,max_per_line:100,max_total:200});
 // Logo on the upper back, inside Printful's 12x16 in DTG area (positions in pixels at 150 dpi: 1800x2400).
@@ -47,7 +47,7 @@ export function normalizeLogoItems(items) {
 function cleanLogo(logo){
   if(logo==null) return null;
   if(!/^https:\/\/[^\s]+$/.test(String(logo.url || '')) || !(Number(logo.width)>0) || !(Number(logo.height)>0)) fail(400,'invalid_logo');
-  return {url:String(logo.url),width:Number(logo.width),height:Number(logo.height)};
+  return {url:String(logo.url),width:Number(logo.width),height:Number(logo.height),thread_colors:cleanThreads(logo.thread_colors)};
 }
 const ratesOf=received=>{
   if(!Array.isArray(received)) fail(502,'shipping_quote_failed');

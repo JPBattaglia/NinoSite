@@ -136,5 +136,11 @@ test('a logo cart is quoted with Printful\'s estimate and ordered with the logo 
   assert.equal(placed.status,'draft');
   const cap=payload.items.find(i=>i.external_id==='logo_1');
   assert.equal(cap.variant_id,2061); assert.equal(cap.files[0].url,logo.url); assert.equal(cap.retail_price,'24.99');
+  assert.deepEqual(cap.options.find(o=>o.id==='thread_colors')?.value.length,1,'embroidery names its thread (contrast with the cap when the page sent none)');
+  assert.equal(cap.options.find(o=>o.id==='embroidery_type')?.value,'flat');
+  assert.equal(payload.items.find(i=>i.external_id==='logo_2').options,undefined,'printed items carry no thread options');
+  const threaded=await merchQuote({logo_items:[{key:'cap',variant_id:2061,quantity:1}],logo:{...logo,thread_colors:['#cc3333','#123456','#FFFFFF']},recipient:address},deps(f));
+  assert.ok(threaded);
+  assert.deepEqual(estimated.body.items[0].options[0].value,['#CC3333','#FFFFFF'],'only Printful threads, upper-cased');
   await assert.rejects(merchQuote({logo_items:[{key:'cap',variant_id:2061,quantity:1}],recipient:address},deps(f)),{code:'logo_required'});
 });

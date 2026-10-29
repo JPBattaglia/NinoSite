@@ -11,15 +11,29 @@ import {HttpError,fail,cents} from './common.mjs';
 export const LOGO_PRODUCTS=Object.freeze([
   {key:'tee',id:438,title:'T-shirt',group:'Apparel',placement:'front',fileType:'default',technique:'dtg',scale:0.5,align:'top',nino:true},
   {key:'hoodie',id:146,title:'Hoodie',group:'Apparel',placement:'front',fileType:'default',technique:'dtg',scale:0.5,align:'top'},
-  {key:'polo',id:670,title:'Polo shirt (embroidered)',group:'Apparel',placement:'embroidery_chest_left',fileType:'embroidery_chest_left',technique:'embroidery',scale:1,align:'center'},
-  {key:'apron',id:297,title:'Apron (embroidered)',group:'Kitchen',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center'},
-  {key:'cap',id:206,title:'Cap (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center'},
-  {key:'beanie',id:266,title:'Beanie (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center'},
+  {key:'polo',id:670,title:'Polo shirt (embroidered)',group:'Apparel',placement:'embroidery_chest_left',fileType:'embroidery_chest_left',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors_chest_left']},
+  {key:'apron',id:297,title:'Apron (embroidered)',group:'Kitchen',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors_apparel']},
+  {key:'cap',id:206,title:'Cap (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors'],flat:true},
+  {key:'beanie',id:266,title:'Beanie (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors'],flat:true},
   {key:'mug',id:19,title:'Mug',group:'Tableware',placement:'default',fileType:'default',technique:'sublimation',scale:0.4,align:'center'},
   {key:'coaster',id:611,title:'Cork coaster',group:'Tableware',placement:'default',fileType:'default',technique:'sublimation',scale:0.8,align:'center'},
   {key:'tote',id:367,title:'Tote bag',group:'Extras',placement:'front',fileType:'default',technique:'dtg',scale:0.6,align:'center'},
   {key:'stickers',id:358,title:'Stickers',group:'Extras',placement:'default',fileType:'default',technique:'digital',scale:1,align:'center'}
 ]);
+// Printful's embroidery threads (catalog option values). Embroidered items must say which threads the logo uses.
+export const THREAD_COLORS=Object.freeze(['#FFFFFF','#000000','#96A1A8','#A67843','#FFCC00','#E25C27','#CC3366','#CC3333','#660000','#333366','#005397','#3399FF','#6B5294','#01784E','#7BA35A']);
+const MAX_THREADS=6;
+export function cleanThreads(list){
+  const seen=[...new Set((Array.isArray(list)?list:[]).map(c=>String(c).toUpperCase()).filter(c=>THREAD_COLORS.includes(c)))];
+  return seen.slice(0,MAX_THREADS);
+}
+// No thread list from the page: one thread that stands out on the item (white on dark, black on light).
+function contrastThread(hex){
+  const m=/^#?([0-9a-f]{6})$/i.exec(String(hex || ''));
+  if(!m) return '#000000';
+  const n=parseInt(m[1],16),r=n>>16,g=(n>>8)&255,b=n&255;
+  return (0.299*r+0.587*g+0.114*b)<140?'#FFFFFF':'#000000';
+}
 const BY_KEY=new Map(LOGO_PRODUCTS.map(p=>[p.key,p]));
 export const productByKey=key=>BY_KEY.get(String(key || ''))||null;
 const CACHE_KEY='merch_logo_products_v1';
@@ -104,7 +118,12 @@ export function logoOrderItems(lines,catalog,logo){
     const variant=product.variants.find(v=>v.id===Number(line.variant_id));
     if(!variant) fail(422,'variant_unavailable','A chosen item is no longer available.');
     const position=logoPosition(product,product.printfile,logo);
+    const threads=cleanThreads(logo.thread_colors);
+    const options=def.threadOptions?[
+      ...def.threadOptions.map(id=>({id,value:threads.length?threads:[contrastThread(variant.color_code)]})),
+      ...(def.flat?[{id:'embroidery_type',value:'flat'}]:[])
+    ]:null;
     return {external_id:`logo_${i+1}`,variant_id:variant.id,quantity:line.quantity,name:`${product.title} (${[variant.color,variant.size].filter(Boolean).join(', ')})`.slice(0,100),
-      files:[{type:def.fileType,url:logo.url,...(position?{position}:{})}]};
+      files:[{type:def.fileType,url:logo.url,...(position?{position}:{})}],...(options?{options}:{})};
   });
 }
