@@ -16,9 +16,11 @@
     const pages = Number(document.querySelector('#design-order [name="pages"]').value);
     return o.price_cents + Math.max(0, pages - o.design_pages.included_pages) * o.design_pages.extra_page_cents;
   }
+  // Owner decision Oct 28, 2026: only the flyer is taxed; Stripe adds the tax from the billing address.
+  const TAXED = new Set(['NINO_FLYER']);
   function showTotal() {
     const t = total();
-    document.querySelector('[data-design-total]').textContent = t == null ? '' : `Total ${money(t)} (USD)`;
+    document.querySelector('[data-design-total]').textContent = t == null ? '' : `Total ${money(t)} (USD)${TAXED.has(chosen) ? ' + sales tax, added at checkout' : ''}`;
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
@@ -30,7 +32,7 @@
       catalog = new Map((data.offers || []).filter((o) => /^NINO_/.test(o.code)).map((o) => [o.code, o]));
       for (const el of document.querySelectorAll('[data-design-price]')) {
         const o = catalog.get(el.dataset.designPrice);
-        if (o) el.textContent = money(o.price_cents) + (o.design_pages ? ` for ${o.design_pages.included_pages} pages` : '');
+        if (o) el.textContent = money(o.price_cents) + (o.design_pages ? ` for ${o.design_pages.included_pages} pages` : '') + (TAXED.has(o.code) ? ' + tax' : '');
         if (o && !o.on_sale && !TEST) { const b = document.querySelector(`[data-design-order="${o.code}"]`); b.disabled = true; b.firstChild.textContent = 'Opening soon '; }
       }
     } catch { /* prices stay as printed; checkout re-prices on the server */ }
