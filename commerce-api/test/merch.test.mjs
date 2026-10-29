@@ -90,7 +90,7 @@ function printfulApi(){
     if((m=u.pathname.match(/^\/products\/(\d+)$/))) return Response.json({code:200,result:{product:{id:Number(m[1])},variants:[
       {id:Number(m[1])*10+1,color:'Black',color_code:'#000000',size:'M',price:'12.50',image:`https://img.example/${m[1]}.jpg`,availability_status:[{region:'US',status:'in_stock'}]},
       {id:Number(m[1])*10+2,color:'Red',size:'M',price:'12.50',availability_status:[{region:'EU',status:'in_stock'}]}]}});
-    if((m=u.pathname.match(/^\/v2\/catalog-products\/(\d+)\/mockup-templates$/))) return Response.json({data:[{catalog_variant_ids:[Number(m[1])*10+1],placement:'front',image_url:'https://img.example/t.png',background_url:'https://img.example/bg.png',template_width:1000,template_height:1000,print_area_width:400,print_area_height:500,print_area_top:200,print_area_left:300,template_positioning:'overlay'}]});
+    if((m=u.pathname.match(/^\/v2\/catalog-products\/(\d+)\/mockup-templates$/))) return Response.json({data:[{catalog_variant_ids:[Number(m[1])*10+1],placement:u.searchParams.get('placements')||'front',image_url:'https://img.example/t.png',background_url:'https://img.example/bg.png',template_width:1000,template_height:1000,print_area_width:400,print_area_height:500,print_area_top:200,print_area_left:300,template_positioning:'overlay'}]});
     if((m=u.pathname.match(/^\/mockup-generator\/printfiles\/(\d+)$/))) return Response.json({code:200,result:{printfiles:[{printfile_id:1,width:1800,height:2400,dpi:150}],variant_printfiles:[{variant_id:Number(m[1])*10+1,placements:{default:1,front:1,embroidery_chest_left:1}}]}});
     return new Response('nope',{status:404});
   };
@@ -122,7 +122,7 @@ test('a logo cart is quoted with Printful\'s estimate and ordered with the logo 
   const f=await fixture();
   const {fetcher}=printfulApi();
   const built=await buildLogoProducts({PRINTFUL_ACCESS_TOKEN:'x',PRINTFUL_STORE_ID:'1'},fetcher);
-  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('merch_logo_products_v1',?)",JSON.stringify({...built,built_at:f.now()}));
+  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('merch_logo_products_v2',?)",JSON.stringify({...built,built_at:f.now()}));
   let estimated; f.printful.call=async(method,path,body)=>{estimated={path,body};return {code:200,result:{costs:{subtotal:'40.00',digitization:'6.50',additional_fee:'0.00'}}};};
   const logo={url:'https://menu-made.com/api/merch-upload/x?t=y',width:1000,height:500};
   const quote=await merchQuote({items:[{product_id:'101',variant_id:'501',quantity:2}],logo_items:[{key:'cap',variant_id:2061,quantity:3},{key:'mug',variant_id:191,quantity:4}],logo,recipient:address},deps(f));

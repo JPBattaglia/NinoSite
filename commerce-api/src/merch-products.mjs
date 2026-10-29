@@ -9,16 +9,16 @@ import {HttpError,fail,cents} from './common.mjs';
 
 // scale: logo width as a share of the print area's width; align: where it sits in the area.
 export const LOGO_PRODUCTS=Object.freeze([
-  {key:'tee',id:438,title:'T-shirt',group:'Apparel',placement:'front',fileType:'default',technique:'dtg',scale:0.5,align:'top',nino:true},
-  {key:'hoodie',id:146,title:'Hoodie',group:'Apparel',placement:'front',fileType:'default',technique:'dtg',scale:0.5,align:'top'},
-  {key:'polo',id:670,title:'Polo shirt (embroidered)',group:'Apparel',placement:'embroidery_chest_left',fileType:'embroidery_chest_left',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors_chest_left']},
-  {key:'apron',id:297,title:'Apron (embroidered)',group:'Kitchen',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors_apparel']},
-  {key:'cap',id:206,title:'Cap (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors'],flat:true},
-  {key:'beanie',id:266,title:'Beanie (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors'],flat:true},
-  {key:'mug',id:19,title:'Mug',group:'Tableware',placement:'default',fileType:'default',technique:'sublimation',scale:0.4,align:'center'},
-  {key:'coaster',id:611,title:'Cork coaster',group:'Tableware',placement:'default',fileType:'default',technique:'sublimation',scale:0.8,align:'center'},
-  {key:'tote',id:367,title:'Tote bag',group:'Extras',placement:'front',fileType:'default',technique:'dtg',scale:0.6,align:'center'},
-  {key:'stickers',id:358,title:'Stickers',group:'Extras',placement:'default',fileType:'default',technique:'digital',scale:1,align:'center'}
+  {key:'tee',mockup:'front',id:438,title:'T-shirt',group:'Apparel',placement:'front',fileType:'default',technique:'dtg',scale:0.5,align:'top',nino:true},
+  {key:'hoodie',mockup:'front',id:146,title:'Hoodie',group:'Apparel',placement:'front',fileType:'default',technique:'dtg',scale:0.5,align:'top'},
+  {key:'polo',mockup:'embroidery_chest_left',id:670,title:'Polo shirt (embroidered)',group:'Apparel',placement:'embroidery_chest_left',fileType:'embroidery_chest_left',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors_chest_left']},
+  {key:'apron',mockup:'embroidery_apparel_front',id:297,title:'Apron (embroidered)',group:'Kitchen',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors_apparel']},
+  {key:'cap',mockup:'embroidery_front',id:206,title:'Cap (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors'],flat:true},
+  {key:'beanie',mockup:'embroidery_front',id:266,title:'Beanie (embroidered)',group:'Hats',placement:'front',fileType:'default',technique:'embroidery',scale:1,align:'center',threadOptions:['thread_colors'],flat:true},
+  {key:'mug',mockup:'default',id:19,title:'Mug',group:'Tableware',placement:'default',fileType:'default',technique:'sublimation',scale:0.4,align:'center'},
+  {key:'coaster',mockup:'default',id:611,title:'Cork coaster',group:'Tableware',placement:'default',fileType:'default',technique:'sublimation',scale:0.8,align:'center'},
+  {key:'tote',mockup:'front',id:367,title:'Tote bag',group:'Extras',placement:'front',fileType:'default',technique:'dtg',scale:0.6,align:'center'},
+  {key:'stickers',mockup:'default',id:358,title:'Stickers',group:'Extras',placement:'default',fileType:'default',technique:'digital',scale:1,align:'center'}
 ]);
 // Printful's embroidery threads (catalog option values). Embroidered items must say which threads the logo uses.
 export const THREAD_COLORS=Object.freeze(['#FFFFFF','#000000','#96A1A8','#A67843','#FFCC00','#E25C27','#CC3366','#CC3333','#660000','#333366','#005397','#3399FF','#6B5294','#01784E','#7BA35A']);
@@ -36,7 +36,7 @@ function contrastThread(hex){
 }
 const BY_KEY=new Map(LOGO_PRODUCTS.map(p=>[p.key,p]));
 export const productByKey=key=>BY_KEY.get(String(key || ''))||null;
-const CACHE_KEY='merch_logo_products_v1';
+const CACHE_KEY='merch_logo_products_v2';
 const CACHE_SECONDS=86400;
 
 async function api(env,method,path,body,fetcher){
@@ -66,21 +66,27 @@ export async function buildLogoProducts(env,fetcher=(...a)=>fetch(...a)){
       const catalog=(await api(env,'GET',`/products/${p.id}`,null,fetcher))?.result;
       const variants=(catalog?.variants || []).filter(v=>(v.availability_status || []).some(a=>a.region==='US' && a.status==='in_stock')).map(v=>({id:Number(v.id),color:v.color || '',color_code:v.color_code || null,size:v.size || 'One size',base_cents:cents(String(v.price),true),image:v.image || null})).filter(v=>v.base_cents);
       if(!variants.length) continue;
+      // Only the templates for the placement that is ordered (a T-shirt has many: chest embroidery, labels...),
+      // paging through Printful's list until they turn up.
       let templates=[];
       try{
-        const t=await api(env,'GET',`/v2/catalog-products/${p.id}/mockup-templates?limit=100`,null,fetcher);
-        templates=(t?.data || []).map(normalizeTemplate).filter(Boolean);
+        for(let offset=0;offset<1000 && !templates.length;offset+=100){
+          const t=await api(env,'GET',`/v2/catalog-products/${p.id}/mockup-templates?placements=${p.mockup}&limit=100&offset=${offset}`,null,fetcher);
+          const page=t?.data || [];
+          templates=page.map(normalizeTemplate).filter(x=>x && x.placement===p.mockup);
+          if(page.length<100) break;
+        }
       }catch{/* no templates: the page shows the product photo with the logo on it */}
       let printfile=null;
       try{
         const pf=(await api(env,'GET',`/mockup-generator/printfiles/${p.id}${p.technique==='embroidery'?'?technique=EMBROIDERY':''}`,null,fetcher))?.result;
-        const id=pf?.variant_printfiles?.find(v=>Number(v.variant_id)===variants[0].id)?.placements?.[p.fileType] ?? pf?.variant_printfiles?.[0]?.placements?.[p.fileType];
+        const placements=pf?.variant_printfiles?.find(v=>Number(v.variant_id)===variants[0].id)?.placements || pf?.variant_printfiles?.[0]?.placements || {};
+        const id=[p.mockup,p.placement,p.fileType,'front','default'].map(k=>placements[k]).find(v=>v!=null);
         const file=(pf?.printfiles || []).find(f=>f.printfile_id===id);
         if(file) printfile={width:Number(file.width),height:Number(file.height),dpi:Number(file.dpi) || null};
       }catch{}
-      const pick=templates.filter(t=>[p.placement,p.fileType,'front','default'].includes(t.placement));
       products.push({key:p.key,title:p.title,group:p.group,technique:p.technique,nino:Boolean(p.nino),scale:p.scale,align:p.align,printfile,
-        templates:(pick.length?pick:templates).slice(0,40),variants});
+        templates:templates.slice(0,60),variants});
     }catch(error){ console.error(`merch product ${p.key} unavailable: ${error.message}`); }
   }
   if(!products.length) fail(503,'merch_catalog_unavailable','Merch products are not available right now.');
