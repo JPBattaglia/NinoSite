@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "nino-printful-commerce-api",
-  "main": "src/worker.mjs",
+  "main": "src/main.mjs",
   "compatibility_date": "2026-10-16",
   "d1_databases": [
     {
