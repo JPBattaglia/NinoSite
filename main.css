@@ -828,39 +828,9 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 /* Stage 10: ready-to-order design services (services.html#design-services, design-services.js) */
 .design-services{padding-block:60px;border-top:1px solid var(--line);scroll-margin-top:100px}.design-services-head{max-width:760px}.design-services-head h2{font:800 clamp(40px,6vw,76px)/.92 var(--display);margin:8px 0 16px}.design-services-head h2 span{color:var(--cyan-dark)}
 .design-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:30px}.design-card{background:var(--panel,#2b0b09);color:var(--ink);border:1px solid rgba(255,106,31,.35);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:6px}.design-card h3{font:700 28px/1.05 var(--display);margin:0}.design-card .button{margin-top:auto;min-width:0}.design-price{font:700 24px/1.2 var(--display);margin:6px 0 12px}
-.design-order{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:760px;margin-top:30px;background:var(--panel,#2b0b09);color:var(--ink);border:1px solid rgba(255,106,31,.35);border-radius:14px;padding:22px}.design-order h3,.design-order p,.design-order .button{grid-column:1/-1}.design-order h3{font:700 30px/1 var(--display);margin:0}.design-order label{display:flex;flex-direction:column;gap:4px;font-size:14px}.design-order input,.design-order select{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}.design-order-total{font-weight:700}.design-order-status{color:var(--red);font-weight:600}.design-team-merch{margin-top:24px}
+.design-order{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:760px;margin-top:30px;background:var(--panel,#2b0b09);color:var(--ink);border:1px solid rgba(255,106,31,.35);border-radius:14px;padding:22px}.design-order h3,.design-order p,.design-order .button{grid-column:1/-1}.design-order h3{font:700 30px/1 var(--display);margin:0}.design-order label{display:flex;flex-direction:column;gap:4px;font-size:14px}.design-order input,.design-order select{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}.design-order-total{font-weight:700}.design-order-status{color:var(--red);font-weight:600}
 @media (max-width:640px){.design-order{grid-template-columns:1fr}}
-.staff-merch-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;margin-block:40px;padding:28px;background:var(--panel,#2b0b09);color:var(--ink);border:1px solid rgba(255,106,31,.35);border-radius:14px}.staff-merch-banner h2{font:800 clamp(34px,5vw,60px)/.92 var(--display);margin:6px 0 12px}.staff-merch-banner h2 span{color:var(--cyan)}.staff-merch-banner p{max-width:640px;margin:0}.staff-merch-banner .button{min-width:0}
 .intro-bottom .text-link+.text-link{margin-left:18px}
-/* Staff merch page (staff-merch.html; staff-merch.js is copied from the MENU repo, which is its source) */
-.merch-shell{padding-bottom:70px}
-.merch-panel{background:var(--panel,#2b0b09);color:var(--ink);border:1px solid rgba(255,106,31,.35);border-radius:14px;padding:24px;margin-top:22px}
-.merch-panel h2{font:800 clamp(28px,4vw,44px)/1 var(--display);margin:0 0 14px}.merch-panel h3{font:700 26px/1.1 var(--display);margin:0 0 8px}
-.merch-drop{display:flex;align-items:center;gap:16px;border:2px dashed rgba(255,106,31,.5);border-radius:12px;padding:22px;cursor:pointer;margin:12px 0}
-.merch-drop.is-over{border-color:var(--cyan);background:rgba(255,106,31,.08)}.merch-drop.is-busy{opacity:.6}
-.merch-drop img{width:96px;height:96px;object-fit:contain;background:#fff;border-radius:10px;padding:6px}.merch-drop img[hidden]{display:none}
-.merch-drop input{max-width:100%}
-.merch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:14px}.merch-mock-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
-.merch-design{background:#fff;border:2px solid transparent;border-radius:12px;padding:8px;cursor:pointer;color:#1d1d1b;font:inherit;text-align:left;display:flex;flex-direction:column;gap:6px}
-.merch-design[aria-pressed="true"]{border-color:var(--cyan)}.merch-design>img{width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#f2f2f2}.merch-design span{font-size:14px;line-height:1.3}
-.merch-mock{position:relative;width:100%;aspect-ratio:1;overflow:hidden;border-radius:8px;background:#fff}
-.merch-mock img{position:absolute;display:block;max-width:none}.merch-mock .mm-base{inset:0;width:100%;height:100%;object-fit:contain}.merch-mock .mm-logo{object-fit:contain}
-.merch-subpanel{margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,106,31,.25)}
-.merch-picker{display:grid;grid-template-columns:minmax(0,280px) 1fr;gap:20px}.merch-picker>img{width:100%;height:auto;border-radius:10px;background:#fff}#pickerMock{max-width:280px;width:100%}
-.merch-swatches{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.merch-swatch{display:inline-flex;align-items:center;gap:6px;background:#fff;color:#1d1d1b;border:2px solid transparent;border-radius:999px;padding:4px 10px 4px 4px;font:inherit;font-size:13px;cursor:pointer}
-.merch-swatch[aria-pressed="true"]{border-color:var(--cyan)}.merch-swatch span{width:20px;height:20px;border-radius:50%;border:1px solid #999}
-.merch-sizes{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.merch-size{display:flex;flex-direction:column;gap:4px;font-size:14px}
-.merch-size input,.merch-form input,.merch-search{font:inherit;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);width:100%;box-sizing:border-box}.merch-search{max-width:360px}
-.merch-cart{list-style:none;padding:0;margin:10px 0}.merch-cart li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,106,31,.2)}
-.merch-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}.merch-form .full{grid-column:1/-1}.merch-form label{display:flex;flex-direction:column;gap:4px;font-size:14px}
-.merch-table{width:100%;border-collapse:collapse}.merch-table td,.merch-table th{padding:8px;border-bottom:1px solid rgba(255,106,31,.2);text-align:left}
-.merch-rate{display:block;margin:6px 0}.merch-fieldset{border:0;padding:0;margin:14px 0}
-.merch-status{color:#ffb4a8;font-weight:600}.merch-status.merch-paid{color:#c9f7d4;background:var(--panel,#2b0b09);border:1px solid rgba(201,247,212,.4);border-radius:12px;padding:16px}
-.merch-note{font-size:14px;opacity:.85}.link-btn{background:none;border:0;padding:0;color:var(--cyan);font:inherit;text-decoration:underline;cursor:pointer}
-details.merch-panel summary{cursor:pointer;list-style:none}details.merch-panel summary h2{display:inline}details.merch-panel summary::before{content:"▸ ";font-size:1.3em}details.merch-panel[open] summary::before{content:"▾ "}
-.test-mode-banner{background:#ffcc00;color:#111;text-align:center;padding:8px;font-weight:700}
-@media (max-width:700px){.merch-picker,.merch-form{grid-template-columns:1fr}.merch-drop{flex-direction:column;align-items:flex-start}}
 /* Header nav sizes (owner, Oct 28, 2026; like menu-made.com): larger text on big screens, medium on tablets,
    the gear/burger dropdown only on phones (700px and below). Overrides the older 761-980px burger. */
 @media(min-width:1151px){.site-nav{gap:30px}.site-nav>a{font-size:16px}}
