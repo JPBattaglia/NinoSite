@@ -11,6 +11,7 @@
 import {HttpError,fail,cents,recipient,countries} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
 import {resolveShippingCountries} from './countries.mjs';
+import {logoProducts,logoOrderItems,productByKey} from './merch-products.mjs';
 
 export const MERCH_LIMITS=Object.freeze({max_lines:30,max_per_line:100,max_total:200});
 // Logo on the upper back, inside Printful's 12x16 in DTG area (positions in pixels at 150 dpi: 1800x2400).
@@ -31,19 +32,70 @@ export function normalizeMerchItems(items) {
   return clean;
 }
 
-// Verified lines (today's Nino price, colour, size, artwork) and Printful's delivery rates for the address.
-export async function merchQuote({items,recipient:address},{store,printful,env,now}) {
-  const clean=normalizeMerchItems(items);
-  const shippingEnv=await resolveShippingCountries(env,store,printful,now);
-  const to=recipient(address,countries(shippingEnv));
-  const lines=await validatedLines(store,printful,env,clean,now);
-  const received=await printful.shippingRates({recipient:to,items:lines.map(line=>({variant_id:line.variant.catalog_variant_id,quantity:line.quantity})),currency:'USD'});
+export function normalizeLogoItems(items) {
+  if(items==null) return [];
+  if(!Array.isArray(items) || items.length>MERCH_LIMITS.max_lines) fail(400,'invalid_merch_cart');
+  const seen=new Set();
+  return items.map(item=>{
+    const key=String(item?.key || ''); const variant=Number(item?.variant_id); const quantity=item?.quantity;
+    if(!productByKey(key) || !Number.isSafeInteger(variant) || variant<1 || !Number.isInteger(quantity) || quantity<1 || quantity>MERCH_LIMITS.max_per_line) fail(400,'invalid_merch_item');
+    if(seen.has(`${key}:${variant}`)) fail(400,'duplicate_variant');
+    seen.add(`${key}:${variant}`);
+    return {key,variant_id:variant,quantity};
+  });
+}
+function cleanLogo(logo){
+  if(logo==null) return null;
+  if(!/^https:\/\/[^\s]+$/.test(String(logo.url || '')) || !(Number(logo.width)>0) || !(Number(logo.height)>0)) fail(400,'invalid_logo');
+  return {url:String(logo.url),width:Number(logo.width),height:Number(logo.height)};
+}
+const ratesOf=received=>{
   if(!Array.isArray(received)) fail(502,'shipping_quote_failed');
   const rates=received.map(rate=>({id:String(rate.id || ''),name:String(rate.name || 'Shipping').slice(0,100),amount_cents:cents(rate.rate,true),currency:String(rate.currency || '').toLowerCase(),min_days:Number(rate.minDeliveryDays)||null,max_days:Number(rate.maxDeliveryDays)||null})).filter(rate=>rate.id && rate.amount_cents!==null && rate.currency==='usd');
   if(!rates.length) fail(422,'shipping_unavailable','No delivery service is available for that address.');
+  return rates;
+};
+
+// Builds every Printful item for a cart: Nino-design shirts (with the logo on the back when there is one) and logo
+// products. Used by the quote (Printful's own cost estimate) and the order, so both send exactly the same thing.
+async function cartItems({items,logo_items,logo},{store,printful,env,now}){
+  const ninoInput=Array.isArray(items) && items.length?items:[];
+  const logoLines=normalizeLogoItems(logo_items);
+  if(!ninoInput.length && !logoLines.length) fail(400,'invalid_merch_cart','Choose at least one item.');
+  const ninoClean=ninoInput.length?normalizeMerchItems(ninoInput.map(({product_id,variant_id,quantity})=>({product_id,variant_id,quantity}))):[];
+  if(ninoClean.reduce((n,l)=>n+l.quantity,0)+logoLines.reduce((n,l)=>n+l.quantity,0)>MERCH_LIMITS.max_total) fail(400,'quantity_limit',`Choose at most ${MERCH_LIMITS.max_total} items per order.`);
+  const cleanedLogo=cleanLogo(logo);
+  if(logoLines.length && !cleanedLogo) fail(400,'logo_required','Upload your logo first.');
+  const ninoLines=ninoClean.length?await validatedLines(store,printful,env,ninoClean,now):[];
+  const catalog=logoLines.length?await logoProducts(store,env,now):null;
+  const logoItems=logoLines.length?logoOrderItems(logoLines,catalog,cleanedLogo):[];
+  return {ninoLines,logoLines,logoItems,catalog,logo:cleanedLogo};
+}
+
+// Verified lines (today's Nino price for design shirts, Printful's base price for logo items), Printful's delivery
+// rates for the address, and Printful's own estimate for the whole order (it includes any embroidery set-up).
+export async function merchQuote({items,logo_items,logo,recipient:address},deps) {
+  const {store,printful,env,now}=deps;
+  const shippingEnv=await resolveShippingCountries(env,store,printful,now);
+  const to=recipient(address,countries(shippingEnv));
+  const cart=await cartItems({items,logo_items,logo},deps);
+  const ninoItems=printfulItems(cart.ninoLines.map(l=>({...l,retail_cents:l.unit_price_cents})),new Map(cart.ninoLines.map(l=>[String(l.variant_id),l.variant])),cart.logo?.url || null);
+  const rates=ratesOf(await printful.shippingRates({recipient:to,items:[...cart.ninoLines.map(line=>({variant_id:line.variant.catalog_variant_id,quantity:line.quantity})),...cart.logoItems.map(i=>({variant_id:i.variant_id,quantity:i.quantity}))],currency:'USD'}));
+  let estimate=null;
+  if(cart.logoItems.length && typeof printful.call==='function'){
+    try{ estimate=(await printful.call('POST','/orders/estimate-costs',{recipient:to,items:[...ninoItems,...cart.logoItems]}))?.result?.costs || null; }
+    catch(error){ fail(422,'merch_file_refused',`Printful could not prepare these items with your logo: ${String(error?.message || '').replace(/^.*?: /,'').slice(0,160)}`); }
+  }
+  const logoLines=cart.logoLines.map(line=>{
+    const product=cart.catalog.products.find(p=>p.key===line.key);
+    const variant=product.variants.find(v=>v.id===line.variant_id);
+    return {key:line.key,variant_id:line.variant_id,quantity:line.quantity,title:product.title,color:variant.color,size:variant.size,image:variant.image,base_cents:variant.base_cents};
+  });
   return {
     recipient:to,
-    lines:lines.map(line=>({product_id:line.product_id,variant_id:line.variant_id,quantity:line.quantity,title:line.title,color:line.variant.color,size:line.variant.size,image:line.image,unit_price_cents:line.unit_price_cents,catalog_variant_id:line.variant.catalog_variant_id,fingerprint:line.variant.fingerprint})),
+    lines:cart.ninoLines.map(line=>({product_id:line.product_id,variant_id:line.variant_id,quantity:line.quantity,title:line.title,color:line.variant.color,size:line.variant.size,image:line.image,unit_price_cents:line.unit_price_cents,catalog_variant_id:line.variant.catalog_variant_id,fingerprint:line.variant.fingerprint})),
+    logo_lines:logoLines,
+    costs:estimate?{digitization_cents:cents(String(estimate.digitization ?? '0'),true) || 0,additional_fee_cents:cents(String(estimate.additional_fee ?? '0'),true) || 0,subtotal_cents:cents(String(estimate.subtotal ?? '0'),true)}:null,
     rates
   };
 }
@@ -62,21 +114,23 @@ function printfulItems(lines,snapshots,logoUrl) {
 
 // Places (or finds) the Printful order for a paid Menu-made merch order. Idempotent by external_id.
 // confirm=false leaves a draft (sandbox orders and the self-test never print anything).
-export async function placeMerchOrder({external_id,lines,recipient:address,email,shipping_method,logo_url,max_cost_cents,confirm},{store,printful,env,now}) {
+export async function placeMerchOrder({external_id,lines=[],logo_lines=[],logo=null,recipient:address,email,shipping_method,logo_url,max_cost_cents,confirm},{store,printful,env,now}) {
   if(!EXTERNAL_ID.test(String(external_id || ''))) fail(400,'invalid_external_id');
   if(logo_url!=null && !/^https:\/\/[^\s]+$/.test(String(logo_url))) fail(400,'invalid_logo_url');
   if(!Number.isInteger(max_cost_cents) || max_cost_cents<1) fail(400,'invalid_cost_cap');
   let draft=await printful.findOrder(external_id);
   if(!draft) {
-    const clean=normalizeMerchItems(lines.map(({product_id,variant_id,quantity})=>({product_id,variant_id,quantity})));
+    const logoFile=logo || (logo_url?{url:logo_url,width:1,height:1}:null);
+    const cart=await cartItems({items:lines,logo_items:logo_lines,logo:logo_lines.length?logoFile:null},{store,printful,env,now});
     // Same check as a shop checkout: the shirt must still exist with the artwork that was quoted.
-    const verified=await validatedLines(store,printful,env,clean,now);
-    const snapshots=new Map(verified.map(line=>[String(line.variant_id),line.variant]));
+    const snapshots=new Map(cart.ninoLines.map(line=>[String(line.variant_id),line.variant]));
     for(const line of lines) if(line.fingerprint && snapshots.get(String(line.variant_id))?.fingerprint!==line.fingerprint) fail(409,'catalog_changed','A chosen shirt changed since the order was paid.');
     const shippingEnv=await resolveShippingCountries(env,store,printful,now);
     const to=recipient(address,countries(shippingEnv));
     if(typeof email!=='string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail(400,'invalid_email');
-    draft=await printful.createDraft({external_id,shipping:String(shipping_method || 'STANDARD'),recipient:{...to,email},items:printfulItems(lines,snapshots,logo_url || null)});
+    const logoRetail=new Map(logo_lines.map(l=>[`${l.key}:${l.variant_id}`,l.retail_cents]));
+    const logoItems=cart.logoItems.map((item,i)=>({...item,...(logoRetail.get(`${cart.logoLines[i].key}:${cart.logoLines[i].variant_id}`)?{retail_price:(logoRetail.get(`${cart.logoLines[i].key}:${cart.logoLines[i].variant_id}`)/100).toFixed(2)}:{})}));
+    draft=await printful.createDraft({external_id,shipping:String(shipping_method || 'STANDARD'),recipient:{...to,email},items:[...printfulItems(lines,snapshots,logoFile?.url || null),...logoItems]});
   }
   if(!draft || String(draft.external_id)!==external_id) fail(409,'printful_order_identity_mismatch');
   const cost=cents(String(draft.costs?.total ?? ''),true);

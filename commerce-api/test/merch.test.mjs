@@ -78,3 +78,63 @@ test('the merch sample picks two sizes of one shirt in one colour',async()=>{
   const r=await merchSample({},deps(f));
   assert.deepEqual(r.variants.map(x=>x.size),['M','L']);
 });
+
+// ---------- Logo merch (logo first, Oct 28 9:02 pm) ----------
+import {buildLogoProducts,logoPosition,LOGO_PRODUCTS,productByKey} from '../src/merch-products.mjs';
+
+function printfulApi(){
+  const calls=[];
+  const fetcher=async(url)=>{
+    const u=new URL(url); calls.push(u.pathname);
+    let m;
+    if((m=u.pathname.match(/^\/products\/(\d+)$/))) return Response.json({code:200,result:{product:{id:Number(m[1])},variants:[
+      {id:Number(m[1])*10+1,color:'Black',color_code:'#000000',size:'M',price:'12.50',image:`https://img.example/${m[1]}.jpg`,availability_status:[{region:'US',status:'in_stock'}]},
+      {id:Number(m[1])*10+2,color:'Red',size:'M',price:'12.50',availability_status:[{region:'EU',status:'in_stock'}]}]}});
+    if((m=u.pathname.match(/^\/v2\/catalog-products\/(\d+)\/mockup-templates$/))) return Response.json({data:[{catalog_variant_ids:[Number(m[1])*10+1],placement:'front',image_url:'https://img.example/t.png',background_url:'https://img.example/bg.png',template_width:1000,template_height:1000,print_area_width:400,print_area_height:500,print_area_top:200,print_area_left:300,template_positioning:'overlay'}]});
+    if((m=u.pathname.match(/^\/mockup-generator\/printfiles\/(\d+)$/))) return Response.json({code:200,result:{printfiles:[{printfile_id:1,width:1800,height:2400,dpi:150}],variant_printfiles:[{variant_id:Number(m[1])*10+1,placements:{default:1,front:1,embroidery_chest_left:1}}]}});
+    return new Response('nope',{status:404});
+  };
+  return {fetcher,calls};
+}
+
+test('logo products: only US stock, Printful templates and print files, for every product in the lineup',async()=>{
+  const {fetcher}=printfulApi();
+  const built=await buildLogoProducts({PRINTFUL_ACCESS_TOKEN:'x',PRINTFUL_STORE_ID:'1'},fetcher);
+  assert.equal(built.products.length,LOGO_PRODUCTS.length);
+  const tee=built.products.find(p=>p.key==='tee');
+  assert.equal(tee.variants.length,1,'EU-only colour left out');
+  assert.equal(tee.variants[0].base_cents,1250);
+  assert.deepEqual(tee.templates[0].box,{width:400,height:500,top:200,left:300});
+  assert.equal(tee.printfile.width,1800);
+  assert.equal(tee.nino,true);
+  for(const key of ['apron','cap','beanie','mug','coaster','tote','hoodie','polo','stickers']) assert.ok(built.products.some(p=>p.key===key),key);
+});
+
+test('the logo is placed in the print file the same way the mockup shows it',()=>{
+  const tee=productByKey('tee');
+  const pos=logoPosition(tee,{width:1800,height:2400},{width:1000,height:500});
+  assert.equal(pos.width,900); assert.equal(pos.height,450); assert.equal(pos.left,450); assert.equal(pos.top,192);
+  const cap=logoPosition(productByKey('cap'),{width:1200,height:600},{width:500,height:500});
+  assert.equal(cap.height,600); assert.equal(cap.width,600); assert.equal(cap.left,300);
+});
+
+test('a logo cart is quoted with Printful\'s estimate and ordered with the logo file on every item',async()=>{
+  const f=await fixture();
+  const {fetcher}=printfulApi();
+  const built=await buildLogoProducts({PRINTFUL_ACCESS_TOKEN:'x',PRINTFUL_STORE_ID:'1'},fetcher);
+  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('merch_logo_products_v1',?)",JSON.stringify({...built,built_at:f.now()}));
+  let estimated; f.printful.call=async(method,path,body)=>{estimated={path,body};return {code:200,result:{costs:{subtotal:'40.00',digitization:'6.50',additional_fee:'0.00'}}};};
+  const logo={url:'https://menu-made.com/api/merch-upload/x?t=y',width:1000,height:500};
+  const quote=await merchQuote({items:[{product_id:'101',variant_id:'501',quantity:2}],logo_items:[{key:'cap',variant_id:2061,quantity:3},{key:'mug',variant_id:191,quantity:4}],logo,recipient:address},deps(f));
+  assert.equal(estimated.path,'/orders/estimate-costs');
+  assert.equal(estimated.body.items.length,3);
+  assert.deepEqual(estimated.body.items[0].files.at(-1).type,'back','Nino shirt carries the logo on the back');
+  assert.equal(quote.costs.digitization_cents,650);
+  assert.equal(quote.logo_lines[0].base_cents,1250);
+  let payload; f.printful.createDraft=async p=>{payload=p;const d={id:3,external_id:p.external_id,status:'draft',costs:{total:'60.00'}};f.printful.orders.set(p.external_id,d);return d;};
+  const placed=await placeMerchOrder({external_id:'mmlogocart123',lines:quote.lines.map(l=>({...l,retail_cents:3700})),logo_lines:quote.logo_lines.map(l=>({...l,retail_cents:2499})),logo,recipient:address,email:'a@b.co',shipping_method:'STANDARD',max_cost_cents:20000,confirm:false},deps(f));
+  assert.equal(placed.status,'draft');
+  const cap=payload.items.find(i=>i.external_id==='logo_1');
+  assert.equal(cap.variant_id,2061); assert.equal(cap.files[0].url,logo.url); assert.equal(cap.retail_price,'24.99');
+  await assert.rejects(merchQuote({logo_items:[{key:'cap',variant_id:2061,quantity:1}],recipient:address},deps(f)),{code:'logo_required'});
+});

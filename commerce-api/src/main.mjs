@@ -6,6 +6,7 @@ import {Store} from './db.mjs';
 import {PrintfulClient} from './providers.mjs';
 import {nowSeconds} from './common.mjs';
 import {merchCall,merchQuote,placeMerchOrder,merchOrderStatus,deleteMerchDraft,merchSample} from './merch.mjs';
+import {logoProducts} from './merch-products.mjs';
 
 export * from './worker.mjs';
 export default app;
@@ -21,5 +22,6 @@ export class NinoMerch extends WorkerEntrypoint {
   placeOrder(args) { return merchCall(placeMerchOrder,args,this.deps()); }
   orderStatus(args) { return merchCall(merchOrderStatus,args,this.deps()); }
   deleteDraft(args) { return merchCall(deleteMerchDraft,args,this.deps()); }
+  products() { const d=this.deps(); return merchCall(()=>logoProducts(d.store,d.env,d.now),{},d); }
   sample(args) { return merchCall(merchSample,args || {},this.deps()); }
 }
