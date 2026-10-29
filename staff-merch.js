@@ -73,7 +73,7 @@
   // ---- 2. Mockups ----
   async function loadMerch() {
     try {
-      const res = await fetch(API + '/api/merch/products', { headers: { Accept: 'application/json' } });
+      const res = await fetch(API + '/api/merch/products?v=3', { headers: { Accept: 'application/json' } });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
       state.merch = data.products || [];
