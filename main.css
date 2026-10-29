@@ -861,3 +861,18 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 details.merch-panel summary{cursor:pointer;list-style:none}details.merch-panel summary h2{display:inline}details.merch-panel summary::before{content:"▸ ";font-size:1.3em}details.merch-panel[open] summary::before{content:"▾ "}
 .test-mode-banner{background:#ffcc00;color:#111;text-align:center;padding:8px;font-weight:700}
 @media (max-width:700px){.merch-picker,.merch-form{grid-template-columns:1fr}.merch-drop{flex-direction:column;align-items:flex-start}}
+/* Header nav sizes (owner, Oct 28, 2026; like menu-made.com): larger text on big screens, medium on tablets,
+   the gear/burger dropdown only on phones (700px and below). Overrides the older 761-980px burger. */
+@media(min-width:1151px){.site-nav{gap:30px}.site-nav>a{font-size:16px}}
+@media(min-width:1500px){.site-nav>a{font-size:17px}}
+@media(min-width:936px) and (max-width:1150px){.site-nav{gap:22px}.site-nav>a{font-size:15px}}
+@media(min-width:701px) and (max-width:980px){
+  .nav-toggle{display:none!important}
+  .site-nav{display:flex!important;position:static;flex-direction:row;align-items:center;background:none!important;border:0;padding:0;gap:16px}
+  .site-nav>a{padding:0;border-bottom:0;font-size:14px;white-space:nowrap}
+  .site-nav>a.nav-project{margin-top:0;padding:10px 14px;min-height:0}
+  .site-nav .nav-cart{justify-content:flex-start}
+}
+@media(min-width:701px) and (max-width:860px){.site-nav{gap:12px}.site-nav>a{font-size:13px}.brand-wordmark{font-size:30px}.site-nav>a.nav-project{padding:9px 12px}}
+@media(min-width:701px) and (max-width:760px){.site-nav>a.nav-project{color:#200705}}
+@media(max-width:700px){.nav-toggle{display:grid}}
