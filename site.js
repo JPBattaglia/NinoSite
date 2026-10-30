@@ -561,8 +561,11 @@
     }
     const grid = document.querySelector('[data-art-grid]');
     if (!grid) return;
+    // A fresh random order on every visit to the Work page (owner request, Oct 30); it holds while switching categories.
+    const order = catalog.artworks.slice();
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
     function render(category) {
-      const records = catalog.artworks.filter(item => category === 'all' || item.category === category);
+      const records = order.filter(item => category === 'all' || item.category === category);
       grid.replaceChildren(...records.map(record => recordCard(record, 'art')));
       const count = document.querySelector('[data-art-count]');
       if (count) count.textContent = `${records.length} ${records.length === 1 ? 'piece' : 'pieces'}${category === 'all' ? '' : ' / ' + category}`;
