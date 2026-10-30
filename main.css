@@ -846,3 +846,6 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 @media(min-width:701px) and (max-width:860px){.site-nav{gap:12px}.site-nav>a{font-size:13px}.brand-wordmark{font-size:30px}.site-nav>a.nav-project{padding:9px 12px}}
 @media(min-width:701px) and (max-width:760px){.site-nav>a.nav-project{color:#200705}}
 @media(max-width:700px){.nav-toggle{display:grid}}
+
+/* Oct 29, 2026 (owner): softer glow around the Let’s talk form: thin outline, small faint halo (was a 10px ring and a 120px glow). */
+.contact-form-card{box-shadow:0 0 0 1px rgba(255,106,31,.7),0 0 36px -14px rgba(255,106,31,.28),0 40px 80px -40px rgba(0,0,0,.9)}
