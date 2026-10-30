@@ -261,7 +261,7 @@
     note.append(price);
     note.append(create('p', 'coming-soon-title', 'Online ordering opens soon'));
     note.append(create('p', 'commerce-option-status', 'Pick your color and size, then ask Nino to hold it for you — he’ll let you know as soon as it’s ready to order.'));
-    const ask = create('a', 'button button-cyan', 'Email me when it’s ready ↗');
+    const ask = create('a', 'button button-cyan', 'Email me when it’s ready');
     note.append(ask);
     function update() {
       const cents = size && prices[size] ? prices[size] : Object.values(prices).map(Number).filter(Number.isFinite).sort((a, b) => a - b)[0];
@@ -371,7 +371,7 @@
     const qty = create('input'); qty.type = 'number'; qty.name = 'quantity'; qty.min = '1'; qty.max = String(MAX_QUANTITY); qty.step = '1'; qty.value = '1'; qty.inputMode = 'numeric';
     qtyWrapper.append(qty); chooser.append(qtyWrapper);
     const add = create('button', 'button button-cyan', 'Add to cart'); add.type = 'submit'; add.disabled = true;
-    const viewCart = create('a', 'text-link commerce-cart-link', 'View cart ↗'); viewCart.href = 'cart.html'; viewCart.hidden = true;
+    const viewCart = create('a', 'text-link commerce-cart-link', 'View cart'); viewCart.href = 'cart.html'; viewCart.hidden = true;
     form.append(chooser, price, add, viewCart, status);
     container.replaceChildren(form);
     let selected = null;
@@ -600,7 +600,7 @@
     summary.hidden = count === 0;
     checkout.disabled = state.pending || state.loading || !state.ready || !totals().allValid || !state.checkoutReady || !shippingReady();
     renderShipping();
-    checkout.textContent = state.pending ? 'Opening checkout…' : 'Continue to checkout ↗';
+    checkout.textContent = state.pending ? 'Opening checkout…' : 'Continue to checkout';
     checkout.setAttribute('aria-busy', String(state.pending));
     if (retry) retry.hidden = !state.error;
     lines.replaceChildren();
@@ -740,7 +740,7 @@
     const reference = create('p', 'receipt-reference'); reference.dataset.receiptReference = '';
     const retry = create('button', 'button button-outline', 'Check payment status'); retry.type = 'button'; retry.dataset.receiptRetry = ''; retry.hidden = true;
     retry.addEventListener('click', () => verifyCheckoutReceipt(readCheckoutReceipt()));
-    const cart = create('a', 'text-link', 'Review your cart ↗'); cart.href = 'cart.html';
+    const cart = create('a', 'text-link', 'Review your cart'); cart.href = 'cart.html';
     const actions = create('div', 'button-row receipt-actions'); actions.append(retry, cart);
     region.append(title, message, reference, actions);
     const intro = main.querySelector('.page-intro');

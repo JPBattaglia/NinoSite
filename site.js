@@ -124,7 +124,7 @@
     }
   }
   const share = document.querySelector('[data-share-product]');
-  if (share) share.textContent = 'Send to a friend ↗';
+  if (share) share.textContent = 'Send to a friend';
   share?.addEventListener('click', () => shareProduct(activeProduct, share));
   // Recently viewed shirts, newest first. The slug survives the switch to live product IDs.
   const VIEWED_KEY = 'nino-recently-viewed';
@@ -228,12 +228,12 @@
     const browse = document.querySelector('[data-art-actions] .button');
     if (kind === 'preview') {
       browse.href = catalog.shop.url;
-      browse.textContent = 'Shop the collection ↗';
+      browse.textContent = 'Shop the collection';
       browse.target = '_blank';
       browse.rel = 'noopener';
     } else {
       browse.href = 'contact.html';
-      browse.textContent = 'Discuss a project ↗';
+      browse.textContent = 'Discuss a project';
       browse.removeAttribute('target');
       browse.removeAttribute('rel');
     }
@@ -366,7 +366,7 @@
     const photo = image(record.image, record.imageUnavailable ? 'Product image not available yet' : title(record.title));
     if (kind === 'art') { const frame = node('span', 'art-image'); frame.append(photo); link.append(frame); }
     else {
-      link.append(photo); const mark = node('span', 'product-open-mark', '↗'); mark.setAttribute('aria-hidden', 'true'); link.append(mark);
+      link.append(photo);
       const badge = kind === 'product' && record.new === true ? 'New' : '';
       if (badge) { link.append(node('span', 'product-badge', badge)); link.setAttribute('aria-label', `Preview ${title(record.title)} (${badge.toLowerCase()})`); }
     }
@@ -393,7 +393,7 @@
   function previewCollection(container) {
     container.replaceChildren(...previewDesigns.map(record => recordCard(record, 'preview')));
     const note = node('div', 'preview-collection-note');
-    note.append(node('p', '', 'Explore Nino’s shirt designs and choose your own point of view.'), shopLink('Shop the collection ↗'));
+    note.append(node('p', '', 'Explore Nino’s shirt designs and choose your own point of view.'), shopLink('Shop the collection'));
     container.after(note);
   }
   function renderFilters(container, categories, dataKey, handler) {
@@ -546,7 +546,6 @@
     const actions = node('div', 'shop-hero-actions');
     const shop = node('button', 'button button-coral', 'Shop now');
     shop.type = 'button'; shop.setAttribute('aria-haspopup', 'dialog');
-    const arrow = node('span', '', '↗'); arrow.setAttribute('aria-hidden', 'true'); shop.append(arrow);
     shop.addEventListener('click', () => openRecord(record, 'product', shop));
     actions.append(shop);
     copy.append(node('p', 'eyebrow', 'Featured design'), heading, price, actions);
@@ -610,7 +609,7 @@
       document.querySelectorAll('[data-featured-products],[data-shop-products]').forEach(previewCollection);
       document.querySelectorAll('[data-featured-art],[data-art-grid]').forEach(container => {
         const message = node('p', 'empty-state', 'The collection could not be loaded. Please refresh this page. ');
-        message.append(shopLink('Return to the shop ↗')); container.replaceChildren(message);
+        message.append(shopLink('Return to the shop')); container.replaceChildren(message);
       });
       const count = document.querySelector('[data-result-count]'); if (count) count.textContent = 'Shirt design previews';
       document.querySelector('.collection-toolbar')?.setAttribute('hidden', '');
@@ -689,14 +688,14 @@
       more.href = 'shop.html?' + params;
       outcome.querySelector('[data-result-intro]').textContent = fromQuiz ? 'Your Nino shirt match' : 'A friend’s Nino shirt match';
       const retake = outcome.querySelector('[data-quiz-restart]');
-      retake.textContent = fromQuiz ? 'Take the quiz again ↺' : 'Take the quiz yourself ↗';
+      retake.textContent = fromQuiz ? 'Take the quiz again' : 'Take the quiz yourself';
       const grid = outcome.querySelector('[data-result-products]');
       grid.replaceChildren(node('p', 'loading-state', 'Finding your shirts…'));
       outcome.querySelector('[data-result-heading]').focus({ preventScroll: false });
       await catalogReady;
       const matches = catalog.products.filter(item => result.collection ? (item.collections || []).includes(result.collection) : item.category === result.category);
       const ordered = [...matches.filter(item => item.featured), ...matches.filter(item => !item.featured)].slice(0, 4);
-      more.textContent = `See all ${matches.length} in the shop ↗`;
+      more.textContent = `See all ${matches.length} in the shop`;
       more.hidden = !matches.length;
       if (!ordered.length) { grid.replaceChildren(node('p', 'empty-state', 'These shirts are taking a break. Explore the full collection instead.')); return; }
       const open = document.documentElement.dataset.checkout === 'open';
@@ -708,7 +707,7 @@
         choose.type = 'button'; choose.setAttribute('aria-haspopup', 'dialog');
         choose.setAttribute('aria-label', (open ? 'Add to cart: ' : 'Choose size and color: ') + title(record.title));
         choose.addEventListener('click', () => openRecord(record, 'product', choose));
-        const send = node('button', 'text-link share-product', 'Send to a friend ↗');
+        const send = node('button', 'text-link share-product', 'Send to a friend');
         send.type = 'button'; send.setAttribute('aria-label', 'Send ' + title(record.title) + ' to a friend');
         send.addEventListener('click', () => shareProduct(record, send));
         actions.append(choose, send); card.append(actions);
