@@ -564,11 +564,16 @@
     // A fresh random order on every visit to the Work page (owner request, Oct 30); it holds while switching categories.
     const order = catalog.artworks.slice();
     for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    // "All work" shows a random 20 from the whole pool; a category shows every piece in it.
+    const PER_VISIT = 20;
     function render(category) {
-      const records = order.filter(item => category === 'all' || item.category === category);
+      const matching = order.filter(item => category === 'all' || item.category === category);
+      const records = category === 'all' ? matching.slice(0, PER_VISIT) : matching;
       grid.replaceChildren(...records.map(record => recordCard(record, 'art')));
       const count = document.querySelector('[data-art-count]');
-      if (count) count.textContent = `${records.length} ${records.length === 1 ? 'piece' : 'pieces'}${category === 'all' ? '' : ' / ' + category}`;
+      if (count) count.textContent = category === 'all' && matching.length > records.length
+        ? `${records.length} of ${matching.length} pieces, a new mix every visit`
+        : `${records.length} ${records.length === 1 ? 'piece' : 'pieces'}${category === 'all' ? '' : ' / ' + category}`;
       if (!records.length) grid.append(node('p', 'empty-state', 'Choose another category to explore Nino’s work.'));
     }
     renderFilters(document.querySelector('[data-art-filters]'), [...new Set(catalog.artworks.map(item => item.category).filter(Boolean))], 'artCategory', render);

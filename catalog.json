@@ -16291,6 +16291,596 @@
       "category": "Illustration",
       "description": "Bright green illustrated frog with a simple expressive face",
       "featured": false
+    },
+    {
+      "id": "pool-field-of-honor",
+      "title": "Coastal Bend Field of Honor",
+      "category": "Branding",
+      "image": "assets/pool/pool-field-of-honor-640.webp",
+      "gallery": [
+        "assets/pool/pool-field-of-honor.webp"
+      ],
+      "description": "An emblem for a veterans' memorial event: a flag at dusk inside a starred badge."
+    },
+    {
+      "id": "pool-biker-badge",
+      "title": "Sunset rider",
+      "category": "Branding",
+      "image": "assets/pool/pool-biker-badge-640.webp",
+      "gallery": [
+        "assets/pool/pool-biker-badge.webp"
+      ],
+      "description": "A motorcycle badge in warm sunset tones with a rope frame."
+    },
+    {
+      "id": "pool-bison-ronin",
+      "title": "Bison Ronin",
+      "category": "Branding",
+      "image": "assets/pool/pool-bison-ronin-640.webp",
+      "gallery": [
+        "assets/pool/pool-bison-ronin.webp"
+      ],
+      "description": "A martial arts club mark: a bison in a samurai helmet."
+    },
+    {
+      "id": "pool-nino-mark-steel",
+      "title": "Nino mark, steel",
+      "category": "Branding",
+      "image": "assets/pool/pool-nino-mark-steel-640.webp",
+      "gallery": [
+        "assets/pool/pool-nino-mark-steel.webp"
+      ],
+      "description": "Nino's personal mark rendered in brushed steel blues."
+    },
+    {
+      "id": "pool-apple-oroboros",
+      "title": "Apple oroboros",
+      "category": "Illustration",
+      "image": "assets/pool/pool-apple-oroboros-640.webp",
+      "gallery": [
+        "assets/pool/pool-apple-oroboros.webp"
+      ],
+      "description": "A splash screen: a serpent circling an apple."
+    },
+    {
+      "id": "pool-ink-bar",
+      "title": "Skeleton bartender, ink",
+      "category": "Illustration",
+      "image": "assets/pool/pool-ink-bar-640.webp",
+      "gallery": [
+        "assets/pool/pool-ink-bar.webp"
+      ],
+      "description": "A pen-and-ink scene of a skeleton bartender behind a full back bar."
+    },
+    {
+      "id": "pool-bar-color",
+      "title": "Skeleton bartender, color",
+      "category": "Illustration",
+      "image": "assets/pool/pool-bar-color-640.webp",
+      "gallery": [
+        "assets/pool/pool-bar-color.webp"
+      ],
+      "description": "The skeleton bartender scene, painted in full color."
+    },
+    {
+      "id": "pool-nino-mark-holiday",
+      "title": "Nino mark, holiday",
+      "category": "Branding",
+      "image": "assets/pool/pool-nino-mark-holiday-640.webp",
+      "gallery": [
+        "assets/pool/pool-nino-mark-holiday.webp"
+      ],
+      "description": "A seasonal colorway of Nino's mark in red, gold and teal."
+    },
+    {
+      "id": "pool-nino-eclipse",
+      "title": "Nino mark, eclipse",
+      "category": "Branding",
+      "image": "assets/pool/pool-nino-eclipse-640.webp",
+      "gallery": [
+        "assets/pool/pool-nino-eclipse.webp"
+      ],
+      "description": "Nino's mark set against a solar eclipse, from his 2019 business cards."
+    },
+    {
+      "id": "pool-bison-grapple-poster",
+      "title": "Bison Grappling Club",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-bison-grapple-poster-640.webp",
+      "gallery": [
+        "assets/pool/pool-bison-grapple-poster.webp"
+      ],
+      "description": "A promotional poster pairing the bison mascot with the club's brand."
+    },
+    {
+      "id": "pool-bison-head",
+      "title": "Bison head",
+      "category": "Branding",
+      "image": "assets/pool/pool-bison-head-640.webp",
+      "gallery": [
+        "assets/pool/pool-bison-head.webp"
+      ],
+      "description": "A bold mascot head for a grappling club."
+    },
+    {
+      "id": "pool-ellas-logo",
+      "title": "Ella's Wood Fired Pizza",
+      "category": "Branding",
+      "image": "assets/pool/pool-ellas-logo-640.webp",
+      "gallery": [
+        "assets/pool/pool-ellas-logo.webp"
+      ],
+      "description": "The Ella's logo: a wood-fired oven, flames and crossed pizza peels."
+    },
+    {
+      "id": "pool-ellas-sign",
+      "title": "Ella's storefront sign",
+      "category": "Branding",
+      "image": "assets/pool/pool-ellas-sign-640.webp",
+      "gallery": [
+        "assets/pool/pool-ellas-sign.webp"
+      ],
+      "description": "The Ella's logo on a round blade sign, shown on the street."
+    },
+    {
+      "id": "pool-ellas-study",
+      "title": "Ella's logo study",
+      "category": "Branding",
+      "image": "assets/pool/pool-ellas-study-640.webp",
+      "gallery": [
+        "assets/pool/pool-ellas-study.webp"
+      ],
+      "description": "A sheet of logo explorations for Ella's Wood Fired Pizza."
+    },
+    {
+      "id": "pool-ellas-box",
+      "title": "Ella's pizza box",
+      "category": "Branding",
+      "image": "assets/pool/pool-ellas-box-640.webp",
+      "gallery": [
+        "assets/pool/pool-ellas-box.webp"
+      ],
+      "description": "The Ella's mark applied to a stack of pizza boxes."
+    },
+    {
+      "id": "pool-ellas-menu",
+      "title": "Ella's menu",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-ellas-menu-640.webp",
+      "gallery": [
+        "assets/pool/pool-ellas-menu.webp"
+      ],
+      "description": "A two-panel menu for Ella's on a dark wood background."
+    },
+    {
+      "id": "pool-ellas-menu-cover",
+      "title": "Ella's menu cover",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-ellas-menu-cover-640.webp",
+      "gallery": [
+        "assets/pool/pool-ellas-menu-cover.webp"
+      ],
+      "description": "A menu cover with the Ella's mark burned into dark wood."
+    },
+    {
+      "id": "pool-goudy-poster",
+      "title": "Goudy Old Style",
+      "category": "Typography",
+      "image": "assets/pool/pool-goudy-poster-640.webp",
+      "gallery": [
+        "assets/pool/pool-goudy-poster.webp"
+      ],
+      "description": "A type specimen poster celebrating Goudy Old Style."
+    },
+    {
+      "id": "pool-happy-donut-card",
+      "title": "My Happy Donut card",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-happy-donut-card-640.webp",
+      "gallery": [
+        "assets/pool/pool-happy-donut-card.webp"
+      ],
+      "description": "A bright pink business card for My Happy Donut."
+    },
+    {
+      "id": "pool-happy-donut",
+      "title": "Happy donut",
+      "category": "Illustration",
+      "image": "assets/pool/pool-happy-donut-640.webp",
+      "gallery": [
+        "assets/pool/pool-happy-donut.webp"
+      ],
+      "description": "The My Happy Donut mascot: a pink donut with a bow."
+    },
+    {
+      "id": "pool-rippert-reel",
+      "title": "KR film monogram",
+      "category": "Branding",
+      "image": "assets/pool/pool-rippert-reel-640.webp",
+      "gallery": [
+        "assets/pool/pool-rippert-reel.webp"
+      ],
+      "description": "A monogram for a filmmaker: a quill and film strip forming the letters K and R."
+    },
+    {
+      "id": "pool-more-than-a-story",
+      "title": "More Than A Story Productions",
+      "category": "Branding",
+      "image": "assets/pool/pool-more-than-a-story-640.webp",
+      "gallery": [
+        "assets/pool/pool-more-than-a-story.webp"
+      ],
+      "description": "A production company mark built around a vintage typewriter."
+    },
+    {
+      "id": "pool-rippert-aperture",
+      "title": "KR aperture monogram",
+      "category": "Branding",
+      "image": "assets/pool/pool-rippert-aperture-640.webp",
+      "gallery": [
+        "assets/pool/pool-rippert-aperture.webp"
+      ],
+      "description": "The KR monogram set inside a camera aperture."
+    },
+    {
+      "id": "pool-mvip-card",
+      "title": "Military VIP card",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-mvip-card-640.webp",
+      "gallery": [
+        "assets/pool/pool-mvip-card.webp"
+      ],
+      "description": "A business card for Military VIP, a veterans' organization."
+    },
+    {
+      "id": "pool-mvip-logo",
+      "title": "Military VIP",
+      "category": "Branding",
+      "image": "assets/pool/pool-mvip-logo-640.webp",
+      "gallery": [
+        "assets/pool/pool-mvip-logo.webp"
+      ],
+      "description": "An eagle-and-star emblem for a veterans' organization."
+    },
+    {
+      "id": "pool-mvip-badge",
+      "title": "Military VIP badge",
+      "category": "Branding",
+      "image": "assets/pool/pool-mvip-badge-640.webp",
+      "gallery": [
+        "assets/pool/pool-mvip-badge.webp"
+      ],
+      "description": "The Military VIP emblem as a round badge."
+    },
+    {
+      "id": "pool-reiki",
+      "title": "Reiki yin yang",
+      "category": "Illustration",
+      "image": "assets/pool/pool-reiki-640.webp",
+      "gallery": [
+        "assets/pool/pool-reiki.webp"
+      ],
+      "description": "A hand-drawn yin yang of sun, waves and clouds for a reiki practice."
+    },
+    {
+      "id": "pool-mangia-tutti-menu",
+      "title": "Mangia Tutti menu",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-mangia-tutti-menu-640.webp",
+      "gallery": [
+        "assets/pool/pool-mangia-tutti-menu.webp"
+      ],
+      "description": "A dinner menu for Mangia Tutti, an Italian restaurant."
+    },
+    {
+      "id": "pool-mangia-tutti-prix-fixe",
+      "title": "Mangia Tutti prix fixe",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-mangia-tutti-prix-fixe-640.webp",
+      "gallery": [
+        "assets/pool/pool-mangia-tutti-prix-fixe.webp"
+      ],
+      "description": "A prix fixe menu in the colors of the Italian flag."
+    },
+    {
+      "id": "pool-mangia-tutti-logo",
+      "title": "Mangia Tutti",
+      "category": "Branding",
+      "image": "assets/pool/pool-mangia-tutti-logo-640.webp",
+      "gallery": [
+        "assets/pool/pool-mangia-tutti-logo.webp"
+      ],
+      "description": "The oval sign mark for Ristorante Mangia Tutti."
+    },
+    {
+      "id": "pool-marios",
+      "title": "Mario's Bohemian Cigar Store Cafe",
+      "category": "Branding",
+      "image": "assets/pool/pool-marios-640.webp",
+      "gallery": [
+        "assets/pool/pool-marios.webp"
+      ],
+      "description": "A neon-style logo for a North Beach cafe."
+    },
+    {
+      "id": "pool-menu-serve",
+      "title": "MENU, served",
+      "category": "Branding",
+      "image": "assets/pool/pool-menu-serve-640.webp",
+      "gallery": [
+        "assets/pool/pool-menu-serve.webp"
+      ],
+      "description": "An early Menu-Made mark: a burger served on a tray."
+    },
+    {
+      "id": "pool-whole-plant",
+      "title": "Whole Plant Nutrition",
+      "category": "Branding",
+      "image": "assets/pool/pool-whole-plant-640.webp",
+      "gallery": [
+        "assets/pool/pool-whole-plant.webp"
+      ],
+      "description": "A round badge for a wellness brand."
+    },
+    {
+      "id": "pool-molinari-card",
+      "title": "Molinari card",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-molinari-card-640.webp",
+      "gallery": [
+        "assets/pool/pool-molinari-card.webp"
+      ],
+      "description": "A business card with an illustrated deli storefront."
+    },
+    {
+      "id": "pool-molinari-logo",
+      "title": "Molinari Delicatessen",
+      "category": "Branding",
+      "image": "assets/pool/pool-molinari-logo-640.webp",
+      "gallery": [
+        "assets/pool/pool-molinari-logo.webp"
+      ],
+      "description": "A script M monogram for a historic delicatessen."
+    },
+    {
+      "id": "pool-molinari-print",
+      "title": "Molinari Delicatessen print",
+      "category": "Illustration",
+      "image": "assets/pool/pool-molinari-print-640.webp",
+      "gallery": [
+        "assets/pool/pool-molinari-print.webp"
+      ],
+      "description": "A flat illustration of the deli's storefront."
+    },
+    {
+      "id": "pool-menu-fourth",
+      "title": "MENU, Fourth of July",
+      "category": "Branding",
+      "image": "assets/pool/pool-menu-fourth-640.webp",
+      "gallery": [
+        "assets/pool/pool-menu-fourth.webp"
+      ],
+      "description": "A holiday version of the Menu-Made gear mark."
+    },
+    {
+      "id": "pool-nino-lunar",
+      "title": "Nino mark, lunar",
+      "category": "Branding",
+      "image": "assets/pool/pool-nino-lunar-640.webp",
+      "gallery": [
+        "assets/pool/pool-nino-lunar.webp"
+      ],
+      "description": "Nino's mark on a blood moon."
+    },
+    {
+      "id": "pool-nino-mark-red",
+      "title": "Nino mark, red and blue",
+      "category": "Branding",
+      "image": "assets/pool/pool-nino-mark-red-640.webp",
+      "gallery": [
+        "assets/pool/pool-nino-mark-red.webp"
+      ],
+      "description": "Nino's mark in deep red on midnight blue."
+    },
+    {
+      "id": "pool-fleur-shield",
+      "title": "Fleur shield",
+      "category": "Branding",
+      "image": "assets/pool/pool-fleur-shield-640.webp",
+      "gallery": [
+        "assets/pool/pool-fleur-shield.webp"
+      ],
+      "description": "An ornate fleur-de-lis crest on a shield."
+    },
+    {
+      "id": "pool-chicken-foot",
+      "title": "Chicken Foot app icon",
+      "category": "Branding",
+      "image": "assets/pool/pool-chicken-foot-640.webp",
+      "gallery": [
+        "assets/pool/pool-chicken-foot.webp"
+      ],
+      "description": "An app icon for a domino scorekeeping app."
+    },
+    {
+      "id": "pool-tip-calc",
+      "title": "Tip calculator icon",
+      "category": "Branding",
+      "image": "assets/pool/pool-tip-calc-640.webp",
+      "gallery": [
+        "assets/pool/pool-tip-calc.webp"
+      ],
+      "description": "An app icon: a percent sign served on a tray."
+    },
+    {
+      "id": "pool-pinecrest",
+      "title": "Pinecrest Diner",
+      "category": "Branding",
+      "image": "assets/pool/pool-pinecrest-640.webp",
+      "gallery": [
+        "assets/pool/pool-pinecrest.webp"
+      ],
+      "description": "A round badge for a San Francisco diner."
+    },
+    {
+      "id": "pool-fit-face-body",
+      "title": "Fit Face & Body",
+      "category": "Branding",
+      "image": "assets/pool/pool-fit-face-body-640.webp",
+      "gallery": [
+        "assets/pool/pool-fit-face-body.webp"
+      ],
+      "description": "A logo for a personal trainer and health coach."
+    },
+    {
+      "id": "pool-oroboros-yin-yang",
+      "title": "Oroboros yin yang",
+      "category": "Illustration",
+      "image": "assets/pool/pool-oroboros-yin-yang-640.webp",
+      "gallery": [
+        "assets/pool/pool-oroboros-yin-yang.webp"
+      ],
+      "description": "A serpent circling a yin yang of day and night."
+    },
+    {
+      "id": "pool-pestilence",
+      "title": "Pestilence America",
+      "category": "Illustration",
+      "image": "assets/pool/pool-pestilence-640.webp",
+      "gallery": [
+        "assets/pool/pool-pestilence.webp"
+      ],
+      "description": "A masked figure under a Statue of Liberty crown."
+    },
+    {
+      "id": "pool-snake-eye",
+      "title": "Snake eye",
+      "category": "Illustration",
+      "image": "assets/pool/pool-snake-eye-640.webp",
+      "gallery": [
+        "assets/pool/pool-snake-eye.webp"
+      ],
+      "description": "A reptile eye circled by a serpent."
+    },
+    {
+      "id": "pool-yin-yang-elements",
+      "title": "Elements yin yang",
+      "category": "Illustration",
+      "image": "assets/pool/pool-yin-yang-elements-640.webp",
+      "gallery": [
+        "assets/pool/pool-yin-yang-elements.webp"
+      ],
+      "description": "Waves, sun and moon forming a yin yang."
+    },
+    {
+      "id": "pool-ashley",
+      "title": "Caduceus triangle",
+      "category": "Branding",
+      "image": "assets/pool/pool-ashley-640.webp",
+      "gallery": [
+        "assets/pool/pool-ashley.webp"
+      ],
+      "description": "A wellness mark: entwined serpents in a triangle."
+    },
+    {
+      "id": "pool-ka-luna-ki-ato",
+      "title": "Ka Luna Ki Ato",
+      "category": "Branding",
+      "image": "assets/pool/pool-ka-luna-ki-ato-640.webp",
+      "gallery": [
+        "assets/pool/pool-ka-luna-ki-ato.webp"
+      ],
+      "description": "Entwined serpents over a flower-of-life pattern."
+    },
+    {
+      "id": "pool-menu-burger",
+      "title": "MENU burger badge",
+      "category": "Branding",
+      "image": "assets/pool/pool-menu-burger-640.webp",
+      "gallery": [
+        "assets/pool/pool-menu-burger.webp"
+      ],
+      "description": "An early Menu-Made badge with burger-stack lettering."
+    },
+    {
+      "id": "pool-menu-napkin",
+      "title": "MENU napkin tray",
+      "category": "Branding",
+      "image": "assets/pool/pool-menu-napkin-640.webp",
+      "gallery": [
+        "assets/pool/pool-menu-napkin.webp"
+      ],
+      "description": "A gloved hand serving the Menu-Made burger stack."
+    },
+    {
+      "id": "pool-sf-skyline",
+      "title": "San Francisco skyline",
+      "category": "Illustration",
+      "image": "assets/pool/pool-sf-skyline-640.webp",
+      "gallery": [
+        "assets/pool/pool-sf-skyline.webp"
+      ],
+      "description": "A layered teal silhouette of the San Francisco skyline."
+    },
+    {
+      "id": "pool-holiday-rider",
+      "title": "Oh what fun to ride",
+      "category": "Illustration",
+      "image": "assets/pool/pool-holiday-rider-640.webp",
+      "gallery": [
+        "assets/pool/pool-holiday-rider.webp"
+      ],
+      "description": "A holiday badge: Santa's beard on a motorcycle."
+    },
+    {
+      "id": "pool-presidents-day",
+      "title": "Presidents' Day",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-presidents-day-640.webp",
+      "gallery": [
+        "assets/pool/pool-presidents-day.webp"
+      ],
+      "description": "A Presidents' Day graphic with Mount Rushmore and a quote."
+    },
+    {
+      "id": "pool-batt",
+      "title": "BATT",
+      "category": "Branding",
+      "image": "assets/pool/pool-batt-640.webp",
+      "gallery": [
+        "assets/pool/pool-batt.webp"
+      ],
+      "description": "A winged skull emblem."
+    },
+    {
+      "id": "pool-ride-on",
+      "title": "Ride on",
+      "category": "Illustration",
+      "image": "assets/pool/pool-ride-on-640.webp",
+      "gallery": [
+        "assets/pool/pool-ride-on.webp"
+      ],
+      "description": "The sunset rider badge on a sky-to-sea gradient."
+    },
+    {
+      "id": "pool-fathers-day",
+      "title": "Happy Father's Day",
+      "category": "Print & layout",
+      "image": "assets/pool/pool-fathers-day-640.webp",
+      "gallery": [
+        "assets/pool/pool-fathers-day.webp"
+      ],
+      "description": "A Father's Day banner for Menu-Made."
+    },
+    {
+      "id": "pool-hand-turkey",
+      "title": "Hand turkey",
+      "category": "Illustration",
+      "image": "assets/pool/pool-hand-turkey-640.webp",
+      "gallery": [
+        "assets/pool/pool-hand-turkey.webp"
+      ],
+      "description": "A neon hand-turkey for Thanksgiving, with a scream."
     }
   ]
 }
