@@ -847,11 +847,48 @@
     }
     return photos;
   }
+  // Stage 14: the same design on other products (hoodie, crewneck, tote, sticker). The worker makes them as their own
+  // Printful products with external_id "nx-<type>-<design product id>"; here they become a product picker above the
+  // design's options instead of separate cards in the shop.
+  const EXTRA_LABELS = { hoodie: 'Hoodie', crewneck: 'Crewneck', tote: 'Tote bag', sticker: 'Sticker' };
+  const EXTRA_ORDER = Object.keys(EXTRA_LABELS);
+  function extrasFor(design) {
+    if (!design) return [];
+    const found = [];
+    for (const item of state.products.values()) {
+      const match = /^nx-([a-z]+)-(\d+)$/.exec(item.external_id || '');
+      if (match && match[2] === String(design.id) && EXTRA_LABELS[match[1]] && [...item.variants.values()].some(variant => variant.purchasable)) found.push({ type: match[1], product: item });
+    }
+    return found.sort((a, b) => EXTRA_ORDER.indexOf(a.type) - EXTRA_ORDER.indexOf(b.type));
+  }
+  function mountChooser(record, design, extras, container) {
+    const row = create('div', 'size-row product-type-row');
+    row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Choose a product');
+    const inner = create('div', 'product-type-options');
+    const options = [{ label: 'T-shirt', target: record, product: design }, ...extras.map(extra => ({ label: EXTRA_LABELS[extra.type], target: extra.product, product: extra.product }))];
+    for (const option of options) {
+      const button = create('button', 'size-chip', option.label);
+      button.type = 'button';
+      button.setAttribute('aria-pressed', String(option.product === design));
+      button.addEventListener('click', () => {
+        row.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        mountProduct(option.target, inner);
+        const photo = colorGallery(option.product)[0];
+        if (photo) document.dispatchEvent(new CustomEvent('nino:color-image', { detail: { image: photo.image, color: option.label } }));
+      });
+      row.append(button);
+    }
+    container.replaceChildren(row, inner);
+    mountProduct(record, inner);
+  }
   document.addEventListener('nino:product-open', async event => {
     const { product, container } = event.detail || {};
-    if (container) mountProduct(product, container);
-    try { await loadProducts(); } catch { return; }
-    const photos = colorGallery(findProduct(product));
+    if (container) container.replaceChildren(create('p', 'commerce-option-status', 'Loading product options…'));
+    try { await loadProducts(); } catch { if (container) mountProduct(product, container); return; }
+    const design = findProduct(product);
+    const extras = extrasFor(design);
+    if (container) { if (extras.length) mountChooser(product, design, extras, container); else mountProduct(product, container); }
+    const photos = colorGallery(design);
     if (photos.length) document.dispatchEvent(new CustomEvent('nino:color-gallery', { detail: { id: String(product?.id || ''), photos } }));
   });
   function start() { initialize(window.NINO_COMMERCE_CONFIG || {}).catch(() => {}); }

@@ -11,7 +11,15 @@ export function storefrontProducts(existing, live, complete) {
   if (!complete) return existing;
   const curated = new Map(existing.map(product => [String(product.id), product]));
   const products = [];
+  // Stage 14: the same design on other products (external_id "nx-<type>-<design product id>") isn't its own card;
+  // the design's page offers it (commerce.js). Each design record lists which ones it has, for the shop to show.
+  const extras = new Map();
   for (const product of live.values()) {
+    const match = /^nx-([a-z]+)-(\d+)$/.exec(String(product.external_id || ''));
+    if (match) { if (!extras.has(match[2])) extras.set(match[2], []); extras.get(match[2]).push(match[1]); }
+  }
+  for (const product of live.values()) {
+    if (/^nx-[a-z]+-\d+$/.test(String(product.external_id || ''))) continue;
     const previous = curated.get(String(product.id)) || (product.external_id != null ? curated.get(String(product.external_id)) : undefined);
     const photo = independentPhoto(previous?.image) || independentPhoto(product.image);
     const record = {
@@ -35,6 +43,7 @@ export function storefrontProducts(existing, live, complete) {
       }
       if (colors.length) record.options = { ...(previous?.options || {}), colors };
     }
+    if (extras.has(String(product.id))) record.extras = extras.get(String(product.id)); else delete record.extras;
     delete record.price;
     const prices = [...product.variants.values()].filter(variant => variant.purchasable).map(variant => variant.price);
     if (prices.length && new Set(prices.map(price => price.currency)).size === 1) {
