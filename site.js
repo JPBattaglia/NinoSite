@@ -286,6 +286,15 @@
     if (dialog?.open) showColorPhoto();
   });
   document.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
+  // Home hero pieces open in the preview right on the home page, so closing it leaves you on the home page.
+  document.querySelectorAll('.studio-canvas .canvas-piece[data-hero-image]').forEach(piece => piece.addEventListener('click', event => {
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+    event.preventDefault();
+    const d = piece.dataset;
+    dialog.classList.add('is-hero-piece');
+    openRecord({ id: d.heroId, title: d.heroTitle, category: d.heroCategory, image: d.heroImage, gallery: [d.heroImage], description: d.heroDescription }, 'art', piece);
+  }));
+  dialog?.addEventListener('close', () => dialog.classList.remove('is-hero-piece'));
   dialog?.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
     if (dialogEntry && !closingFromHistory && history.state?.ninoDialog) history.back();
