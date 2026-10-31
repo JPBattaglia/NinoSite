@@ -15,6 +15,7 @@ import {sendOrderEmails} from './emails.mjs';
 import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {runMirror} from './mirror.mjs';
+import {refusedKey,alertRefusedKey} from './key-alert.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
@@ -182,10 +183,11 @@ export function createApp(dependencies={}) {
           const requested=await store.first("SELECT value FROM commerce_settings WHERE key='mirror_run_now'");
           if(requested) await store.run("DELETE FROM commerce_settings WHERE key='mirror_run_now'");
           if(daily || requested) mirrored=await runMirror(store,env,now,{destination:printful});
+          if(mirrored?.errors?.some(refusedKey)) await alertRefusedKey(store,env,'source',now);
         } catch { /* copying new designs must never block sync or fulfillment */ }
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length)) sync=await startCatalogSync(store,printful,now);
-        if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch { /* The retained run is retried by the next scheduled invocation. */ } }
+        if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
         // New garment colors get a swatch hex from Printful's catalog (only names not yet known).
         if(daily) { try { await refreshPalette(store,printful); } catch { /* swatches fall back to color names */ } }
         if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
