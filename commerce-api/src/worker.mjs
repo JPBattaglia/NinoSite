@@ -16,6 +16,7 @@ import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {runMirror} from './mirror.mjs';
 import {refusedKey,alertRefusedKey} from './key-alert.mjs';
+import {withPrintfulTokens,renewPrintfulTokens,connectRedirect,connectCallback,connectionStatus} from './printful-auth.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
@@ -61,6 +62,9 @@ export function createApp(dependencies={}) {
         if(request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
         if(!env.DB) fail(503,'database_not_configured');
         const store=new Store(env.DB); const now=clock();
+        // Self-renewing Printful connection (printful-auth.mjs): the owner's one-time connect links.
+        if(request.method==='GET' && url.pathname==='/api/printful/connect') return await connectRedirect(env,url.searchParams.get('store'),now);
+        if(request.method==='GET' && url.pathname==='/api/printful/callback') return await connectCallback(env,store,url,now);
         const mockup=request.method==='GET' && url.pathname.match(/^\/api\/mockups\/(\d+)\/([a-z0-9-]+)\.jpg$/);
         if(mockup) {
           const cache=globalThis.caches?.default; const cached=cache && await cache.match(request);
@@ -70,11 +74,14 @@ export function createApp(dependencies={}) {
           if(cache) ctx?.waitUntil?.(cache.put(request,response.clone()));
           return response;
         }
+        // From here on, Printful calls use the app's live token where the app is connected, else the private key.
+        env=await withPrintfulTokens(env,store,now);
         if(request.method==='GET' && url.pathname==='/api/health') {
           const row=await store.first('SELECT 1 AS ok');
           const check=await lastSelfCheck(store);
           const selfcheck=check ? {ok:check.ok===true,checked_at:check.checked_at,failed:(check.checks || []).filter(item=>!item.ok).map(item=>item.name)} : null;
-          return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured',selfcheck},200,cors);
+          const printful_connection=await connectionStatus(store,env,now).catch(()=>null);
+          return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured',selfcheck,printful_connection},200,cors);
         }
         if(request.method==='GET' && url.pathname==='/api/products') {
           // Building the catalog reads every variant row (~13,500), and D1's free plan allows 5,000,000 row reads a day.
@@ -172,6 +179,9 @@ export function createApp(dependencies={}) {
         const daily=event.cron===DAILY_CRON;
         if(daily) await store.run('DELETE FROM shopping_measurement WHERE day<?',new Date((now-89*86400)*1000).toISOString().slice(0,10));
         if(daily) await pruneCatalogHistory(store,now);
+        // Renew the Printful app's hourly access first, then run everything below on it (private keys as fallback).
+        try { await renewPrintfulTokens(store,env,now); } catch { /* falls back to the private keys */ }
+        env=await withPrintfulTokens(env,store,now);
         if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
         try { await runPrintfulProbes(store,env,now); } catch { /* research helper must never block sync or fulfillment */ }
         try { await processMockups(store,env,now); } catch { /* model photos must never block sync or fulfillment */ }
