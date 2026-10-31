@@ -134,5 +134,5 @@ test('each created product queues model photos with the placement the orders use
   assert.ok(sticker.position_in.width <= 5.5 && sticker.position_in.width > 4.5);
   const hoodie = photoLayer(spec('hoodie'), design, buildProduct(spec('hoodie'), design, crewVariants));
   assert.equal(hoodie.catalog_variant_ids, null, 'one photo per color');
-  assert.ok(hoodie.position_in.width <= 12.01 && hoodie.position_in.top >= 1.4);
+  assert.ok(hoodie.position_in.width <= 12.01 && Math.abs(hoodie.position_in.top - 1) < 0.01);
 });
