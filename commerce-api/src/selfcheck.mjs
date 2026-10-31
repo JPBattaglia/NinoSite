@@ -76,7 +76,8 @@ export async function runSelfCheck(store, stripe, printful, env, now) {
     expect(rows.length, 'no catalog variant to test with');
     const lines = rows.map(row => ({product_id: row.product_id, variant_id: row.id, quantity: 1, unit_price_cents: row.price_cents, title: row.title,
       kind: typeOf(row.external_id)?.type || 'tshirt', variant: JSON.parse(row.snapshot_json)}));
-    const externalId = `selfcheck-${new Date(now * 1000).toISOString().slice(0,10).replaceAll('-','')}`;
+    // Printful keeps a deleted order's external ID reserved, so each run uses its own (date and time).
+    const externalId = `selfcheck-${new Date(now * 1000).toISOString().slice(0,16).replace(/[-:T]/g,'')}`;
     const leftover = await printful.findOrder(externalId);
     if (leftover?.id && leftover.status === 'draft') await printful.deleteOrder(leftover.id);
     const draft = await printful.createDraft({external_id:externalId, recipient:DRAFT_RECIPIENT, items:await placedItems({lines}, store, printful)});
