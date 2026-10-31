@@ -395,6 +395,13 @@
       if ([...fields.values()].every(field => field.value) && !selected) status.textContent = 'This combination is unavailable. Choose a different option.';
       else status.textContent = '';
     }
+    // A field with only one choice (a sticker's single color, a tote's "One size") is chosen for the buyer and hidden.
+    let autoChosen = false;
+    for (const select of fields.values()) {
+      if (select.name === 'variant' || select.options.length !== 2) continue;
+      select.value = select.options[1].value; select.closest('.commerce-field').hidden = true; autoChosen = true;
+    }
+    if (autoChosen) updateSelection();
     qty.addEventListener('input', updateSelection);
     form.addEventListener('submit', event => {
       event.preventDefault();
@@ -861,6 +868,15 @@
     }
     return found.sort((a, b) => EXTRA_ORDER.indexOf(a.type) - EXTRA_ORDER.indexOf(b.type));
   }
+  // The pop-up's "From $…" line follows the chosen product (it was written for the shirt when the pop-up opened).
+  function setDialogPrice(item) {
+    const label = document.querySelector('[data-dialog-price]');
+    const prices = [...(item?.variants?.values() || [])].filter(variant => variant.purchasable && variant.price).map(variant => variant.price);
+    if (!label || !prices.length) return;
+    const lowest = prices.reduce((a, b) => (b.amount < a.amount ? b : a));
+    label.textContent = 'From ' + formatMoney(lowest).replace(/\.00$/, '');
+    label.hidden = false;
+  }
   function mountChooser(record, design, extras, container) {
     const row = create('div', 'size-row product-type-row');
     row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Choose a product');
@@ -873,6 +889,7 @@
       button.addEventListener('click', () => {
         row.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
         mountProduct(option.target, inner);
+        setDialogPrice(option.product);
         const photo = colorGallery(option.product)[0];
         if (photo) document.dispatchEvent(new CustomEvent('nino:color-image', { detail: { image: photo.image, color: option.label } }));
       });
