@@ -880,3 +880,4 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .studio-canvas .canvas-face{aspect-ratio:1600/1067}
 .product-dialog.is-hero-piece .dialog-image img{background:transparent}
 .footer-social-row{display:flex;justify-content:center;padding-bottom:30px}.footer-social-row .footer-social{margin-top:0;justify-content:center}
+.footer-credit img{width:80px;height:17px}
