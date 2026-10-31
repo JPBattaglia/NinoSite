@@ -870,3 +870,8 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .studio-canvas .canvas-type img{border-radius:inherit}
 .studio-canvas .canvas-type>span{bottom:-24px}
 @media(max-width:760px){.studio-canvas .canvas-type{left:3%;bottom:20%;width:49%}.studio-canvas .canvas-type>span{bottom:-20px}}
+/* Oct 30 2026: 02 (sign) and 03 (identity) swap sides */
+.studio-canvas .canvas-mark{left:7%}
+.studio-canvas .canvas-type{left:auto;right:3%}
+@media(max-width:760px){.studio-canvas .canvas-mark{left:6%}.studio-canvas .canvas-type{left:auto;right:3%}}
+.studio-canvas .canvas-face>span{left:auto;right:0}
