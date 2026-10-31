@@ -12,7 +12,7 @@ function fakeStore() {
   };
 }
 const NOW = 1_800_000_000;
-const baseEnv = (extra = {}) => ({PRINTFUL_CLIENT_ID: 'app-1', PRINTFUL_CLIENT_SECRET: 'secret-1', COMMERCE_API_ORIGIN: 'https://shop-api.example', PRINTFUL_ACCESS_TOKEN: 'private-web', PRINTFUL_SOURCE_TOKEN: 'private-src', OWNER_EMAIL: 'info@menu-made.com', ...extra});
+const baseEnv = (extra = {}) => ({PRINTFUL_CLIENT_ID: 'app-1', PRINTFUL_CLIENT_SECRET: 'secret-1', COMMERCE_API_ORIGIN: 'https://shop-api.example', PRINTFUL_ACCESS_TOKEN: 'private-web', PRINTFUL_SOURCE_TOKEN: 'private-src', OWNER_EMAIL: 'info@menu-made.com', PRINTFUL_STORE_ID: '18919013', ...extra});
 
 // A fake Printful: the token endpoint (JSON only, to prove the form-then-JSON fallback) and the store probes.
 function fakePrintful({kindFor = {}, refreshFails = false} = {}) {
@@ -28,8 +28,8 @@ function fakePrintful({kindFor = {}, refreshFails = false} = {}) {
     }
     const token = init.headers.Authorization.slice(7);
     const kind = Object.entries(kindFor).find(([prefix]) => token.startsWith(prefix))?.[1];
-    if (String(url).includes('/store/products')) return kind === 'website' ? Response.json({code: 200, result: []}) : new Response('{"code":400}', {status: 400});
-    if (String(url).includes('/sync/products')) return kind === 'source' ? Response.json({code: 200, result: []}) : new Response('{"code":401}', {status: 401});
+    const ids = {website: 18919013, source: 18583773, blank: 99999999};
+    if (String(url) === 'https://api.printful.com/store' && ids[kind]) return Response.json({code: 200, result: {id: ids[kind], name: kind === 'blank' ? 'Nino shop store' : kind}});
     return new Response('{}', {status: 404});
   };
   return {fetcher, calls};
@@ -57,7 +57,7 @@ test('connect link sends the owner to Printful with a signed state and the regis
 
 test('callback stores an encrypted connection for the right store only; requests then use the app token', async () => {
   const env = baseEnv(); const store = fakeStore();
-  const {fetcher} = fakePrintful({kindFor: {web: 'website', src: 'source', other: 'website'}});
+  const {fetcher} = fakePrintful({kindFor: {web: 'website', src: 'source', other: 'website', blank: 'blank'}});
   const back = async (kind, code, success = '1') => connectCallback(env, store, new URL(`https://shop-api.example/api/printful/callback?state=${encodeURIComponent(await signState(env, kind, NOW))}&code=${code}&success=${success}`), NOW, fetcher);
 
   assert.equal((await back('website', 'web', '0')).status, 200, 'declined: nothing stored');
@@ -65,6 +65,10 @@ test('callback stores an encrypted connection for the right store only; requests
   const wrong = await back('source', 'other');   // approved for the shop store on the NinosTs link
   assert.equal(wrong.status, 409);
   assert.equal(store.rows.size, 0);
+  const blank = await back('website', 'blank');   // a new empty API store Printful created during approval
+  assert.equal(blank.status, 409);
+  assert.match(await blank.text(), /Nino shop store.*99999999/);
+  assert.equal(store.rows.size, 0, 'empty store never saved as the shop');
 
   const ok = await back('website', 'web');
   assert.equal(ok.status, 200);
