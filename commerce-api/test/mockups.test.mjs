@@ -89,3 +89,21 @@ test('one 5-minute run collects a finished job and submits the next pending one'
   assert.equal(next.attempts,1);
   assert.equal(next.last_error,'no_variants_or_artwork');
 });
+
+test('a photo made on a larger size of the same color (stickers) is still collected',async()=>{
+  const {f}=await setup();
+  const gen=(await f.store.first("SELECT value FROM commerce_settings WHERE key='active_catalog'")).value;
+  const row=await f.store.first('SELECT * FROM catalog_variants WHERE generation=? AND product_id=?',gen,'101');
+  const snap=JSON.parse(row.snapshot_json); snap.catalog_variant_id=4013; snap.size='XL';
+  await f.store.run('INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES(?,?,?,?,?,?)',gen,'999','101',row.price_cents,row.currency,JSON.stringify(snap));
+  const fetcher=async(url,init={})=>{
+    if(url.endsWith('/v2/mockup-tasks')&&init.method==='POST') return new Response(JSON.stringify({data:[{id:78,status:'pending'}]}));
+    if(url.includes('/v2/mockup-tasks?id=78')) return new Response(JSON.stringify({data:[{id:78,status:'completed',catalog_variant_mockups:[{catalog_variant_id:4013,mockups:[{placement:'default',mockup_url:'https://printful-upload.example/tmp/b.jpg'}]}]}]}));
+    if(url==='https://printful-upload.example/tmp/b.jpg') return new Response(new Uint8Array([0xff,0xd8,9,0xff,0xd9]));
+    return new Response('{}',{status:404});
+  };
+  await f.store.run(`UPDATE mockup_jobs SET layer_json='{"catalog":358,"placement":"default","technique":"digital","catalog_variant_ids":[4013],"position_in":{"width":5,"height":4,"top":0.5,"left":0.2}}' WHERE product_id='101'`);
+  assert.equal(await processMockups(f.store,f.env,f.now(),fetcher),'submitted');
+  assert.equal(await processMockups(f.store,f.env,f.now(),fetcher),'collected');
+  assert.ok(await serveMockup(f.env,'101','black'));
+});
