@@ -17,15 +17,15 @@ export const MARKUP = 1.5;
 // fit: how the artwork sits in the area. 'contain' = as large as fits, centered; 'chest' = like the shirts (up to
 // 86% of the width, from the collar line).
 export const PRODUCT_TYPES = Object.freeze([
-  {type: 'sticker', label: 'Sticker', catalog: 358, file: 'default', fit: 'contain', margin: 0.04,
+  {type: 'sticker', label: 'Sticker', catalog: 358, file: 'default', fit: 'contain', margin: 0.04, placement: 'default', technique: 'digital', dpi: 300, photoVariant: 10165,
     variants: [10163, 10164, 10165], area: {10163: [900, 900], 10164: [1200, 1200], 10165: [1650, 1650]}},
-  {type: 'tote', label: 'Tote bag', catalog: 367, file: 'default', fit: 'contain', margin: 0.1,
+  {type: 'tote', label: 'Tote bag', catalog: 367, file: 'default', fit: 'contain', margin: 0.1, placement: 'front', technique: 'dtg', dpi: 150,
     variants: [10457, 10458], area: {default: [1500, 1500]}, colorRule: 'tote'},
-  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest',
+  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150,
     area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']},
   // The hoodie's front area is a 14in square (Printful printfile 139) that runs down to the pouch pocket, so the art
   // stays in the top 60%: up to 12in wide, from 1.5in below the top.
-  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', chest: {w: 0.8571, h: 0.6, top: 0.0714},
+  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, chest: {w: 0.8571, h: 0.6, top: 0.0714},
     area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']}
 ]);
 const TYPES = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
@@ -87,6 +87,16 @@ export function buildProduct(spec, design, catalogVariants) {
   if (!sync_variants.length) return null;
   const name = `${String(design.name).replace(/\s+T$/, '').trim()} ${spec.label}`.slice(0, 100);
   return {sync_product: {name, external_id: externalIdFor(spec.type, design.id)}, sync_variants};
+}
+
+// The model-photo job (mockups.mjs) for a created product: Printful's mockup generator with the same placement the
+// orders use, in inches. Stickers get one photo (the largest size); garments and totes one per color.
+export function photoLayer(spec, design, payload) {
+  const variant = payload.sync_variants.find(v => !spec.photoVariant || v.variant_id === spec.photoVariant) || payload.sync_variants[0];
+  const pos = variant.files[0].position, in3 = v => Math.round((v / spec.dpi) * 1000) / 1000;
+  return {catalog: spec.catalog, placement: spec.placement, technique: spec.technique,
+    catalog_variant_ids: spec.photoVariant ? [variant.variant_id] : null,
+    position_in: {width: in3(pos.width), height: in3(pos.height), top: in3(pos.top), left: in3(pos.left)}};
 }
 
 // The design's artwork and shirt colors, from its store product (the shirt).
@@ -159,6 +169,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         const id = created?.result?.id;
         if (!id) throw new Error('create_no_id');
         await setSetting(store, key, String(id));
+        await store.run("INSERT OR IGNORE INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?)", String(id), JSON.stringify(photoLayer(spec, design, payload)), now);
         out.created.push(payload.sync_product.name);
       } catch (error) {
         // A refused key or a busy Printful is retried next run; anything else is recorded so it isn't retried forever.

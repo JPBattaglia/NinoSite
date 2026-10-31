@@ -123,3 +123,16 @@ test('runs in steps: off by default, then the sample designs only, two products 
   assert.equal(settings.get('expand:482794926:hoodie'), '5004');
   assert.deepEqual((await runExpansion(store, env, 1002, {fetcher})).created, [], 'nothing left');
 });
+
+test('each created product queues model photos with the placement the orders use (inches)', async () => {
+  const {photoLayer} = await import('../src/expand.mjs');
+  const design = designFromDetail(detail);
+  const stickers = [10163, 10164, 10165].map(id => ({id, color: 'White', size: String(id), price: 2.5}));
+  const sticker = photoLayer(spec('sticker'), design, buildProduct(spec('sticker'), design, stickers));
+  assert.equal(sticker.catalog, 358); assert.equal(sticker.placement, 'default');
+  assert.deepEqual(sticker.catalog_variant_ids, [10165], 'one photo, the 5.5in size');
+  assert.ok(sticker.position_in.width <= 5.5 && sticker.position_in.width > 4.5);
+  const hoodie = photoLayer(spec('hoodie'), design, buildProduct(spec('hoodie'), design, crewVariants));
+  assert.equal(hoodie.catalog_variant_ids, null, 'one photo per color');
+  assert.ok(hoodie.position_in.width <= 12.01 && hoodie.position_in.top >= 1.4);
+});

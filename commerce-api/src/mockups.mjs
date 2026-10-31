@@ -51,7 +51,20 @@ async function submit(store, env, job, now, fetcher) {
   const colors = await productColors(store, job.product_id);
   const hash = colors.find(row => row.hash)?.hash;
   if (!colors.length || !hash) throw new Error('no_variants_or_artwork');
-  const layer = fitPrintArea(JSON.parse(job.layer_json));
+  const raw = JSON.parse(job.layer_json);
+  // Stage 14 products (expand.mjs) carry their own catalog product, placement and print area (inches); Printful's
+  // default photo style is used for them.
+  if (raw.catalog) {
+    const p = raw.position_in;
+    const placements = [{ placement: raw.placement, technique: raw.technique, layers: [{ type: 'file', url: artworkUrl(hash), position: { width: p.width, height: p.height, top: p.top, left: p.left } }] }];
+    const ids = raw.catalog_variant_ids?.length ? raw.catalog_variant_ids : colors.map(row => row.catalog_variant_id);
+    const result = await printful(env, 'POST', '/v2/mockup-tasks', { format: 'jpg', products: [{ source: 'catalog', catalog_product_id: raw.catalog, placements, catalog_variant_ids: ids }] }, fetcher);
+    const taskIds = (result.data || []).map(task => task.id).filter(Boolean);
+    if (!taskIds.length) throw new Error('no_task_id');
+    await store.run("UPDATE mockup_jobs SET status='submitted',task_id=?,attempts=attempts+1,last_error=NULL,updated_at=? WHERE product_id=?", taskIds.join(','), now, job.product_id);
+    return;
+  }
+  const layer = fitPrintArea(raw);
   const placements = [{ placement: 'front', technique: 'dtg', layers: [{ type: 'file', url: artworkUrl(hash), position: layer }] }];
   const groups = [MEN_STYLE, WOMEN_STYLE].map(style => ({
     source: 'catalog', catalog_product_id: CATALOG_PRODUCT, mockup_style_ids: [style], placements,
@@ -76,7 +89,7 @@ async function collect(store, env, job, now, fetcher) {
   const parts = []; const header = { colors: {} }; let offset = 0;
   for (const task of tasks) for (const variant of task.catalog_variant_mockups || []) {
     const color = colorByVariant.get(Number(variant.catalog_variant_id));
-    const mockup = (variant.mockups || []).find(item => item.placement === 'front') || variant.mockups?.[0];
+    const mockup = (variant.mockups || []).find(item => item.placement === 'front' || item.placement === 'default') || variant.mockups?.[0];
     if (!color || !mockup?.mockup_url || header.colors[color]) continue;
     const image = await fetcher(mockup.mockup_url, { signal: AbortSignal.timeout(20000) });
     if (!image.ok) throw new Error(`download ${image.status}`);
@@ -120,7 +133,8 @@ export async function processMockups(store, env, now, fetcher = (...args) => fet
       return 'collect_failed';
     }
   }
-  const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' ORDER BY priority DESC, attempts, product_id LIMIT 1");
+  // A job waits until its product is in the live catalog (new stage 14 products appear after the next sync).
+  const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' AND (layer_json NOT LIKE '%\"catalog\":%' OR product_id IN (SELECT id FROM catalog_products WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog'))) ORDER BY priority DESC, attempts, product_id LIMIT 1");
   if (!next) return collected ? 'collected' : 'idle';
   try { await submit(store, env, next, now, fetcher); return collected ? 'collected' : 'submitted'; }
   catch (error) {
