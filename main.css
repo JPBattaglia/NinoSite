@@ -188,7 +188,7 @@ body{background:var(--paper);color:var(--ink)}
 .product-image-link{background:#fff}
 .product-image-link img:not(.image-unavailable){object-fit:cover;object-position:50% 38%;transform:scale(1.08)}
 .product-image-link:hover img:not(.image-unavailable){transform:scale(1.13)}
-.dialog-image img{background:#fff;border-radius:10px}
+.dialog-image img{background:transparent;border-radius:10px}
 
 /* Ordering-opens-soon state (hidden automatically once checkout is live). */
 .shop-notice{margin:26px 0 0;padding:14px 18px;border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.6;color:var(--muted);max-width:760px}
@@ -622,7 +622,7 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .dialog-image img[src*="printful.com"]{transform:none}
 .gallery-thumbs button{overflow:hidden}
 .gallery-thumbs img[src*="assets/products/"]{transform:none}
-.gallery-thumbs img[src*="printful.com"]{transform:none;background:#fff}
+.gallery-thumbs img[src*="printful.com"]{transform:none;background:transparent}
 /* Generated model photos (one per color) get the same framing as the main model photo. */
 .dialog-image img[src*="/api/mockups/"],.gallery-thumbs img[src*="/api/mockups/"]{transform:none}
 
