@@ -35,6 +35,14 @@ async function productColors(store, productId) {
   return rows.filter(row => row.color && row.catalog_variant_id);
 }
 
+// Catalog variant id -> color for every variant of a live product.
+async function variantColors(store, productId) {
+  const rows = await store.all(`SELECT DISTINCT json_extract(snapshot_json,'$.catalog_variant_id') AS catalog_variant_id,
+      json_extract(snapshot_json,'$.color') AS color
+    FROM catalog_variants WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog') AND product_id=?`, productId);
+  return new Map(rows.filter(row => row.color && row.catalog_variant_id).map(row => [Number(row.catalog_variant_id), row.color]));
+}
+
 // Printful requires the whole layer (including transparent margins) inside the 12x16in print area.
 export function fitPrintArea({width, height, top, left}) {
   const scale = Math.min(1, 12 / width, 16 / height);
@@ -84,8 +92,9 @@ async function collect(store, env, job, now, fetcher) {
   }
   if (tasks.some(task => task.status === 'failed')) throw new Error('task_failed: ' + JSON.stringify(tasks.map(task => task.failure_reasons)).slice(0, 200));
   if (!tasks.length || tasks.some(task => task.status !== 'completed')) return false;
-  const colors = await productColors(store, job.product_id);
-  const colorByVariant = new Map(colors.map(row => [Number(row.catalog_variant_id), row.color]));
+  // Every catalog variant of the product maps to its color, not only the one productColors picks: a stage 14 photo
+  // can be made on a chosen size (stickers use the 5.5in variant), which isn't the lowest id for its color.
+  const colorByVariant = await variantColors(store, job.product_id);
   const parts = []; const header = { colors: {} }; let offset = 0;
   for (const task of tasks) for (const variant of task.catalog_variant_mockups || []) {
     const color = colorByVariant.get(Number(variant.catalog_variant_id));
