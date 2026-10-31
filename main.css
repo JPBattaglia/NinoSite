@@ -877,3 +877,4 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .studio-canvas .canvas-face>span{left:auto;right:0}
 .studio-canvas .canvas-type>span{left:auto;right:0}
 .studio-canvas .canvas-face{transform:rotate(-3deg) translateY(-5px)}.studio-canvas .canvas-face:hover{transform:rotate(0deg) translateY(-10px)}
+.studio-canvas .canvas-face{aspect-ratio:1600/1067}
