@@ -12,6 +12,8 @@
 // Runs from the daily cron, or on the next 5-minute run after commerce_settings 'selfcheck_run_now' is set.
 // The result is stored in commerce_settings 'selfcheck_last'; /api/health shows pass/fail and the names of
 // failed checks, and the daily GitHub smoke test fails (and emails the owner) when the check failed or is stale.
+import {placedItems} from './fulfillment.mjs';
+import {typeOf} from './expand.mjs';
 
 export const SELFCHECK_KEY = 'selfcheck_last';
 export const SELFCHECK_RUN_NOW = 'selfcheck_run_now';
@@ -67,15 +69,21 @@ export async function runSelfCheck(store, stripe, printful, env, now) {
 
   await check('Printful accepts orders from this shop', async () => {
     const generation = await store.activeGeneration();
-    const variant = generation && await store.first('SELECT id FROM catalog_variants WHERE generation=? ORDER BY price_cents, id LIMIT 1', generation);
-    expect(variant, 'no catalog variant to test with');
+    // One shirt, plus one product of each other type when there is one, sent the way real orders are (placedItems):
+    // catalog variant + artwork + explicit placement. Printful refuses (400) a placement it can't print.
+    const rows = generation ? await store.all(`SELECT v.id,v.product_id,v.price_cents,v.snapshot_json,p.title,p.external_id FROM catalog_variants v JOIN catalog_products p ON p.generation=v.generation AND p.id=v.product_id
+      WHERE v.generation=? AND v.id IN (SELECT MIN(v2.id) FROM catalog_variants v2 JOIN catalog_products p2 ON p2.generation=v2.generation AND p2.id=v2.product_id WHERE v2.generation=? GROUP BY CASE WHEN p2.external_id LIKE 'nx-%' THEN substr(p2.external_id,1,instr(substr(p2.external_id,4),'-')+2) ELSE 'shirt' END)`, generation, generation) : [];
+    expect(rows.length, 'no catalog variant to test with');
+    const lines = rows.map(row => ({product_id: row.product_id, variant_id: row.id, quantity: 1, unit_price_cents: row.price_cents, title: row.title,
+      kind: typeOf(row.external_id)?.type || 'tshirt', variant: JSON.parse(row.snapshot_json)}));
     const externalId = `selfcheck-${new Date(now * 1000).toISOString().slice(0,10).replaceAll('-','')}`;
     const leftover = await printful.findOrder(externalId);
     if (leftover?.id && leftover.status === 'draft') await printful.deleteOrder(leftover.id);
-    const draft = await printful.createDraft({external_id:externalId, recipient:DRAFT_RECIPIENT, items:[{sync_variant_id:Number(variant.id), quantity:1}]});
+    const draft = await printful.createDraft({external_id:externalId, recipient:DRAFT_RECIPIENT, items:await placedItems({lines}, store, printful)});
     expect(draft?.id && draft.status === 'draft', `Printful answered with status ${draft?.status || 'none'}`);
     await printful.deleteOrder(draft.id);
-    return `draft ${draft.id} created and deleted`;
+    const placed = (draft.items || []).map(item => `${lines[Number(String(item.external_id).replace('item_', '')) - 1]?.kind || '?'} ${item.files?.find(f => f.position)?.position?.width ?? 'no'}px`).join(', ');
+    return `draft ${draft.id} created and deleted (${lines.length} items, placed: ${placed})`;
   });
 
   const result = {ok:checks.every(item => item.ok), checked_at:now, checks};

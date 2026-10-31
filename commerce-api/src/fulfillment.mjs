@@ -3,6 +3,42 @@ import {printFiles,artworkKeys} from './catalog.mjs';
 import {checkedPaidSession} from './checkout.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {sendOrderEmails} from './emails.mjs';
+import {PRODUCT_TYPES,position} from './expand.mjs';
+
+// Oct 31, 2026: Printful ignores artwork placement on stored (sync) products and prints the file at its own size
+// (about 5in wide for most designs), even though the site's photos show it large. Placement is only honored on
+// orders, so each line is sent as its catalog variant with the artwork file and an explicit position, the same
+// placement the model photos use. T-shirts: the design's mockup layer (inches in the 12x16in front), else the
+// shirts' standard placement; other products: their type's rule (expand.mjs).
+const SHIRT = {fit: 'chest', file: 'default', area: {default: [1800, 2400]}};
+const SPECS = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
+export async function placedItems(snapshot, store, printful) {
+  const items = [];
+  for (const [index, line] of snapshot.lines.entries()) {
+    const file = (line.variant.files || []).find(f => (f.type || 'default') === 'default' && f.id) || (line.variant.files || [])[0];
+    if (!file?.id) fail(409, 'artwork_missing');
+    const spec = SPECS.get(line.kind) || SHIRT;
+    const area = spec.area[line.variant.catalog_variant_id] || spec.area.default;
+    let pos = null;
+    if (spec === SHIRT) {
+      const job = await store.first('SELECT layer_json FROM mockup_jobs WHERE product_id=?', String(line.product_id)).catch(() => null);
+      const layer = job ? JSON.parse(job.layer_json) : null;
+      if (layer && layer.width > 0 && layer.height > 0) {
+        const s = Math.min(1, 12 / layer.width, 16 / layer.height), w = layer.width * s, h = layer.height * s;
+        const left = Math.min(Math.max(layer.left + (layer.width - w) / 2, 0), 12 - w), top = Math.min(Math.max(layer.top + (layer.height - h) / 2, 0), 16 - h);
+        pos = {area_width: 1800, area_height: 2400, width: Math.round(w * 150), height: Math.round(h * 150), top: Math.round(top * 150), left: Math.round(left * 150), limit_to_print_area: true};
+      }
+    }
+    if (!pos) {
+      const art = await printful.getFile(file.id);
+      pos = art && position(spec, area, {width: art.width, height: art.height});
+    }
+    if (!pos) fail(409, 'artwork_position_unknown');
+    items.push({external_id: `item_${index + 1}`, variant_id: line.variant.catalog_variant_id, quantity: line.quantity,
+      retail_price: money(line.unit_price_cents), name: line.title, files: [{type: spec.file || 'default', id: file.id, position: pos}]});
+  }
+  return items;
+}
 
 const accepted = new Set(['inreview','pending','waiting','waiting_for_stock','inprocess','onhold','partial','fulfilled']);
 
@@ -15,7 +51,10 @@ function draftMatches(order,draft,env) {
   if(!Array.isArray(draft.items) || draft.items.length!==snapshot.lines.length) fail(409,'printful_items_mismatch');
   const seen=new Set();
   for(const item of draft.items) {
-    const expected=snapshot.lines.find(line=>String(item.sync_variant_id)===line.variant_id);
+    // Orders since Oct 31 are placed by catalog variant (placedItems) and matched by their item external id;
+    // drafts made before that still carry the sync variant id.
+    const byIndex=/^item_(\d+)$/.exec(String(item.external_id || ''));
+    const expected=item.sync_variant_id ? snapshot.lines.find(line=>String(item.sync_variant_id)===line.variant_id) : byIndex ? snapshot.lines[Number(byIndex[1])-1] : null;
     if(!expected || seen.has(expected.variant_id) || item.quantity!==expected.quantity || item.variant_id!==expected.variant.catalog_variant_id) fail(409,'printful_items_mismatch');
     if(canonical(artworkKeys(printFiles(item.files)))!==canonical(artworkKeys(expected.variant.files))) fail(409,'printful_artwork_changed');
     seen.add(expected.variant_id);
@@ -48,7 +87,7 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
     if(!order.recipient_json || !order.customer_email) fail(409,'fulfillment_address_missing');
     let draft=await printful.findOrder(order.id);
     if(!draft) {
-      draft=await printful.createDraft({external_id:order.id,shipping:snapshot.shipping.method,recipient:{...JSON.parse(order.recipient_json),email:order.customer_email},items:snapshot.lines.map((line,index)=>({external_id:`item_${index+1}`,sync_variant_id:Number(line.variant_id),quantity:line.quantity,retail_price:money(line.unit_price_cents),name:line.title})),retail_costs:{currency:'USD',subtotal:money(snapshot.subtotal_cents),shipping:money(order.paid_shipping_cents),tax:money(order.paid_tax_cents),total:money(order.paid_total_cents)}});
+      draft=await printful.createDraft({external_id:order.id,shipping:snapshot.shipping.method,recipient:{...JSON.parse(order.recipient_json),email:order.customer_email},items:await placedItems(snapshot,store,printful),retail_costs:{currency:'USD',subtotal:money(snapshot.subtotal_cents),shipping:money(order.paid_shipping_cents),tax:money(order.paid_tax_cents),total:money(order.paid_total_cents)}});
     }
     draftMatches(order,draft,env);
     await store.run('UPDATE commerce_orders SET printful_order_id=?,printful_draft_json=?,updated_at=? WHERE id=? AND claim_id=?',String(draft.id),JSON.stringify(draft),now,order.id,claim);

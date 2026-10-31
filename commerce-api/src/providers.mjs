@@ -42,6 +42,7 @@ export class PrintfulClient {
     const result=(await this.call('GET',path))?.result;
     return result?.sync_variant || result || null;
   }
+  async getFile(id) { return (await this.call('GET',`/files/${encodeURIComponent(id)}`))?.result || null; }
   async getCountries() { return (await this.call('GET','/countries'))?.result; }
   async shippingRates(payload) { return (await this.call('POST','/shipping/rates',payload))?.result; }
   async findOrder(externalId) { return (await this.call('GET',`/orders/@${encodeURIComponent(externalId)}`))?.result || null; }

@@ -21,6 +21,7 @@ export function rawVariant(id=501,product=101){return {id,sync_product_id:produc
 export class PrintfulFixture {
   constructor(){this.variants=new Map([['501',rawVariant()]]);this.products=new Map([['101',{sync_product:{id:101,external_id:'listing-137',name:'Fixture graphic shirt',thumbnail_url:'https://example.com/mockup.png'},sync_variants:[rawVariant()]}]]);this.orders=new Map();this.createCalls=0;this.confirmCalls=0;this.rateCalls=0;this.cost='12.00';this.createTimeout=false;this.confirmTimeout=false;}
   async getVariant(id){return structuredClone(this.variants.get(String(id)) || null);}
+  async getFile(id){return {id,width:1880,height:1555,dpi:360};}
   async listProducts(offset,limit){const list=[...this.products.values()].map(p=>p.sync_product);return {result:list.slice(offset,offset+limit),paging:{total:list.length}};}
   async getProduct(id){return structuredClone(this.products.get(String(id)) || null);}
   async shippingRates(){this.rateCalls++;return [{id:'STANDARD',name:'Standard fixture delivery',rate:'7.25',currency:'USD'}];}
@@ -28,7 +29,7 @@ export class PrintfulFixture {
   async findOrder(id){return structuredClone(this.orders.get(id) || null);}
   async createDraft(payload){
     this.createCalls++;
-    const draft={id:1001,external_id:payload.external_id,store:77,status:'draft',recipient:structuredClone(payload.recipient),costs:{total:this.cost,currency:'USD'},items:payload.items.map(item=>({...item,variant_id:4011,files:structuredClone(this.variants.get(String(item.sync_variant_id)).files)}))};
+    const draft={id:1001,external_id:payload.external_id,store:77,status:'draft',recipient:structuredClone(payload.recipient),costs:{total:this.cost,currency:'USD'},items:payload.items.map(item=>({...item,variant_id:item.variant_id || 4011,files:item.files ? item.files.map(file=>({...structuredClone([...this.variants.values()].flatMap(v=>v.files).find(f=>f.id===file.id) || {}),...file,status:'ok'})) : structuredClone(this.variants.get(String(item.sync_variant_id)).files)}))};this.lastItems=structuredClone(payload.items);
     this.orders.set(payload.external_id,draft);
     if(this.createTimeout){this.createTimeout=false;throw new HttpError(502,'printful_request_failed');}
     return structuredClone(draft);
