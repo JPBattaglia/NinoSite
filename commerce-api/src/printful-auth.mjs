@@ -106,17 +106,31 @@ async function tokenRequest(env, params, fetcher) {
   throw new Error(`printful_token ${last}`);
 }
 
-// Which of the two stores a fresh token belongs to, by Printful's store number. Matching on store type alone let a
-// brand-new empty API store pass as the shop (Oct 31, 2026: Printful's approval screen can create a new store).
+// Which of the two stores a fresh token belongs to. The app's permissions (orders, products, files, webhooks) don't
+// include reading the store's own details, so: the shop is the store that has one of the shop's live products
+// (a brand-new empty store Printful can create during approval has none); NinosTs is the only Etsy-linked store
+// (store-products answers 400 there, sync-products works). Oct 31, 2026: matching on store type alone let an empty
+// new store pass as the shop.
 const SOURCE_STORE_DEFAULT = '18583773'; // NinosTs (same default as mirror.mjs)
 export const expectedStoreId = (env, kind) => String(kind === 'website' ? env.PRINTFUL_STORE_ID || '' : env.PRINTFUL_SOURCE_STORE_ID || SOURCE_STORE_DEFAULT);
-async function storeKind(token, fetcher, env) {
-  const response = await fetcher('https://api.printful.com/store', {headers: {Authorization: `Bearer ${token}`}, signal: AbortSignal.timeout(15000)});
-  const data = response.ok ? await response.json().catch(() => null) : null;
-  const id = String(data?.result?.id ?? '');
-  if (!id) return {kind: null, id: null, name: null};
-  const kind = Object.keys(STORES).find(k => expectedStoreId(env, k) === id) || null;
-  return {kind, id, name: data?.result?.name ? String(data.result.name) : null};
+async function knownShopProduct(store) {
+  const row = await store.first?.("SELECT id FROM catalog_products WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog') AND id GLOB '[0-9]*' LIMIT 1").catch(() => null);
+  return row?.id ? String(row.id) : null;
+}
+async function storeKind(token, fetcher, env, store) {
+  const get = path => fetcher(`https://api.printful.com${path}`, {headers: {Authorization: `Bearer ${token}`}, signal: AbortSignal.timeout(15000)});
+  const own = await get('/store');
+  const data = own.ok ? await own.json().catch(() => null) : null;
+  const id = data?.result?.id != null ? String(data.result.id) : '';
+  if (id) return {kind: Object.keys(STORES).find(k => expectedStoreId(env, k) === id) || null, id, name: data?.result?.name ? String(data.result.name) : null};
+  const listed = await get('/store/products?limit=1');
+  if (listed.ok) {
+    const product = await knownShopProduct(store);
+    if (product && (await get(`/store/products/${product}`)).ok) return {kind: 'website', id: null, name: null};
+    return {kind: null, id: null, name: 'an empty or different store (it doesn’t have the shop’s products)'};
+  }
+  if (listed.status === 400 && (await get('/sync/products?limit=1')).ok) return {kind: 'source', id: null, name: null};
+  return {kind: null, id: null, name: null};
 }
 
 export async function connectRedirect(env, kind, now) {
@@ -137,10 +151,10 @@ export async function connectCallback(env, store, url, now, fetcher = (...a) => 
   let tokens;
   try { tokens = await tokenRequest(env, {grant_type: 'authorization_code', code: url.searchParams.get('code')}, fetcher); }
   catch (error) { return page(502, 'Printful refused', `<p>Printful didn’t complete the connection (${esc(error.message)}). Tell Claude “Printful connect failed”.</p>`); }
-  const found = await storeKind(tokens.access_token, fetcher, env).catch(() => ({kind: null, id: null, name: null}));
+  const found = await storeKind(tokens.access_token, fetcher, env, store).catch(() => ({kind: null, id: null, name: null}));
   const actual = found.kind;
   if (actual !== kind) {
-    const which = actual ? esc(STORES[actual]) : found.id ? `a different store (“${esc(found.name || 'unnamed')}”, number ${esc(found.id)}), not one this shop uses` : 'a store this shop doesn’t use';
+    const which = actual ? esc(STORES[actual]) : found.id ? `a different store (“${esc(found.name || 'unnamed')}”, number ${esc(found.id)}), not one this shop uses` : found.name ? esc(found.name) : 'a store this shop doesn’t use';
     return page(409, 'Wrong store', `<p>Nothing was saved. That approval was for ${which}, but this link connects <strong>${esc(STORES[kind])}</strong>. Printful approves whichever store is selected in your Printful dashboard. Go to <a href="https://www.printful.com/dashboard">printful.com/dashboard</a>, click the store name at the top left, pick ${esc(STORES[kind])}, then open <a href="${connectUrl(env, kind)}">this link</a> again.</p>`);
   }
   await saveConnection(store, env, kind, {...tokens, connected_at: now, renewed_at: now});

@@ -6,7 +6,7 @@ import {signState,readState,withPrintfulTokens,connectRedirect,connectCallback,r
 function fakeStore() {
   const rows = new Map();
   return {rows,
-    first: async (sql, key) => rows.has(key) ? {value: rows.get(key)} : null,
+    first: async (sql, key) => /catalog_products/.test(sql) ? {id: '482794926'} : rows.has(key) ? {value: rows.get(key)} : null,
     all: async (sql, ...keys) => keys.filter(k => rows.has(k)).map(key => ({key, value: rows.get(key)})),
     run: async (sql, key, value) => { if (/^DELETE/.test(sql)) rows.delete(key); else rows.set(key, value); }
   };
@@ -28,8 +28,11 @@ function fakePrintful({kindFor = {}, refreshFails = false} = {}) {
     }
     const token = init.headers.Authorization.slice(7);
     const kind = Object.entries(kindFor).find(([prefix]) => token.startsWith(prefix))?.[1];
-    const ids = {website: 18919013, source: 18583773, blank: 99999999};
-    if (String(url) === 'https://api.printful.com/store' && ids[kind]) return Response.json({code: 200, result: {id: ids[kind], name: kind === 'blank' ? 'Nino shop store' : kind}});
+    // Like the real app: no permission to read store details, so /store is refused.
+    if (String(url) === 'https://api.printful.com/store') return new Response('{"code":401}', {status: 401});
+    if (String(url).endsWith('/store/products/482794926')) return kind === 'website' ? Response.json({code: 200, result: {}}) : new Response('{"code":404}', {status: 404});
+    if (String(url).includes('/store/products')) return kind === 'website' || kind === 'blank' ? Response.json({code: 200, result: []}) : new Response('{"code":400}', {status: 400});
+    if (String(url).includes('/sync/products')) return kind === 'source' ? Response.json({code: 200, result: []}) : new Response('{"code":401}', {status: 401});
     return new Response('{}', {status: 404});
   };
   return {fetcher, calls};
@@ -67,7 +70,7 @@ test('callback stores an encrypted connection for the right store only; requests
   assert.equal(store.rows.size, 0);
   const blank = await back('website', 'blank');   // a new empty API store Printful created during approval
   assert.equal(blank.status, 409);
-  assert.match(await blank.text(), /Nino shop store.*99999999/);
+  assert.match(await blank.text(), /empty or different store/);
   assert.equal(store.rows.size, 0, 'empty store never saved as the shop');
 
   const ok = await back('website', 'web');
