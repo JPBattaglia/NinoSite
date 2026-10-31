@@ -864,3 +864,5 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .text-link[hidden]{display:none!important}
 .section-heading>.text-link{max-width:none;white-space:nowrap}
 .product-help .text-link{margin:14px 12px 0 0}
+.canvas-registration-bottom{top:auto;bottom:12px}
+@media(max-width:760px){.canvas-registration-bottom{top:auto;bottom:9px}}
