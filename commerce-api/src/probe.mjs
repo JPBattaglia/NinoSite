@@ -2,7 +2,7 @@
 // and stores the responses in D1, so mockup integration can be designed without handling the token.
 // Rows are inserted directly into D1 by the account owner; nothing public can queue requests.
 const ALLOWED = [
-  ['GET', /^\/(files|mockup-generator\/|product-templates|store\/products|store\/variants|stores|products\/|v2\/catalog-products\/|v2\/mockup-tasks|v2\/mockup-styles|v2\/stores|oauth\/scopes)/],
+  ['GET', /^\/(orders\/\d+$|files|mockup-generator\/|product-templates|store\/products|store\/variants|stores|products\/|v2\/catalog-products\/|v2\/mockup-tasks|v2\/mockup-styles|v2\/stores|oauth\/scopes)/],
   ['POST', /^\/(mockup-generator\/create-task\/\d+$|v2\/mockup-tasks$)/]
 ];
 const MAX_RESPONSE = 1500000;
