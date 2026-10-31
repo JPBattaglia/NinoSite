@@ -1,6 +1,7 @@
 import {fail,cents,hash,httpsImage} from './common.mjs';
 import {mockupColors,colorSlug} from './mockups.mjs';
 import {loadPalette} from './colors.mjs';
+import {typeOf} from './expand.mjs';
 
 // The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
 // Checkout still re-verifies every variant against Printful before charging.
@@ -85,14 +86,14 @@ export async function validatedLines(store,printful,env,items,now) {
   if (!run || now - run.updated_at > catalogMaxAge(env)) fail(503,'catalog_not_ready','The product catalog is being updated.');
   const lines = [];
   for (const item of items) {
-    const row = await store.first(`SELECT v.*,p.title,p.image FROM catalog_variants v JOIN catalog_products p ON p.generation=v.generation AND p.id=v.product_id WHERE v.generation=? AND v.id=? AND v.product_id=?`,generation,item.variant_id,item.product_id);
+    const row = await store.first(`SELECT v.*,p.title,p.image,p.external_id AS product_external_id FROM catalog_variants v JOIN catalog_products p ON p.generation=v.generation AND p.id=v.product_id WHERE v.generation=? AND v.id=? AND v.product_id=?`,generation,item.variant_id,item.product_id);
     if (!row) fail(422,'variant_unavailable','A selected variant is not synced and ready to order.');
     const snapshot = JSON.parse(row.snapshot_json);
     const current = await printful.getVariant(item.variant_id);
     const verified = await normalizeVariant(current,{id:item.product_id,thumbnail_url:row.image});
     if (!verified) fail(422,'variant_unavailable','A selected variant is no longer available.');
     if (verified.fingerprint !== snapshot.fingerprint) fail(409,'catalog_changed','A selected product has changed. Refresh the catalog before checkout.');
-    lines.push({...item,title:row.title,image:independentImage(snapshot.image) || independentImage(row.image),variant:snapshot,unit_price_cents:row.price_cents,line_total_cents:row.price_cents * item.quantity});
+    lines.push({...item,kind:typeOf(row.product_external_id)?.type || 'tshirt',title:row.title,image:independentImage(snapshot.image) || independentImage(row.image),variant:snapshot,unit_price_cents:row.price_cents,line_total_cents:row.price_cents * item.quantity});
   }
   return lines;
 }

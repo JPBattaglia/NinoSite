@@ -15,6 +15,7 @@ import {sendOrderEmails} from './emails.mjs';
 import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {runMirror} from './mirror.mjs';
+import {runExpansion} from './expand.mjs';
 import {refusedKey,alertRefusedKey} from './key-alert.mjs';
 import {withPrintfulTokens,renewPrintfulTokens,connectRedirect,connectCallback,connectionStatus} from './printful-auth.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
@@ -195,8 +196,16 @@ export function createApp(dependencies={}) {
           if(daily || requested) mirrored=await runMirror(store,env,now,{destination:printful});
           if(mirrored?.errors?.some(refusedKey)) await alertRefusedKey(store,env,'source',now);
         } catch { /* copying new designs must never block sync or fulfillment */ }
+        // Stage 14: the same designs on more products (expand.mjs), a few per run, only while a sync isn't running;
+        // when a batch finishes, a sync publishes it.
+        let expanded={created:[],remaining:0};
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
-        if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length)) sync=await startCatalogSync(store,printful,now);
+        if(!sync) {
+          try { expanded=await runExpansion(store,env,now); } catch { /* never blocks sync or fulfillment */ }
+          if(expanded.errors?.some(refusedKey)) await alertRefusedKey(store,env,'shop',now);
+        }
+        const expansionReady=expanded.created?.length>0 && expanded.remaining===0;
+        if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length || expansionReady)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
         // New garment colors get a swatch hex from Printful's catalog (only names not yet known).
         if(daily) { try { await refreshPalette(store,printful); } catch { /* swatches fall back to color names */ } }

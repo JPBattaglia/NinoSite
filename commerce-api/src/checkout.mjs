@@ -85,7 +85,7 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     expires_at:order.created_at+3600,
     metadata:{order_id:order.id,cart_hash:order.request_hash},
     payment_intent_data:{metadata:{order_id:order.id}},
-    line_items:snapshot.lines.map(line=>({quantity:line.quantity,price_data:{currency:'usd',unit_amount:line.unit_price_cents,tax_behavior:'exclusive',product_data:{...(snapshot.product_tax_code?{tax_code:snapshot.product_tax_code}:{}),name:line.title,description:line.variant.name || undefined,images:line.image?[line.image]:undefined,metadata:{sync_variant_id:line.variant_id,sync_product_id:line.product_id}}}})),
+    line_items:snapshot.lines.map(line=>({quantity:line.quantity,price_data:{currency:'usd',unit_amount:line.unit_price_cents,tax_behavior:'exclusive',product_data:{...(lineTaxCode(line,snapshot)?{tax_code:lineTaxCode(line,snapshot)}:{}),name:line.title,description:line.variant.name || undefined,images:line.image?[line.image]:undefined,metadata:{sync_variant_id:line.variant_id,sync_product_id:line.product_id}}}})),
     shipping_options:[{shipping_rate_data:{display_name:snapshot.shipping.name,type:'fixed_amount',fixed_amount:{amount:snapshot.shipping.amount,currency:'usd'},tax_behavior:'exclusive'}}]
   };
   if(snapshot.tax_mode==='automatic') params.automatic_tax={enabled:true};
@@ -139,4 +139,12 @@ export async function checkedPaidSession(order,session,lineItems) {
   const email=session.customer_details?.email || session.customer_email;
   if(typeof email!=='string' || email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail(409,'customer_email_missing');
   return {recipient:address,email,total:session.amount_total,tax,shipping,payment_intent_id:intent.id};
+}
+
+// Stage 14: the shop's tax code is clothing (txcd_30011000). Stickers and tote bags aren't clothing, so they go as
+// general tangible goods; hoodies and crewnecks stay clothing. Orders made before stage 14 have no kind.
+const NON_CLOTHING = new Set(['sticker','tote']);
+export function lineTaxCode(line,snapshot) {
+  if(!snapshot.product_tax_code) return null;
+  return NON_CLOTHING.has(line.kind) ? 'txcd_99999999' : snapshot.product_tax_code;
 }
