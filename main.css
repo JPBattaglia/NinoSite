@@ -865,13 +865,14 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .section-heading>.text-link{max-width:none;white-space:nowrap}
 .product-help .text-link{margin:14px 12px 0 0}
 /* Oct 30 2026: 02 / TYPE is now the wide menu-made.com sign */
-.studio-canvas .canvas-type{left:3%;top:auto;bottom:calc(16% + 30px);width:47%;z-index:3;aspect-ratio:1400/257;transform:rotate(12deg);background:transparent;border:0;box-shadow:0 18px 30px #0007;border-radius:14px}
+.studio-canvas .canvas-type{left:3%;top:auto;bottom:calc(16% + 30px);width:66%;z-index:3;aspect-ratio:1400/257;transform:rotate(12deg);background:transparent;border:0;box-shadow:0 18px 30px #0007;border-radius:14px}
 .studio-canvas .canvas-type:hover{transform:rotate(10deg) translateY(-5px)}
 .studio-canvas .canvas-type img{border-radius:inherit}
 .studio-canvas .canvas-type>span{bottom:-24px}
-@media(max-width:760px){.studio-canvas .canvas-type{left:3%;bottom:calc(20% + 30px);width:49%}.studio-canvas .canvas-type>span{bottom:-20px}}
+@media(max-width:760px){.studio-canvas .canvas-type{left:3%;bottom:calc(20% + 30px);width:68%}.studio-canvas .canvas-type>span{bottom:-20px}}
 /* Oct 30 2026: 02 (sign) and 03 (identity) swap sides */
 .studio-canvas .canvas-mark{left:7%}
 .studio-canvas .canvas-type{left:auto;right:3%}
 @media(max-width:760px){.studio-canvas .canvas-mark{left:6%}.studio-canvas .canvas-type{left:auto;right:3%}}
 .studio-canvas .canvas-face>span{left:auto;right:0}
+.studio-canvas .canvas-type>span{left:auto;right:0}
