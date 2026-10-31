@@ -136,7 +136,7 @@ export async function connectCallback(env, store, url, now, fetcher = (...a) => 
   catch (error) { return page(502, 'Printful refused', `<p>Printful didn’t complete the connection (${esc(error.message)}). Tell Claude “Printful connect failed”.</p>`); }
   const actual = await storeKind(tokens.access_token, fetcher).catch(() => null);
   if (actual !== kind) {
-    return page(409, 'Wrong store', `<p>That approval was for ${actual ? esc(STORES[actual]) : 'a store this shop doesn’t use'}, but this link connects <strong>${esc(STORES[kind])}</strong>. Open the link again and choose ${esc(STORES[kind])} on Printful’s screen.</p>`);
+    return page(409, 'Wrong store', `<p>That approval was for ${actual ? esc(STORES[actual]) : 'a store this shop doesn’t use'}, but this link connects <strong>${esc(STORES[kind])}</strong>. Printful approves whichever store is selected in your Printful dashboard. Go to <a href="https://www.printful.com/dashboard">printful.com/dashboard</a>, click the store name at the top left, pick ${esc(STORES[kind])}, then open <a href="${connectUrl(env, kind)}">this link</a> again.</p>`);
   }
   await saveConnection(store, env, kind, {...tokens, connected_at: now, renewed_at: now});
   await store.run('DELETE FROM commerce_settings WHERE key=?', `printful_oauth_alert:${kind}`).catch(() => {});
