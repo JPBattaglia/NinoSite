@@ -24,7 +24,7 @@ export const PRODUCT_TYPES = Object.freeze([
   {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150,
     area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']},
   // The hoodie's front area is a 14in square (Printful printfile 139) that runs down to the pouch pocket, so the art
-  // stays in the top 60%: up to 12in wide, from 1.5in below the top.
+  // stays in the top 60%: up to 12in wide, from 1in below the top.
   {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, chest: {w: 0.8571, h: 0.6, top: 0.0714},
     area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']}
 ]);
