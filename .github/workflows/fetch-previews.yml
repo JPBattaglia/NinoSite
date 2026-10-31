@@ -1,0 +1,32 @@
+# Lets Claude look at Printful's product previews (its workspace can't reach Printful's image server): copies the
+# given image URLs into the scratch branch "previews". Run by hand only; nothing on the site uses that branch.
+name: fetch-previews
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: Space-separated https image URLs (files.cdn.printful.com only)
+        required: true
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download and push to the previews branch
+        env:
+          URLS: ${{ inputs.urls }}
+          REPO: ${{ github.repository }}
+          TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          mkdir out && cd out
+          i=0
+          for u in $URLS; do
+            case "$u" in https://files.cdn.printful.com/*) ;; *) echo "skip $u"; continue;; esac
+            i=$((i+1)); curl -sSfL -m 30 -o "$(printf '%02d' $i)-$(basename "$u")" "$u"
+          done
+          git init -q -b previews && git add -A
+          git -c user.name=github-actions -c user.email=actions@github.com commit -qm "previews $(date -u +%FT%TZ)"
+          git push -qf "https://x-access-token:${TOKEN}@github.com/${REPO}.git" previews
