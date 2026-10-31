@@ -23,8 +23,10 @@ export const PRODUCT_TYPES = Object.freeze([
     variants: [10457, 10458], area: {default: [1500, 1500]}, colorRule: 'tote'},
   {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest',
     area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']},
-  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest',
-    area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']}
+  // The hoodie's front area is a 14in square (Printful printfile 139) that runs down to the pouch pocket, so the art
+  // stays in the top 60%: up to 12in wide, from 1.5in below the top.
+  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', chest: {w: 0.8571, h: 0.6, top: 0.0714},
+    area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL']}
 ]);
 const TYPES = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
 export const typeOf = externalId => { const m = /^nx-([a-z]+)-(\d+)$/.exec(String(externalId || '')); return m && TYPES.has(m[1]) ? {type: m[1], design: m[2]} : null; };
@@ -59,9 +61,10 @@ export function position(spec, area, art) {
   if (!(w0 > 0 && h0 > 0)) return null;
   let width, height, top, left;
   if (spec.fit === 'chest') {
-    const scale = Math.min((aw * 0.8627) / w0, (ah * 0.75) / h0);
+    const c = spec.chest || {w: 0.8627, h: 0.75, top: 0.1473};   // the shirts' placement on a 12x16in area
+    const scale = Math.min((aw * c.w) / w0, (ah * c.h) / h0);
     width = Math.round(w0 * scale); height = Math.round(h0 * scale);
-    left = Math.round((aw - width) / 2); top = Math.round(Math.min(ah * 0.1473, ah - height));
+    left = Math.round((aw - width) / 2); top = Math.round(Math.min(ah * c.top, ah - height));
   } else {
     const room = 1 - 2 * (spec.margin || 0);
     const scale = Math.min((aw * room) / w0, (ah * room) / h0);

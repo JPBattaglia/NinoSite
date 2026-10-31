@@ -41,6 +41,8 @@ test('artwork keeps its proportions inside the print area', () => {
   assert.equal(chest.left, Math.round((1800 - chest.width) / 2));
   assert.equal(chest.top, Math.round(2400 * 0.1473), 'starts at the collar line like the shirts');
   assert.ok(Math.abs(chest.width / chest.height - 1880 / 1555) < 0.01);
+  const hoodie = position(spec('hoodie'), [2100, 2100], art);
+  assert.ok(hoodie.top + hoodie.height <= 2100 * 0.6714 + 1, 'clear of the pouch pocket');
   const sticker = position(spec('sticker'), [900, 900], art);
   assert.ok(sticker.width <= 900 && sticker.top > 0 && sticker.left >= 0);
   assert.equal(position(spec('tote'), [1500, 1500], {width: 0, height: 10}), null);
