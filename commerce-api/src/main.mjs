@@ -7,6 +7,7 @@ import {PrintfulClient} from './providers.mjs';
 import {nowSeconds} from './common.mjs';
 import {merchCall,merchQuote,placeMerchOrder,merchOrderStatus,deleteMerchDraft,merchSample} from './merch.mjs';
 import {logoProducts} from './merch-products.mjs';
+import {withPrintfulTokens} from './printful-auth.mjs';
 
 export * from './worker.mjs';
 export default app;
@@ -14,14 +15,17 @@ export default app;
 // Staff merch for Menu-made (merch.mjs). Reachable only through Menu-made's service binding to this named
 // entrypoint; named entrypoints have no public route, so nothing on the internet can call these.
 export class NinoMerch extends WorkerEntrypoint {
-  deps() {
+  // The Printful app's live token where connected (printful-auth.mjs), else the private key.
+  async deps() {
     if(!this.env.DB) throw new Error('database_not_configured');
-    return {store:new Store(this.env.DB),printful:new PrintfulClient(this.env),env:this.env,now:nowSeconds()};
+    const store=new Store(this.env.DB), now=nowSeconds();
+    const env=await withPrintfulTokens(this.env,store,now);
+    return {store,printful:new PrintfulClient(env),env,now};
   }
-  quote(args) { return merchCall(merchQuote,args,this.deps()); }
-  placeOrder(args) { return merchCall(placeMerchOrder,args,this.deps()); }
-  orderStatus(args) { return merchCall(merchOrderStatus,args,this.deps()); }
-  deleteDraft(args) { return merchCall(deleteMerchDraft,args,this.deps()); }
-  products() { const d=this.deps(); return merchCall(()=>logoProducts(d.store,d.env,d.now),{},d); }
-  sample(args) { return merchCall(merchSample,args || {},this.deps()); }
+  async quote(args) { return merchCall(merchQuote,args,await this.deps()); }
+  async placeOrder(args) { return merchCall(placeMerchOrder,args,await this.deps()); }
+  async orderStatus(args) { return merchCall(merchOrderStatus,args,await this.deps()); }
+  async deleteDraft(args) { return merchCall(deleteMerchDraft,args,await this.deps()); }
+  async products() { const d=await this.deps(); return merchCall(()=>logoProducts(d.store,d.env,d.now),{},d); }
+  async sample(args) { return merchCall(merchSample,args || {},await this.deps()); }
 }
