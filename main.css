@@ -879,3 +879,4 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .studio-canvas .canvas-face{transform:rotate(-3deg) translateY(-5px)}.studio-canvas .canvas-face:hover{transform:rotate(0deg) translateY(-10px)}
 .studio-canvas .canvas-face{aspect-ratio:1600/1067}
 .product-dialog.is-hero-piece .dialog-image img{background:transparent}
+.footer-social-row{display:flex;justify-content:center;padding-bottom:30px}.footer-social-row .footer-social{margin-top:0;justify-content:center}
