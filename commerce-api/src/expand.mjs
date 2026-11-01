@@ -11,6 +11,7 @@
 
 import {decodePng, summarize, blendsIn, lab, hexRgb} from './artcolors.mjs';
 import {THREAD_COLORS} from './merch-products.mjs';
+import {stickerFile} from './sticker-art.mjs';
 
 export const EXPAND_PER_RUN = 2;          // each creation is one Printful call plus a few D1 writes
 export const MARKUP = 1.5;
@@ -148,7 +149,10 @@ export function photoLayer(spec, design, payload, catalog = []) {
     // The colors this product is made in: the photo job waits until the shop's catalog shows exactly these
     // (after a rebuild, the old catalog copy still lists the colors that were removed).
     colors: [...new Set(payload.sync_variants.map(v => catalog.find(c => c.id === v.variant_id)?.color).filter(Boolean))].sort(),
-    position_in: {width: in3(pos.width), height: in3(pos.height), top: in3(pos.top), left: in3(pos.left)}};
+    position_in: {width: in3(pos.width), height: in3(pos.height), top: in3(pos.top), left: in3(pos.left)},
+    // The photo job waits until the catalog shows this artwork file (a remade sticker keeps its colors, so the
+    // color check alone can't tell the old catalog copy from the new one).
+    file_id: variant.files[0].id};
 }
 
 // The design's artwork and shirt colors, from its store product (the shirt).
@@ -168,7 +172,7 @@ export function designFromDetail(detail) {
   return art ? {id: String(product.id), name: product.name, art, colors} : null;
 }
 
-async function api(env, method, path, body, fetcher) {
+export async function api(env, method, path, body, fetcher) {
   const response = await fetcher(`https://api.printful.com${path}`, {
     method, body: body == null ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(25000),
     headers: {Authorization: `Bearer ${env.PRINTFUL_ACCESS_TOKEN}`, 'X-PF-Store-Id': env.PRINTFUL_STORE_ID, 'Content-Type': 'application/json'}
@@ -180,7 +184,7 @@ async function api(env, method, path, body, fetcher) {
 const setSetting = (store, key, value) => store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', key, value);
 
 // Catalog variants of a Printful product (id, color, size, cost), cached for a day.
-async function catalogVariants(store, env, catalogId, now, fetcher) {
+export async function catalogVariants(store, env, catalogId, now, fetcher) {
   const key = `expand_catalog2:${catalogId}`;   // 2 = with color codes
   const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', key);
   const cached = row ? JSON.parse(row.value) : null;
@@ -209,6 +213,26 @@ async function designPalette(store, design, fetcher, budget) {
   return summary;
 }
 
+// Stickers use the design's one-piece sticker artwork once it exists (sticker-art.mjs); everything else the design's own.
+async function withStickerArt(store, spec, design) {
+  if (!design || spec.type !== 'sticker') return design;
+  const art = await stickerFile(store, design.id);
+  return art ? {...design, art} : design;
+}
+
+// Remake a design's sticker product with new artwork (sticker-art.mjs): same sizes and prices, new file, new photo.
+export async function remakeSticker(store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a)) {
+  const spec = PRODUCT_TYPES.find(t => t.type === 'sticker');
+  const design = designFromDetail((await api(env, 'GET', `/store/products/${designId}`, null, fetcher))?.result);
+  if (!design) throw new Error('design_not_found');
+  const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
+  const payload = buildProduct(spec, {...design, art}, catalogList);
+  if (!payload) throw new Error('no_variants');
+  await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
+  await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',6,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status='pending',priority=6,task_id=NULL,attempts=0,last_error=NULL,updated_at=excluded.updated_at", String(productId), JSON.stringify(photoLayer(spec, design, payload, catalogList)), now);
+  return payload;
+}
+
 // One scheduled step: create up to EXPAND_PER_RUN missing products for the designs that are turned on.
 // Returns {created:[...], errors:[...], remaining}. Never throws.
 export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(...a), max = EXPAND_PER_RUN} = {}) {
@@ -219,6 +243,13 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     if (!setting) return out;
     const generation = await store.activeGeneration();
     if (!generation) return out;
+    // Nothing left to make for this catalog: skip the scans until the catalog, the setting or a gate changes
+    // (D1 bills every row read; these scans ran every 5 minutes). Changing a gate or 'expand_designs' clears it.
+    const gateValues = [];
+    for (const spec of PRODUCT_TYPES.filter(t => t.gate)) gateValues.push(String((await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand_gate:${spec.type}`))?.value || ''));
+    const rebuildSetting = String((await store.first("SELECT value FROM commerce_settings WHERE key='expand_rebuild'"))?.value || '');
+    const idleKey = [generation, setting, ...gateValues, rebuildSetting].join('|');
+    if ((await store.first("SELECT value FROM commerce_settings WHERE key='expand_idle'"))?.value === idleKey) return out;
     // Designs = the live shirts (anything that isn't itself an expansion product).
     let designs = (await store.all("SELECT id,external_id,title FROM catalog_products WHERE generation=? AND (external_id IS NULL OR external_id NOT LIKE 'nx-%') ORDER BY id DESC", generation)) || [];
     if (setting !== 'all') { const allow = new Set(setting.split(',').map(s => s.trim())); designs = designs.filter(d => allow.has(String(d.id))); }
@@ -249,7 +280,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     };
     for (const [d, spec, productId] of redo.slice(0, max)) {
       try {
-        const design = await designOf(d);
+        const design = await withStickerArt(store, spec, await designOf(d));
         if (!design) continue;
         if (spec.colorRule && design.palette === undefined) {
           design.palette = await designPalette(store, design, fetcher, budget);
@@ -269,7 +300,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     for (const [d, spec] of todo.slice(0, max)) {
       const key = `expand:${d.id}:${spec.type}`;
       try {
-        const design = await designOf(d);
+        const design = await withStickerArt(store, spec, await designOf(d));
         if (!design) { await setSetting(store, key, 'error:no_artwork'); out.errors.push(`${d.title}: no artwork file`); continue; }
         if (spec.colorRule && design.palette === undefined) {
           design.palette = await designPalette(store, design, fetcher, budget);
@@ -293,6 +324,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     }
     out.remaining = Math.max(0, out.remaining - out.created.length);
     await setSetting(store, 'expand_last', JSON.stringify({at: now, ...out}));
+    if (out.remaining === 0 && !out.errors.length) await setSetting(store, 'expand_idle', idleKey);
   } catch (error) { out.errors.push(String(error?.message || error).slice(0, 200)); }
   return out;
 }

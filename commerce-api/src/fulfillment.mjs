@@ -4,6 +4,7 @@ import {checkedPaidSession} from './checkout.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {sendOrderEmails} from './emails.mjs';
 import {PRODUCT_TYPES,position,threadsFor} from './expand.mjs';
+import {stickerFile} from './sticker-art.mjs';
 
 // Oct 31, 2026: Printful ignores artwork placement on stored (sync) products and prints the file at its own size
 // (about 5in wide for most designs), even though the site's photos show it large. Placement is only honored on
@@ -46,6 +47,11 @@ export async function placedItems(snapshot, store, printful) {
   return items;
 }
 
+async function designOfProduct(store, productId) {
+  const row = await store.first("SELECT key FROM commerce_settings WHERE key LIKE 'expand:%' AND value=?", String(productId)).catch(() => null);
+  return /^expand:(\d+):/.exec(row?.key || '')?.[1] || null;
+}
+
 async function embroideryOptions(store, productId) {
   const row = await store.first("SELECT key FROM commerce_settings WHERE key LIKE 'expand:%' AND value=?", String(productId)).catch(() => null);
   const design = /^expand:(\d+):/.exec(row?.key || '')?.[1];
@@ -64,11 +70,15 @@ async function giftSticker(snapshot, store, printful) {
   const file = (line?.variant?.files || []).find(f => (f.type || 'default') === 'default' && f.id) || line?.variant?.files?.[0];
   if (!file?.id) return null;
   const sticker = SPECS.get('sticker');
-  const art = await printful.getFile(file.id).catch(() => null);
+  // The design's one-piece sticker artwork when it has one (sticker-art.mjs), else the line's own artwork.
+  const design = line.kind && line.kind !== 'tshirt' ? await designOfProduct(store, line.product_id) : String(line.product_id);
+  const onepiece = design ? await stickerFile(store, design) : null;
+  const fileId = onepiece ? onepiece.id : file.id;
+  const art = onepiece || await printful.getFile(fileId).catch(() => null);
   const pos = art && position(sticker, sticker.area[GIFT_VARIANT], {width: art.width, height: art.height});
   if (!pos) return null;
   return {external_id: GIFT_EXTERNAL_ID, variant_id: GIFT_VARIANT, quantity: 1, retail_price: '0.00',
-    name: `Free sticker: ${String(line.title || 'Nino design').replace(/\s+T$/, '')}`, files: [{type: 'default', id: file.id, position: pos}]};
+    name: `Free sticker: ${String(line.title || 'Nino design').replace(/\s+T$/, '')}`, files: [{type: 'default', id: fileId, position: pos}]};
 }
 
 const accepted = new Set(['inreview','pending','waiting','waiting_for_stock','inprocess','onhold','partial','fulfilled']);
