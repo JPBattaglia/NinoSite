@@ -13,7 +13,8 @@
   ],
   // Order emails go out through Menu-made's mailer (menu-checkout worker, NinoMail entrypoint): no email key here.
   "services": [
-    { "binding": "MAILER", "service": "menu-checkout", "entrypoint": "NinoMail" }
+    { "binding": "MAILER", "service": "menu-checkout", "entrypoint": "NinoMail" },
+    { "binding": "WRITER", "service": "menu-checkout", "entrypoint": "NinoWrite" }
   ],
   "kv_namespaces": [
     { "binding": "MOCKUPS", "id": "3bd8ca58b3d340da8a1c025ea6f42d12" }
