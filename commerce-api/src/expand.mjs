@@ -29,7 +29,13 @@ export const PRODUCT_TYPES = Object.freeze([
   // The hoodie's front area is a 14in square (Printful printfile 139) that runs down to the pouch pocket, so the art
   // stays in the top 60%: up to 12in wide, from 1in below the top.
   {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, chest: {w: 0.8571, h: 0.6, top: 0.0714},
-    area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']}
+    area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
+  // All-Over Print 5-Color Strap Apron (owner choice, Oct 31): the design is sublimated on the white body, so every
+  // strap color is offered. Its print area (printfile 1381) is the whole front; the art sits on the bib and chest.
+  // Gated by commerce_settings 'expand_gate:apron' (a list of design ids, or 'all') until its photos are checked.
+  {type: 'apron', label: 'Apron', catalog: 927, file: 'default', fit: 'chest', placement: 'front', technique: 'sublimation', dpi: 150,
+    chest: {w: 0.42, h: 0.34, top: 0.3}, gate: true,
+    variants: [23723, 23724, 23725, 23726, 23727], area: {default: [4075, 4961]}}
 ]);
 const TYPES = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
 export const typeOf = externalId => { const m = /^nx-([a-z]+)-(\d+)$/.exec(String(externalId || '')); return m && TYPES.has(m[1]) ? {type: m[1], design: m[2]} : null; };
@@ -184,7 +190,13 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     if (setting !== 'all') { const allow = new Set(setting.split(',').map(s => s.trim())); designs = designs.filter(d => allow.has(String(d.id))); }
     const done = new Set(((await store.all("SELECT key FROM commerce_settings WHERE key LIKE 'expand:%'")) || []).map(r => r.key));
     const todo = [];
-    for (const d of designs) for (const spec of PRODUCT_TYPES) if (!done.has(`expand:${d.id}:${spec.type}`)) todo.push([d, spec]);
+    const gates = new Map();
+    for (const spec of PRODUCT_TYPES.filter(t => t.gate)) {
+      const value = String((await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand_gate:${spec.type}`))?.value || '').trim();
+      gates.set(spec.type, value === 'all' ? null : new Set(value.split(',').map(v => v.trim()).filter(Boolean)));
+    }
+    const open = (spec, d) => !spec.gate || gates.get(spec.type) === null || gates.get(spec.type).has(String(d.id));
+    for (const d of designs) for (const spec of PRODUCT_TYPES) if (open(spec, d) && !done.has(`expand:${d.id}:${spec.type}`)) todo.push([d, spec]);
     // Products made before a rule change are rebuilt in place when their design is listed in 'expand_rebuild'
     // (Oct 31: the color check and the bigger sizes reached the 3 sample designs this way). Marked expand_v:<..> = 2.
     const rebuildIds = new Set(String((await store.first("SELECT value FROM commerce_settings WHERE key='expand_rebuild'"))?.value || '').split(',').map(v => v.trim()).filter(Boolean));

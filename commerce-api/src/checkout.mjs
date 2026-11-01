@@ -143,7 +143,7 @@ export async function checkedPaidSession(order,session,lineItems) {
 
 // Stage 14: the shop's tax code is clothing (txcd_30011000). Stickers and tote bags aren't clothing, so they go as
 // general tangible goods; hoodies and crewnecks stay clothing. Orders made before stage 14 have no kind.
-const NON_CLOTHING = new Set(['sticker','tote']);
+const NON_CLOTHING = new Set(['sticker','tote','apron']);   // aprons: general goods (Oct 31)
 export function lineTaxCode(line,snapshot) {
   if(!snapshot.product_tax_code) return null;
   return NON_CLOTHING.has(line.kind) ? 'txcd_99999999' : snapshot.product_tax_code;

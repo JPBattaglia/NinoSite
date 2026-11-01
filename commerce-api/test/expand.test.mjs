@@ -229,3 +229,25 @@ test('listed sample designs are rebuilt in place with the new rules, and their p
   assert.equal(settings.get('expand_v:482794926:hoodie'), '2');
   assert.deepEqual((await runExpansion(store, env, 1010, {fetcher})).created, [], 'each product rebuilt once');
 });
+
+test('aprons are made only for designs their gate lists, with every strap color, taxed as goods', async () => {
+  const settings = new Map([['expand_designs', 'all'], ['expand_gate:apron', '482794926'],
+    ...['sticker', 'tote', 'crewneck', 'hoodie'].map(t => [`expand:482794926:${t}`, '1']), ...['sticker', 'tote', 'crewneck', 'hoodie'].map(t => [`expand:999:${t}`, '1'])]);
+  const posts = [];
+  const apronVariants = [23723, 23724, 23725, 23726, 23727].map((id, i) => ({id, color: ['Black', 'White', 'Beige', 'Blue', 'Pink'][i], size: 'One size', price: '23.34', availability_status: [{region: 'US', status: 'in_stock'}]}));
+  const fetcher = async (url, init = {}) => {
+    const path = new URL(url).pathname;
+    if (init.method === 'POST') { posts.push(JSON.parse(init.body)); return Response.json({code: 200, result: {id: 8000 + posts.length}}); }
+    if (path.startsWith('/store/products/')) return Response.json({code: 200, result: detail});
+    if (path === '/products/927') return Response.json({code: 200, result: {variants: apronVariants}});
+    return new Response('{}', {status: 404});
+  };
+  const store = fakeStore(settings, [{id: '482794926', external_id: '455', title: 'Skull Wave T'}, {id: '999', external_id: '777', title: 'Other T'}]);
+  const out = await runExpansion(store, {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1000, {fetcher});
+  assert.deepEqual(out.created, ['Skull Wave Apron']);
+  assert.equal(out.remaining, 0, 'the other design gets no apron while the gate lists only the sample');
+  assert.deepEqual(posts[0].sync_variants.map(v => v.retail_price), Array(5).fill('36.00'), 'cost x 1.5 rounded up');
+  const pos = posts[0].sync_variants[0].files[0].position;
+  assert.ok(pos.top >= 4961 * 0.29 && pos.width <= 4075 * 0.43, 'on the bib and chest');
+  assert.equal(lineTaxCode({kind: 'apron'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
+});
