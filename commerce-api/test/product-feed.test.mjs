@@ -11,7 +11,7 @@ const curated = [
   {id: '999', title: 'Brand Thing', slug: 'brand-thing', description: 'Built on a brand.'}
 ];
 const config = {designs: ['455597876'], hold_types: ['apron']};
-const v = (id, color, size, amount, extra = {}) => ({id, color, size, price: {amount, currency: 'USD'}, available: true, image: `https://api.example/api/mockups/x/${id}.jpg`, ...extra});
+const v = (id, color, size, amount, extra = {}) => ({id, color, size, price: {amount, currency: 'usd'}, available: true, image: `https://api.example/api/mockups/x/${id}.jpg`, ...extra});
 const live = (over = {}) => ({catalog_ready: true, catalog_complete: true, products: [
   {id: '482794926', external_id: '455597876', title: 'Skull Wave T', image: null, variants: [v(1, 'Black', 'M', 2500), v(2, 'Black', '2XL', 2700), v(3, 'Navy', 'M', 2500, {available: false})]},
   {id: '487799809', external_id: 'nx-hoodie-482794926', title: 'Skull Wave Hoodie', variants: [v(10, 'Black', 'L', 4500)]},
