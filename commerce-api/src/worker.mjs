@@ -1,4 +1,5 @@
 import {subscribe,confirmSubscription,unsubscribe,subscriberCounts} from './subscribers.mjs';
+import {runNewsletter,newsletterAction,newsletterStatus} from './newsletter.mjs';
 import {recordMeasurement,measurementReport} from './measurement.mjs';
 import {Store} from './db.mjs';
 import {resolveShippingCountries} from './countries.mjs';
@@ -81,6 +82,7 @@ export function createApp(dependencies={}) {
         if(request.method==='POST' && url.pathname==='/api/subscribe') return json(await subscribe(request,store,env,now),200,cors);
         if(request.method==='GET' && url.pathname==='/api/subscribe/confirm') return await confirmSubscription(url,store,env,now);
         if(['GET','POST'].includes(request.method) && url.pathname==='/api/unsubscribe') return await unsubscribe(request,url,store,env,now);
+        if(['GET','POST'].includes(request.method) && url.pathname.startsWith('/api/newsletter/')) return await newsletterAction(request,url,store,env,now,ctx);
         // From here on, Printful calls use the app's live token where the app is connected, else the private key.
         env=await withPrintfulTokens(env,store,now);
         if(request.method==='GET' && url.pathname==='/api/health') {
@@ -130,6 +132,7 @@ export function createApp(dependencies={}) {
           await admin(request,env);
           if(request.method==='GET' && url.pathname==='/api/admin/measurement') return json(await measurementReport(store,now),200,cors);
           if(request.method==='GET' && url.pathname==='/api/admin/subscribers') return json(await subscriberCounts(store),200,cors);
+          if(request.method==='GET' && url.pathname==='/api/admin/newsletter') return json(await newsletterStatus(store),200,cors);
           if(request.method==='GET' && url.pathname==='/api/admin/selfcheck') return json(await lastSelfCheck(store),200,cors);
           const printful=dependencies.printful || new PrintfulClient(env);
           if(request.method==='POST' && url.pathname==='/api/admin/catalog/sync') {
@@ -170,6 +173,8 @@ export function createApp(dependencies={}) {
         const daily=event.cron===DAILY_CRON;
         if(daily) await store.run('DELETE FROM shopping_measurement WHERE day<?',new Date((now-89*86400)*1000).toISOString().slice(0,10));
         if(daily) await pruneCatalogHistory(store,now);
+        // Newsletter (newsletter.mjs): drafts on schedule for the owner's approval; sends only approved issues.
+        try { await runNewsletter(store,env,now,{daily}); } catch { /* never blocks sync or fulfillment */ }
         // Renew the Printful app's hourly access first, then run everything below on it (private keys as fallback).
         try { await renewPrintfulTokens(store,env,now); } catch { /* falls back to the private keys */ }
         env=await withPrintfulTokens(env,store,now);
