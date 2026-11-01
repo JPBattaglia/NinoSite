@@ -15,6 +15,9 @@ import {stickerFile} from './sticker-art.mjs';
 
 export const EXPAND_PER_RUN = 2;          // each creation is one Printful call plus a few D1 writes
 export const MARKUP = 1.5;
+// Model photos (mockups.mjs) only for shirts (owner, Nov 1, 2026): the other products show Printful's own product
+// images. Their photo jobs are kept, parked as 'hold' / 'not_needed', so turning this on later only needs a release.
+export const EXTRA_PHOTOS = false;
 
 // variants: Printful catalog variant ids to sell, or a rule picking them from the catalog by the design's shirt colors.
 // area: the print file size (px) per catalog variant, from Printful's printfiles for the product.
@@ -213,6 +216,13 @@ async function designPalette(store, design, fetcher, budget) {
   return summary;
 }
 
+// A product's photo job: queued when EXTRA_PHOTOS is on, else parked (and an old photo stops showing: the shop lists
+// only 'done' photos, so a remade sticker falls back to Printful's image of the new artwork).
+async function queuePhoto(store, productId, layer, now) {
+  const status = EXTRA_PHOTOS ? 'pending' : 'hold', reason = EXTRA_PHOTOS ? null : 'not_needed';
+  await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,last_error,updated_at) VALUES(?,?,?,5,?,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status=excluded.status,priority=5,task_id=NULL,attempts=0,last_error=excluded.last_error,updated_at=excluded.updated_at", String(productId), JSON.stringify(layer), status, reason, now);
+}
+
 // Stickers use the design's one-piece sticker artwork once it exists (sticker-art.mjs); everything else the design's own.
 async function withStickerArt(store, spec, design) {
   if (!design || spec.type !== 'sticker') return design;
@@ -229,7 +239,7 @@ export async function remakeSticker(store, env, now, designId, productId, art, f
   const payload = buildProduct(spec, {...design, art}, catalogList);
   if (!payload) throw new Error('no_variants');
   await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
-  await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',6,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status='pending',priority=6,task_id=NULL,attempts=0,last_error=NULL,updated_at=excluded.updated_at", String(productId), JSON.stringify(photoLayer(spec, design, payload, catalogList)), now);
+  await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now);
   return payload;
 }
 
@@ -292,7 +302,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         // Printful replaces the variant list with the one sent (variants not listed are removed).
         await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
         await setSetting(store, `expand_v:${d.id}:${spec.type}`, '2');
-        await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status='pending',priority=5,task_id=NULL,attempts=0,last_error=NULL,updated_at=excluded.updated_at", String(productId), JSON.stringify(photoLayer(spec, design, payload, catalogList)), now);
+        await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now);
         out.created.push(payload.sync_product.name + ' (rebuilt)');
       } catch (error) { out.errors.push(`${d.title} ${spec.label} rebuild: ${String(error?.message || error).slice(0, 200)}`); }
     }
@@ -313,7 +323,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         const id = created?.result?.id;
         if (!id) throw new Error('create_no_id');
         await setSetting(store, key, String(id));
-        await store.run("INSERT OR IGNORE INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?)", String(id), JSON.stringify(photoLayer(spec, design, payload, catalogList)), now);
+        await queuePhoto(store, id, photoLayer(spec, design, payload, catalogList), now);
         out.created.push(payload.sync_product.name);
       } catch (error) {
         // A refused key or a busy Printful is retried next run; anything else is recorded so it isn't retried forever.
