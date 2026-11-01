@@ -94,7 +94,7 @@ export function buyerEmail(order) {
     html: layout({
       preheader: `Thanks for your order${s.estimate ? `. Estimated delivery ${s.estimate}` : ''}.`,
       heading: `Thank you${first ? `, ${first}` : ''}!`,
-      intro: ['Your order is confirmed and your shirt is being printed. You’ll get another email with tracking as soon as it ships.'],
+      intro: ['Your order is confirmed and your shirt is being printed. You’ll get another email with tracking as soon as it ships.', 'A free Nino sticker comes in the box with your order.'],
       summary: s,
       footer: `<p style="margin:0 0 6px;font-size:14px;line-height:1.6;color:#c9bdb4;">Questions about your order? Just reply to this email.</p>`
     }),

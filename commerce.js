@@ -372,7 +372,8 @@
     qtyWrapper.append(qty); chooser.append(qtyWrapper);
     const add = create('button', 'button button-cyan', 'Add to cart'); add.type = 'submit'; add.disabled = true;
     const viewCart = create('a', 'text-link commerce-cart-link', 'View cart'); viewCart.href = 'cart.html'; viewCart.hidden = true;
-    form.append(chooser, price, add, viewCart, status);
+    const gift = create('p', 'commerce-gift-note', 'Free Nino sticker with every order');
+    form.append(chooser, price, add, gift, viewCart, status);
     container.replaceChildren(form);
     let selected = null;
     let shownColor = '';
