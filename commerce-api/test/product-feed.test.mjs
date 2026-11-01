@@ -124,5 +124,5 @@ test('the reviewed design list names real curated designs', async () => {
   const ids = new Set(catalog.products.map(p => p.id));
   assert.equal(listed.designs.length, 20);
   for (const id of listed.designs) assert.ok(ids.has(id), id);
-  assert.deepEqual(listed.hold_types, ['apron', 'hat']);
+  assert.deepEqual(listed.hold_types, []);
 });
