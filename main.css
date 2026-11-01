@@ -884,3 +884,16 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 /* Free sticker with every site order (owner decision Oct 31, 2026) */
 .cart-gift-note,.commerce-gift-note{font-size:12px;line-height:1.6;color:var(--orange,#ff8a4c);margin:14px 0 0;font-weight:600}
 .commerce-gift-note{margin:0}
+/* Footer email signup (signup.js) */
+.footer-signup{display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;border-top:1px solid #ffffff1a;padding-block:28px}
+.footer-signup-copy .eyebrow{color:#99a5a1;font-size:9px;margin:0 0 6px}.footer-signup-copy p{margin:0;font-size:13px;color:#c9bdb4;max-width:360px}
+.footer-signup-form{display:flex;flex-wrap:wrap;gap:10px;align-items:center;max-width:520px;width:100%}
+.footer-signup-form input[type=email]{flex:1 1 220px;min-width:0;min-height:46px;padding:10px 14px;border:1px solid #ffffff40;border-radius:10px;background:transparent;color:#f2efe8;font-size:14px}
+.footer-signup-form input[type=email]::placeholder{color:#8c9995}
+.footer-signup-form button{min-height:46px;padding:10px 22px;border:2px solid #ff6a1f;border-radius:10px;background:transparent;color:#f2efe8;font:600 13px/1 var(--body);transition:background .18s}
+.footer-signup-form button:hover{background:#ff6a1f22}.footer-signup-form button:disabled{opacity:.6}
+.footer-signup-status{flex-basis:100%;margin:0;min-height:1.2em;font-size:12px;color:#c9bdb4}.footer-signup-status.is-error{color:#ff8a6a}
+.footer-signup-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.signup-notice{position:fixed;left:50%;top:18px;z-index:1000;transform:translateX(-50%);display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);padding:12px 12px 12px 20px;background:#101415;color:#f2efe8;border:2px solid #ff6a1f;border-radius:12px;box-shadow:0 18px 40px -16px rgba(0,0,0,.8)}
+.signup-notice p{margin:0;font-size:14px}.signup-notice button{background:none;border:0;color:#f2efe8;font-size:22px;line-height:1;padding:4px 8px}
+@media(max-width:760px){.footer-signup{padding-block:24px;gap:16px}.footer-signup-form{max-width:none}}

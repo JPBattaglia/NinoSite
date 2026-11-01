@@ -1,3 +1,4 @@
+import {subscribe,confirmSubscription,unsubscribe,subscriberCounts} from './subscribers.mjs';
 import {recordMeasurement,measurementReport} from './measurement.mjs';
 import {Store} from './db.mjs';
 import {resolveShippingCountries} from './countries.mjs';
@@ -76,6 +77,10 @@ export function createApp(dependencies={}) {
           if(cache) ctx?.waitUntil?.(cache.put(request,response.clone()));
           return response;
         }
+        // Email signup (subscribers.mjs): double opt-in; needs no Printful token.
+        if(request.method==='POST' && url.pathname==='/api/subscribe') return json(await subscribe(request,store,env,now),200,cors);
+        if(request.method==='GET' && url.pathname==='/api/subscribe/confirm') return await confirmSubscription(url,store,env,now);
+        if(['GET','POST'].includes(request.method) && url.pathname==='/api/unsubscribe') return await unsubscribe(request,url,store,env,now);
         // From here on, Printful calls use the app's live token where the app is connected, else the private key.
         env=await withPrintfulTokens(env,store,now);
         if(request.method==='GET' && url.pathname==='/api/health') {
@@ -124,6 +129,7 @@ export function createApp(dependencies={}) {
         if(url.pathname.startsWith('/api/admin/')) {
           await admin(request,env);
           if(request.method==='GET' && url.pathname==='/api/admin/measurement') return json(await measurementReport(store,now),200,cors);
+          if(request.method==='GET' && url.pathname==='/api/admin/subscribers') return json(await subscriberCounts(store),200,cors);
           if(request.method==='GET' && url.pathname==='/api/admin/selfcheck') return json(await lastSelfCheck(store),200,cors);
           const printful=dependencies.printful || new PrintfulClient(env);
           if(request.method==='POST' && url.pathname==='/api/admin/catalog/sync') {
