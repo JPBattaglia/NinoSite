@@ -51,7 +51,8 @@ jobs:
         run: |
           git add -f assets/stickers
           if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-          git -c user.name=github-actions -c user.email=actions@github.com commit -qm "Sticker art: one-piece sticker artwork"
+          git config user.name github-actions; git config user.email actions@github.com
+          git commit -qm "Sticker art: one-piece sticker artwork"
           git pull -q --rebase origin master
           git push -q origin HEAD:master
           echo "changed=true" >> "$GITHUB_OUTPUT"
