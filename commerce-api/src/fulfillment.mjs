@@ -37,7 +37,27 @@ export async function placedItems(snapshot, store, printful) {
     items.push({external_id: `item_${index + 1}`, variant_id: line.variant.catalog_variant_id, quantity: line.quantity,
       retail_price: money(line.unit_price_cents), name: line.title, files: [{type: spec.file || 'default', id: file.id, position: pos}]});
   }
+  // Owner decision Oct 31, 2026: a free sticker with every site order (the reason to buy here rather than on Etsy).
+  // A 3x3in sticker of the order's first design, at $0. Switch: commerce_settings free_sticker = 'off'.
+  const gift = await giftSticker(snapshot, store, printful);
+  if (gift) items.push(gift);
   return items;
+}
+
+export const GIFT_EXTERNAL_ID = 'gift_sticker';
+export const GIFT_VARIANT = 10163;   // Kiss-cut sticker 3x3in
+async function giftSticker(snapshot, store, printful) {
+  const off = await store.first("SELECT value FROM commerce_settings WHERE key='free_sticker'").catch(() => null);
+  if (String(off?.value || '').toLowerCase() === 'off') return null;
+  const line = snapshot.lines?.[0];
+  const file = (line?.variant?.files || []).find(f => (f.type || 'default') === 'default' && f.id) || line?.variant?.files?.[0];
+  if (!file?.id) return null;
+  const sticker = SPECS.get('sticker');
+  const art = await printful.getFile(file.id).catch(() => null);
+  const pos = art && position(sticker, sticker.area[GIFT_VARIANT], {width: art.width, height: art.height});
+  if (!pos) return null;
+  return {external_id: GIFT_EXTERNAL_ID, variant_id: GIFT_VARIANT, quantity: 1, retail_price: '0.00',
+    name: `Free sticker: ${String(line.title || 'Nino design').replace(/\s+T$/, '')}`, files: [{type: 'default', id: file.id, position: pos}]};
 }
 
 const accepted = new Set(['inreview','pending','waiting','waiting_for_stock','inprocess','onhold','partial','fulfilled']);
@@ -48,9 +68,14 @@ function draftMatches(order,draft,env) {
   let actualAddress;
   try {actualAddress=recipient(draft.recipient,snapshot.shipping.countries);} catch {fail(409,'printful_address_mismatch');}
   if(canonical(actualAddress)!==canonical(JSON.parse(order.recipient_json))) fail(409,'printful_address_mismatch');
-  if(!Array.isArray(draft.items) || draft.items.length!==snapshot.lines.length) fail(409,'printful_items_mismatch');
+  if(!Array.isArray(draft.items)) fail(409,'printful_items_mismatch');
+  // The free sticker (placedItems) is the one extra item allowed: one 3in sticker at no charge.
+  const gifts=draft.items.filter(item=>item?.external_id===GIFT_EXTERNAL_ID);
+  if(gifts.length>1 || gifts.some(item=>item.quantity!==1 || item.variant_id!==GIFT_VARIANT)) fail(409,'printful_items_mismatch');
+  const paidItems=draft.items.filter(item=>item?.external_id!==GIFT_EXTERNAL_ID);
+  if(paidItems.length!==snapshot.lines.length) fail(409,'printful_items_mismatch');
   const seen=new Set();
-  for(const item of draft.items) {
+  for(const item of paidItems) {
     // Orders since Oct 31 are placed by catalog variant (placedItems) and matched by their item external id;
     // drafts made before that still carry the sync variant id.
     const byIndex=/^item_(\d+)$/.exec(String(item.external_id || ''));

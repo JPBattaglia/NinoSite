@@ -33,5 +33,17 @@ test('other products use their own print area: a 4in sticker, a tote, a hoodie c
   const h = items[2].files[0].position;
   assert.equal(h.area_width, 2100);
   assert.ok(h.top + h.height <= 2100 * 0.6714 + 1);
-  assert.deepEqual(items.map(i => i.external_id), ['item_1', 'item_2', 'item_3']);
+  assert.deepEqual(items.map(i => i.external_id), ['item_1', 'item_2', 'item_3', 'gift_sticker']);
+});
+
+test('every site order gets one free 3in sticker of its first design, at $0, unless switched off', async () => {
+  const items = await placedItems({lines: [line('tshirt', 12634), line('hoodie', 5530)]}, store(null), printful);
+  const gift = items.at(-1);
+  assert.deepEqual({id: gift.external_id, variant: gift.variant_id, qty: gift.quantity, price: gift.retail_price, name: gift.name},
+    {id: 'gift_sticker', variant: 10163, qty: 1, price: '0.00', name: 'Free sticker: Skull Wave'});
+  assert.equal(gift.files[0].id, 1035411289, 'the order\u2019s first design');
+  assert.equal(gift.files[0].position.area_width, 900);
+  const off = {first: async sql => /free_sticker/.test(sql) ? {value: 'off'} : null};
+  const without = await placedItems({lines: [line('tshirt', 12634)]}, off, printful);
+  assert.deepEqual(without.map(i => i.external_id), ['item_1'], 'free_sticker = off: no gift');
 });

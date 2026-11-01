@@ -611,7 +611,7 @@
           (async () => {
             if (!window.NinoCommerce) return null;
             const records = await window.NinoCommerce.loadProducts();
-            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261031apron');
+            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261031gift');
             return storefrontProducts(catalog.products, records, window.NinoCommerce.getCatalogStatus().complete);
           })(),
           new Promise(resolve => { timer = setTimeout(() => resolve(null), 3000); })

@@ -881,3 +881,6 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .product-dialog.is-hero-piece .dialog-image img{background:transparent}
 .footer-social-row{display:flex;justify-content:center;padding-bottom:30px}.footer-social-row .footer-social{margin-top:0;justify-content:center}
 .footer-credit img{width:80px;height:17px}
+/* Free sticker with every site order (owner decision Oct 31, 2026) */
+.cart-gift-note,.commerce-gift-note{font-size:12px;line-height:1.6;color:var(--orange,#ff8a4c);margin:14px 0 0;font-weight:600}
+.commerce-gift-note{margin:0}
