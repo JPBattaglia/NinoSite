@@ -196,10 +196,9 @@ export function createApp(dependencies={}) {
           if(expanded.errors?.some(refusedKey)) await alertRefusedKey(store,env,'shop',now);
         }
         // One-piece sticker artwork (sticker-art.mjs): remade stickers need a sync before checkout accepts them again.
+        // Not held back by a running sync (a full sync takes ~37 runs); the next sync picks the remade stickers up.
         let stickers={applied:[]};
-        if(!sync) {
-          try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
-        }
+        try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
         const expansionReady=expanded.created?.length>0 && expanded.remaining===0;
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length || expansionReady || stickers.applied?.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
