@@ -191,14 +191,16 @@ export function createApp(dependencies={}) {
         // when a batch finishes, a sync publishes it.
         let expanded={created:[],remaining:0};
         let sync=await store.first("SELECT * FROM catalog_sync_runs WHERE status='running'");
-        if(!sync) {
+        // One-piece sticker artwork (sticker-art.mjs): remade stickers need a sync before checkout accepts them again.
+        // Not held back by a running sync (a full sync takes ~40 runs); the next sync picks the remade stickers up.
+        let stickers={applied:[]};
+        try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
+        // The rollout (owner, Nov 1: don't sit idle during syncs). While a sync runs, a run does the rollout only when
+        // the sticker step had nothing to do, so the run stays inside the free plan's 50 database queries.
+        if(!sync || !stickers.applied?.length) {
           try { expanded=await runExpansion(store,env,now); } catch { /* never blocks sync or fulfillment */ }
           if(expanded.errors?.some(refusedKey)) await alertRefusedKey(store,env,'shop',now);
         }
-        // One-piece sticker artwork (sticker-art.mjs): remade stickers need a sync before checkout accepts them again.
-        // Not held back by a running sync (a full sync takes ~37 runs); the next sync picks the remade stickers up.
-        let stickers={applied:[]};
-        try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
         const expansionReady=expanded.created?.length>0 && expanded.remaining===0;
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length || expansionReady || stickers.applied?.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
