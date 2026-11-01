@@ -882,22 +882,30 @@
     const row = create('div', 'size-row product-type-row');
     row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Choose a product');
     const inner = create('div', 'product-type-options');
-    const options = [{ label: 'T-shirt', target: record, product: design }, ...extras.map(extra => ({ label: EXTRA_LABELS[extra.type], target: extra.product, product: extra.product }))];
+    const options = [{ type: 'tshirt', label: 'T-shirt', target: record, product: design }, ...extras.map(extra => ({ type: extra.type, label: EXTRA_LABELS[extra.type], target: extra.product, product: extra.product }))];
+    // Product feed links (Google Shopping, Pinterest) name the product: shop.html?product=<design>&item=hoodie opens
+    // the design with that product chosen, so the page shows the price the listing showed.
+    const wanted = new URLSearchParams(location.search).get('item');
+    const first = options.find(option => option.type === wanted) || options[0];
+    const choose = (option, button) => {
+      row.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      mountProduct(option.target, inner);
+      setDialogPrice(option.product);
+      const photo = colorGallery(option.product)[0];
+      if (photo) document.dispatchEvent(new CustomEvent('nino:color-image', { detail: { image: photo.image, color: option.label } }));
+    };
+    let firstButton = null;
     for (const option of options) {
       const button = create('button', 'size-chip', option.label);
       button.type = 'button';
-      button.setAttribute('aria-pressed', String(option.product === design));
-      button.addEventListener('click', () => {
-        row.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        mountProduct(option.target, inner);
-        setDialogPrice(option.product);
-        const photo = colorGallery(option.product)[0];
-        if (photo) document.dispatchEvent(new CustomEvent('nino:color-image', { detail: { image: photo.image, color: option.label } }));
-      });
+      button.setAttribute('aria-pressed', String(option === first));
+      button.addEventListener('click', () => choose(option, button));
+      if (option === first) firstButton = button;
       row.append(button);
     }
     container.replaceChildren(row, inner);
-    mountProduct(record, inner);
+    if (first === options[0]) mountProduct(record, inner); else choose(first, firstButton);
+    return first.product;
   }
   document.addEventListener('nino:product-open', async event => {
     const { product, container } = event.detail || {};
@@ -905,8 +913,9 @@
     try { await loadProducts(); } catch { if (container) mountProduct(product, container); return; }
     const design = findProduct(product);
     const extras = extrasFor(design);
-    if (container) { if (extras.length) mountChooser(product, design, extras, container); else mountProduct(product, container); }
-    const photos = colorGallery(design);
+    let shown = design;
+    if (container) { if (extras.length) shown = mountChooser(product, design, extras, container) || design; else mountProduct(product, container); }
+    const photos = colorGallery(shown);
     if (photos.length) document.dispatchEvent(new CustomEvent('nino:color-gallery', { detail: { id: String(product?.id || ''), photos } }));
   });
   function start() { initialize(window.NINO_COMMERCE_CONFIG || {}).catch(() => {}); }

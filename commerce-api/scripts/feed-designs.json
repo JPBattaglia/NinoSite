@@ -1,0 +1,10 @@
+{
+  "_about": "Designs in the Pinterest and Google Shopping product feed (marketing plan v2, item 3). Original designs only: nothing built on a brand, character or real name. Ids are the curated catalog.json ids. Reviewed Oct 31, 2026 (Nino site marketing plan, 20 original hero designs). hold_types stay out of the feed until the owner approves their sample photos.",
+  "designs": [
+    "455597876", "455689737", "455604571", "455581523", "455691193",
+    "455411071", "455727920", "455722787", "455757431", "457370818",
+    "457010609", "455969808", "455339787", "455961018", "467251816",
+    "467441340", "455602708", "458584403", "455744995", "455587402"
+  ],
+  "hold_types": ["apron", "hat"]
+}
