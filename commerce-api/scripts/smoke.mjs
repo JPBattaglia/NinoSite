@@ -72,6 +72,15 @@ export async function runSmoke(fetcher = fetch, options = {}) {
     }
     return `${sample.length} sampled`;
   });
+  // Email signup (subscribers.mjs), checked without sending mail: bad links are refused and pages carry the form.
+  await check('Email signup links answer and the form is on the site', async () => {
+    const unsub = await fetcher(`${config.api}/api/unsubscribe?t=smoke`);
+    expect(unsub.status === 400, `unsubscribe with a bad link answered ${unsub.status}`);
+    const confirm = await fetcher(`${config.api}/api/subscribe/confirm?t=smoke`, {redirect: 'manual'});
+    expect(confirm.status === 303 && /signup=expired/.test(confirm.headers.get('location') || ''), `confirm with a bad link answered ${confirm.status}`);
+    const home = await fetcher(`${config.site}/index.html`);
+    expect(home.status === 200 && /signup\.js/.test(await home.text()), 'the home page has no signup form script');
+  });
   for (const page of ['shop.html', 'cart.html', 'quiz.html', 'catalog.json']) {
     await check(`Site serves ${page}`, async () => {
       const response = await fetcher(`${config.site}/${page}`);

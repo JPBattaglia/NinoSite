@@ -52,6 +52,9 @@ function fakeSite({products=130,countries=['US','CA'],checkoutReady=true,drop=''
     if(url.endsWith('/api/health')) return Response.json({ok:true,payment_mode:'live',selfcheck});
     if(url.endsWith('/api/commerce-config')) return Response.json({catalog_ready:true,checkout_ready:checkoutReady,shipping_countries:countries});
     if(url.endsWith('/api/products')) return Response.json({products:list});
+    if(url.includes('/api/unsubscribe?')) return new Response('bad link',{status:400});
+    if(url.includes('/api/subscribe/confirm?')) return new Response(null,{status:303,headers:{location:'https://ninobattaglia.com/?signup=expired'}});
+    if(url.endsWith('/index.html')) return new Response('<script src="signup.js?v=1" defer></script>',{status:200});
     if(url.startsWith('https://img.example.com/')) return new Response('x',{status:200,headers:{'content-type':'image/jpeg'}});
     return new Response('ok',{status:200});
   };
@@ -70,6 +73,7 @@ test('smoke check passes on a healthy shop and reports each kind of breakage',as
   await failing({countries:['US','IR']},/embargoed countries offered: IR/);
   await failing({products:20},/only 20 products/);
   await failing({drop:'/quiz.html'},/quiz\.html answered 500/);
+  await failing({drop:'/api/unsubscribe'},/unsubscribe with a bad link answered 500/);
   await failing({selfcheck:{ok:false,checked_at:Math.floor(Date.now()/1000),failed:['Recent payments reached the shop']}},/failed: Recent payments reached the shop/);
   await failing({selfcheck:{ok:true,checked_at:Math.floor(Date.now()/1000)-30*3600,failed:[]}},/last ran 30 hours ago/);
   await failing({selfcheck:null},/has not run yet/);
