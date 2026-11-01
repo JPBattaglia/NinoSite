@@ -65,7 +65,7 @@ export function feedItems(live, curated, config) {
     if (!record || !TYPES[type] || hold.has(type)) continue;
     for (const variant of product.variants || []) {
       const image = httpsUrl(variant.image) || httpsUrl(product.image);
-      if (!variant.available || !image || !Number.isInteger(variant.price?.amount) || variant.price.currency !== 'USD') continue;
+      if (!variant.available || !image || !Number.isInteger(variant.price?.amount) || String(variant.price.currency).toUpperCase() !== 'USD') continue;
       items.push({id: `nino-${variant.id}`, group: `nino-${product.id}`, productId: String(product.id), type, record, image,
         color: decode(variant.color || ''), size: decode(variant.size || ''), cents: variant.price.amount});
     }
