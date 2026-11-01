@@ -6,7 +6,7 @@ import {typeOf} from './expand.mjs';
 // The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
 // Checkout still re-verifies every variant against Printful before charging.
 export const CATALOG_MAX_AGE_DEFAULT = 172800;
-function catalogMaxAge(env) { return Number(env.CATALOG_MAX_AGE_SECONDS || CATALOG_MAX_AGE_DEFAULT); }
+export function catalogMaxAge(env) { return Number(env.CATALOG_MAX_AGE_SECONDS || CATALOG_MAX_AGE_DEFAULT); }
 
 function independentImage(value) {
   const image = httpsImage(value);

@@ -14,6 +14,7 @@ import {refreshPalette} from './colors.mjs';
 import {sendOrderEmails} from './emails.mjs';
 import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
+import {catalogSnapshot,refreshCatalogSnapshot,readinessCatalog,withReadiness} from './catalog-snapshot.mjs';
 import {runMirror} from './mirror.mjs';
 import {runExpansion} from './expand.mjs';
 import {refusedKey,alertRefusedKey} from './key-alert.mjs';
@@ -85,33 +86,16 @@ export function createApp(dependencies={}) {
           return json({ok:row?.ok===1,payment_mode:env.STRIPE_MODE || 'unconfigured',selfcheck,printful_connection},200,cors);
         }
         if(request.method==='GET' && url.pathname==='/api/products') {
-          // Building the catalog reads every variant row (~13,500), and D1's free plan allows 5,000,000 row reads a day.
-          // The catalog only changes when a sync or mockup finishes, so the built response is shared through the
-          // edge cache (at most PRODUCTS_EDGE_TTL seconds, and replaced as soon as a sync completes). Visitors and crawlers then cost no D1 reads between rebuilds.
+          // Served from the stored catalog body (catalog-snapshot.mjs): two single-row reads and one KV read per visit.
           // Checkout never trusts this copy: validatedLines re-reads current prices and availability from D1.
-          // The cache key carries the live catalog's generation and last-sync time (two single-row reads), so a finished
-          // sync, or a newly mirrored design, shows up on the very next request instead of after the TTL.
-          const edge=globalThis.caches?.default; let edgeKey=null,hit=null;
-          if(edge) {
-            const generation=await store.activeGeneration();
-            const run=generation && await store.first("SELECT updated_at FROM catalog_sync_runs WHERE id=? AND status='complete'",generation);
-            if(run) { edgeKey=new Request(`${url.origin}/api/products?v=${encodeURIComponent(generation)}.${run.updated_at}`); hit=await edge.match(edgeKey).catch(()=>null); }
-          }
-          if(hit) { const headers=new Headers(hit.headers); headers.set('Cache-Control',JSON_HEADERS['Cache-Control']); return new Response(hit.body,{status:hit.status,headers}); }
-          const catalog=await publicCatalog(store,env,now,url.origin);
-          const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
-          // Serializing ~13,500 variants is the expensive part, so the body is reused while nothing changed.
-          const readinessKey=JSON.stringify(readiness);
-          let cached=productBodies.get(catalog);
-          if(!cached || cached.readinessKey!==readinessKey) { cached={readinessKey,body:JSON.stringify({...catalog,...readiness})}; productBodies.set(catalog,cached); }
-          const response=new Response(cached.body,{status:200,headers:{'Content-Type':'application/json; charset=utf-8',...JSON_HEADERS,...cors}});
-          if(edge && edgeKey && catalog.catalog_complete) { const stored=response.clone(); const headers=new Headers(stored.headers); headers.set('Cache-Control',`public, max-age=${PRODUCTS_EDGE_TTL}`); ctx?.waitUntil?.(edge.put(edgeKey,new Response(stored.body,{status:200,headers})).catch(()=>{})); }
-          return response;
+          const snap=await catalogSnapshot(store,env,now,url.origin);
+          const readiness=await publicReadiness(env,readinessCatalog(snap.meta),store,dependencies.printful || new PrintfulClient(env),now);
+          return new Response(withReadiness(snap.body,readiness),{status:200,headers:{'Content-Type':'application/json; charset=utf-8',...JSON_HEADERS,...cors}});
         }
         if(request.method==='GET' && url.pathname==='/api/commerce-config') {
-          const catalog=await publicCatalog(store,env,now,url.origin);
-          const readiness=await publicReadiness(env,catalog,store,dependencies.printful || new PrintfulClient(env),now);
-          return json({...readiness,catalog_ready:catalog.catalog_ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
+          const snap=await catalogSnapshot(store,env,now,url.origin);
+          const readiness=await publicReadiness(env,readinessCatalog(snap.meta),store,dependencies.printful || new PrintfulClient(env),now);
+          return json({...readiness,catalog_ready:snap.meta.ready,currency:'usd',max_quantity:10,max_cart_quantity:50,max_variants:20,payment_mode:env.STRIPE_MODE || null},200,cors);
         }
         if(request.method==='POST' && url.pathname==='/api/measurement') return json(await recordMeasurement(request,store,env,now),200,cors);
         if(request.method==='POST' && url.pathname==='/api/webhooks/stripe') {
@@ -207,6 +191,8 @@ export function createApp(dependencies={}) {
         const expansionReady=expanded.created?.length>0 && expanded.remaining===0;
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length || expansionReady)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
+        // Keep the stored product list current (a finished sync right away, new model photos at most hourly).
+        try { await refreshCatalogSnapshot(store,env,now); } catch { /* visitors then rebuild it once */ }
         // New garment colors get a swatch hex from Printful's catalog (only names not yet known).
         if(daily) { try { await refreshPalette(store,printful); } catch { /* swatches fall back to color names */ } }
         if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
