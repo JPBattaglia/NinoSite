@@ -6,7 +6,7 @@ import {HttpError} from '../src/common.mjs';
 import {createApp} from '../src/worker.mjs';
 
 export class D1Fixture {
-  constructor(){this.db=new DatabaseSync(':memory:');this.db.exec(readFileSync(new URL('../migrations/0001_printful_commerce.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0002_measurement.sql',import.meta.url),'utf8'));}
+  constructor(){this.db=new DatabaseSync(':memory:');this.db.exec(readFileSync(new URL('../migrations/0001_printful_commerce.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0002_measurement.sql',import.meta.url),'utf8'));this.db.exec(readFileSync(new URL('../migrations/0006_subscribers.sql',import.meta.url),'utf8'));}
   prepare(sql){
     const database=this.db;
     return {bind(...values){return {
