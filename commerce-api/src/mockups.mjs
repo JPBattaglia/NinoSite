@@ -44,12 +44,16 @@ async function variantColors(store, productId) {
 }
 
 // Printful requires the whole layer (including transparent margins) inside the 12x16in print area.
+// Nov 1, 2026: two designs whose art ended exactly on the area's edge (right edge 12.000in, bottom 16.000in) were
+// refused as 'Invalid position' by Printful, so the art stays 0.01in inside every edge (rounding can't push it out).
+const EDGE = 0.01;
 export function fitPrintArea({width, height, top, left}) {
-  const scale = Math.min(1, 12 / width, 16 / height);
-  const w = width * scale, h = height * scale;
+  const W = 12 - 2 * EDGE, H = 16 - 2 * EDGE;
+  const scale = Math.min(1, W / width, H / height);
+  const floor = value => Math.floor(value * 1000) / 1000, round = value => Math.round(value * 1000) / 1000;
+  const w = floor(width * scale), h = floor(height * scale);
   const cx = left + width / 2, cy = top + height / 2;
-  const round = value => Math.round(value * 1000) / 1000;
-  return { width: round(w), height: round(h), top: round(Math.min(Math.max(cy - h / 2, 0), 16 - h)), left: round(Math.min(Math.max(cx - w / 2, 0), 12 - w)) };
+  return { width: w, height: h, top: round(Math.min(Math.max(cy - h / 2, EDGE), 16 - EDGE - h)), left: round(Math.min(Math.max(cx - w / 2, EDGE), 12 - EDGE - w)) };
 }
 
 // Alternate men's and women's models across the colors so each shirt shows both.
