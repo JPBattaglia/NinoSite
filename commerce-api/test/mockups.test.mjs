@@ -107,3 +107,17 @@ test('a photo made on a larger size of the same color (stickers) is still collec
   assert.equal(await processMockups(f.store,f.env,f.now(),fetcher),'collected');
   assert.ok(await serveMockup(f.env,'101','black'));
 });
+
+test('a rebuilt product waits for the catalog to show its new colors before photos are made', async () => {
+  const {f, calls, fetcher} = await setup();
+  await f.store.run(`UPDATE mockup_jobs SET layer_json='{"catalog":146,"placement":"front","technique":"dtg","catalog_variant_ids":null,"colors":["Black","Forest Green"],"position_in":{"width":10,"height":8,"top":1,"left":2}}' WHERE product_id='101'`);
+  const now = f.now();
+  assert.equal(await processMockups(f.store, f.env, now, fetcher), 'submitted');
+  assert.equal(calls.length, 0, 'nothing sent to Printful');
+  const held = await f.store.first("SELECT status,last_error FROM mockup_jobs WHERE product_id='101'");
+  assert.deepEqual({...held}, {status: 'hold', last_error: 'waiting_for_catalog_colors'});
+  assert.equal(await processMockups(f.store, f.env, now + 600, fetcher), 'idle', 'not retried within the hour');
+  await f.store.run(`UPDATE mockup_jobs SET layer_json=json_set(layer_json,'$.colors',json('["Black"]')) WHERE product_id='101'`);
+  assert.equal(await processMockups(f.store, f.env, now + 3700, fetcher), 'submitted');
+  assert.equal(calls.filter(c => c.method === 'POST').length, 1, 'colors match: photo requested');
+});
