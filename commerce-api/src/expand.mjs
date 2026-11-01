@@ -42,7 +42,7 @@ export const PRODUCT_TYPES = Object.freeze([
   // Classic Dad Hat | Yupoong 6245CM, front embroidery (the standard front, no extra charge). Same file type and thread
   // options as the staff merch cap, which orders fine. Threads come from the design's own colors (threadsFor).
   {type: 'hat', label: 'Dad hat', catalog: 206, file: 'default', fit: 'contain', margin: 0, placement: 'embroidery_front', technique: 'embroidery', dpi: 300,
-    gate: true, embroidery: true, colorRule: 'hat', maxColors: 3, variants: [7854, 7855, 7857, 7853, 7859, 12736], area: {default: HAT_AREA}}
+    gate: true, embroidery: true, storeFile: 'embroidery_front', colorRule: 'hat', maxColors: 3, variants: [7854, 7855, 7857, 7853, 7859, 12736], area: {default: HAT_AREA}}
 ]);
 const TYPES = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
 
@@ -129,8 +129,8 @@ export function buildProduct(spec, design, catalogVariants) {
     const pos = area && position(spec, area, design.art);
     if (!pos) continue;
     const options = spec.embroidery ? [{id: 'thread_colors', value: threadsFor(design.palette)}, {id: 'embroidery_type', value: 'flat'}] : null;
-    // Printful refused thread_colors on the variant alone for a stored hat (Oct 31): it is also given on the file.
-    const file = {type: spec.file, id: design.art.id, position: pos, ...(options ? {options: [options[0]]} : {})};
+    // Stored hats name the front by its placement (embroidery_front); orders keep 'default', which works for staff merch.
+    const file = {type: spec.storeFile || spec.file, id: design.art.id, position: pos};
     sync_variants.push({variant_id: v.id, retail_price: retailPrice(v.price), files: [file], ...(options ? {options} : {})});
   }
   if (!sync_variants.length) return null;
