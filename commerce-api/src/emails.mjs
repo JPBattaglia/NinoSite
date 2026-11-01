@@ -1,3 +1,4 @@
+import {addBuyerToNewsletter} from './newsletter.mjs';
 // Order emails for the shirt shop: a Nino-branded confirmation to the buyer and a sale alert to the owner.
 //
 // Sending goes through Menu-made's mailer (Resend) over a Cloudflare service binding (env.MAILER, the
@@ -96,7 +97,7 @@ export function buyerEmail(order) {
       heading: `Thank you${first ? `, ${first}` : ''}!`,
       intro: ['Your order is confirmed and your shirt is being printed. You’ll get another email with tracking as soon as it ships.', 'A free Nino sticker comes in the box with your order.'],
       summary: s,
-      footer: `<p style="margin:0 0 6px;font-size:14px;line-height:1.6;color:#c9bdb4;">Questions about your order? Just reply to this email.</p>`
+      footer: `<p style="margin:0 0 6px;font-size:14px;line-height:1.6;color:#c9bdb4;">Questions about your order? Just reply to this email.</p>${s.recipient?.country_code === 'US' ? '<p style="margin:0 0 6px;font-size:12px;line-height:1.6;color:#a8988f;">You’ll also get occasional Nino news by email. Every one has an unsubscribe link.</p>' : ''}`
     }),
     text: plain(s, 'Thank you! Your Nino Battaglia order is confirmed and your shirt is being printed. You’ll get tracking when it ships.')
   };
@@ -141,6 +142,7 @@ export async function sendOrderEmails(store, env, orderId, now) {
     const owner = env.OWNER_EMAIL;
     if (order.fulfillment_status === 'confirmed') {
       result.buyer = await sendOnce(store, env, order, 'buyer', buyerEmail(order), now);
+      result.newsletter = await addBuyerToNewsletter(store, order, now);
       if (owner) result.owner = await sendOnce(store, env, order, 'owner', ownerEmail(order, owner), now);
     } else if (order.fulfillment_status === 'review' && owner) {
       result.owner = await sendOnce(store, env, order, 'owner_review', ownerEmail(order, owner, {attention:order.last_error || 'needs review'}), now);
