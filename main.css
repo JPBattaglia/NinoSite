@@ -900,3 +900,8 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 /* Owner, Nov 1, 2026: every input, dropdown and text box has a dark orange border (#b84a16; owner asked for it a little darker than #ff6a1f), 1px everywhere (was 1.5px on the contact form and phone collection menu), whatever
    section it sits in. The bare shop search keeps its border-free look; checkboxes and radios are untouched. */
 input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]):not([type=submit]):not([type=button]),select,textarea{border-color:#b84a16!important;border-width:1px!important}
+/* Owner, Nov 1, 2026: on hover the 03 / TYPE sign drops on its left end instead of lifting on its right. It now turns
+   about its right end (the translate keeps its resting place exactly where it was when it turned about its centre:
+   (I-R(12deg))·(W/2,0) = (+1.1% of W, -56.6% of H) for a 1400x257 sign, undone here). */
+.studio-canvas .canvas-type{transform-origin:100% 50%;translate:-1.1% 56.6%}
+.studio-canvas .canvas-type:hover{transform:rotate(10deg)}
