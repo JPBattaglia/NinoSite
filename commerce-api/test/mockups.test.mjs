@@ -57,7 +57,13 @@ test('a failed submission is retried and then parked without blocking other work
 });
 test('layers wider or taller than the print area are scaled and kept inside it',async()=>{
   const {fitPrintArea}=await import('../src/mockups.mjs');
-  assert.deepEqual(fitPrintArea({width:13.28,height:10.989,top:1.753,left:-0.527}),{width:12,height:9.93,top:2.283,left:0});
+  const wide=fitPrintArea({width:13.28,height:10.989,top:1.753,left:-0.527});
+  assert.equal(wide.left,0.01);assert.equal(wide.width,11.98);assert.ok(Math.abs(wide.height-9.913)<0.002);
+  // Nov 1: art ending exactly on the edge was refused ('Invalid position'); it now stays 0.01in inside every edge.
+  for(const layer of [{width:11.521,height:12.159,top:2.196,left:0.7},{width:7.793,height:14.365,top:1.796,left:2.088}]){
+    const r=fitPrintArea(layer);
+    assert.ok(r.left>=0.01&&r.top>=0.01&&r.left+r.width<=11.99+1e-9&&r.top+r.height<=15.99+1e-9,JSON.stringify(r));
+  }
   assert.deepEqual(fitPrintArea({width:5,height:4,top:5,left:3.5}),{width:5,height:4,top:5,left:3.5});
 });
 
