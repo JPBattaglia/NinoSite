@@ -251,3 +251,30 @@ test('aprons are made only for designs their gate lists, with every strap color,
   assert.ok(pos.top >= 4961 * 0.29 && pos.width <= 4075 * 0.43, 'on the bib and chest');
   assert.equal(lineTaxCode({kind: 'apron'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
 });
+
+test('hats: only gated designs, threads from the design colors, hat colors that show it, $23, orders carry the threads', async () => {
+  const {threadsFor} = await import('../src/expand.mjs');
+  const {placedItems} = await import('../src/fulfillment.mjs');
+  const green = summarize(square([1, 120, 78], [250, 250, 250]));
+  assert.deepEqual(threadsFor(green), ['#01784E', '#FFFFFF']);
+  assert.deepEqual(threadsFor(null), []);
+  const hatVariants = [[7854, 'Black', '#181717'], [7855, 'Khaki', '#b49771'], [7857, 'Navy', '#182031'], [7853, 'White', '#ffffff'], [7859, 'Stone', '#d6bdad'], [12736, 'Dark Grey', '#39353a'], [7858, 'Pink', '#fab2ba']]
+    .map(([id, color, color_code]) => ({id, color, color_code, size: 'One size', price: 14.94, in_stock: true}));
+  assert.deepEqual(pickVariants(spec('hat'), hatVariants, [], green).map(v => v.color), ['Black', 'Khaki', 'Navy']);
+  const whiteArt = summarize(square([250, 250, 250]));
+  assert.ok(!pickVariants(spec('hat'), hatVariants, [], whiteArt).some(v => v.color === 'White'), 'a white design gets no white hat');
+  const payload = buildProduct(spec('hat'), {id: '1', name: 'Grumpy Frog  T', art: {id: 9, width: 2000, height: 1000}, palette: green}, hatVariants);
+  assert.equal(payload.sync_product.name, 'Grumpy Frog Dad hat');
+  assert.equal(payload.sync_product.external_id, 'nx-hat-1');
+  const v = payload.sync_variants[0];
+  assert.equal(v.retail_price, '23.00');
+  assert.deepEqual(v.options, [{id: 'thread_colors', value: ['#01784E', '#FFFFFF']}, {id: 'embroidery_type', value: 'flat'}]);
+  assert.deepEqual(v.files[0], {type: 'default', id: 9, position: {area_width: 1200, area_height: 525, width: 1050, height: 525, top: 0, left: 75, limit_to_print_area: true}});
+  assert.equal(buildProduct(spec('hat'), {id: '1', name: 'X', art: {id: 9, width: 10, height: 10}, palette: null}, hatVariants), null, 'no colors known: no hat');
+  assert.equal(lineTaxCode({kind: 'hat'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
+  const rows = new Map([['expand:1:hat', '5555'], ['expand_art:1', JSON.stringify(green)]]);
+  const store = {first: async (sql, ...a) => sql.includes("LIKE 'expand:%'") ? ([...rows].find(([k, val]) => k.startsWith('expand:') && val === a[0]) ? {key: [...rows].find(([k, val]) => k.startsWith('expand:') && val === a[0])[0]} : null) : (sql.includes('free_sticker') ? {value: 'off'} : (rows.has(a[0]) ? {value: rows.get(a[0])} : null))};
+  const items = await placedItems({lines: [{kind: 'hat', product_id: '5555', quantity: 1, unit_price_cents: 2300, title: 'Grumpy Frog Dad hat', variant: {catalog_variant_id: 7854, files: [{type: 'default', id: 9}]}}]}, store, {getFile: async () => ({width: 2000, height: 1000})});
+  assert.deepEqual(items[0].options, [{id: 'thread_colors', value: ['#01784E', '#FFFFFF']}, {id: 'embroidery_type', value: 'flat'}]);
+  assert.equal(items[0].files[0].position.area_width, 1200);
+});

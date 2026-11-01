@@ -6,10 +6,11 @@
 // Turned on in steps through commerce_settings 'expand_designs': empty/absent = off, a comma list of design product
 // ids = only those (the sample batch the owner looks at first), 'all' = every design. Progress per design and type
 // is kept in commerce_settings 'expand:<design id>:<type>' = the created product id, or 'error:<reason>'.
-// Hats are not here yet: embroidery loses fine detail, so each design needs checking first (owner: no hat for
-// designs that don't embroider well).
+// Hats (owner OK, Oct 31, 10:45 pm): only for the designs on the hat list (embroidery loses fine detail; no hat for
+// designs that don't embroider well), gated by commerce_settings 'expand_gate:hat' = their design ids.
 
-import {decodePng, summarize, blendsIn} from './artcolors.mjs';
+import {decodePng, summarize, blendsIn, lab, hexRgb} from './artcolors.mjs';
+import {THREAD_COLORS} from './merch-products.mjs';
 
 export const EXPAND_PER_RUN = 2;          // each creation is one Printful call plus a few D1 writes
 export const MARKUP = 1.5;
@@ -18,6 +19,8 @@ export const MARKUP = 1.5;
 // area: the print file size (px) per catalog variant, from Printful's printfiles for the product.
 // fit: how the artwork sits in the area. 'contain' = as large as fits, centered; 'chest' = like the shirts (up to
 // 86% of the width, from the collar line).
+// The cap's standard front embroidery area: 4 x 1.75in at 300 dpi (same box as the staff merch cap mockup).
+const HAT_AREA = [1200, 525];
 export const PRODUCT_TYPES = Object.freeze([
   {type: 'sticker', label: 'Sticker', catalog: 358, file: 'default', fit: 'contain', margin: 0.04, placement: 'default', technique: 'digital', dpi: 300, photoVariant: 10165,
     // 16362 = the 15x3.75in bumper size (owner yes, Oct 31): the art fits the 3.75in height, centered.
@@ -35,14 +38,33 @@ export const PRODUCT_TYPES = Object.freeze([
   // Gated by commerce_settings 'expand_gate:apron' (a list of design ids, or 'all') until its photos are checked.
   {type: 'apron', label: 'Apron', catalog: 927, file: 'default', fit: 'chest', placement: 'front', technique: 'sublimation', dpi: 150,
     chest: {w: 0.42, h: 0.34, top: 0.3}, gate: true,
-    variants: [23723, 23724, 23725, 23726, 23727], area: {default: [4075, 4961]}}
+    variants: [23723, 23724, 23725, 23726, 23727], area: {default: [4075, 4961]}},
+  // Classic Dad Hat | Yupoong 6245CM, front embroidery (the standard front, no extra charge). Same file type and thread
+  // options as the staff merch cap, which orders fine. Threads come from the design's own colors (threadsFor).
+  {type: 'hat', label: 'Dad hat', catalog: 206, file: 'default', fit: 'contain', margin: 0, placement: 'embroidery_front', technique: 'embroidery', dpi: 300,
+    gate: true, embroidery: true, colorRule: 'hat', maxColors: 3, variants: [7854, 7855, 7857, 7853, 7859, 12736], area: {default: HAT_AREA}}
 ]);
 const TYPES = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
+
+// Embroidery threads for a design: each sampled pixel of its artwork goes to the nearest Printful thread; threads
+// covering at least 3% of the design are used, most-used first, at most 6 (Printful's limit).
+const THREAD_LAB = THREAD_COLORS.map(hex => [hex, lab(hexRgb(hex))]);
+export function threadsFor(summary) {
+  if (!summary?.body?.length) return [];
+  const count = new Map();
+  for (const p of summary.body) {
+    let best = null, d = Infinity;
+    for (const [hex, t] of THREAD_LAB) { const e = Math.hypot(p[0] - t[0], p[1] - t[1], p[2] - t[2]); if (e < d) { d = e; best = hex; } }
+    count.set(best, (count.get(best) || 0) + 1);
+  }
+  return [...count].filter(([, n]) => n / summary.body.length >= 0.03).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([hex]) => hex);
+}
 export const typeOf = externalId => { const m = /^nx-([a-z]+)-(\d+)$/.exec(String(externalId || '')); return m && TYPES.has(m[1]) ? {type: m[1], design: m[2]} : null; };
 export const externalIdFor = (type, designId) => `nx-${type}-${designId}`;
 export const retailPrice = cost => (Math.ceil(Number(cost) * MARKUP - 1e-9)).toFixed(2);
 
 // Dark garments first, in this order, when the design's shirt comes in them; light ones only if it has nothing dark.
+const HAT_COLORS = ['Black', 'Khaki', 'Navy', 'White', 'Stone', 'Dark Grey'];
 const DARK = ['Black', 'Navy', 'Dark Heather', 'Maroon', 'Forest Green', 'Charcoal', 'Military Green', 'Dark Chocolate', 'Purple', 'Royal'];
 const LIGHT = ['White', 'Sport Grey', 'Ash', 'Sand', 'Light Blue', 'Light Pink'];
 
@@ -60,6 +82,10 @@ export function pickVariants(spec, catalogVariants, shirtColors, art = null) {
     if (!want.length) want = ['Black', 'Oyster'].filter(shows).slice(0, 1);
     if (!want.length) want = ['Black'];
     return usable.filter(v => spec.variants.includes(v.id) && want.includes(v.color));
+  }
+  if (spec.colorRule === 'hat') {
+    const colors = HAT_COLORS.filter(c => usable.some(v => v.color === c && spec.variants.includes(v.id)) && shows(c)).slice(0, spec.maxColors || 3);
+    return usable.filter(v => spec.variants.includes(v.id) && colors.includes(v.color)).sort((a, b) => colors.indexOf(a.color) - colors.indexOf(b.color));
   }
   const offered = new Set(usable.map(v => v.color));
   const matching = [...DARK, ...LIGHT].filter(c => shirtColors.includes(c) && offered.has(c));
@@ -94,13 +120,16 @@ export function position(spec, area, art) {
 
 // The Printful store product for one design and type. design: {id, name, art:{id,width,height}, colors:[...]}.
 export function buildProduct(spec, design, catalogVariants) {
+  // Embroidery needs the design's thread colors, which need its color summary (artwork with transparency).
+  if (spec.embroidery && !threadsFor(design.palette).length) return null;
   const variants = pickVariants(spec, catalogVariants, design.colors || [], design.palette || null);
   const sync_variants = [];
   for (const v of variants) {
     const area = spec.area[v.id] || spec.area.default;
     const pos = area && position(spec, area, design.art);
     if (!pos) continue;
-    sync_variants.push({variant_id: v.id, retail_price: retailPrice(v.price), files: [{type: spec.file, id: design.art.id, position: pos}]});
+    const options = spec.embroidery ? [{id: 'thread_colors', value: threadsFor(design.palette)}, {id: 'embroidery_type', value: 'flat'}] : null;
+    sync_variants.push({variant_id: v.id, retail_price: retailPrice(v.price), files: [{type: spec.file, id: design.art.id, position: pos}], ...(options ? {options} : {})});
   }
   if (!sync_variants.length) return null;
   const name = `${String(design.name).replace(/\s+T$/, '').trim()} ${spec.label}`.slice(0, 100);

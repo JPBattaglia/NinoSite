@@ -3,7 +3,7 @@ import {printFiles,artworkKeys} from './catalog.mjs';
 import {checkedPaidSession} from './checkout.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {sendOrderEmails} from './emails.mjs';
-import {PRODUCT_TYPES,position} from './expand.mjs';
+import {PRODUCT_TYPES,position,threadsFor} from './expand.mjs';
 
 // Oct 31, 2026: Printful ignores artwork placement on stored (sync) products and prints the file at its own size
 // (about 5in wide for most designs), even though the site's photos show it large. Placement is only honored on
@@ -34,14 +34,25 @@ export async function placedItems(snapshot, store, printful) {
       pos = art && position(spec, area, {width: art.width, height: art.height});
     }
     if (!pos) fail(409, 'artwork_position_unknown');
+    // Embroidered products (hats) must name their threads: the same ones the product was made with (expand.mjs).
+    const options = spec.embroidery ? await embroideryOptions(store, line.product_id) : null;
     items.push({external_id: `item_${index + 1}`, variant_id: line.variant.catalog_variant_id, quantity: line.quantity,
-      retail_price: money(line.unit_price_cents), name: line.title, files: [{type: spec.file || 'default', id: file.id, position: pos}]});
+      retail_price: money(line.unit_price_cents), name: line.title, files: [{type: spec.file || 'default', id: file.id, position: pos}], ...(options ? {options} : {})});
   }
   // Owner decision Oct 31, 2026: a free sticker with every site order (the reason to buy here rather than on Etsy).
   // A 3x3in sticker of the order's first design, at $0. Switch: commerce_settings free_sticker = 'off'.
   const gift = await giftSticker(snapshot, store, printful);
   if (gift) items.push(gift);
   return items;
+}
+
+async function embroideryOptions(store, productId) {
+  const row = await store.first("SELECT key FROM commerce_settings WHERE key LIKE 'expand:%' AND value=?", String(productId)).catch(() => null);
+  const design = /^expand:(\d+):/.exec(row?.key || '')?.[1];
+  const art = design && await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand_art:${design}`).catch(() => null);
+  const threads = art && art.value !== 'none' ? threadsFor(JSON.parse(art.value)) : [];
+  if (!threads.length) fail(409, 'embroidery_threads_unknown');
+  return [{id: 'thread_colors', value: threads}, {id: 'embroidery_type', value: 'flat'}];
 }
 
 export const GIFT_EXTERNAL_ID = 'gift_sticker';
