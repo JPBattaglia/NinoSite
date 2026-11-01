@@ -12,23 +12,18 @@
       },
       {
         "id": "retro",
-        "name": "Rewind",
+        "name": "Retro",
         "blurb": "80s and retro"
       },
       {
         "id": "scifi",
-        "name": "Beam Me Out",
+        "name": "Sci-Fi Tech",
         "blurb": "Sci-fi and AI"
       },
       {
         "id": "monsters",
-        "name": "Things That Go Bump",
+        "name": "Halloween",
         "blurb": "Monsters, any time of year"
-      },
-      {
-        "id": "snacks",
-        "name": "Snack Attack",
-        "blurb": "Food and drink"
       },
       {
         "id": "skate",
@@ -37,7 +32,7 @@
       },
       {
         "id": "pop-satire",
-        "name": "Turn It Up",
+        "name": "Political",
         "blurb": "Satire and slogans"
       },
       {
@@ -1823,9 +1818,7 @@
         "assets/products/470762628.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "A caped superhero egg striking a pose under the SUPER FOOD banner.",
       "featured": false,
       "variants": [],
@@ -5095,9 +5088,7 @@
         "assets/products/463833139.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "A heart-shaped lollipop and candy heart stamped with a not-so-sweet message.",
       "featured": false,
       "variants": [],
@@ -6149,9 +6140,7 @@
         "assets/products/459399272.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "Bold Chicagoland restaurant lettering with a hand-written YES CHEF beneath.",
       "featured": false,
       "variants": [],
@@ -6619,9 +6608,7 @@
         "assets/products/459225539.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "A caped coffee cup flexing as the hero of every morning, over TRUE HERO lettering.",
       "featured": false,
       "variants": [],
@@ -9182,9 +9169,7 @@
         "assets/products/458233906.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "Pizza-print WTF letters in a music-TV logo style asking the real question: Where's the food?",
       "featured": false,
       "variants": [],
@@ -11873,9 +11858,7 @@
         "assets/products/455799066.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "A glowing glass of whiskey with NEAT in gold.",
       "featured": false,
       "variants": [],
@@ -15627,9 +15610,7 @@
         "assets/products/455413244.webp"
       ],
       "category": "Graphic tees",
-      "collections": [
-        "snacks"
-      ],
+      "collections": [],
       "description": "A red apple with a skull-shaped bite taken out of it.",
       "featured": false,
       "variants": [],
