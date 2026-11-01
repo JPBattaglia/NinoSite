@@ -109,11 +109,14 @@ export function buildProduct(spec, design, catalogVariants) {
 
 // The model-photo job (mockups.mjs) for a created product: Printful's mockup generator with the same placement the
 // orders use, in inches. Stickers get one photo (the largest size); garments and totes one per color.
-export function photoLayer(spec, design, payload) {
+export function photoLayer(spec, design, payload, catalog = []) {
   const variant = payload.sync_variants.find(v => !spec.photoVariant || v.variant_id === spec.photoVariant) || payload.sync_variants[0];
   const pos = variant.files[0].position, in3 = v => Math.round((v / spec.dpi) * 1000) / 1000;
   return {catalog: spec.catalog, placement: spec.placement, technique: spec.technique,
     catalog_variant_ids: spec.photoVariant ? [variant.variant_id] : null,
+    // The colors this product is made in: the photo job waits until the shop's catalog shows exactly these
+    // (after a rebuild, the old catalog copy still lists the colors that were removed).
+    colors: [...new Set(payload.sync_variants.map(v => catalog.find(c => c.id === v.variant_id)?.color).filter(Boolean))].sort(),
     position_in: {width: in3(pos.width), height: in3(pos.height), top: in3(pos.top), left: in3(pos.left)}};
 }
 
@@ -221,12 +224,13 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
           design.palette = await designPalette(store, design, fetcher, budget);
           if (design.palette === undefined) { delete design.palette; continue; }
         }
-        const payload = buildProduct(spec, design, await catalogVariants(store, env, spec.catalog, now, fetcher));
+        const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
+        const payload = buildProduct(spec, design, catalogList);
         if (!payload) { await setSetting(store, `expand_v:${d.id}:${spec.type}`, 'error:no_variants'); out.errors.push(`${d.title} ${spec.label} rebuild: no variants`); continue; }
         // Printful replaces the variant list with the one sent (variants not listed are removed).
         await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
         await setSetting(store, `expand_v:${d.id}:${spec.type}`, '2');
-        await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status='pending',priority=5,task_id=NULL,attempts=0,last_error=NULL,updated_at=excluded.updated_at", String(productId), JSON.stringify(photoLayer(spec, design, payload)), now);
+        await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status='pending',priority=5,task_id=NULL,attempts=0,last_error=NULL,updated_at=excluded.updated_at", String(productId), JSON.stringify(photoLayer(spec, design, payload, catalogList)), now);
         out.created.push(payload.sync_product.name + ' (rebuilt)');
       } catch (error) { out.errors.push(`${d.title} ${spec.label} rebuild: ${String(error?.message || error).slice(0, 200)}`); }
     }
@@ -240,13 +244,14 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
           design.palette = await designPalette(store, design, fetcher, budget);
           if (design.palette === undefined) { delete design.palette; continue; }   // next run
         }
-        const payload = buildProduct(spec, design, await catalogVariants(store, env, spec.catalog, now, fetcher));
+        const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
+        const payload = buildProduct(spec, design, catalogList);
         if (!payload) { await setSetting(store, key, 'error:no_variants'); out.errors.push(`${d.title} ${spec.label}: no variants`); continue; }
         const created = await api(env, 'POST', '/store/products', payload, fetcher);
         const id = created?.result?.id;
         if (!id) throw new Error('create_no_id');
         await setSetting(store, key, String(id));
-        await store.run("INSERT OR IGNORE INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?)", String(id), JSON.stringify(photoLayer(spec, design, payload)), now);
+        await store.run("INSERT OR IGNORE INTO mockup_jobs(product_id,layer_json,status,priority,updated_at) VALUES(?,?,'pending',5,?)", String(id), JSON.stringify(photoLayer(spec, design, payload, catalogList)), now);
         out.created.push(payload.sync_product.name);
       } catch (error) {
         // A refused key or a busy Printful is retried next run; anything else is recorded so it isn't retried forever.

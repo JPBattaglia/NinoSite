@@ -63,6 +63,11 @@ async function submit(store, env, job, now, fetcher) {
   // Stage 14 products (expand.mjs) carry their own catalog product, placement and print area (inches); Printful's
   // default photo style is used for them.
   if (raw.catalog) {
+    // Rebuilt products: wait (status 'hold', looked at again hourly) until the shop's catalog lists the new colors.
+    if (Array.isArray(raw.colors) && raw.colors.length && JSON.stringify([...new Set(colors.map(row => row.color))].sort()) !== JSON.stringify(raw.colors)) {
+      await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_colors',updated_at=? WHERE product_id=?", now, job.product_id);
+      return;
+    }
     const p = raw.position_in;
     const placements = [{ placement: raw.placement, technique: raw.technique, layers: [{ type: 'file', url: artworkUrl(hash), position: { width: p.width, height: p.height, top: p.top, left: p.left } }] }];
     const ids = raw.catalog_variant_ids?.length ? raw.catalog_variant_ids : colors.map(row => row.catalog_variant_id);
@@ -124,6 +129,8 @@ export const STALL_SECONDS = 30 * 60;
 // run (one job in flight at a time keeps each run well inside the free plan's CPU limit).
 export async function processMockups(store, env, now, fetcher = (...args) => fetch(...args)) {
   if (!env.MOCKUPS || !env.PRINTFUL_ACCESS_TOKEN) return 'disabled';
+  // Held jobs (see submit) get another look once an hour.
+  try { await store.run("UPDATE mockup_jobs SET status='pending',updated_at=? WHERE status='hold' AND last_error='waiting_for_catalog_colors' AND updated_at<?", now, now - 3600); } catch { /* table missing: handled below */ }
   let submitted;
   try { submitted = await store.first("SELECT * FROM mockup_jobs WHERE status='submitted' ORDER BY updated_at LIMIT 1"); }
   catch { return 'no_table'; }
