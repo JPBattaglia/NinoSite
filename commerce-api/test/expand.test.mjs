@@ -269,7 +269,7 @@ test('hats: only gated designs, threads from the design colors, hat colors that 
   const v = payload.sync_variants[0];
   assert.equal(v.retail_price, '23.00');
   assert.deepEqual(v.options, [{id: 'thread_colors', value: ['#01784E', '#FFFFFF']}, {id: 'embroidery_type', value: 'flat'}]);
-  assert.deepEqual(v.files[0], {type: 'default', id: 9, position: {area_width: 1200, area_height: 525, width: 1050, height: 525, top: 0, left: 75, limit_to_print_area: true}});
+  assert.deepEqual(v.files[0], {type: 'default', id: 9, position: {area_width: 1200, area_height: 525, width: 1050, height: 525, top: 0, left: 75, limit_to_print_area: true}, options: [{id: 'thread_colors', value: ['#01784E', '#FFFFFF']}]});
   assert.equal(buildProduct(spec('hat'), {id: '1', name: 'X', art: {id: 9, width: 10, height: 10}, palette: null}, hatVariants), null, 'no colors known: no hat');
   assert.equal(lineTaxCode({kind: 'hat'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
   const rows = new Map([['expand:1:hat', '5555'], ['expand_art:1', JSON.stringify(green)]]);

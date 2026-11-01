@@ -129,7 +129,9 @@ export function buildProduct(spec, design, catalogVariants) {
     const pos = area && position(spec, area, design.art);
     if (!pos) continue;
     const options = spec.embroidery ? [{id: 'thread_colors', value: threadsFor(design.palette)}, {id: 'embroidery_type', value: 'flat'}] : null;
-    sync_variants.push({variant_id: v.id, retail_price: retailPrice(v.price), files: [{type: spec.file, id: design.art.id, position: pos}], ...(options ? {options} : {})});
+    // Printful refused thread_colors on the variant alone for a stored hat (Oct 31): it is also given on the file.
+    const file = {type: spec.file, id: design.art.id, position: pos, ...(options ? {options: [options[0]]} : {})};
+    sync_variants.push({variant_id: v.id, retail_price: retailPrice(v.price), files: [file], ...(options ? {options} : {})});
   }
   if (!sync_variants.length) return null;
   const name = `${String(design.name).replace(/\s+T$/, '').trim()} ${spec.label}`.slice(0, 100);
