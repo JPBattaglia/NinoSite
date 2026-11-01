@@ -61,13 +61,21 @@ test('the built /api/products body is stored in KV so repeat visits read only tw
   assert.ok(prepares<=4,`a repeat request makes only the version and readiness lookups, not a catalog rebuild (made ${prepares})`);
   assert.deepEqual(await second.json(),firstBody,'same body, readiness fields included');
   assert.ok('checkout_ready' in firstBody && 'products' in firstBody);
-  // A finished sync changes the version, so a new design is served immediately.
+  // A finished sync within the hour does not rebuild (Nov 1, 2026: a rebuild every ~10-minute sync used 80% of the
+  // free daily reads); the stored list is at most an hour old and checkout re-verifies every line.
   await f.store.run("UPDATE catalog_sync_runs SET updated_at=updated_at+60 WHERE id='initial'");
   await f.store.run("UPDATE catalog_products SET title='Brand new title' WHERE generation='initial'");
   prepares=0;
   const third=await f.app.fetch(new Request('https://api.example.com/api/products'),f.env,{});
-  assert.ok(prepares>4,'a new sync version rebuilds the catalog');
-  assert.equal((await third.json()).products[0].title,'Brand new title');
+  assert.ok(prepares<=4,`a sync inside the hour is not a rebuild (made ${prepares})`);
+  assert.notEqual((await third.json()).products[0].title,'Brand new title');
+  // Past the hour, the newer sync is built and served.
+  f.advance(3700);
+  await f.store.run("UPDATE catalog_sync_runs SET updated_at=? WHERE id='initial'",f.now()-30);
+  prepares=0;
+  const fourth=await f.app.fetch(new Request('https://api.example.com/api/products'),f.env,{});
+  assert.ok(prepares>4,'a newer sync past the hour rebuilds the catalog');
+  assert.equal((await fourth.json()).products[0].title,'Brand new title');
 });
 
 test('the 5-minute run refreshes the stored catalog at most hourly when new model photos arrive',async()=>{
