@@ -858,7 +858,7 @@
   // Stage 14: the same design on other products (hoodie, crewneck, tote, sticker). The worker makes them as their own
   // Printful products with external_id "nx-<type>-<design product id>"; here they become a product picker above the
   // design's options instead of separate cards in the shop.
-  const EXTRA_LABELS = { hoodie: 'Hoodie', crewneck: 'Crewneck', tote: 'Tote bag', apron: 'Apron', sticker: 'Sticker' };
+  const EXTRA_LABELS = { hoodie: 'Hoodie', crewneck: 'Crewneck', tote: 'Tote bag', apron: 'Apron', hat: 'Dad hat', sticker: 'Sticker' };
   const EXTRA_ORDER = Object.keys(EXTRA_LABELS);
   function extrasFor(design) {
     if (!design) return [];
