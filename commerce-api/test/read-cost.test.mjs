@@ -28,6 +28,16 @@ test('the every-minute polling queries use indexes instead of scanning whole tab
   db.close();
 });
 
+// Nov 1, 2026: the sync's per-product check walked the primary key through the whole catalog (2.1M rows a day).
+test('the catalog sync reads only the checked product\'s own variant rows',async()=>{
+  const {PRODUCT_VARIANTS_SQL}=await import('../src/catalog.mjs');
+  const db=new DatabaseSync(':memory:');
+  for(const name of ['0001_printful_commerce.sql','0002_measurement.sql','0003_printful_probe.sql','0004_mockups.sql','0005_read_indexes.sql']) db.exec(migration(name));
+  const plan=planOf(db,PRODUCT_VARIANTS_SQL,'g','p');
+  assert.match(plan,/USING INDEX catalog_variants_product/,plan);
+  db.close();
+});
+
 test('the migration can be applied twice without error',()=>{
   const db=new DatabaseSync(':memory:');
   for(const name of ['0001_printful_commerce.sql','0002_measurement.sql','0003_printful_probe.sql','0004_mockups.sql','0005_read_indexes.sql']) db.exec(migration(name));

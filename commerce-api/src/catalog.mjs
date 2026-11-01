@@ -119,10 +119,14 @@ function syncErrorLabel(error) {
   const detail = error?.code ? String(error.code) : `${error?.name || 'Error'}: ${error?.message || 'unknown'}`;
   return detail.replace(/Bearer\s+\S+/gi,'Bearer [hidden]').slice(0,300) || 'provider_error';
 }
+export const PRODUCT_VARIANTS_SQL = 'SELECT id,price_cents,currency,snapshot_json FROM catalog_variants INDEXED BY catalog_variants_product WHERE generation=? AND product_id=?';
 async function productUnchanged(store,generation,productId,row,variants) {
   const stored = await store.first('SELECT external_id,title,image FROM catalog_products WHERE generation=? AND id=?',generation,productId);
   if (!stored || stored.external_id !== row.external_id || stored.title !== row.title || stored.image !== row.image) return false;
-  const current = (await store.all('SELECT id,price_cents,currency,snapshot_json FROM catalog_variants WHERE generation=? AND product_id=? ORDER BY id',generation,productId))
+  // INDEXED BY: with "ORDER BY id" D1's planner walked the (generation,id) primary key through the whole catalog,
+  // ~16,600 rows per product checked, 2.1 million rows of the 5 million free daily reads on Nov 1, 2026.
+  // The product index finds the product's own few rows; they are sorted here.
+  const current = (await store.all(PRODUCT_VARIANTS_SQL,generation,productId)).sort((a,b) => String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0)
     .map(v => `${v.id}|${v.price_cents}|${v.currency}|${v.snapshot_json}`);
   const fetched = variants.map(v => `${v.id}|${v.price_cents}|${v.currency}|${JSON.stringify(v)}`).sort();
   return current.length === fetched.length && current.every((value,i) => value === fetched[i]);

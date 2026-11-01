@@ -166,7 +166,7 @@ export async function deleteMerchDraft({external_id},{printful}) {
 export async function merchSample(_args,{store}) {
   const generation=await store.activeGeneration();
   if(!generation) fail(503,'catalog_not_ready');
-  const rows=await store.all(`SELECT product_id,id AS variant_id,json_extract(snapshot_json,'$.color') AS color,json_extract(snapshot_json,'$.size') AS size FROM catalog_variants WHERE generation=? AND product_id=(SELECT product_id FROM catalog_variants WHERE generation=? GROUP BY product_id,json_extract(snapshot_json,'$.color') HAVING COUNT(*)>=2 ORDER BY product_id LIMIT 1) ORDER BY id LIMIT 12`,generation,generation);
+  const rows=await store.all(`SELECT product_id,id AS variant_id,json_extract(snapshot_json,'$.color') AS color,json_extract(snapshot_json,'$.size') AS size FROM catalog_variants INDEXED BY catalog_variants_product WHERE generation=? AND product_id=(SELECT product_id FROM catalog_variants INDEXED BY catalog_variants_product WHERE generation=? GROUP BY product_id,json_extract(snapshot_json,'$.color') HAVING COUNT(*)>=2 ORDER BY product_id LIMIT 1) ORDER BY id LIMIT 12`,generation,generation);
   const color=rows[0]?.color;
   const picked=rows.filter(r=>r.color===color).slice(0,2);
   if(picked.length<2) fail(503,'catalog_not_ready');
