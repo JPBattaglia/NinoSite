@@ -80,6 +80,8 @@ export async function runSmoke(fetcher = fetch, options = {}) {
     expect(confirm.status === 303 && /signup=expired/.test(confirm.headers.get('location') || ''), `confirm with a bad link answered ${confirm.status}`);
     const home = await fetcher(`${config.site}/index.html`);
     expect(home.status === 200 && /signup\.js/.test(await home.text()), 'the home page has no signup form script');
+    const script = await fetcher(`${config.site}/signup.js`);
+    expect(script.status === 200, `signup.js answered ${script.status}`);
   });
   for (const page of ['shop.html', 'cart.html', 'quiz.html', 'catalog.json']) {
     await check(`Site serves ${page}`, async () => {
