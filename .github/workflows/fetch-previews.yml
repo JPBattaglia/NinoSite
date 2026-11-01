@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       urls:
-        description: Space-separated https image URLs (files.cdn.printful.com only)
+        description: Space-separated https image URLs (files.cdn.printful.com or the shop's own /api/mockups/ photos)
         required: true
 permissions:
   contents: write
@@ -24,8 +24,8 @@ jobs:
           mkdir out && cd out
           i=0
           for u in $URLS; do
-            case "$u" in https://files.cdn.printful.com/*) ;; *) echo "skip $u"; continue;; esac
-            i=$((i+1)); curl -sSfL -m 30 -o "$(printf '%02d' $i)-$(basename "$u")" "$u"
+            case "$u" in https://files.cdn.printful.com/*|https://nino-printful-commerce-api.ijpbattaglia.workers.dev/api/mockups/*) ;; *) echo "skip $u"; continue;; esac
+            i=$((i+1)); curl -sSfL -m 30 -o "$(printf '%02d' $i)-$(echo "$u" | sed -E 's#^.*/api/mockups/([0-9]+)/#\1-#; s#^.*/##')" "$u"
           done
           git init -q -b previews && git add -A
           git -c user.name=github-actions -c user.email=actions@github.com commit -qm "previews $(date -u +%FT%TZ)"
