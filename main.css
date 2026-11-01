@@ -897,6 +897,6 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 .signup-notice{position:fixed;left:50%;top:18px;z-index:1000;transform:translateX(-50%);display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);padding:12px 12px 12px 20px;background:#101415;color:#f2efe8;border:2px solid #ff6a1f;border-radius:12px;box-shadow:0 18px 40px -16px rgba(0,0,0,.8)}
 .signup-notice p{margin:0;font-size:14px}.signup-notice button{background:none;border:0;color:#f2efe8;font-size:22px;line-height:1;padding:4px 8px}
 @media(max-width:760px){.footer-signup{padding-block:24px;gap:16px}.footer-signup-form{max-width:none}}
-/* Owner, Nov 1, 2026: every input, dropdown and text box has a dark orange border (#b84a16; owner asked for it a little darker than #ff6a1f), whatever
+/* Owner, Nov 1, 2026: every input, dropdown and text box has a dark orange border (#b84a16; owner asked for it a little darker than #ff6a1f), 1px everywhere (was 1.5px on the contact form and phone collection menu), whatever
    section it sits in. The bare shop search keeps its border-free look; checkboxes and radios are untouched. */
-input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]):not([type=submit]):not([type=button]),select,textarea{border-color:#b84a16!important}
+input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]):not([type=submit]):not([type=button]),select,textarea{border-color:#b84a16!important;border-width:1px!important}
