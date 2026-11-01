@@ -848,7 +848,7 @@ body{background-image:var(--grain)!important;background-color:transparent!import
 @media(max-width:700px){.nav-toggle{display:grid}}
 
 /* Oct 29, 2026 (owner): softer glow around the Let’s talk form: thin outline, small faint halo (was a 10px ring and a 120px glow). */
-.contact-form-card{box-shadow:0 0 0 1px rgba(255,106,31,.7),0 0 36px -14px rgba(255,106,31,.28),0 40px 80px -40px rgba(0,0,0,.9)}
+.contact-form-card{box-shadow:0 0 0 4px var(--cyan),0 0 36px -14px rgba(255,106,31,.28),0 40px 80px -40px rgba(0,0,0,.9)}
 /* Oct 29, 2026 (owner): larger nav text now that Contact is gone (+2px at every width the full nav shows). */
 @media(min-width:1500px){.site-nav>a{font-size:19px}}
 @media(min-width:1151px) and (max-width:1499px){.site-nav>a{font-size:18px}}
