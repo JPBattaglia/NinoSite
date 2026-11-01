@@ -1,0 +1,63 @@
+# One-piece sticker artwork (owner, Nov 1, 2026): every design gets a sticker file with one white backing shape, so
+# Printful's kiss-cut makes one sticker instead of one per loose part. Builds assets/stickers/<design>.png and
+# manifest.json (commerce-api/scripts/make_stickers.py); the shop worker picks them up within the hour
+# (src/sticker-art.mjs) and remakes the sticker products.
+# Daily: new designs, from Printful's preview. On demand: "originals" = temporary download links of the full-size
+# originals (Nino's T-Shirt Designs folder); each is matched to its design by picture. Links are single-use.
+name: Sticker art
+
+on:
+  schedule:
+    - cron: '50 14 * * *'
+  workflow_dispatch:
+    inputs:
+      originals:
+        description: Space-separated temporary download links of original artwork files (optional)
+        required: false
+
+concurrency:
+  group: sticker-art
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  stickers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -q pillow numpy scipy
+      - name: Download originals
+        env:
+          ORIGINALS: ${{ inputs.originals }}
+        run: |
+          mkdir -p /tmp/originals
+          i=0
+          for u in $ORIGINALS; do
+            case "$u" in https://*.dropboxusercontent.com/*|https://*.dropbox.com/*) ;; *) echo "skip a link that isn't Dropbox"; continue;; esac
+            i=$((i+1)); curl -sSfL -m 120 -o "/tmp/originals/$(printf '%03d' $i).png" "$u" || echo "link $i failed"
+          done
+          echo "downloaded $i"
+      - name: Build sticker artwork
+        run: python3 commerce-api/scripts/make_stickers.py . /tmp/originals
+      - name: Commit when changed
+        id: commit
+        run: |
+          git add -f assets/stickers
+          if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git -c user.name=github-actions -c user.email=actions@github.com commit -qm "Sticker art: one-piece sticker artwork"
+          git pull -q --rebase origin master
+          git push -q origin HEAD:master
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Publish the site
+        if: steps.commit.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" >/dev/null && echo "Pages build requested."

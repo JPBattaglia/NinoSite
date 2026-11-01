@@ -29,7 +29,8 @@ async function printful(env, method, path, body, fetcher) {
 async function productColors(store, productId) {
   const rows = await store.all(`SELECT json_extract(snapshot_json,'$.color') AS color,
       MIN(json_extract(snapshot_json,'$.catalog_variant_id')) AS catalog_variant_id,
-      MAX(json_extract(snapshot_json,'$.files[0].hash')) AS hash
+      MAX(json_extract(snapshot_json,'$.files[0].hash')) AS hash,
+      MAX(json_extract(snapshot_json,'$.files[0].id')) AS file_id
     FROM catalog_variants WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog') AND product_id=?
     GROUP BY color ORDER BY color`, productId);
   return rows.filter(row => row.color && row.catalog_variant_id);
@@ -70,6 +71,11 @@ async function submit(store, env, job, now, fetcher) {
     // Rebuilt products: wait (status 'hold', looked at again hourly) until the shop's catalog lists the new colors.
     if (Array.isArray(raw.colors) && raw.colors.length && JSON.stringify([...new Set(colors.map(row => row.color))].sort()) !== JSON.stringify(raw.colors)) {
       await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_colors',updated_at=? WHERE product_id=?", now, job.product_id);
+      return;
+    }
+    // Remade stickers: wait until the catalog shows the new artwork file.
+    if (raw.file_id && !colors.some(row => String(row.file_id) === String(raw.file_id))) {
+      await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_file',updated_at=? WHERE product_id=?", now, job.product_id);
       return;
     }
     const p = raw.position_in;
@@ -134,7 +140,7 @@ export const STALL_SECONDS = 30 * 60;
 export async function processMockups(store, env, now, fetcher = (...args) => fetch(...args)) {
   if (!env.MOCKUPS || !env.PRINTFUL_ACCESS_TOKEN) return 'disabled';
   // Held jobs (see submit) get another look once an hour.
-  try { await store.run("UPDATE mockup_jobs SET status='pending',updated_at=? WHERE status='hold' AND last_error='waiting_for_catalog_colors' AND updated_at<?", now, now - 3600); } catch { /* table missing: handled below */ }
+  try { await store.run("UPDATE mockup_jobs SET status='pending',updated_at=? WHERE status='hold' AND last_error IN ('waiting_for_catalog_colors','waiting_for_catalog_file') AND updated_at<?", now, now - 1800); } catch { /* table missing: handled below */ }
   let submitted;
   try { submitted = await store.first("SELECT * FROM mockup_jobs WHERE status='submitted' ORDER BY updated_at LIMIT 1"); }
   catch { return 'no_table'; }

@@ -63,11 +63,13 @@ export async function publicCatalog(store,env,now,origin='') {
   // Workers on the free plan get about 10ms of CPU per request, so the database extracts only the
   // public fields and each variant is visited once (the catalog has ~13,500 variants).
   const products = await store.all('SELECT id,external_id,title,image FROM catalog_products WHERE generation=? ORDER BY title',generation);
-  const rows = await store.all("SELECT product_id,json_extract(snapshot_json,'$.id') AS variant_id,json_extract(snapshot_json,'$.name') AS name,json_extract(snapshot_json,'$.size') AS size,json_extract(snapshot_json,'$.color') AS color,json_extract(snapshot_json,'$.image') AS image,price_cents,currency FROM catalog_variants WHERE generation=? ORDER BY product_id,id",generation);
+  const rows = await store.all("SELECT product_id,json_extract(snapshot_json,'$.id') AS variant_id,json_extract(snapshot_json,'$.name') AS name,json_extract(snapshot_json,'$.size') AS size,json_extract(snapshot_json,'$.color') AS color,json_extract(snapshot_json,'$.image') AS image,json_extract(snapshot_json,'$.files[0].hash') AS art,price_cents,currency FROM catalog_variants WHERE generation=? ORDER BY product_id,id",generation);
   const images = new Map();
   const safeImage = value => { if (!images.has(value)) images.set(value,independentImage(value)); return images.get(value); };
   const byProduct = new Map();
+  const artOf = new Map();
   for (const row of rows) {
+    if (!artOf.has(row.product_id) && /^[0-9a-f]{32}$/.test(String(row.art || ''))) artOf.set(row.product_id,row.art);
     let list = byProduct.get(row.product_id);
     if (!list) byProduct.set(row.product_id,list = []);
     const modelPhoto = mockups.map.get(row.product_id)?.has(row.color) ? `${origin}/api/mockups/${row.product_id}/${colorSlug(row.color)}.jpg` : null;
@@ -75,7 +77,8 @@ export async function publicCatalog(store,env,now,origin='') {
   }
   const value = {catalog_ready:fresh,catalog_complete:true,products:products.map(product => {
     const variants = byProduct.get(product.id) || [];
-    return {id:product.id,external_id:product.external_id,title:product.title,image:independentImage(product.image) || variants.map(v => v.image).find(Boolean) || null,variants};
+    // art: the design's Printful artwork hash (its 800 px preview is public), for the sticker-art job.
+    return {id:product.id,external_id:product.external_id,title:product.title,image:independentImage(product.image) || variants.map(v => v.image).find(Boolean) || null,art:artOf.get(product.id) || null,variants};
   })};
   if (store.db && typeof store.db === 'object') catalogMemos.set(store.db,{key:memoKey,value});
   return value;
