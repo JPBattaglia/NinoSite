@@ -118,3 +118,32 @@ test('a sticker shows its one-piece artwork once that artwork is on the product'
   assert.equal(stickerPicture(await stickerPictures({first: async () => { throw new Error('d1'); }}), 'nx-sticker-482794901'), null, 'never breaks the catalog');
 });
 
+
+// Nov 2, 2026: Printful's photo of a store mug ignores the placement, so the mug gets a full-wrap file with the
+// design already on the face seen with the handle on the right; the file is fitted to each size's wrap.
+test('mug artwork goes on both mug sizes, fitted to each wrap', async () => {
+  const {KINDS, MUG_SITE, mugFile} = await import('../src/sticker-art.mjs');
+  const {remakeMug} = await import('../src/expand.mjs');
+  const mugCatalog = [{id: 1320, size: '11 oz', price: '6.07'}, {id: 4830, size: '15 oz', price: '8.11'}].map(v => ({...v, color: 'White', availability_status: [{region: 'US', status: 'in_stock'}]}));
+  const settings = new Map([['expand:482794926:mug', '488500000']]);
+  const calls = [];
+  const fetcher = async (url, init = {}) => {
+    const u = new URL(url);
+    if (url.startsWith(MUG_SITE)) return Response.json({'482794926': {sha: SHA, w: 2700, h: 1140}});
+    calls.push({method: init.method || 'GET', path: u.pathname, body: init.body ? JSON.parse(init.body) : null});
+    if (init.method === 'POST' && u.pathname === '/files') return Response.json({code: 200, result: {id: 9100}});
+    if (init.method === 'PUT') return Response.json({code: 200, result: {}});
+    if (u.pathname === '/store/products/482794926') return Response.json({code: 200, result: detail});
+    if (u.pathname === '/products/19') return Response.json({code: 200, result: {variants: mugCatalog}});
+    return new Response('{}', {status: 404});
+  };
+  const out = await applyStickerArt(fakeStore(settings), env, 1000, {api, remake: remakeMug}, {fetcher, max: 2, kind: KINDS.mug});
+  assert.deepEqual(out.applied, ['482794926']);
+  assert.equal(calls.find(c => c.path === '/files').body.url, `${MUG_SITE}482794926.png?v=${SHA}`);
+  const put = calls.find(c => c.method === 'PUT');
+  assert.equal(put.path, '/store/products/488500000');
+  const [small, large] = put.body.sync_variants;
+  assert.deepEqual(large.files[0].position, {area_width: 2700, area_height: 1140, width: 2700, height: 1140, top: 0, left: 0, limit_to_print_area: true}, '15 oz: the whole wrap');
+  assert.deepEqual(small.files[0].position, {area_width: 2700, area_height: 1050, width: 2487, height: 1050, top: 0, left: 107, limit_to_print_area: true}, '11 oz: fitted to its height');
+  assert.deepEqual(await mugFile(fakeStore(settings), '482794926'), {id: 9100, width: 2700, height: 1140});
+});
