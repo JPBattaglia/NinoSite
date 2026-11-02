@@ -16,9 +16,21 @@
       { duration: 900, easing: 'cubic-bezier(.4,0,.2,1)' }
     );
   }
+  // Owner, Nov 2, 2026: the phone menu slides down when the gear is tapped and back up when it closes.
+  let menuSlide;
+  function slideMenu(open) {
+    if (!nav) return;
+    menuSlide?.cancel(); menuSlide = null;
+    if (open) nav.classList.add('is-open');
+    const dropdown = getComputedStyle(nav).position === 'absolute';
+    if (!nav.animate || reducedMotion.matches || !dropdown) { nav.classList.toggle('is-open', open); return; }
+    const shut = { clipPath: 'inset(0 0 100% 0)', transform: 'translateY(-10px)', opacity: 0.6 };
+    const shown = { clipPath: 'inset(0 0 0% 0)', transform: 'translateY(0)', opacity: 1 };
+    menuSlide = nav.animate(open ? [shut, shown] : [shown, shut], { duration: open ? 380 : 300, easing: 'cubic-bezier(.4,0,.2,1)' });
+    if (!open) menuSlide.onfinish = () => { nav.classList.remove('is-open'); menuSlide = null; };
+  }
   function closeNavigation(restoreFocus = false) {
-    if (nav?.classList.contains('is-open')) turnMenuGear(-1);
-    nav?.classList.remove('is-open');
+    if (nav?.classList.contains('is-open') && navButton?.getAttribute('aria-expanded') === 'true') { turnMenuGear(-1); slideMenu(false); }
     navButton?.setAttribute('aria-expanded', 'false');
     navButton?.setAttribute('aria-label', 'Open navigation');
     if (restoreFocus) navButton?.focus();
@@ -26,7 +38,7 @@
   navButton?.addEventListener('click', () => {
     const open = navButton.getAttribute('aria-expanded') !== 'true';
     turnMenuGear(open ? 1 : -1);
-    nav.classList.toggle('is-open', open);
+    slideMenu(open);
     navButton.setAttribute('aria-expanded', String(open));
     navButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
   });
