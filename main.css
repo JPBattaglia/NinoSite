@@ -926,3 +926,6 @@ input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]
 .hero-copy .button-row>a{display:inline-flex;align-items:center;justify-content:center;margin-top:0;margin-bottom:0}
 /* Owner, Nov 2: the Meet the designer portrait floats on the page (no box, border or hover shadow behind it). */
 .artist-feature-image,.artist-feature-image:hover{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible}
+/* Owner, Nov 2: the portrait two-thirds of its first size; the empty frame shrinks with it. */
+.artist-feature-image{aspect-ratio:auto!important;display:flex;justify-content:center;align-items:center;padding:12px 0}
+.artist-feature-image img{width:47%!important;height:auto!important;padding:0!important}
