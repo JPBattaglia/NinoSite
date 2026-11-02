@@ -7,7 +7,9 @@ Designs: commerce-api/scripts/sticker-sources.json ({design id: Printful artwork
 Artwork: the full-size original when one in [originals dir] (Nino's T-Shirt Designs folder, downloaded by the
 workflow) shows the same picture as the design's Printful preview; otherwise Printful's public 800 px preview, enlarged
 (fine for the 3in and 4in sizes; such designs are marked src="preview" in the manifest so they can be upgraded).
-Output: assets/stickers/<design id>.png and assets/stickers/manifest.json
+Output: assets/stickers/<design id>.png, a small shop picture assets/stickers/preview/<design id>.webp (Nov 2: the shop
+shows this exact artwork instead of Printful's preview, which lagged hours behind a remade sticker and showed the old
+multi-piece art or a grey "Stickers" placeholder), and assets/stickers/manifest.json
     {"<design id>": {"sha": <sha1 of the png>, "w": px, "h": px, "art": <Printful hash>, "src": "original"|"preview"}}
 A design is rebuilt only when its Printful artwork changed or a better source turned up.
 """
@@ -21,6 +23,7 @@ from sticker_backing import backing, pieces_after, holes_after
 API = os.environ.get('API_BASE', 'https://nino-printful-commerce-api.ijpbattaglia.workers.dev')
 MAX_SIDE = 2400          # 5.5in at ~300 dpi with room for the border; also covers the 3.75in bumper height
 PREVIEW_SCALE = 2        # a preview (800 px) is enlarged to 1600 px
+PREVIEW_SIDE = 720      # the shop picture (pop-up shows it at most ~480 css px wide)
 MATCH_MAX = 14.0         # mean difference (0-255) of the 32x32 signatures for a preview and an original to count as one
 
 
@@ -42,6 +45,12 @@ def distance(a, b):
     if abs(ra - rb) / max(ra, rb) > 0.03:
         return 999.0
     return float(np.abs(pa - pb).mean())
+
+
+def write_preview(out_dir, design, image):
+    os.makedirs(os.path.join(out_dir, 'preview'), exist_ok=True)
+    small = image.copy(); small.thumbnail((PREVIEW_SIDE, PREVIEW_SIDE), Image.LANCZOS)
+    small.save(os.path.join(out_dir, 'preview', f'{design}.webp'), 'WEBP', quality=86, method=6)
 
 
 def load_originals(folder):
@@ -84,6 +93,11 @@ def main(root, originals_dir=None):
     originals = load_originals(originals_dir)
     print(f'{len(sources)} designs, {len(originals)} originals, {len(manifest)} already made')
     made, failed = [], []
+    for design in sorted(manifest):    # shop pictures for stickers made before previews existed
+        png = os.path.join(out_dir, f'{design}.png')
+        if os.path.exists(png) and not os.path.exists(os.path.join(out_dir, 'preview', f'{design}.webp')):
+            with Image.open(png) as im:
+                write_preview(out_dir, design, im.convert('RGBA'))
     for design, art in sorted(sources.items()):
         entry = manifest.get(design)
         if entry and entry.get('art') == art and (entry.get('src') == 'original' or not originals):
@@ -110,6 +124,7 @@ def main(root, originals_dir=None):
             buf = io.BytesIO(); result.save(buf, 'PNG', optimize=True); data = buf.getvalue()
             with open(os.path.join(out_dir, f'{design}.png'), 'wb') as f:
                 f.write(data)
+            write_preview(out_dir, design, result)
             manifest[design] = {'sha': hashlib.sha1(data).hexdigest(), 'w': result.width, 'h': result.height, 'art': art, 'src': src}
             made.append(f'{design} {src}' + (f' ({os.path.basename(best)}, {best_d:.1f})' if src == 'original' else f' (best {best_d:.1f})'))
         except Exception as e:

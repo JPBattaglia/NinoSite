@@ -104,3 +104,16 @@ test('photo layers name the artwork file so a remade sticker waits for the new c
   const payload = {sync_variants: [{variant_id: 10165, files: [{id: 42, position: {width: 300, height: 300, top: 0, left: 0}}]}]};
   assert.equal(photoLayer(spec, {}, payload, []).file_id, 42);
 });
+
+// Nov 2, 2026: the shop shows a sticker's own one-piece artwork, not Printful's lagging preview.
+test('a sticker shows its one-piece artwork once that artwork is on the product', async () => {
+  const {stickerPictures, stickerPicture} = await import('../src/catalog.mjs');
+  const sha = 'b171de1c9728fff62074f4205dac346cf78a0e77';
+  const store = {first: async () => ({value: JSON.stringify({'482794901': sha})})};
+  const pictures = await stickerPictures(store);
+  assert.equal(stickerPicture(pictures, 'nx-sticker-482794901'), `https://ninobattaglia.com/assets/stickers/preview/482794901.webp?v=${sha.slice(0, 12)}`);
+  assert.equal(stickerPicture(pictures, 'nx-hoodie-482794901'), null, 'other products keep their own pictures');
+  assert.equal(stickerPicture(pictures, 'nx-sticker-999'), null, 'a sticker not remade yet keeps Printful\'s preview');
+  assert.equal(stickerPicture(await stickerPictures({first: async () => null}), 'nx-sticker-482794901'), null);
+  assert.equal(stickerPicture(await stickerPictures({first: async () => { throw new Error('d1'); }}), 'nx-sticker-482794901'), null, 'never breaks the catalog');
+});
