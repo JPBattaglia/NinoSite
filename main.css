@@ -604,8 +604,8 @@ body{background-image:var(--grain),radial-gradient(1100px 600px at 10% -12%,rgba
 .filter-button.is-active,.collection-chips button.is-active,.product-image-link:hover .product-open-mark{box-shadow:0 0 0 1px rgba(255,106,31,.6),0 0 22px -2px rgba(255,106,31,.75)!important}
 .product-price,.shop-hero .product-price{text-shadow:0 0 12px rgba(255,106,31,.45)}
 
-/* Plain black nav bar. */
-.site-header{background:#000!important;background-image:none!important;border-top:0!important;border-bottom:0!important;box-shadow:none!important}
+/* Black nav bar, slightly see-through (owner, Nov 2): page shows faintly through as it scrolls under. */
+.site-header{background:rgba(0,0,0,.8)!important;backdrop-filter:blur(10px) saturate(130%)!important;-webkit-backdrop-filter:blur(10px) saturate(130%)!important;background-image:none!important;border-top:0!important;border-bottom:0!important;box-shadow:none!important}
 /* Logo mark without the square tile behind it. */
 .brand-symbol,.site-header .brand-symbol{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important}
 /* "BATTAGLIA" sized (not spaced) to the width of "NINO": 0.272em of the wordmark with .1em tracking. */
