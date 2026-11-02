@@ -200,14 +200,15 @@ export function createApp(dependencies={}) {
         // Not held back by a running sync (a full sync takes ~40 runs); the next sync picks the remade stickers up.
         let stickers={applied:[]};
         try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
-        // Aprons retired for mugs (owner, Nov 2): their Printful products are deleted, 3 per run, when the sticker step is idle.
-        if(!stickers.applied?.length) { try { const retired=await retireProducts(store,env); if(retired.deleted?.length) stickers={...stickers,applied:retired.deleted}; } catch { /* never blocks sync or fulfillment */ } }
         // The rollout (owner, Nov 1: don't sit idle during syncs). While a sync runs, a run does the rollout only when
         // the sticker step had nothing to do, so the run stays inside the free plan's 50 database queries.
         if(!sync || !stickers.applied?.length) {
           try { expanded=await runExpansion(store,env,now); } catch { /* never blocks sync or fulfillment */ }
           if(expanded.errors?.some(refusedKey)) await alertRefusedKey(store,env,'shop',now);
         }
+        // Aprons retired for mugs (owner, Nov 2): the shop already hides them; their Printful products are deleted,
+        // 3 per run, only once the rollout (the new mugs) has nothing left to make and the sticker step is idle.
+        if(!stickers.applied?.length && !expanded.created?.length && !(expanded.remaining>0)) { try { await retireProducts(store,env); } catch { /* never blocks sync or fulfillment */ } }
         const expansionReady=expanded.created?.length>0 && expanded.remaining===0;
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length || expansionReady || stickers.applied?.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
