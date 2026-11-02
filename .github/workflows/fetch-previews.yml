@@ -24,7 +24,7 @@ jobs:
           mkdir out && cd out
           i=0
           for u in $URLS; do
-            case "$u" in https://files.cdn.printful.com/*|https://nino-printful-commerce-api.ijpbattaglia.workers.dev/api/*) ;; *) echo "skip $u"; continue;; esac
+            case "$u" in https://files.cdn.printful.com/*|https://printful-upload.s3-accelerate.amazonaws.com/*|https://nino-printful-commerce-api.ijpbattaglia.workers.dev/api/*) ;; *) echo "skip $u"; continue;; esac
             i=$((i+1)); curl -sSfL -m 30 -o "$(printf '%02d' $i)-$(echo "$u" | sed -E 's#^.*/api/mockups/([0-9]+)/#\1-#; s#^.*/##')" "$u"
           done
           git init -q -b previews && git add -A
