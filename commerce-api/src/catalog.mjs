@@ -2,6 +2,7 @@ import {fail,cents,hash,httpsImage} from './common.mjs';
 import {mockupColors,colorSlug} from './mockups.mjs';
 import {loadPalette} from './colors.mjs';
 import {typeOf} from './expand.mjs';
+import {STICKER_SITE} from './sticker-art.mjs';
 
 // The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
 // Checkout still re-verifies every variant against Printful before charging.
@@ -43,6 +44,23 @@ export async function normalizeVariant(raw, product) {
   variant.fingerprint = await hash({catalog_variant_id:variant.catalog_variant_id,price_cents:amount,currency:'usd',files:artworkKeys(files),options:variant.options});
   return variant;
 }
+// Sticker pictures (owner, Nov 2, 2026: "these designs have sticker issues"). Printful redraws a sticker's preview
+// some time after the product is remade with new artwork, so for hours the shop showed the old multi-piece sticker or
+// Printful's grey "Stickers" placeholder, and its previews blur the white edge. A sticker now shows its own one-piece
+// artwork (assets/stickers/preview/<design>.webp, made by the Sticker art workflow) once that artwork is on the
+// product: commerce_settings 'sticker_applied' = {"<design id>": "<sha of the artwork in use>"} (sticker-art.mjs).
+export async function stickerPictures(store) {
+  try {
+    const row = await store.first("SELECT value FROM commerce_settings WHERE key='sticker_applied'");
+    const applied = row ? JSON.parse(row.value) : {};
+    return {key: row ? `${row.value.length}:${row.value.slice(-24)}` : '', applied: applied && typeof applied === 'object' ? applied : {}};
+  } catch { return {key: '', applied: {}}; }
+}
+export function stickerPicture(pictures, externalId) {
+  const type = typeOf(externalId);
+  const sha = type?.type === 'sticker' ? String(pictures?.applied?.[type.design] || '') : '';
+  return /^[0-9a-f]{12,64}$/.test(sha) ? `${STICKER_SITE}preview/${type.design}.webp?v=${sha.slice(0, 12)}` : null;
+}
 const catalogMemos = new WeakMap();
 export async function publicCatalog(store,env,now,origin='') {
   const generation = await store.activeGeneration();
@@ -57,7 +75,8 @@ export async function publicCatalog(store,env,now,origin='') {
   // Swatch colors for designs that are not in the curated catalog.json (one settings row).
   const palette = await loadPalette(store);
   const paletteVersion = Object.keys(palette).length;
-  const memoKey = `${generation}:${run.updated_at}:${fresh}:${version?.n}:${version?.changed}:${mockups.version}:${paletteVersion}:${origin}`;
+  const stickers = await stickerPictures(store);
+  const memoKey = `${generation}:${run.updated_at}:${fresh}:${version?.n}:${version?.changed}:${mockups.version}:${paletteVersion}:${stickers.key}:${origin}`;
   const memo = catalogMemos.get(store.db);
   if (memo?.key === memoKey) return memo.value;
   // Workers on the free plan get about 10ms of CPU per request, so the database extracts only the
@@ -77,6 +96,8 @@ export async function publicCatalog(store,env,now,origin='') {
   }
   const value = {catalog_ready:fresh,catalog_complete:true,products:products.map(product => {
     const variants = byProduct.get(product.id) || [];
+    const sticker = stickerPicture(stickers, product.external_id);
+    if (sticker) { for (const variant of variants) variant.image = sticker; return {id:product.id,external_id:product.external_id,title:product.title,image:sticker,art:artOf.get(product.id) || null,variants}; }
     // art: the design's Printful artwork hash (its 800 px preview is public), for the sticker-art job.
     return {id:product.id,external_id:product.external_id,title:product.title,image:independentImage(product.image) || variants.map(v => v.image).find(Boolean) || null,art:artOf.get(product.id) || null,variants};
   })};
@@ -88,6 +109,7 @@ export async function validatedLines(store,printful,env,items,now) {
   const run = generation && await store.first('SELECT * FROM catalog_sync_runs WHERE id=? AND status=\'complete\'',generation);
   if (!run || now - run.updated_at > catalogMaxAge(env)) fail(503,'catalog_not_ready','The product catalog is being updated.');
   const lines = [];
+  let stickers = null;
   for (const item of items) {
     const row = await store.first(`SELECT v.*,p.title,p.image,p.external_id AS product_external_id FROM catalog_variants v JOIN catalog_products p ON p.generation=v.generation AND p.id=v.product_id WHERE v.generation=? AND v.id=? AND v.product_id=?`,generation,item.variant_id,item.product_id);
     if (!row) fail(422,'variant_unavailable','A selected variant is not synced and ready to order.');
@@ -96,7 +118,10 @@ export async function validatedLines(store,printful,env,items,now) {
     const verified = await normalizeVariant(current,{id:item.product_id,thumbnail_url:row.image});
     if (!verified) fail(422,'variant_unavailable','A selected variant is no longer available.');
     if (verified.fingerprint !== snapshot.fingerprint) fail(409,'catalog_changed','A selected product has changed. Refresh the catalog before checkout.');
-    lines.push({...item,kind:typeOf(row.product_external_id)?.type || 'tshirt',title:row.title,image:independentImage(snapshot.image) || independentImage(row.image),variant:snapshot,unit_price_cents:row.price_cents,line_total_cents:row.price_cents * item.quantity});
+    const kind = typeOf(row.product_external_id)?.type || 'tshirt';
+    if (kind === 'sticker' && !stickers) stickers = await stickerPictures(store);
+    const picture = (kind === 'sticker' && stickerPicture(stickers, row.product_external_id)) || independentImage(snapshot.image) || independentImage(row.image);
+    lines.push({...item,kind,title:row.title,image:picture,variant:snapshot,unit_price_cents:row.price_cents,line_total_cents:row.price_cents * item.quantity});
   }
   return lines;
 }
