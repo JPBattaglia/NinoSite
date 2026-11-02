@@ -6,22 +6,26 @@
   const mobile = window.matchMedia('(max-width: 980px)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let gearRotation;
+  // Owner, Nov 1, 2026: the gear turns clockwise as the menu opens and counter-clockwise as it closes.
+  function turnMenuGear(direction) {
+    const gear = navButton?.querySelector('img');
+    if (!gear?.animate || reducedMotion.matches) return;
+    gearRotation?.cancel();
+    gearRotation = gear.animate(
+      [{ transform: 'rotate(0deg)' }, { transform: `rotate(${direction * 360}deg)` }],
+      { duration: 900, easing: 'cubic-bezier(.4,0,.2,1)' }
+    );
+  }
   function closeNavigation(restoreFocus = false) {
+    if (nav?.classList.contains('is-open')) turnMenuGear(-1);
     nav?.classList.remove('is-open');
     navButton?.setAttribute('aria-expanded', 'false');
     navButton?.setAttribute('aria-label', 'Open navigation');
     if (restoreFocus) navButton?.focus();
   }
   navButton?.addEventListener('click', () => {
-    const gear = navButton.querySelector('img');
-    if (gear?.animate && !reducedMotion.matches) {
-      gearRotation?.cancel();
-      gearRotation = gear.animate(
-        [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
-        { duration: 2400, easing: 'cubic-bezier(.16,1,.3,1)' }
-      );
-    }
     const open = navButton.getAttribute('aria-expanded') !== 'true';
+    turnMenuGear(open ? 1 : -1);
     nav.classList.toggle('is-open', open);
     navButton.setAttribute('aria-expanded', String(open));
     navButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
