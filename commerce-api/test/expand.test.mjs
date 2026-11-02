@@ -264,6 +264,10 @@ test('mugs replace aprons: every design gets an 11 and 15 oz mug, design centere
   assert.deepEqual(retired.deleted, ['487894999']);
   assert.equal(settings.get('expand:482794926:apron'), 'retired');
   assert.deepEqual((await retireProducts(store, env, {fetcher})).deleted, [], 'done once');
+  settings.set('expand:999:mug', '8888'); settings.set('expand_redo', JSON.stringify(['999:mug']));
+  assert.deepEqual((await retireProducts(store, env, {fetcher})).deleted, ['8888'], 'a queued redo deletes the product');
+  assert.ok(deletes.includes('/store/products/8888'));
+  assert.equal(settings.get('expand_redo'), '[]');
 });
 
 test('hats: only gated designs, threads from the design colors, hat colors that show it, $23, orders carry the threads', async () => {
