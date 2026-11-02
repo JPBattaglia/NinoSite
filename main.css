@@ -921,3 +921,6 @@ input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]
 }
 @media(max-width:760px){.nav-toggle{flex-shrink:0}}
 @media(max-width:360px){.header-inner{gap:12px}.brand-symbol{width:40px;height:40px}.brand-wordmark{font-size:34px}.brand-tagline{font-size:13px}}
+/* Owner, Nov 2: on the home page hero, "Let's create something" is the same height as "Shop designs" and lines up with it. */
+.hero-copy .button-row{display:flex;align-items:stretch}
+.hero-copy .button-row>a{display:inline-flex;align-items:center;justify-content:center;margin-top:0;margin-bottom:0}
