@@ -914,7 +914,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]
   .header-inner{padding-block:17px}
   .brand-symbol{width:46px;height:46px}
   .brand-wordmark{font-size:40px}
-  .brand-tagline{font-size:15px}
+  .brand-tagline{font-size:14px}   /* owner, Nov 2: one px smaller on his iPhone 15 Pro Max */
   .nav-toggle{width:56px;height:56px}
   .nav-toggle img{width:46px;height:46px}
   .site-nav>a{font-size:19px;padding-block:15px}
