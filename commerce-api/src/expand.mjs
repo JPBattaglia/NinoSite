@@ -11,7 +11,7 @@
 
 import {decodePng, summarize, blendsIn, lab, hexRgb} from './artcolors.mjs';
 import {THREAD_COLORS} from './merch-products.mjs';
-import {stickerFile} from './sticker-art.mjs';
+import {stickerFile, apronFile} from './sticker-art.mjs';
 
 export const EXPAND_PER_RUN = 2;          // each creation is one Printful call plus a few D1 writes
 export const MARKUP = 1.5;
@@ -107,6 +107,8 @@ export function position(spec, area, art) {
   const [aw, ah] = area;
   const w0 = Number(art.width), h0 = Number(art.height);
   if (!(w0 > 0 && h0 > 0)) return null;
+  // A file already drawn at the print area's full size (the apron artwork, sticker-art.mjs) covers the whole area.
+  if (art.full) return {area_width: aw, area_height: ah, width: aw, height: ah, top: 0, left: 0, limit_to_print_area: true};
   let width, height, top, left;
   if (spec.fit === 'chest') {
     const c = spec.chest || {w: 0.8627, h: 0.75, top: 0.1473};   // the shirts' placement on a 12x16in area
@@ -224,15 +226,21 @@ async function queuePhoto(store, productId, layer, now) {
 }
 
 // Stickers use the design's one-piece sticker artwork once it exists (sticker-art.mjs); everything else the design's own.
+// Aprons use the design drawn small on a full-size apron file once it exists (Nov 2: Printful stretches any apron
+// file over the whole apron, so the design came out huge and cut off).
 async function withStickerArt(store, spec, design) {
-  if (!design || spec.type !== 'sticker') return design;
+  if (!design) return design;
+  if (spec.type === 'apron') { const art = await apronFile(store, design.id); return art ? {...design, art: {...art, full: true}} : design; }
+  if (spec.type !== 'sticker') return design;
   const art = await stickerFile(store, design.id);
   return art ? {...design, art} : design;
 }
 
 // Remake a design's sticker product with new artwork (sticker-art.mjs): same sizes and prices, new file, new photo.
-export async function remakeSticker(store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a)) {
-  const spec = PRODUCT_TYPES.find(t => t.type === 'sticker');
+export const remakeApron = (store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a)) =>
+  remakeSticker(store, env, now, designId, productId, {...art, full: true}, fetcher, 'apron');
+export async function remakeSticker(store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a), type = 'sticker') {
+  const spec = PRODUCT_TYPES.find(t => t.type === type);
   const design = designFromDetail((await api(env, 'GET', `/store/products/${designId}`, null, fetcher))?.result);
   if (!design) throw new Error('design_not_found');
   const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
