@@ -909,3 +909,15 @@ input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]
 .brand{flex-wrap:wrap;row-gap:6px}
 .brand-tagline{flex-basis:100%;font:600 12px/1.2 var(--body);letter-spacing:.06em;color:var(--cyan);white-space:nowrap}
 @media(max-width:760px){.brand{row-gap:4px}.brand-tagline{font-size:13px;letter-spacing:.03em}}
+/* Owner, Nov 1, 2026: on phones the menu bar and everything in it a little larger (about 15 to 20%). */
+@media(max-width:760px){
+  .header-inner{padding-block:17px}
+  .brand-symbol{width:46px;height:46px}
+  .brand-wordmark{font-size:40px}
+  .brand-tagline{font-size:15px}
+  .nav-toggle{width:56px;height:56px}
+  .nav-toggle img{width:46px;height:46px}
+  .site-nav>a{font-size:19px;padding-block:15px}
+}
+@media(max-width:760px){.nav-toggle{flex-shrink:0}}
+@media(max-width:360px){.header-inner{gap:12px}.brand-symbol{width:40px;height:40px}.brand-wordmark{font-size:34px}.brand-tagline{font-size:13px}}
