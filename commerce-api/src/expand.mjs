@@ -43,10 +43,11 @@ export const PRODUCT_TYPES = Object.freeze([
     chest: {w: 0.42, h: 0.34, top: 0.3}, retired: true,
     variants: [23723, 23724, 23725, 23726, 23727], area: {default: [4075, 4961]}},
   // White Glossy Mug, 11 oz and 15 oz (owner, Nov 2, 2026, replacing the aprons). The print file wraps all the way
-  // round (fill mode "fit", so the placement is honored); the design sits once, centered (the side away from the
-  // handle), up to 42% of the wrap wide and 88% of its height.
+  // round (fill mode "fit", so the placement is honored) and its middle is the back, away from the handle. The design
+  // sits once on the right half of the wrap (cx 0.75): the face seen with the handle on the right, as in Printful's
+  // product photo and for a right-handed drinker's guests; up to 40% of the wrap wide and 88% of its height.
   {type: 'mug', label: 'Mug', catalog: 19, file: 'default', fit: 'chest', placement: 'default', technique: 'sublimation', dpi: 300,
-    chest: {w: 0.42, h: 0.88, top: 0.06, middle: true},
+    chest: {w: 0.40, h: 0.88, top: 0.06, middle: true, cx: 0.75},
     variants: [1320, 4830], area: {1320: [2700, 1050], 4830: [2700, 1140]}},
   // Classic Dad Hat | Yupoong 6245CM, front embroidery (the standard front, no extra charge). Same file type and thread
   // options as the staff merch cap, which orders fine. Threads come from the design's own colors (threadsFor).
@@ -117,7 +118,7 @@ export function position(spec, area, art) {
     const c = spec.chest || {w: 0.8627, h: 0.75, top: 0.1473};   // the shirts' placement on a 12x16in area
     const scale = Math.min((aw * c.w) / w0, (ah * c.h) / h0);
     width = Math.round(w0 * scale); height = Math.round(h0 * scale);
-    left = Math.round((aw - width) / 2); top = c.middle ? Math.round((ah - height) / 2) : Math.round(Math.min(ah * c.top, ah - height));
+    left = c.cx ? Math.round(aw * c.cx - width / 2) : Math.round((aw - width) / 2); top = c.middle ? Math.round((ah - height) / 2) : Math.round(Math.min(ah * c.top, ah - height));
   } else {
     const room = 1 - 2 * (spec.margin || 0);
     const scale = Math.min((aw * room) / w0, (ah * room) / h0);
