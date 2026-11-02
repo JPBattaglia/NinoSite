@@ -13,8 +13,12 @@
 export const STICKER_SITE = 'https://ninobattaglia.com/assets/stickers/';
 export const STICKERS_PER_RUN = 3;   // each is 3 Printful calls; the free plan allows 50 subrequests per run
 const MANIFEST_TTL = 3600;
+// Mug artwork (Nov 2, 2026): Printful's photo of a store mug ignores the placement, so each design is drawn on the
+// face seen with the handle on the right of a full-wrap file (commerce-api/scripts/make_mugs.py -> assets/mugs/).
+export const MUG_SITE = 'https://ninobattaglia.com/assets/mugs/';
 export const KINDS = Object.freeze({
-  sticker: {site: STICKER_SITE, type: 'sticker', file: 'sticker_file', manifest: 'sticker_manifest', applied: 'sticker_applied', last: 'sticker_last', name: 'sticker'}
+  sticker: {site: STICKER_SITE, type: 'sticker', file: 'sticker_file', manifest: 'sticker_manifest', applied: 'sticker_applied', last: 'sticker_last', name: 'sticker'},
+  mug: {site: MUG_SITE, type: 'mug', file: 'mug_file', manifest: 'mug_manifest', applied: 'mug_applied', last: 'mug_last', name: 'mug'}
 });
 
 const setSetting = (store, key, value) => store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', key, value);
@@ -29,6 +33,7 @@ export async function stickerFile(store, designId, kind = KINDS.sticker) {
 }
 
 // The published manifest, re-read at most hourly (one settings row).
+export const mugFile = (store, designId) => stickerFile(store, designId, KINDS.mug);
 export async function stickerManifest(store, now, fetcher, kind = KINDS.sticker) {
   const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', kind.manifest);
   const cached = row ? JSON.parse(row.value) : null;
