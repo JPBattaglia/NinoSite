@@ -924,3 +924,5 @@ input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]
 /* Owner, Nov 2: on the home page hero, "Let's create something" is the same height as "Shop designs" and lines up with it. */
 .hero-copy .button-row{display:flex;align-items:stretch}
 .hero-copy .button-row>a{display:inline-flex;align-items:center;justify-content:center;margin-top:0;margin-bottom:0}
+/* Owner, Nov 2: the Meet the designer portrait floats on the page (no box, border or hover shadow behind it). */
+.artist-feature-image,.artist-feature-image:hover{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible}
