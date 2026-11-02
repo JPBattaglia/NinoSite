@@ -76,7 +76,7 @@
     catch { return ''; }
   }
   const previewDesigns = [
-    { id: 'preview-skull-wave', title: 'Skull Wave', image: 'assets/shirt-skull-wave-black.webp', gallery: ['assets/shirt-skull-wave-black.webp', 'assets/shirt-skull-wave.webp', 'assets/art-skull-wave.webp'], category: 'Shirt design preview' },
+    { id: 'preview-skull-wave', title: 'Skull Wave', image: 'assets/shirt-skull-wave-black.webp', gallery: ['assets/shirt-skull-wave-black.webp', 'assets/art-skull-wave.webp'], category: 'Shirt design preview' },
     { id: 'preview-oroboros', title: 'Oroboros', image: 'assets/shirt-oroboros.webp', gallery: ['assets/shirt-oroboros.webp', 'assets/shirt-oroboros-olive.webp', 'assets/art-oroboros.webp'], category: 'Shirt design preview' },
     { id: 'preview-ride-or-die', title: 'Ride or Die', image: 'assets/shirt-ride-or-die.webp', category: 'Shirt design preview' },
     { id: 'preview-face-landscape', title: 'Face Landscape', image: 'assets/shirt-face-landscape.webp', gallery: ['assets/shirt-face-landscape.webp', 'assets/art-face-landscape.webp'], category: 'Shirt design preview' }
