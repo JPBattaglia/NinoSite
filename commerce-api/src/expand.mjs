@@ -251,10 +251,27 @@ export async function remakeSticker(store, env, now, designId, productId, art, f
 
 // Retired product types (aprons, Nov 2, 2026): delete their store products from Printful, a few per run; the next
 // catalog sync drops them from the shop. Each done one is marked 'expand:<design>:<type>' = 'retired'.
+// Also 'expand_redo' = ["<design>:<type>", ...]: delete that product so the rollout makes it again from scratch
+// (Nov 2: Printful kept the old placement and photo when a mug was updated in place with only a new position).
 export async function retireProducts(store, env, {fetcher = (...a) => fetch(...a), max = 3} = {}) {
   const out = {deleted: [], errors: [], remaining: 0};
   try {
     if (!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return out;
+    const redo = JSON.parse((await store.first("SELECT value FROM commerce_settings WHERE key='expand_redo'"))?.value || '[]');
+    if (Array.isArray(redo) && redo.length) {
+      const left = [...redo];
+      for (const item of redo.slice(0, max)) {
+        const key = `expand:${item}`, id = (await store.first('SELECT value FROM commerce_settings WHERE key=?', key))?.value;
+        try {
+          if (/^\d+$/.test(id || '')) await api(env, 'DELETE', `/store/products/${id}`, null, fetcher).catch(error => { if (!/ 404:/.test(String(error?.message))) throw error; });
+          await store.run('DELETE FROM commerce_settings WHERE key=? OR key=?', key, `expand_v:${item}`);
+          await store.run("DELETE FROM commerce_settings WHERE key='expand_idle'");
+          left.splice(left.indexOf(item), 1); out.deleted.push(id || item);
+        } catch (error) { out.errors.push(`${item}: ${String(error?.message || error).slice(0, 160)}`); }
+      }
+      await setSetting(store, 'expand_redo', JSON.stringify(left));
+      return out;
+    }
     for (const spec of PRODUCT_TYPES.filter(t => t.retired)) {
       // Once every one is gone, a single settings row skips the scan (D1 bills every row read).
       if ((await store.first('SELECT value FROM commerce_settings WHERE key=?', `retired_done:${spec.type}`))?.value === '1') continue;

@@ -209,6 +209,8 @@ export function createApp(dependencies={}) {
         // Aprons retired for mugs (owner, Nov 2): the shop already hides them; their Printful products are deleted,
         // 3 per run, only once the rollout (the new mugs) has nothing left to make and the sticker step is idle.
         if(!stickers.applied?.length && !expanded.created?.length && !(expanded.remaining>0)) { try { await retireProducts(store,env); } catch { /* never blocks sync or fulfillment */ } }
+        // Products queued in 'expand_redo' are deleted first so the rollout remakes them (one settings row when empty).
+        else if(!stickers.applied?.length) { try { const row=await store.first("SELECT value FROM commerce_settings WHERE key='expand_redo'"); if(row && row.value!=='[]') await retireProducts(store,env,{max:2}); } catch { /* never blocks sync or fulfillment */ } }
         const expansionReady=expanded.created?.length>0 && expanded.remaining===0;
         if(!sync && (daily || mirrored.created?.length || mirrored.ignored?.length || expansionReady || stickers.applied?.length)) sync=await startCatalogSync(store,printful,now);
         if(sync) { try { await continueCatalogSync(store,printful,sync.id,now); } catch(error) { /* The retained run is retried by the next scheduled invocation. */ if(refusedKey(error)) await alertRefusedKey(store,env,'shop',now); } }
