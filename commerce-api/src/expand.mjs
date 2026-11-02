@@ -11,7 +11,7 @@
 
 import {decodePng, summarize, blendsIn, lab, hexRgb} from './artcolors.mjs';
 import {THREAD_COLORS} from './merch-products.mjs';
-import {stickerFile, apronFile} from './sticker-art.mjs';
+import {stickerFile} from './sticker-art.mjs';
 
 export const EXPAND_PER_RUN = 2;          // each creation is one Printful call plus a few D1 writes
 export const MARKUP = 1.5;
@@ -37,12 +37,17 @@ export const PRODUCT_TYPES = Object.freeze([
   // stays in the top 60%: up to 12in wide, from 1in below the top.
   {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, chest: {w: 0.8571, h: 0.6, top: 0.0714},
     area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
-  // All-Over Print 5-Color Strap Apron (owner choice, Oct 31): the design is sublimated on the white body, so every
-  // strap color is offered. Its print area (printfile 1381) is the whole front; the art sits on the bib and chest.
-  // Gated by commerce_settings 'expand_gate:apron' (a list of design ids, or 'all') until its photos are checked.
+  // Aprons: RETIRED (owner, Nov 2, 2026: "replace all aprons with coffee mugs"). Kept here so their products are still
+  // recognised; nothing new is made (retired) and retireProducts() deletes the existing ones from Printful.
   {type: 'apron', label: 'Apron', catalog: 927, file: 'default', fit: 'chest', placement: 'front', technique: 'sublimation', dpi: 150,
-    chest: {w: 0.42, h: 0.34, top: 0.3}, gate: true,
+    chest: {w: 0.42, h: 0.34, top: 0.3}, retired: true,
     variants: [23723, 23724, 23725, 23726, 23727], area: {default: [4075, 4961]}},
+  // White Glossy Mug, 11 oz and 15 oz (owner, Nov 2, 2026, replacing the aprons). The print file wraps all the way
+  // round (fill mode "fit", so the placement is honored); the design sits once, centered (the side away from the
+  // handle), up to 42% of the wrap wide and 88% of its height.
+  {type: 'mug', label: 'Mug', catalog: 19, file: 'default', fit: 'chest', placement: 'default', technique: 'sublimation', dpi: 300,
+    chest: {w: 0.42, h: 0.88, top: 0.06, middle: true},
+    variants: [1320, 4830], area: {1320: [2700, 1050], 4830: [2700, 1140]}},
   // Classic Dad Hat | Yupoong 6245CM, front embroidery (the standard front, no extra charge). Same file type and thread
   // options as the staff merch cap, which orders fine. Threads come from the design's own colors (threadsFor).
   {type: 'hat', label: 'Dad hat', catalog: 206, file: 'default', fit: 'contain', margin: 0, placement: 'embroidery_front', technique: 'embroidery', dpi: 300,
@@ -107,14 +112,12 @@ export function position(spec, area, art) {
   const [aw, ah] = area;
   const w0 = Number(art.width), h0 = Number(art.height);
   if (!(w0 > 0 && h0 > 0)) return null;
-  // A file already drawn at the print area's full size (the apron artwork, sticker-art.mjs) covers the whole area.
-  if (art.full) return {area_width: aw, area_height: ah, width: aw, height: ah, top: 0, left: 0, limit_to_print_area: true};
   let width, height, top, left;
   if (spec.fit === 'chest') {
     const c = spec.chest || {w: 0.8627, h: 0.75, top: 0.1473};   // the shirts' placement on a 12x16in area
     const scale = Math.min((aw * c.w) / w0, (ah * c.h) / h0);
     width = Math.round(w0 * scale); height = Math.round(h0 * scale);
-    left = Math.round((aw - width) / 2); top = Math.round(Math.min(ah * c.top, ah - height));
+    left = Math.round((aw - width) / 2); top = c.middle ? Math.round((ah - height) / 2) : Math.round(Math.min(ah * c.top, ah - height));
   } else {
     const room = 1 - 2 * (spec.margin || 0);
     const scale = Math.min((aw * room) / w0, (ah * room) / h0);
@@ -226,21 +229,15 @@ async function queuePhoto(store, productId, layer, now) {
 }
 
 // Stickers use the design's one-piece sticker artwork once it exists (sticker-art.mjs); everything else the design's own.
-// Aprons use the design drawn small on a full-size apron file once it exists (Nov 2: Printful stretches any apron
-// file over the whole apron, so the design came out huge and cut off).
 async function withStickerArt(store, spec, design) {
-  if (!design) return design;
-  if (spec.type === 'apron') { const art = await apronFile(store, design.id); return art ? {...design, art: {...art, full: true}} : design; }
-  if (spec.type !== 'sticker') return design;
+  if (!design || spec.type !== 'sticker') return design;
   const art = await stickerFile(store, design.id);
   return art ? {...design, art} : design;
 }
 
 // Remake a design's sticker product with new artwork (sticker-art.mjs): same sizes and prices, new file, new photo.
-export const remakeApron = (store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a)) =>
-  remakeSticker(store, env, now, designId, productId, {...art, full: true}, fetcher, 'apron');
-export async function remakeSticker(store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a), type = 'sticker') {
-  const spec = PRODUCT_TYPES.find(t => t.type === type);
+export async function remakeSticker(store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a)) {
+  const spec = PRODUCT_TYPES.find(t => t.type === 'sticker');
   const design = designFromDetail((await api(env, 'GET', `/store/products/${designId}`, null, fetcher))?.result);
   if (!design) throw new Error('design_not_found');
   const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
@@ -249,6 +246,33 @@ export async function remakeSticker(store, env, now, designId, productId, art, f
   await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
   await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now);
   return payload;
+}
+
+// Retired product types (aprons, Nov 2, 2026): delete their store products from Printful, a few per run; the next
+// catalog sync drops them from the shop. Each done one is marked 'expand:<design>:<type>' = 'retired'.
+export async function retireProducts(store, env, {fetcher = (...a) => fetch(...a), max = 3} = {}) {
+  const out = {deleted: [], errors: [], remaining: 0};
+  try {
+    if (!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return out;
+    for (const spec of PRODUCT_TYPES.filter(t => t.retired)) {
+      // Once every one is gone, a single settings row skips the scan (D1 bills every row read).
+      if ((await store.first('SELECT value FROM commerce_settings WHERE key=?', `retired_done:${spec.type}`))?.value === '1') continue;
+      const rows = ((await store.all(`SELECT key,value FROM commerce_settings WHERE key LIKE 'expand:%:${spec.type}'`)) || [])
+        .filter(r => r.key.endsWith(`:${spec.type}`) && /^\d+$/.test(r.value || ''));
+      if (!rows.length) { await setSetting(store, `retired_done:${spec.type}`, '1'); continue; }
+      out.remaining += rows.length;
+      for (const row of rows.slice(0, Math.max(0, max - out.deleted.length))) {
+        try {
+          await api(env, 'DELETE', `/store/products/${row.value}`, null, fetcher).catch(error => { if (!/ 404:/.test(String(error?.message))) throw error; });
+          await setSetting(store, row.key, 'retired');
+          await store.run("DELETE FROM mockup_jobs WHERE product_id=?", row.value);
+          out.deleted.push(row.value);
+        } catch (error) { out.errors.push(`${row.value}: ${String(error?.message || error).slice(0, 160)}`); }
+      }
+    }
+    out.remaining -= out.deleted.length;
+  } catch (error) { out.errors.push(String(error?.message || error).slice(0, 200)); }
+  return out;
 }
 
 // One scheduled step: create up to EXPAND_PER_RUN missing products for the designs that are turned on.
@@ -278,7 +302,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
       const value = String((await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand_gate:${spec.type}`))?.value || '').trim();
       gates.set(spec.type, value === 'all' ? null : new Set(value.split(',').map(v => v.trim()).filter(Boolean)));
     }
-    const open = (spec, d) => !spec.gate || gates.get(spec.type) === null || gates.get(spec.type).has(String(d.id));
+    const open = (spec, d) => !spec.retired && (!spec.gate || gates.get(spec.type) === null || gates.get(spec.type).has(String(d.id)));
     for (const d of designs) for (const spec of PRODUCT_TYPES) if (open(spec, d) && !done.has(`expand:${d.id}:${spec.type}`)) todo.push([d, spec]);
     // Products made before a rule change are rebuilt in place when their design is listed in 'expand_rebuild'
     // (Oct 31: the color check and the bigger sizes reached the 3 sample designs this way). Marked expand_v:<..> = 2.
@@ -286,7 +310,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     const rebuilt = new Set(((await store.all("SELECT key FROM commerce_settings WHERE key LIKE 'expand_v:%'")) || []).map(r => r.key.slice(9)));
     const productIds = new Map(((await store.all("SELECT key,value FROM commerce_settings WHERE key LIKE 'expand:%'")) || []).map(r => [r.key.slice(7), r.value]));
     const redo = [];
-    for (const d of designs) if (rebuildIds.has(String(d.id))) for (const spec of PRODUCT_TYPES) {
+    for (const d of designs) if (rebuildIds.has(String(d.id))) for (const spec of PRODUCT_TYPES.filter(t => !t.retired)) {
       const id = productIds.get(`${d.id}:${spec.type}`);
       if (/^\d+$/.test(id || '') && !rebuilt.has(`${d.id}:${spec.type}`)) redo.push([d, spec, id]);
     }

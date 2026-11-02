@@ -111,7 +111,8 @@ test('runs in steps: off by default, then the sample designs only, two products 
       {id: 10163, color: 'White', size: '3', price: '2.34', availability_status: [{region: 'US', status: 'in_stock'}]},
       {id: 10164, color: 'White', size: '4', price: '2.54', availability_status: [{region: 'US', status: 'in_stock'}]},
       {id: 10165, color: 'White', size: '5.5', price: '2.74', availability_status: [{region: 'US', status: 'in_stock'}]},
-      {id: 10457, color: 'Black', size: 'One size', price: '15.87', availability_status: [{region: 'US', status: 'in_stock'}]}]}});
+      {id: 10457, color: 'Black', size: 'One size', price: '15.87', availability_status: [{region: 'US', status: 'in_stock'}]},
+      {id: 1320, color: 'White', size: '11 oz', price: '6.07', availability_status: [{region: 'US', status: 'in_stock'}]}]}});
     return new Response('{}', {status: 404});
   };
   const env = {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'};
@@ -120,11 +121,12 @@ test('runs in steps: off by default, then the sample designs only, two products 
   settings.set('expand_designs', '482794926');
   const first = await runExpansion(store, env, 1000, {fetcher});
   assert.deepEqual(first.created, ['Skull Wave Sticker', 'Skull Wave Tote bag']);
-  assert.equal(first.remaining, 2);
+  assert.equal(first.remaining, 3);
   const second = await runExpansion(store, env, 1001, {fetcher});
   assert.deepEqual(second.created, ['Skull Wave Crewneck sweatshirt', 'Skull Wave Hoodie']);
-  assert.equal(second.remaining, 0);
-  assert.equal(posts.length, 4);
+  assert.equal(second.remaining, 1);
+  assert.deepEqual((await runExpansion(store, env, 1001.5, {fetcher})).created, ['Skull Wave Mug']);
+  assert.equal(posts.length, 5);
   assert.ok(posts.every(p => p.sync_product.external_id.endsWith('-482794926')), 'only the sample design');
   assert.equal(settings.get('expand:482794926:hoodie'), '5004');
   assert.deepEqual((await runExpansion(store, env, 1002, {fetcher})).created, [], 'nothing left');
@@ -230,26 +232,38 @@ test('listed sample designs are rebuilt in place with the new rules, and their p
   assert.deepEqual((await runExpansion(store, env, 1010, {fetcher})).created, [], 'each product rebuilt once');
 });
 
-test('aprons are made only for designs their gate lists, with every strap color, taxed as goods', async () => {
-  const settings = new Map([['expand_designs', 'all'], ['expand_gate:apron', '482794926'],
+test('mugs replace aprons: every design gets an 11 and 15 oz mug, design centered once; no new aprons; old aprons deleted', async () => {
+  const {retireProducts} = await import('../src/expand.mjs');
+  const settings = new Map([['expand_designs', 'all'], ['expand:482794926:apron', '487894999'],
     ...['sticker', 'tote', 'crewneck', 'hoodie'].map(t => [`expand:482794926:${t}`, '1']), ...['sticker', 'tote', 'crewneck', 'hoodie'].map(t => [`expand:999:${t}`, '1'])]);
-  const posts = [];
-  const apronVariants = [23723, 23724, 23725, 23726, 23727].map((id, i) => ({id, color: ['Black', 'White', 'Beige', 'Blue', 'Pink'][i], size: 'One size', price: '23.34', availability_status: [{region: 'US', status: 'in_stock'}]}));
+  const posts = [], deletes = [];
+  const mugVariants = [{id: 1320, size: '11 oz', price: '6.07'}, {id: 4830, size: '15 oz', price: '8.11'}, {id: 16586, size: '20 oz', price: '9.95'}].map(v => ({...v, color: 'White', availability_status: [{region: 'US', status: 'in_stock'}]}));
   const fetcher = async (url, init = {}) => {
     const path = new URL(url).pathname;
     if (init.method === 'POST') { posts.push(JSON.parse(init.body)); return Response.json({code: 200, result: {id: 8000 + posts.length}}); }
+    if (init.method === 'DELETE') { deletes.push(path); return Response.json({code: 200, result: {}}); }
     if (path.startsWith('/store/products/')) return Response.json({code: 200, result: detail});
-    if (path === '/products/927') return Response.json({code: 200, result: {variants: apronVariants}});
+    if (path === '/products/19') return Response.json({code: 200, result: {variants: mugVariants}});
     return new Response('{}', {status: 404});
   };
   const store = fakeStore(settings, [{id: '482794926', external_id: '455', title: 'Skull Wave T'}, {id: '999', external_id: '777', title: 'Other T'}]);
-  const out = await runExpansion(store, {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1000, {fetcher});
-  assert.deepEqual(out.created, ['Skull Wave Apron']);
-  assert.equal(out.remaining, 0, 'the other design gets no apron while the gate lists only the sample');
-  assert.deepEqual(posts[0].sync_variants.map(v => v.retail_price), Array(5).fill('36.00'), 'cost x 1.5 rounded up');
-  const pos = posts[0].sync_variants[0].files[0].position;
-  assert.ok(pos.top >= 4961 * 0.29 && pos.width <= 4075 * 0.43, 'on the bib and chest');
-  assert.equal(lineTaxCode({kind: 'apron'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
+  const env = {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'};
+  const out = await runExpansion(store, env, 1000, {fetcher});
+  assert.equal(out.created.length, 2); assert.ok(out.created.every(name => / Mug$/.test(name)), 'both designs get a mug');
+  assert.ok(!posts.some(p => /Apron/.test(p.sync_product.name)), 'no new aprons');
+  assert.deepEqual(posts[0].sync_variants.map(v => [v.variant_id, v.retail_price]), [[1320, '10.00'], [4830, '13.00']], '11 and 15 oz at cost x 1.5');
+  for (const v of posts[0].sync_variants) {
+    const pos = v.files[0].position;
+    assert.ok(pos.width <= pos.area_width * 0.42 + 1 && pos.height <= pos.area_height * 0.88 + 1, 'one side of the mug');
+    assert.equal(pos.left, Math.round((pos.area_width - pos.width) / 2));
+    assert.equal(pos.top, Math.round((pos.area_height - pos.height) / 2), 'centered top to bottom');
+  }
+  assert.equal(lineTaxCode({kind: 'mug'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
+  const retired = await retireProducts(store, env, {fetcher});
+  assert.deepEqual(deletes, ['/store/products/487894999']);
+  assert.deepEqual(retired.deleted, ['487894999']);
+  assert.equal(settings.get('expand:482794926:apron'), 'retired');
+  assert.deepEqual((await retireProducts(store, env, {fetcher})).deleted, [], 'done once');
 });
 
 test('hats: only gated designs, threads from the design colors, hat colors that show it, $23, orders carry the threads', async () => {

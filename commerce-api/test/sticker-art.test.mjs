@@ -118,31 +118,3 @@ test('a sticker shows its one-piece artwork once that artwork is on the product'
   assert.equal(stickerPicture(await stickerPictures({first: async () => { throw new Error('d1'); }}), 'nx-sticker-482794901'), null, 'never breaks the catalog');
 });
 
-// Nov 2, 2026: the apron prints its file over the whole apron, so the small, top-centered design is drawn on a
-// full-size apron file and that file covers the whole print area.
-test('apron artwork goes on the apron product covering the whole apron, every strap color', async () => {
-  const {KINDS, APRON_SITE, apronFile} = await import('../src/sticker-art.mjs');
-  const {remakeApron} = await import('../src/expand.mjs');
-  const apronCatalog = [23723, 23724, 23725, 23726, 23727].map(id => ({id, color: String(id), size: 'One size', price: '24', availability_status: [{region: 'US', status: 'in_stock'}]}));
-  const settings = new Map([['expand:482794926:apron', '487894999']]);
-  const calls = [];
-  const fetcher = async (url, init = {}) => {
-    const u = new URL(url);
-    if (url.startsWith(APRON_SITE)) return Response.json({'482794926': {sha: SHA, w: 4075, h: 4961}});
-    calls.push({method: init.method || 'GET', path: u.pathname, body: init.body ? JSON.parse(init.body) : null});
-    if (init.method === 'POST' && u.pathname === '/files') return Response.json({code: 200, result: {id: 9001}});
-    if (init.method === 'PUT') return Response.json({code: 200, result: {}});
-    if (u.pathname === '/store/products/482794926') return Response.json({code: 200, result: detail});
-    if (u.pathname === '/products/927') return Response.json({code: 200, result: {variants: apronCatalog}});
-    return new Response('{}', {status: 404});
-  };
-  const out = await applyStickerArt(fakeStore(settings), env, 1000, {api, remake: remakeApron}, {fetcher, max: 2, kind: KINDS.apron});
-  assert.deepEqual(out.applied, ['482794926']);
-  assert.equal(calls.find(c => c.path === '/files').body.url, `${APRON_SITE}482794926.png?v=${SHA}`);
-  const put = calls.find(c => c.method === 'PUT');
-  assert.equal(put.path, '/store/products/487894999');
-  assert.equal(put.body.sync_variants.length, 5);
-  for (const v of put.body.sync_variants) assert.deepEqual(v.files[0], {type: 'default', id: 9001, position: {area_width: 4075, area_height: 4961, width: 4075, height: 4961, top: 0, left: 0, limit_to_print_area: true}});
-  assert.deepEqual(await apronFile(fakeStore(settings), '482794926'), {id: 9001, width: 4075, height: 4961});
-  assert.equal(settings.get('expand:482794926:sticker'), undefined, 'stickers untouched');
-});

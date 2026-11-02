@@ -13,14 +13,8 @@
 export const STICKER_SITE = 'https://ninobattaglia.com/assets/stickers/';
 export const STICKERS_PER_RUN = 3;   // each is 3 Printful calls; the free plan allows 50 subrequests per run
 const MANIFEST_TTL = 3600;
-// Apron artwork (owner, Nov 2, 2026: "the image on the aprons is too large so they're cut off; smaller, centered,
-// towards the top"). The apron's print file is fill mode "cover": Printful stretches whatever file it gets over the
-// whole apron and ignores the placement, so the design is drawn small on a full-size transparent apron file
-// (commerce-api/scripts/make_aprons.py -> assets/aprons/) and that file goes on the apron products, same as stickers.
-export const APRON_SITE = 'https://ninobattaglia.com/assets/aprons/';
 export const KINDS = Object.freeze({
-  sticker: {site: STICKER_SITE, type: 'sticker', file: 'sticker_file', manifest: 'sticker_manifest', applied: 'sticker_applied', last: 'sticker_last', name: 'sticker'},
-  apron: {site: APRON_SITE, type: 'apron', file: 'apron_file', manifest: 'apron_manifest', applied: 'apron_applied', last: 'apron_last', name: 'apron'}
+  sticker: {site: STICKER_SITE, type: 'sticker', file: 'sticker_file', manifest: 'sticker_manifest', applied: 'sticker_applied', last: 'sticker_last', name: 'sticker'}
 });
 
 const setSetting = (store, key, value) => store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', key, value);
@@ -35,7 +29,6 @@ export async function stickerFile(store, designId, kind = KINDS.sticker) {
 }
 
 // The published manifest, re-read at most hourly (one settings row).
-export const apronFile = (store, designId) => stickerFile(store, designId, KINDS.apron);
 export async function stickerManifest(store, now, fetcher, kind = KINDS.sticker) {
   const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', kind.manifest);
   const cached = row ? JSON.parse(row.value) : null;

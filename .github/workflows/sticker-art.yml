@@ -46,16 +46,13 @@ jobs:
           echo "downloaded $i"
       - name: Build sticker artwork
         run: python3 commerce-api/scripts/make_stickers.py . /tmp/originals
-      # Apron artwork (owner, Nov 2): each design small and centered on the upper chest of a full-size apron file.
-      - name: Build apron artwork
-        run: python3 commerce-api/scripts/make_aprons.py .
       - name: Commit when changed
         id: commit
         run: |
-          git add -f assets/stickers assets/aprons
+          git add -f assets/stickers
           if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           git config user.name github-actions; git config user.email actions@github.com
-          git commit -qm "Sticker art: one-piece sticker and apron artwork"
+          git commit -qm "Sticker art: one-piece sticker artwork"
           git pull -q --rebase origin master
           git push -q origin HEAD:master
           echo "changed=true" >> "$GITHUB_OUTPUT"

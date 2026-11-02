@@ -24,7 +24,7 @@ const SHOP = 'https://ninobattaglia.com';
 const LOGO = 'https://ninobattaglia.com/assets/email-nino-mark.png';
 const DEFAULT_DESIGNS = '455597876,455604571,455689737,455757431,455691193,455581523,455411071,455813575,455727920,455722787';
 const DEFAULT_HOLIDAY = '467251816,467441340,455602708,467255838,485862119';
-const TYPES = [['Hoodie','hoodies'],['Crewneck sweatshirt','crewneck sweatshirts'],['Tote','totes'],['Sticker','stickers'],['Apron','aprons']];
+const TYPES = [['Hoodie','hoodies'],['Crewneck sweatshirt','crewneck sweatshirts'],['Tote','totes'],['Sticker','stickers'],['Mug','mugs']];
 
 const esc = value => String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const usd = cents => `$${(cents / 100).toFixed(cents % 100 ? 2 : 0)}`;
