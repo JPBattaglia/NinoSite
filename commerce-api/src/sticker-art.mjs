@@ -13,59 +13,69 @@
 export const STICKER_SITE = 'https://ninobattaglia.com/assets/stickers/';
 export const STICKERS_PER_RUN = 3;   // each is 3 Printful calls; the free plan allows 50 subrequests per run
 const MANIFEST_TTL = 3600;
+// Apron artwork (owner, Nov 2, 2026: "the image on the aprons is too large so they're cut off; smaller, centered,
+// towards the top"). The apron's print file is fill mode "cover": Printful stretches whatever file it gets over the
+// whole apron and ignores the placement, so the design is drawn small on a full-size transparent apron file
+// (commerce-api/scripts/make_aprons.py -> assets/aprons/) and that file goes on the apron products, same as stickers.
+export const APRON_SITE = 'https://ninobattaglia.com/assets/aprons/';
+export const KINDS = Object.freeze({
+  sticker: {site: STICKER_SITE, type: 'sticker', file: 'sticker_file', manifest: 'sticker_manifest', applied: 'sticker_applied', last: 'sticker_last', name: 'sticker'},
+  apron: {site: APRON_SITE, type: 'apron', file: 'apron_file', manifest: 'apron_manifest', applied: 'apron_applied', last: 'apron_last', name: 'apron'}
+});
 
 const setSetting = (store, key, value) => store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', key, value);
 
 // The design's one-piece sticker artwork in the Printful library: {id, width, height} or null.
-export async function stickerFile(store, designId) {
+export async function stickerFile(store, designId, kind = KINDS.sticker) {
   try {
-    const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', `sticker_file:${designId}`);
+    const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', `${kind.file}:${designId}`);
     const v = row ? JSON.parse(row.value) : null;
     return v && Number.isSafeInteger(v.id) && v.w > 0 && v.h > 0 ? {id: v.id, width: v.w, height: v.h} : null;
   } catch { return null; }
 }
 
 // The published manifest, re-read at most hourly (one settings row).
-export async function stickerManifest(store, now, fetcher) {
-  const row = await store.first("SELECT value FROM commerce_settings WHERE key='sticker_manifest'");
+export const apronFile = (store, designId) => stickerFile(store, designId, KINDS.apron);
+export async function stickerManifest(store, now, fetcher, kind = KINDS.sticker) {
+  const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', kind.manifest);
   const cached = row ? JSON.parse(row.value) : null;
   if (cached && now - cached.at < MANIFEST_TTL) return cached.designs;
-  const response = await fetcher(`${STICKER_SITE}manifest.json?t=${now}`, {signal: AbortSignal.timeout(15000)});
-  if (!response.ok) throw new Error(`sticker manifest ${response.status}`);
+  const response = await fetcher(`${kind.site}manifest.json?t=${now}`, {signal: AbortSignal.timeout(15000)});
+  if (!response.ok) throw new Error(`${kind.name} manifest ${response.status}`);
   const designs = {};
   for (const [id, v] of Object.entries(await response.json())) {
     if (/^\d+$/.test(id) && /^[0-9a-f]{12,64}$/.test(String(v?.sha || '')) && v.w > 0 && v.h > 0) designs[id] = {sha: v.sha, w: Number(v.w), h: Number(v.h)};
   }
-  await setSetting(store, 'sticker_manifest', JSON.stringify({at: now, designs}));
+  await setSetting(store, kind.manifest, JSON.stringify({at: now, designs}));
   return designs;
 }
 
 // deps: {api(env, method, path, body, fetcher), remake(store, env, now, designId, productId, art, fetcher)} from expand.mjs.
-export async function applyStickerArt(store, env, now, deps, {fetcher = (...a) => fetch(...a), max = STICKERS_PER_RUN} = {}) {
+export async function applyStickerArt(store, env, now, deps, {fetcher = (...a) => fetch(...a), max = STICKERS_PER_RUN, kind = KINDS.sticker} = {}) {
   const out = {applied: [], errors: [], remaining: 0};
   try {
     if (!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return out;
-    const manifest = await stickerManifest(store, now, fetcher);
+    const manifest = await stickerManifest(store, now, fetcher, kind);
     // Which artwork each design already uses: one settings row (a LIKE over all settings every 5 minutes costs D1 reads).
-    const appliedRow = await store.first("SELECT value FROM commerce_settings WHERE key='sticker_applied'");
+    const appliedRow = await store.first('SELECT value FROM commerce_settings WHERE key=?', kind.applied);
     const applied = appliedRow ? JSON.parse(appliedRow.value) : {};
     const todo = Object.entries(manifest).filter(([id, v]) => applied[id] !== v.sha);
     out.remaining = todo.length;
     for (const [designId, v] of todo.slice(0, max)) {
       try {
-        const file = (await deps.api(env, 'POST', '/files', {url: `${STICKER_SITE}${designId}.png?v=${v.sha}`, filename: `sticker-${designId}-${v.sha.slice(0, 8)}.png`}, fetcher))?.result;
+        const file = (await deps.api(env, 'POST', '/files', {url: `${kind.site}${designId}.png?v=${v.sha}`, filename: `${kind.name}-${designId}-${v.sha.slice(0, 8)}.png`}, fetcher))?.result;
         if (!Number.isSafeInteger(file?.id)) throw new Error('file_no_id');
         const art = {id: file.id, width: v.w, height: v.h};
-        const product = (await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand:${designId}:sticker`))?.value;
+        const product = (await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand:${designId}:${kind.type}`))?.value;
         if (/^\d+$/.test(product || '')) await deps.remake(store, env, now, designId, product, art, fetcher);
-        await setSetting(store, `sticker_file:${designId}`, JSON.stringify({id: file.id, w: v.w, h: v.h, sha: v.sha}));
+        await setSetting(store, `${kind.file}:${designId}`, JSON.stringify({id: file.id, w: v.w, h: v.h, sha: v.sha}));
         applied[designId] = v.sha;
-        await setSetting(store, 'sticker_applied', JSON.stringify(applied));
+        await setSetting(store, kind.applied, JSON.stringify(applied));
         out.applied.push(designId);
       } catch (error) { out.errors.push(`${designId}: ${String(error?.message || error).slice(0, 200)}`); }
     }
     out.remaining -= out.applied.length;
-    if (todo.length) await setSetting(store, 'sticker_last', JSON.stringify({at: now, ...out}));
+    if (todo.length) await setSetting(store, kind.last, JSON.stringify({at: now, ...out}));
   } catch (error) { out.errors.push(String(error?.message || error).slice(0, 200)); }
   return out;
 }

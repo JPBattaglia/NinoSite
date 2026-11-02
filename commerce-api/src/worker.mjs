@@ -18,8 +18,8 @@ import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
 import {processMockups,serveMockup} from './mockups.mjs';
 import {catalogSnapshot,refreshCatalogSnapshot,readinessCatalog,withReadiness} from './catalog-snapshot.mjs';
 import {runMirror} from './mirror.mjs';
-import {runExpansion,api as printfulApi,remakeSticker} from './expand.mjs';
-import {applyStickerArt} from './sticker-art.mjs';
+import {runExpansion,api as printfulApi,remakeSticker,remakeApron} from './expand.mjs';
+import {applyStickerArt,KINDS as ART_KINDS} from './sticker-art.mjs';
 import {refusedKey,alertRefusedKey} from './key-alert.mjs';
 import {withPrintfulTokens,renewPrintfulTokens,connectRedirect,connectCallback,connectionStatus} from './printful-auth.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
@@ -200,6 +200,8 @@ export function createApp(dependencies={}) {
         // Not held back by a running sync (a full sync takes ~40 runs); the next sync picks the remade stickers up.
         let stickers={applied:[]};
         try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
+        // Apron artwork (Nov 2): same steps, 2 per run, only in a run where the sticker step had nothing to do.
+        if(!stickers.applied?.length) { try { const aprons=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeApron},{max:2,kind:ART_KINDS.apron}); if(aprons.applied?.length) stickers={...stickers,applied:aprons.applied}; } catch { /* never blocks sync or fulfillment */ } }
         // The rollout (owner, Nov 1: don't sit idle during syncs). While a sync runs, a run does the rollout only when
         // the sticker step had nothing to do, so the run stays inside the free plan's 50 database queries.
         if(!sync || !stickers.applied?.length) {
