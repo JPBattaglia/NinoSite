@@ -254,8 +254,8 @@ test('mugs replace aprons: every design gets an 11 and 15 oz mug, design centere
   assert.deepEqual(posts[0].sync_variants.map(v => [v.variant_id, v.retail_price]), [[1320, '10.00'], [4830, '13.00']], '11 and 15 oz at cost x 1.5');
   for (const v of posts[0].sync_variants) {
     const pos = v.files[0].position;
-    assert.ok(pos.width <= pos.area_width * 0.42 + 1 && pos.height <= pos.area_height * 0.88 + 1, 'one side of the mug');
-    assert.equal(pos.left, Math.round((pos.area_width - pos.width) / 2));
+    assert.ok(pos.width <= pos.area_width * 0.40 + 1 && pos.height <= pos.area_height * 0.88 + 1, 'one side of the mug');
+    assert.equal(pos.left, Math.round(pos.area_width * 0.75 - pos.width / 2), 'the face seen with the handle on the right');
     assert.equal(pos.top, Math.round((pos.area_height - pos.height) / 2), 'centered top to bottom');
   }
   assert.equal(lineTaxCode({kind: 'mug'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
