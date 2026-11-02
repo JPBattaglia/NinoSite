@@ -93,6 +93,26 @@ test('the 5-minute run refreshes the stored catalog at most hourly when new mode
   assert.match(body.products[0].variants[0].image,/\/api\/mockups\/101\/black\.jpg$/,'the new photo is in the stored list');
 });
 
+test('products a running sync adds to the live catalog reach the stored list within the hour',async()=>{
+  const {refreshCatalogSnapshot,catalogSnapshot}=await import('../src/catalog-snapshot.mjs');
+  const f=await fixture(); f.env.MOCKUPS=new KVStore();
+  f.db.db.exec(readFileSync(new URL('../migrations/0004_mockups.sql',import.meta.url),'utf8'));
+  const now=f.now();
+  await catalogSnapshot(f.store,f.env,now,'https://api.example.com');
+  const before=JSON.parse(f.env.MOCKUPS.data.get('catalog:snapshot').value).products.length;
+  assert.equal(await refreshCatalogSnapshot(f.store,f.env,now+3700),'current','nothing new');
+  const g=await f.store.activeGeneration();
+  const p=await f.store.first('SELECT * FROM catalog_products WHERE generation=? LIMIT 1',g);
+  const v=await f.store.first('SELECT * FROM catalog_variants WHERE generation=? AND product_id=? LIMIT 1',g,p.id);
+  await f.store.run('INSERT INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES(?,?,?,?,?,?)',g,'999',`nx-hoodie-${p.id}`,'New Hoodie',null,now+3800);
+  const snap=JSON.parse(v.snapshot_json); snap.id='9990'; snap.product_id='999';
+  await f.store.run('INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES(?,?,?,?,?,?)',g,'9990','999',v.price_cents,v.currency,JSON.stringify(snap));
+  assert.equal(await refreshCatalogSnapshot(f.store,f.env,now+3900),'current','checked less than an hour ago: one settings row, no count');
+  assert.equal(await refreshCatalogSnapshot(f.store,f.env,now+7400),'rebuilt');
+  const after=JSON.parse(f.env.MOCKUPS.data.get('catalog:snapshot').value).products;
+  assert.equal(after.length,before+1); assert.ok(after.some(x=>x.title==='New Hoodie'));
+});
+
 test('an unsynced catalog is not cached, so the first real sync shows up immediately',async()=>{
   const entries=new Map();
   globalThis.caches={default:{async match(request){return entries.get(request.url)?.clone();},async put(request,response){entries.set(request.url,response);}}};

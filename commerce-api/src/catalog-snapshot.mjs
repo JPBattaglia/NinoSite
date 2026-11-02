@@ -17,6 +17,13 @@
 import {publicCatalog, catalogMaxAge} from './catalog.mjs';
 import {mockupColors} from './mockups.mjs';
 
+// Nov 2, 2026 (owner: "many designs still don't have the other options"): a sync updates the live catalog in place,
+// product by product, but the stored body only noticed when the whole sync finished, and a full sync of ~840
+// products takes about 7 hours. Products added mid-sync (12 designs' hoodies, aprons, stickers...) stayed hidden all
+// that time. The stored body now also follows the live catalog's product count and newest write ('v'), checked at
+// most hourly (one settings row in between), so new products show within the hour.
+const CATALOG_VERSION_SQL = 'SELECT COUNT(*) AS n,MAX(synced_at) AS changed FROM catalog_products WHERE generation=?';
+const catalogVersion = async (store, generation) => { const v = await store.first(CATALOG_VERSION_SQL, generation); return `${v?.n || 0}:${v?.changed || 0}`; };
 export const SNAPSHOT_KEY = 'catalog:snapshot';
 export const SNAPSHOT_REFRESH_SECONDS = 3600;
 
@@ -32,7 +39,7 @@ async function build(store, env, now, origin, live) {
   const body = JSON.stringify(catalog);
   const meta = {g: live?.generation || '', r: live?.run || 0, o: origin, b: now,
     ready: Boolean(catalog.catalog_ready), any: catalog.products.some(p => p.variants.some(v => v.available)),
-    m: live ? (await mockupColors(store)).version : ''};
+    m: live ? (await mockupColors(store)).version : '', v: live ? await catalogVersion(store, live.generation) : ''};
   if (env.MOCKUPS && live && catalog.catalog_complete) await env.MOCKUPS.put(SNAPSHOT_KEY, body, {metadata: meta});
   return {body, meta};
 }
@@ -62,7 +69,13 @@ export async function refreshCatalogSnapshot(store, env, now) {
   if (!live) return 'no_catalog';
   const fresh = now - live.run <= catalogMaxAge(env);
   if (m.ready === fresh && now - m.b < SNAPSHOT_REFRESH_SECONDS) return 'recent';
-  if (m.g === live.generation && m.r === live.run && m.ready === fresh && (await mockupColors(store)).version === m.m) return 'current';
+  if (m.g === live.generation && m.r === live.run && m.ready === fresh && (await mockupColors(store)).version === m.m) {
+    // Products written by a sync still running: count them at most hourly.
+    const checked = Number((await store.first("SELECT value FROM commerce_settings WHERE key='snapshot_checked'"))?.value || 0);
+    if (now - checked < SNAPSHOT_REFRESH_SECONDS) return 'current';
+    await store.run("INSERT INTO commerce_settings(key,value) VALUES('snapshot_checked',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value", String(now));
+    if (m.v === await catalogVersion(store, live.generation)) return 'current';
+  }
   await build(store, env, now, m.o, live);
   return 'rebuilt';
 }
