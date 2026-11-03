@@ -23,6 +23,18 @@
     document.querySelector('[data-design-total]').textContent = t == null ? '' : `Total ${money(t)} (USD)${TAXED.has(chosen) ? ' + sales tax, added at checkout' : ''}`;
   }
 
+  // Campaign labels saved by signup.js when the visitor landed (marketing plan v4): an ad visit is credited to its
+  // campaign; anything else stays "ninobattaglia.com" as before.
+  function designTracking() {
+    try {
+      if (navigator.globalPrivacyControl !== true && navigator.doNotTrack !== '1') {
+        const a = JSON.parse(sessionStorage.getItem('nino-attribution') || 'null');
+        if (a && (a.source || a.campaign)) return { source: a.source || 'ninobattaglia.com', ...(a.medium ? { medium: a.medium } : {}), ...(a.campaign ? { campaign: a.campaign } : {}) };
+      }
+    } catch {}
+    return { source: 'ninobattaglia.com' };
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('design-order');
     if (!form) return;
@@ -60,7 +72,7 @@
         const res = await fetch(API + (TEST ? '/api/create-checkout-test' : '/api/create-checkout'), {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ items: [{ key: chosen }], return_to: 'nino', ...(chosen === 'NINO_MENU_DESIGN' ? { design_pages: Number(value('pages')) } : {}),
-            customer: { name: value('name'), business: value('business'), email: value('email') }, tracking: { source: 'ninobattaglia.com' } })
+            customer: { name: value('name'), business: value('business'), email: value('email') }, tracking: designTracking() })
         });
         const data = await res.json().catch(() => ({}));
         if (data.ok && data.url) { location.href = data.url; return; }

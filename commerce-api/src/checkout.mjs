@@ -52,7 +52,8 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
   // Browsing, carts and shipping quotes keep working; only payment is held (e.g. while a Stripe key is replaced).
   if(env.CHECKOUT_PAUSED==='true') fail(503,'checkout_paused','Checkout is paused for a short time. Your cart is saved; please try again later today.');
   const items=normalizeCart(body);
-  if(Object.keys(body).some(key=>!['items','request_id','shipping_quote_id','shipping_rate_id'].includes(key))) fail(400,'invalid_checkout_fields','Prices and totals are calculated by the server.');
+  if(Object.keys(body).some(key=>!['items','request_id','shipping_quote_id','shipping_rate_id','attribution'].includes(key))) fail(400,'invalid_checkout_fields','Prices and totals are calculated by the server.');
+  const attribution=checkoutAttribution(body.attribution);
   const requestKey=request.headers.get('Idempotency-Key') || body.request_id || crypto.randomUUID();
   if(typeof requestKey!=='string' || !/^[A-Za-z0-9_-]{16,100}$/.test(requestKey)) fail(400,'invalid_request_id');
   const requestHash=await hash({items,shipping_quote_id:body.shipping_quote_id || null,shipping_rate_id:body.shipping_rate_id || null});
@@ -69,7 +70,7 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     const subtotal=lines.reduce((sum,line)=>sum+line.line_total_cents,0);
     if(subtotal+shipping.amount>1000000) fail(400,'order_total_limit');
     const id=`ord_${(await hash(requestKey)).slice(0,24)}`;
-    const snapshot={lines,subtotal_cents:subtotal,currency:'usd',shipping,tax_mode:env.STRIPE_TAX_MODE,product_tax_code:productTaxCode(env),created_at:now};
+    const snapshot={lines,subtotal_cents:subtotal,currency:'usd',shipping,tax_mode:env.STRIPE_TAX_MODE,product_tax_code:productTaxCode(env),created_at:now,...(attribution?{attribution}:{})};
     const token=crypto.randomUUID()+crypto.randomUUID();
     await store.run('INSERT OR IGNORE INTO commerce_orders(id,request_key,request_hash,snapshot_json,receipt_token,live_mode,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',id,requestKey,requestHash,JSON.stringify(snapshot),token,env.STRIPE_MODE==='live'?1:0,now,now);
     order=await store.order(id);
@@ -83,7 +84,7 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     success_url:returnUrl(env,'CHECKOUT_SUCCESS_PATH','/shop.html?checkout=success&session_id={CHECKOUT_SESSION_ID}'),
     cancel_url:returnUrl(env,'CHECKOUT_CANCEL_PATH','/shop.html?checkout=cancelled'),
     expires_at:order.created_at+3600,
-    metadata:{order_id:order.id,cart_hash:order.request_hash},
+    metadata:{order_id:order.id,cart_hash:order.request_hash,...attributionMetadata(snapshot.attribution)},
     payment_intent_data:{metadata:{order_id:order.id}},
     line_items:snapshot.lines.map(line=>({quantity:line.quantity,price_data:{currency:'usd',unit_amount:line.unit_price_cents,tax_behavior:'exclusive',product_data:{...(lineTaxCode(line,snapshot)?{tax_code:lineTaxCode(line,snapshot)}:{}),name:line.title,description:line.variant.name || undefined,images:line.image?[line.image]:undefined,metadata:{sync_variant_id:line.variant_id,sync_product_id:line.product_id}}}})),
     shipping_options:[{shipping_rate_data:{display_name:snapshot.shipping.name,type:'fixed_amount',fixed_amount:{amount:snapshot.shipping.amount,currency:'usd'},tax_behavior:'exclusive'}}]
@@ -148,4 +149,24 @@ const NON_CLOTHING = new Set(['sticker','tote','apron','hat','mug','mugblack']);
 export function lineTaxCode(line,snapshot) {
   if(!snapshot.product_tax_code) return null;
   return NON_CLOTHING.has(line.kind) ? 'txcd_99999999' : snapshot.product_tax_code;
+}
+
+// Ad attribution (marketing plan v4, Nov 3, 2026): the page that started checkout may pass the campaign labels it
+// arrived with (utm_source / utm_medium / utm_campaign), so a paid order can be counted against the ad that brought
+// it. Labels only: no click IDs, no personal data. Anything malformed is dropped rather than failing the checkout.
+const ATTRIBUTION_TOKEN=/^[a-z0-9][a-z0-9_-]{0,39}$/;
+export function checkoutAttribution(value) {
+  if(!value || typeof value!=='object' || Array.isArray(value)) return null;
+  const out={};
+  for(const key of ['source','medium','campaign']) {
+    const raw=value[key];
+    if(typeof raw==='string' && ATTRIBUTION_TOKEN.test(raw.toLowerCase())) out[key]=raw.toLowerCase();
+  }
+  return out.source || out.campaign ? out : null;
+}
+function attributionMetadata(attribution) {
+  if(!attribution) return {};
+  const out={};
+  for(const key of ['source','medium','campaign']) if(attribution[key]) out[`utm_${key}`]=attribution[key];
+  return out;
 }

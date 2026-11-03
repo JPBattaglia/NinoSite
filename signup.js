@@ -58,3 +58,21 @@
     setTimeout(() => note.remove(), 9000);
   }
 })();
+
+// Ad attribution (marketing plan v4, Nov 3, 2026). Loaded on every page, including the shirt pages that ads and
+// feeds land on. Remembers the campaign labels of the first landing in this browser tab (utm_source, utm_medium,
+// utm_campaign) so checkout can say which ad brought an order. Labels only: no click IDs, no personal data,
+// nothing sent anywhere until the buyer starts a checkout. Global Privacy Control / Do Not Track turn it off.
+(() => {
+  'use strict';
+  const KEY = 'nino-attribution';
+  try {
+    if (navigator.globalPrivacyControl === true || navigator.doNotTrack === '1' || window.doNotTrack === '1') { sessionStorage.removeItem(KEY); return; }
+    if (sessionStorage.getItem(KEY)) return;
+    const query = new URLSearchParams(location.search);
+    const token = value => (typeof value === 'string' && /^[a-z0-9][a-z0-9_-]{0,39}$/i.test(value)) ? value.toLowerCase() : '';
+    const label = { source: token(query.get('utm_source')), medium: token(query.get('utm_medium')), campaign: token(query.get('utm_campaign')) };
+    if (!label.source && !label.campaign) return;
+    sessionStorage.setItem(KEY, JSON.stringify(label));
+  } catch { /* storage blocked: no attribution, nothing else changes */ }
+})();

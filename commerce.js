@@ -659,6 +659,14 @@
     else if (state.cart.reduce((sum, item) => sum + item.quantity, 0) > config.maxUnits || count > config.maxLines) cartStatus(`Choose no more than ${config.maxUnits} total items and ${config.maxLines} different options for one checkout.`, true);
     else if (count && !totals().allValid) cartStatus('Remove unavailable options before checking out.', true);
   }
+  // Campaign labels saved by signup.js on the landing page (marketing plan v4); labels only, this tab only.
+  function savedAttribution() {
+    try {
+      if (navigator.globalPrivacyControl === true || navigator.doNotTrack === '1') return null;
+      const value = JSON.parse(sessionStorage.getItem('nino-attribution') || 'null');
+      return value && typeof value === 'object' ? value : null;
+    } catch { return null; }
+  }
   function checkoutRequestId(items) {
     const signature = JSON.stringify({ items: cartSignature(items), shipping_quote_id: shipping.mode === 'calculated' ? shipping.quote?.id : null, shipping_rate_id: shipping.mode === 'calculated' ? shipping.selected : null });
     try {
@@ -684,6 +692,7 @@
       cartStatus('Opening secure checkout…');
       const requestId = checkoutRequestId(items);
       const payload = { items, request_id: requestId };
+      const attribution = savedAttribution(); if (attribution) payload.attribution = attribution;
       if (shipping.mode === 'calculated') { payload.shipping_quote_id = shipping.quote.id; payload.shipping_rate_id = shipping.selected; }
       const response = await fetch(apiUrl(config.checkoutPath), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
       let data; try { data = await response.json(); } catch { data = null; }
