@@ -29,6 +29,7 @@ export const TYPES = Object.freeze({
   sticker: {label: 'Sticker', noun: 'a vinyl sticker', productType: 'Stickers', apparel: false},
   apron: {label: 'Apron', noun: 'an apron with your pick of strap color', productType: 'Kitchen > Aprons', apparel: true},
   mug: {label: 'Coffee Mug', noun: 'a white glossy ceramic coffee mug (11 or 15 oz)', productType: 'Kitchen > Drinkware > Mugs', apparel: false},
+  mugblack: {label: 'Black Coffee Mug', noun: 'a black glossy ceramic coffee mug (11 or 15 oz)', productType: 'Kitchen > Drinkware > Mugs', apparel: false},
   hat: {label: 'Dad Hat', noun: 'an embroidered dad hat', productType: 'Apparel > Hats', apparel: true}
 });
 // A real U.S. address for shipping quotes (San Francisco City Hall); quotes never create orders.

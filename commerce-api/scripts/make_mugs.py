@@ -13,7 +13,7 @@ Output: assets/mugs/<design id>.png and assets/mugs/manifest.json
     {"<design id>": {"sha": <sha1 of the png>, "w": 2700, "h": 1140, "art": <Printful hash>, "layout": LAYOUT}}
 """
 import hashlib, io, json, os, sys
-from PIL import Image
+from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(__file__))
 from make_stickers import fetch, live_designs, PREVIEW_SCALE
@@ -23,8 +23,37 @@ BOX_W, BOX_H, CENTER_X = 0.40, 0.86, 0.75
 LAYOUT = 'v1-0.40-0.86-0.75'
 
 
+def clear_background(art):
+    """The wrap must have a transparent background (owner, Nov 3, 2026: black mugs). Printful prints the black mug's
+    color wherever the file is transparent, so a solid white backdrop behind a design would print as a white box.
+    When all four corners of the artwork are opaque near-white, that backdrop (flooded from the corners) is cleared.
+    Other opaque corners are left alone: framed designs (a badge, a square poster) are meant to look that way."""
+    art = art.convert('RGBA')
+    w, h = art.size
+    corners = [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]
+    if not all(art.getpixel(c)[3] > 250 and min(art.getpixel(c)[:3]) > 235 for c in corners):
+        return art
+    marked = art.convert('RGB')
+    for c in corners:
+        ImageDraw.floodfill(marked, c, (255, 0, 255), thresh=24)
+    # Pixels the flood reached (painted magenta) become transparent.
+    r, g, b = marked.split()
+    hit = Image.eval(r, lambda v: 255 if v == 255 else 0)
+    hit = Image.composite(hit, Image.new('L', (w, h), 0), Image.eval(g, lambda v: 255 if v == 0 else 0))
+    hit = Image.composite(hit, Image.new('L', (w, h), 0), Image.eval(b, lambda v: 255 if v == 255 else 0))
+    keep = Image.eval(hit, lambda v: 255 - v)
+    art.putalpha(Image.composite(art.getchannel('A'), Image.new('L', (w, h), 0), keep))
+    return art
+
+
+def transparent_outside(canvas):
+    """True when the wrap's corners (outside the design) are fully transparent."""
+    w, h = canvas.size
+    return all(canvas.getpixel(c)[3] == 0 for c in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)])
+
+
 def mug(design_art):
-    art = design_art.convert('RGBA')
+    art = clear_background(design_art)
     bbox = art.getbbox()
     if bbox:
         art = art.crop(bbox)
@@ -52,7 +81,10 @@ def main(root):
         try:
             preview = Image.open(io.BytesIO(fetch(f'https://files.cdn.printful.com/files/{art[:3]}/{art}_preview.png'))).convert('RGBA')
             preview = preview.resize((preview.width * PREVIEW_SCALE, preview.height * PREVIEW_SCALE), Image.LANCZOS)
-            buf = io.BytesIO(); mug(preview).save(buf, 'PNG', optimize=True); data = buf.getvalue()
+            wrap = mug(preview)
+            if not transparent_outside(wrap):
+                raise ValueError('wrap background is not transparent')
+            buf = io.BytesIO(); wrap.save(buf, 'PNG', optimize=True); data = buf.getvalue()
             with open(os.path.join(out_dir, f'{design}.png'), 'wb') as f:
                 f.write(data)
             manifest[design] = {'sha': hashlib.sha1(data).hexdigest(), 'w': AREA[0], 'h': AREA[1], 'art': art, 'layout': LAYOUT}

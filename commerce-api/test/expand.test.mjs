@@ -296,3 +296,47 @@ test('hats: only gated designs, threads from the design colors, hat colors that 
   assert.deepEqual(items[0].options, [{id: 'thread_colors', value: ['#01784E', '#FFFFFF']}, {id: 'embroidery_type', value: 'flat'}]);
   assert.equal(items[0].files[0].position.area_width, 1200);
 });
+
+// Nov 3, 2026 (owner): a Black Glossy Mug beside the white one, cost x 1.5, only on designs that read well on a dark
+// background (the garment color check against black), gated to sample designs until the owner says yes.
+test('black mug: gated, only designs that show on black, 11 and 15 oz at cost x 1.5, the mug wrap artwork', async () => {
+  const {showsOnDark} = await import('../src/expand.mjs');
+  const black = spec('mugblack');
+  assert.equal(black.catalog, 300);
+  assert.ok(showsOnDark(black, summarize(square([240, 200, 40]))), 'a bright design shows on black');
+  assert.ok(!showsOnDark(black, summarize(square([12, 12, 14]))), 'a black design disappears on black');
+  assert.ok(showsOnDark(black, summarize(square([12, 12, 14], [250, 250, 250]))), "Nino's light outline carries a dark design");
+  assert.ok(!showsOnDark(black, null), 'no color summary: not offered');
+  const bright = JSON.stringify(summarize(square([240, 200, 40]))), dark = JSON.stringify(summarize(square([12, 12, 14])));
+  const settings = new Map([['expand_designs', 'all'], ['expand_gate:mugblack', '482794926,999'],
+    ['expand_art:482794926', bright], ['expand_art:999', dark], ['expand_art:555', bright],
+    ['mug_file:482794926', JSON.stringify({id: 9100, w: 2700, h: 1140, sha: 'abcdefabcdef'})],
+    ...['482794926', '999', '555'].flatMap(d => ['sticker', 'tote', 'crewneck', 'hoodie', 'mug'].map(t => [`expand:${d}:${t}`, '1']))]);
+  const posts = [];
+  const blackVariants = [{id: 9323, size: '11 oz', price: '8.11'}, {id: 9324, size: '15 oz', price: '9.13'}].map(v => ({...v, color: 'Black', color_code: '#000000', availability_status: [{region: 'US', status: 'in_stock'}]}));
+  const fetcher = async (url, init = {}) => {
+    const path = new URL(url).pathname;
+    if (init.method === 'POST') { posts.push(JSON.parse(init.body)); return Response.json({code: 200, result: {id: 9000 + posts.length}}); }
+    if (path.startsWith('/store/products/')) return Response.json({code: 200, result: {...detail, sync_product: {...detail.sync_product, id: Number(path.split('/').pop())}}});
+    if (path === '/products/300') return Response.json({code: 200, result: {variants: blackVariants}});
+    return new Response('{}', {status: 404});
+  };
+  const store = fakeStore(settings, [{id: '482794926', external_id: '455', title: 'Skull Wave T'}, {id: '999', external_id: '777', title: 'Night T'}, {id: '555', external_id: '888', title: 'Not Gated T'}]);
+  const out = await runExpansion(store, {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1000, {fetcher});
+  assert.deepEqual(posts.map(p => p.sync_product.external_id), ['nx-mugblack-482794926'], 'only the gated design that shows on black');
+  assert.equal(posts[0].sync_product.external_id, 'nx-mugblack-482794926');
+  assert.equal(posts[0].sync_product.name, 'Skull Wave Mug', 'same name as the white mug: one Mug, colors White / Black');
+  assert.deepEqual(posts[0].sync_variants.map(v => [v.variant_id, v.retail_price]), [[9323, '13.00'], [9324, '14.00']]);
+  for (const v of posts[0].sync_variants) {
+    assert.equal(v.files[0].id, 9100, 'the transparent mug wrap artwork');
+    const pos = v.files[0].position;
+    assert.ok(pos.width <= pos.area_width && pos.height <= pos.area_height);
+    assert.equal(pos.area_width, v.variant_id === 9323 ? 2250 : 2253);
+  }
+  assert.equal(settings.get('expand:999:mugblack'), 'skip:dark');
+  assert.ok(!settings.has('expand:555:mugblack'), 'not on the sample list: waits for the owner');
+  assert.deepEqual(out.errors, []);
+  assert.equal(out.remaining, 0, 'a skipped design is not left over');
+  assert.equal(typeOf('nx-mugblack-482794926').type, 'mugblack');
+  assert.equal(lineTaxCode({kind: 'mugblack'}, {product_tax_code: 'txcd_30011000'}), 'txcd_99999999');
+});

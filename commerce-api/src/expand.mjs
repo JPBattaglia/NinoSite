@@ -47,8 +47,16 @@ export const PRODUCT_TYPES = Object.freeze([
   // sits once on the right half of the wrap (cx 0.75): the face seen with the handle on the right, as in Printful's
   // product photo and for a right-handed drinker's guests; up to 40% of the wrap wide and 88% of its height.
   {type: 'mug', label: 'Mug', catalog: 19, file: 'default', fit: 'chest', placement: 'default', technique: 'sublimation', dpi: 300,
-    chest: {w: 0.40, h: 0.88, top: 0.06, middle: true, cx: 0.75},
+    chest: {w: 0.40, h: 0.88, top: 0.06, middle: true, cx: 0.75}, mugArt: true,
     variants: [1320, 4830], area: {1320: [2700, 1050], 4830: [2700, 1140]}},
+  // Black Glossy Mug, 11 oz and 15 oz, beside the white one (owner, Nov 3, 2026), cost x 1.5. Same full-wrap artwork
+  // (transparent background: Printful prints black wherever the file is transparent). Only for designs that read well
+  // on a dark background (darkOnly: the garment color check against the mug's black); the rest are marked
+  // 'skip:dark'. Gated: expand_gate:mugblack = the sample designs until the owner says yes, then 'all'.
+  // The shop shows it as the Black color of the design's one Mug choice (commerce.js mergeMugs).
+  {type: 'mugblack', label: 'Mug', catalog: 300, file: 'default', fit: 'chest', placement: 'default', technique: 'sublimation', dpi: 300,
+    chest: {w: 0.40, h: 0.88, top: 0.06, middle: true, cx: 0.75}, gate: true, darkOnly: '#000000', mugArt: true,
+    variants: [9323, 9324], area: {9323: [2250, 925], 9324: [2253, 1084]}},   // Printful printfiles 307 and 308
   // Classic Dad Hat | Yupoong 6245CM, front embroidery (the standard front, no extra charge). Same file type and thread
   // options as the staff merch cap, which orders fine. Threads come from the design's own colors (threadsFor).
   {type: 'hat', label: 'Dad hat', catalog: 206, file: 'default', fit: 'contain', margin: 0, placement: 'embroidery_front', technique: 'embroidery', dpi: 300,
@@ -237,15 +245,18 @@ async function queuePhoto(store, productId, layer, now) {
 // Stickers use the design's one-piece sticker artwork once it exists (sticker-art.mjs); everything else the design's own.
 async function withStickerArt(store, spec, design) {
   if (!design) return design;
-  if (spec.type === 'mug') { const art = await mugFile(store, design.id); return art ? {...design, art: {...art, full: true}} : design; }
+  if (spec.mugArt) { const art = await mugFile(store, design.id); return art ? {...design, art: {...art, full: true}} : design; }
   if (spec.type !== 'sticker') return design;
   const art = await stickerFile(store, design.id);
   return art ? {...design, art} : design;
 }
 
 // Remake a design's sticker product with new artwork (sticker-art.mjs): same sizes and prices, new file, new photo.
-export const remakeMug = (store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a)) =>
-  remakeSticker(store, env, now, designId, productId, {...art, full: true}, fetcher, 'mug');
+export const remakeMug = (store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a), type = 'mug') =>
+  remakeSticker(store, env, now, designId, productId, {...art, full: true}, fetcher, type === 'mugblack' ? 'mugblack' : 'mug');
+// A dark-only type (the black mug) is made only when the design reads well on its color: the same check that skips
+// garment colors a design blends into. No color summary (no artwork thumbnail) = not offered.
+export const showsOnDark = (spec, palette) => !spec.darkOnly || Boolean(palette && !blendsIn(palette, spec.darkOnly));
 export async function remakeSticker(store, env, now, designId, productId, art, fetcher = (...a) => fetch(...a), type = 'sticker') {
   const spec = PRODUCT_TYPES.find(t => t.type === type);
   const design = designFromDetail((await api(env, 'GET', `/store/products/${designId}`, null, fetcher))?.result);
@@ -305,7 +316,7 @@ export async function retireProducts(store, env, {fetcher = (...a) => fetch(...a
 // One scheduled step: create up to EXPAND_PER_RUN missing products for the designs that are turned on.
 // Returns {created:[...], errors:[...], remaining}. Never throws.
 export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(...a), max = EXPAND_PER_RUN} = {}) {
-  const out = {created: [], errors: [], remaining: 0};
+  const out = {created: [], skipped: [], errors: [], remaining: 0};
   try {
     if (!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return out;
     const setting = (await store.first("SELECT value FROM commerce_settings WHERE key='expand_designs'"))?.value?.trim();
@@ -351,7 +362,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
       try {
         const design = await withStickerArt(store, spec, await designOf(d));
         if (!design) continue;
-        if (spec.colorRule && design.palette === undefined) {
+        if ((spec.colorRule || spec.darkOnly) && design.palette === undefined) {
           design.palette = await designPalette(store, design, fetcher, budget);
           if (design.palette === undefined) { delete design.palette; continue; }
         }
@@ -371,10 +382,12 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
       try {
         const design = await withStickerArt(store, spec, await designOf(d));
         if (!design) { await setSetting(store, key, 'error:no_artwork'); out.errors.push(`${d.title}: no artwork file`); continue; }
-        if (spec.colorRule && design.palette === undefined) {
+        if ((spec.colorRule || spec.darkOnly) && design.palette === undefined) {
           design.palette = await designPalette(store, design, fetcher, budget);
           if (design.palette === undefined) { delete design.palette; continue; }   // next run
         }
+        // The black mug only for designs that read well on black (owner, Nov 3): not an error, just not offered.
+        if (!showsOnDark(spec, design.palette)) { await setSetting(store, key, 'skip:dark'); out.skipped.push(`${d.title} ${spec.type}`); continue; }
         const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
         const payload = buildProduct(spec, design, catalogList);
         if (!payload) { await setSetting(store, key, 'error:no_variants'); out.errors.push(`${d.title} ${spec.label}: no variants`); continue; }
@@ -391,7 +404,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         if (!/\b(401|429|5\d\d)\b|timeout|abort/i.test(message)) await setSetting(store, key, `error:${message}`);
       }
     }
-    out.remaining = Math.max(0, out.remaining - out.created.length);
+    out.remaining = Math.max(0, out.remaining - out.created.length - out.skipped.length);
     await setSetting(store, 'expand_last', JSON.stringify({at: now, ...out}));
     if (out.remaining === 0 && !out.errors.length) await setSetting(store, 'expand_idle', idleKey);
   } catch (error) { out.errors.push(String(error?.message || error).slice(0, 200)); }

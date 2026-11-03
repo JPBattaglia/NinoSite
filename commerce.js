@@ -53,7 +53,7 @@
         const image = label(raw.image);
         const hex = /^#[0-9a-f]{6}$/i.test(String(raw.color_hex || '')) ? String(raw.color_hex) : '';
         variants.set(variantId, {
-          id: variantId, size, color, name, price, hex,
+          id: variantId, productId, size, color, name, price, hex,
           image: /^https:\/\/[^/]+\/./.test(image) ? image : '',
           available: raw.available === true,
           maximum: quantity(raw.max_quantity) || MAX_QUANTITY,
@@ -293,7 +293,8 @@
       return;
     }
     if (container.dataset.purchaseProduct !== requestedId) return;
-    const product = state.products.get(requestedId) || [...state.products.values()].find(item => item.external_id && (item.external_id === requestedId || item.external_id === requestedExternalId));
+    // A combined product (the white and black mug as one Mug choice, mergeMugs) arrives as itself.
+    const product = (recordOrId?.variants instanceof Map ? recordOrId : null) || state.products.get(requestedId) || [...state.products.values()].find(item => item.external_id && (item.external_id === requestedId || item.external_id === requestedExternalId));
     const productId = product?.id;
     const variants = product ? [...product.variants.values()].filter(item => item.purchasable) : [];
     if (!variants.length || !state.catalogComplete || !state.checkoutReady) {
@@ -408,18 +409,20 @@
       event.preventDefault();
       const count = quantity(qty.value);
       if (!selected || !count || count > selected.maximum) { status.textContent = 'Choose an available option and a valid quantity.'; return; }
-      const current = state.products.get(productId)?.variants.get(selected.id);
+      // Each option belongs to its own Printful product (a combined Mug holds the white and the black mug).
+      const lineProduct = selected.productId || productId;
+      const current = state.products.get(lineProduct)?.variants.get(selected.id);
       if (!current?.purchasable) { status.textContent = 'This option is no longer available.'; return; }
-      const existing = state.cart.find(item => item.product_id === productId && item.variant_id === selected.id);
+      const existing = state.cart.find(item => item.product_id === lineProduct && item.variant_id === selected.id);
       const total = (existing?.quantity || 0) + count;
       const units = state.cart.reduce((sum, item) => sum + item.quantity, 0) + count;
       if (units > config.maxUnits) { status.textContent = `Choose no more than ${config.maxUnits} total items for one checkout.`; return; }
       if (!existing && state.cart.length >= config.maxLines) { status.textContent = `Choose no more than ${config.maxLines} different options for one checkout.`; return; }
       if (total > current.maximum) { status.textContent = `Choose a quantity of ${current.maximum} or less for this option.`; return; }
       if (existing) existing.quantity = total;
-      else state.cart.push({ product_id: productId, variant_id: selected.id, quantity: count });
+      else state.cart.push({ product_id: lineProduct, variant_id: selected.id, quantity: count });
       writeCart(); renderCart();
-      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: productId } }));
+      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: lineProduct } }));
       // Back to where the shopper found the shirt: the product view closes (like Back) and the toast confirms.
       const toastEvent = new CustomEvent('nino:toast', { detail: { message: 'Added to cart', closeProduct: state.storageAvailable } });
       document.dispatchEvent(toastEvent);
@@ -858,7 +861,7 @@
   // Stage 14: the same design on other products (hoodie, crewneck, tote, sticker). The worker makes them as their own
   // Printful products with external_id "nx-<type>-<design product id>"; here they become a product picker above the
   // design's options instead of separate cards in the shop.
-  const EXTRA_LABELS = { hoodie: 'Hoodie', crewneck: 'Crewneck', tote: 'Tote bag', mug: 'Mug', hat: 'Dad hat', sticker: 'Sticker' };   // aprons replaced by mugs (owner, Nov 2)
+  const EXTRA_LABELS = { hoodie: 'Hoodie', crewneck: 'Crewneck', tote: 'Tote bag', mug: 'Mug', mugblack: 'Mug', hat: 'Dad hat', sticker: 'Sticker' };   // aprons replaced by mugs (owner, Nov 2)
   const EXTRA_ORDER = Object.keys(EXTRA_LABELS);
   function extrasFor(design) {
     if (!design) return [];
@@ -867,7 +870,20 @@
       const match = /^nx-([a-z]+)-(\d+)$/.exec(item.external_id || '');
       if (match && match[2] === String(design.id) && EXTRA_LABELS[match[1]] && [...item.variants.values()].some(variant => variant.purchasable)) found.push({ type: match[1], product: item });
     }
-    return found.sort((a, b) => EXTRA_ORDER.indexOf(a.type) - EXTRA_ORDER.indexOf(b.type));
+    return mergeMugs(found).sort((a, b) => EXTRA_ORDER.indexOf(a.type) - EXTRA_ORDER.indexOf(b.type));
+  }
+  // The black mug (owner, Nov 3, 2026) is its own Printful product (nx-mugblack-<design>), shown as the Black color of
+  // the design's one Mug choice: White / Black, then the size. Cart lines keep each mug's own product.
+  function mergeMugs(found) {
+    const white = found.find(item => item.type === 'mug'), black = found.find(item => item.type === 'mugblack');
+    const rest = found.filter(item => item !== white && item !== black);
+    if (!black) return found;
+    const variants = new Map();
+    for (const [part, color, hex] of [[white, 'White', '#ffffff'], [black, 'Black', '#111111']]) {
+      for (const variant of part ? part.product.variants.values() : []) variants.set(variant.id, { ...variant, color: variant.color || color, hex: variant.hex || hex });
+    }
+    const base = (white || black).product;
+    return [...rest, { type: 'mug', product: { ...base, title: base.title, variants } }];
   }
   // The pop-up's "From $…" line follows the chosen product (it was written for the shirt when the pop-up opened).
   function setDialogPrice(item) {
@@ -885,7 +901,7 @@
     const options = [{ type: 'tshirt', label: 'T-shirt', target: record, product: design }, ...extras.map(extra => ({ type: extra.type, label: EXTRA_LABELS[extra.type], target: extra.product, product: extra.product }))];
     // Product feed links (Google Shopping, Pinterest) name the product: shop.html?product=<design>&item=hoodie opens
     // the design with that product chosen, so the page shows the price the listing showed.
-    const wanted = new URLSearchParams(location.search).get('item');
+    const wanted = (item => item === 'mugblack' ? 'mug' : item)(new URLSearchParams(location.search).get('item'));
     const first = options.find(option => option.type === wanted) || options[0];
     const choose = (option, button) => {
       row.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
