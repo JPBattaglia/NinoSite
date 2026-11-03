@@ -50,7 +50,8 @@ export const PRODUCT_TYPES = Object.freeze([
     chest: {w: 0.40, h: 0.88, top: 0.06, middle: true, cx: 0.75}, mugArt: true,
     variants: [1320, 4830], area: {1320: [2700, 1050], 4830: [2700, 1140]}},
   // Black Glossy Mug, 11 oz and 15 oz, beside the white one (owner, Nov 3, 2026), cost x 1.5. Same full-wrap artwork
-  // (transparent background: Printful prints black wherever the file is transparent). Only for designs that read well
+  // (transparent background: Printful prints black wherever the file is transparent), its own wrap
+  // (assets/mugs/black/, design centered at 78% of the narrower area: the face with the handle on the right). Only for designs that read well
   // on a dark background (darkOnly: the garment color check against the mug's black); the rest are marked
   // 'skip:dark'. Gated: expand_gate:mugblack = the sample designs until the owner says yes, then 'all'.
   // The shop shows it as the Black color of the design's one Mug choice (commerce.js mergeMugs).
@@ -245,7 +246,8 @@ async function queuePhoto(store, productId, layer, now) {
 // Stickers use the design's one-piece sticker artwork once it exists (sticker-art.mjs); everything else the design's own.
 async function withStickerArt(store, spec, design) {
   if (!design) return design;
-  if (spec.mugArt) { const art = await mugFile(store, design.id); return art ? {...design, art: {...art, full: true}} : design; }
+  // Mugs only ever use their wrap artwork; without it yet, the mug waits (null art = skipped this run).
+  if (spec.mugArt) { const art = await mugFile(store, design.id, spec.type); return art ? {...design, art: {...art, full: true}} : (spec.type === 'mugblack' ? {...design, art: null} : design); }
   if (spec.type !== 'sticker') return design;
   const art = await stickerFile(store, design.id);
   return art ? {...design, art} : design;
@@ -361,7 +363,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
     for (const [d, spec, productId] of redo.slice(0, max)) {
       try {
         const design = await withStickerArt(store, spec, await designOf(d));
-        if (!design) continue;
+        if (!design?.art) continue;
         if ((spec.colorRule || spec.darkOnly) && design.palette === undefined) {
           design.palette = await designPalette(store, design, fetcher, budget);
           if (design.palette === undefined) { delete design.palette; continue; }
@@ -388,6 +390,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         }
         // The black mug only for designs that read well on black (owner, Nov 3): not an error, just not offered.
         if (!showsOnDark(spec, design.palette)) { await setSetting(store, key, 'skip:dark'); out.skipped.push(`${d.title} ${spec.type}`); continue; }
+        if (!design.art) continue;   // the black mug wrap isn't made yet: stays in 'remaining', so the rollout comes back
         const catalogList = await catalogVariants(store, env, spec.catalog, now, fetcher);
         const payload = buildProduct(spec, design, catalogList);
         if (!payload) { await setSetting(store, key, 'error:no_variants'); out.errors.push(`${d.title} ${spec.label}: no variants`); continue; }

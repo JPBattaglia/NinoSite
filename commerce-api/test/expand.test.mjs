@@ -310,7 +310,7 @@ test('black mug: gated, only designs that show on black, 11 and 15 oz at cost x 
   const bright = JSON.stringify(summarize(square([240, 200, 40]))), dark = JSON.stringify(summarize(square([12, 12, 14])));
   const settings = new Map([['expand_designs', 'all'], ['expand_gate:mugblack', '482794926,999'],
     ['expand_art:482794926', bright], ['expand_art:999', dark], ['expand_art:555', bright],
-    ['mug_file:482794926', JSON.stringify({id: 9100, w: 2700, h: 1140, sha: 'abcdefabcdef'})],
+    ['mugblack_file:482794926', JSON.stringify({id: 9100, w: 2250, h: 925, sha: 'abcdefabcdef'})],
     ...['482794926', '999', '555'].flatMap(d => ['sticker', 'tote', 'crewneck', 'hoodie', 'mug'].map(t => [`expand:${d}:${t}`, '1']))]);
   const posts = [];
   const blackVariants = [{id: 9323, size: '11 oz', price: '8.11'}, {id: 9324, size: '15 oz', price: '9.13'}].map(v => ({...v, color: 'Black', color_code: '#000000', availability_status: [{region: 'US', status: 'in_stock'}]}));
@@ -328,12 +328,18 @@ test('black mug: gated, only designs that show on black, 11 and 15 oz at cost x 
   assert.equal(posts[0].sync_product.name, 'Skull Wave Mug', 'same name as the white mug: one Mug, colors White / Black');
   assert.deepEqual(posts[0].sync_variants.map(v => [v.variant_id, v.retail_price]), [[9323, '13.00'], [9324, '14.00']]);
   for (const v of posts[0].sync_variants) {
-    assert.equal(v.files[0].id, 9100, 'the transparent mug wrap artwork');
+    assert.equal(v.files[0].id, 9100, 'the black mug wrap artwork');
     const pos = v.files[0].position;
     assert.ok(pos.width <= pos.area_width && pos.height <= pos.area_height);
+    if (v.variant_id === 9323) assert.deepEqual([pos.width, pos.height, pos.left, pos.top], [2250, 925, 0, 0], 'drawn for the 11 oz area exactly');
     assert.equal(pos.area_width, v.variant_id === 9323 ? 2250 : 2253);
   }
   assert.equal(settings.get('expand:999:mugblack'), 'skip:dark');
+  // A design whose black wrap isn't made yet waits (no product, no error) and keeps the rollout coming back.
+  settings.set('expand_gate:mugblack', '482794926,999,555'); settings.delete('expand_idle');
+  const waiting = await runExpansion(store, {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1001, {fetcher});
+  assert.equal(posts.length, 1); assert.ok(!settings.has('expand:555:mugblack')); assert.equal(waiting.remaining, 1); assert.deepEqual(waiting.errors, []);
+  settings.set('expand_gate:mugblack', '482794926,999');
   assert.ok(!settings.has('expand:555:mugblack'), 'not on the sample list: waits for the owner');
   assert.deepEqual(out.errors, []);
   assert.equal(out.remaining, 0, 'a skipped design is not left over');
