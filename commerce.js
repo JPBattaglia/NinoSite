@@ -653,6 +653,8 @@
       if (valid) row.append(create('p', 'cart-line-total', formatMoney({ amount: variant.price.amount * item.quantity, currency: variant.price.currency })));
       lines.append(row);
     }
+    const offer = matchingOffer();
+    if (offer) lines.append(offerCard(offer));
     const subtotal = root.querySelector('[data-cart-subtotal]');
     subtotal.textContent = [...totals().sums].map(([currency, amount]) => formatMoney({ currency, amount })).join(' + ') || '—';
     if (totals().sums.size > 1) cartStatus('Use a single currency in one checkout.', true);
@@ -666,6 +668,47 @@
       const value = JSON.parse(sessionStorage.getItem('nino-attribution') || 'null');
       return value && typeof value === 'object' ? value : null;
     } catch { return null; }
+  }
+  // Marketing plan v4 (Nov 3, 2026): a lone shirt clears about $9, so the cart offers the same design on a mug (or a
+  // tote when there's no mug) once, under the lines. Only for a shirt whose design isn't already in the cart on a mug
+  // or tote; the line keeps that mug's own product, like any other add.
+  function matchingOffer() {
+    const inCart = new Set(state.cart.map(item => state.products.get(item.product_id)?.external_id || ''));
+    for (const item of state.cart) {
+      const { product, valid } = details(item);
+      if (!valid || !product || /^nx-/.test(product.external_id || '')) continue;
+      const design = String(product.id);
+      if (['mug', 'mugblack', 'tote'].some(type => inCart.has(`nx-${type}-${design}`))) continue;
+      const order = mugFirstColor(design) === 'White' ? ['mug', 'mugblack', 'tote'] : ['mugblack', 'mug', 'tote'];
+      for (const type of order) {
+        const extra = [...state.products.values()].find(candidate => candidate.external_id === `nx-${type}-${design}`);
+        const options = extra ? [...extra.variants.values()].filter(variant => variant.purchasable && variant.price) : [];
+        if (!options.length) continue;
+        const variant = options.find(option => /11\s*oz/i.test(`${option.size || ''} ${option.name || ''}`)) || options.reduce((a, b) => (b.price.amount < a.price.amount ? b : a));
+        return { design: product, product: extra, variant, type };
+      }
+    }
+    return null;
+  }
+  function offerCard(offer) {
+    const what = offer.type === 'tote' ? 'tote bag' : `${offer.type === 'mugblack' ? 'black' : 'white'} mug${/11\s*oz/i.test(`${offer.variant.size || ''} ${offer.variant.name || ''}`) ? ', 11 oz' : ''}`;
+    const card = create('aside', 'cart-offer');
+    card.setAttribute('aria-label', 'Matching item');
+    const source = imageUrl(offer.variant.image) || imageUrl(offer.product.image);
+    if (source) { const image = create('img', 'cart-line-image'); image.src = source; image.alt = `${offer.design.title} ${what}`; image.loading = 'lazy'; card.append(image); }
+    const copy = create('div', 'cart-line-copy');
+    copy.append(create('p', 'eyebrow', 'Make it a set'), create('h2', '', `${offer.design.title} on a ${what}`), create('p', 'cart-unit-price', formatMoney(offer.variant.price)));
+    const add = create('button', 'button button-small', offer.type === 'tote' ? 'Add the tote' : 'Add the mug'); add.type = 'button'; add.disabled = state.pending;
+    add.addEventListener('click', () => {
+      const units = state.cart.reduce((sum, item) => sum + item.quantity, 0) + 1;
+      if (units > config.maxUnits || state.cart.length >= config.maxLines) { cartStatus(`Choose no more than ${config.maxUnits} total items and ${config.maxLines} different options for one checkout.`, true); return; }
+      state.cart.push({ product_id: offer.product.id, variant_id: offer.variant.id, quantity: 1 });
+      writeCart(); renderCart();
+      document.dispatchEvent(new CustomEvent('nino:measure', { detail: { event: 'add_to_cart', product_id: offer.product.id } }));
+      cartStatus(`Added the ${what} to your cart.`);
+    });
+    copy.append(add); card.append(copy);
+    return card;
   }
   function checkoutRequestId(items) {
     const signature = JSON.stringify({ items: cartSignature(items), shipping_quote_id: shipping.mode === 'calculated' ? shipping.quote?.id : null, shipping_rate_id: shipping.mode === 'calculated' ? shipping.selected : null });

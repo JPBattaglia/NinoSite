@@ -929,3 +929,7 @@ input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=range]
 /* Owner, Nov 2: the portrait two-thirds of its first size; the empty frame shrinks with it. */
 .artist-feature-image{aspect-ratio:auto!important;display:flex;justify-content:center;align-items:center;padding:12px 0}
 .artist-feature-image img{width:47%!important;height:auto!important;padding:0!important}
+/* Marketing plan v4 (Nov 3, 2026): the matching mug or tote offered under a shirt in the cart. */
+.cart-offer{display:grid;grid-template-columns:140px minmax(0,1fr);gap:25px;align-items:center;margin-top:6px;padding:22px;border:1px dashed var(--cyan);border-radius:12px}.cart-offer .eyebrow{margin:0 0 6px}.cart-offer .button{margin-top:12px}
+@media(max-width:1050px){.cart-offer{grid-template-columns:105px minmax(0,1fr);gap:18px}}
+@media(max-width:760px){.cart-offer{grid-template-columns:100px minmax(0,1fr);gap:14px 18px;padding:16px}}
