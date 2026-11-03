@@ -147,3 +147,15 @@ test('mug artwork goes on both mug sizes, fitted to each wrap', async () => {
   assert.deepEqual(small.files[0].position, {area_width: 2700, area_height: 1050, width: 2487, height: 1050, top: 0, left: 107, limit_to_print_area: true}, '11 oz: fitted to its height');
   assert.deepEqual(await mugFile(fakeStore(settings), '482794926'), {id: 9100, width: 2700, height: 1140});
 });
+
+// Nov 3, 2026: the mug artwork goes on the black mug too, when the design has one.
+test('new mug artwork remakes the white and the black mug', async () => {
+  const {KINDS} = await import('../src/sticker-art.mjs');
+  const settings = new Map([['expand:482794926:mug', '488500000'], ['expand:482794926:mugblack', '489900000'],
+    ['mug_manifest', JSON.stringify({at: 1000, designs: {482794926: {sha: 'abcdefabcdef12', w: 2700, h: 1140}}})]]);
+  const remade = [];
+  const deps = {api: async () => ({result: {id: 9200}}), remake: async (store, env, now, design, product, art, fetcher, type) => { remade.push([product, type]); }};
+  const out = await applyStickerArt(fakeStore(settings), {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1001, deps, {fetcher: async () => new Response('{}'), max: 2, kind: KINDS.mug});
+  assert.deepEqual(out.errors, []);
+  assert.deepEqual(remade, [['488500000', 'mug'], ['489900000', 'mugblack']]);
+});
