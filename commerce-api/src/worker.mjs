@@ -202,6 +202,8 @@ export function createApp(dependencies={}) {
         try { stickers=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeSticker}); } catch { /* never blocks sync or fulfillment */ }
         // Mug artwork (Nov 2): same steps, 2 per run, in a run where the sticker step had nothing to do.
         if(!stickers.applied?.length) { try { const mugs=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeMug},{max:2,kind:ART_KINDS.mug}); if(mugs.applied?.length) stickers={...stickers,applied:mugs.applied}; } catch { /* never blocks sync or fulfillment */ } }
+        // Black mug wraps (Nov 3): same steps, when the white mug step had nothing to do either.
+        if(!stickers.applied?.length) { try { const mugs=await applyStickerArt(store,env,now,{api:printfulApi,remake:remakeMug},{max:2,kind:ART_KINDS.mugblack}); if(mugs.applied?.length) stickers={...stickers,applied:mugs.applied}; } catch { /* never blocks sync or fulfillment */ } }
         // The rollout (owner, Nov 1: don't sit idle during syncs). While a sync runs, a run does the rollout only when
         // the sticker step had nothing to do, so the run stays inside the free plan's 50 database queries.
         if(!sync || !stickers.applied?.length) {

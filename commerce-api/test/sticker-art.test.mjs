@@ -148,14 +148,17 @@ test('mug artwork goes on both mug sizes, fitted to each wrap', async () => {
   assert.deepEqual(await mugFile(fakeStore(settings), '482794926'), {id: 9100, width: 2700, height: 1140});
 });
 
-// Nov 3, 2026: the mug artwork goes on the black mug too, when the design has one.
-test('new mug artwork remakes the white and the black mug', async () => {
-  const {KINDS} = await import('../src/sticker-art.mjs');
+// Nov 3, 2026: the black mug has its own wrap (narrower print area), published under assets/mugs/black/.
+test('black mug wraps remake the black mug only', async () => {
+  const {KINDS, BLACK_MUG_SITE, mugFile} = await import('../src/sticker-art.mjs');
   const settings = new Map([['expand:482794926:mug', '488500000'], ['expand:482794926:mugblack', '489900000'],
-    ['mug_manifest', JSON.stringify({at: 1000, designs: {482794926: {sha: 'abcdefabcdef12', w: 2700, h: 1140}}})]]);
-  const remade = [];
-  const deps = {api: async () => ({result: {id: 9200}}), remake: async (store, env, now, design, product, art, fetcher, type) => { remade.push([product, type]); }};
-  const out = await applyStickerArt(fakeStore(settings), {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1001, deps, {fetcher: async () => new Response('{}'), max: 2, kind: KINDS.mug});
+    ['mugblack_manifest', JSON.stringify({at: 1000, designs: {482794926: {sha: 'abcdefabcdef12', w: 2250, h: 925}}})]]);
+  const remade = [], files = [];
+  const deps = {api: async (env, method, path, body) => { files.push(body.url); return {result: {id: 9200}}; }, remake: async (store, env, now, design, product, art, fetcher, type) => { remade.push([product, type, art.width]); }};
+  const out = await applyStickerArt(fakeStore(settings), {PRINTFUL_ACCESS_TOKEN: 'k', PRINTFUL_STORE_ID: '1'}, 1001, deps, {fetcher: async () => new Response('{}'), max: 2, kind: KINDS.mugblack});
   assert.deepEqual(out.errors, []);
-  assert.deepEqual(remade, [['488500000', 'mug'], ['489900000', 'mugblack']]);
+  assert.deepEqual(remade, [['489900000', 'mugblack', 2250]]);
+  assert.ok(files[0].startsWith(BLACK_MUG_SITE + '482794926.png'));
+  assert.deepEqual(await mugFile(fakeStore(settings), '482794926', 'mugblack'), {id: 9200, width: 2250, height: 925});
+  assert.equal(await mugFile(fakeStore(settings), '482794926'), null, 'the white mug keeps its own wrap');
 });

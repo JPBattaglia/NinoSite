@@ -16,9 +16,12 @@ const MANIFEST_TTL = 3600;
 // Mug artwork (Nov 2, 2026): Printful's photo of a store mug ignores the placement, so each design is drawn on the
 // face seen with the handle on the right of a full-wrap file (commerce-api/scripts/make_mugs.py -> assets/mugs/).
 export const MUG_SITE = 'https://ninobattaglia.com/assets/mugs/';
+// Black mug (Nov 3): its narrower print area gets its own wrap (make_mugs.py -> assets/mugs/black/).
+export const BLACK_MUG_SITE = 'https://ninobattaglia.com/assets/mugs/black/';
 export const KINDS = Object.freeze({
   sticker: {site: STICKER_SITE, type: 'sticker', file: 'sticker_file', manifest: 'sticker_manifest', applied: 'sticker_applied', last: 'sticker_last', name: 'sticker'},
-  mug: {site: MUG_SITE, type: 'mug', also: ['mugblack'], file: 'mug_file', manifest: 'mug_manifest', applied: 'mug_applied', last: 'mug_last', name: 'mug'}
+  mug: {site: MUG_SITE, type: 'mug', file: 'mug_file', manifest: 'mug_manifest', applied: 'mug_applied', last: 'mug_last', name: 'mug'},
+  mugblack: {site: BLACK_MUG_SITE, type: 'mugblack', file: 'mugblack_file', manifest: 'mugblack_manifest', applied: 'mugblack_applied', last: 'mugblack_last', name: 'mugblack'}
 });
 
 const setSetting = (store, key, value) => store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', key, value);
@@ -33,7 +36,7 @@ export async function stickerFile(store, designId, kind = KINDS.sticker) {
 }
 
 // The published manifest, re-read at most hourly (one settings row).
-export const mugFile = (store, designId) => stickerFile(store, designId, KINDS.mug);
+export const mugFile = (store, designId, type = 'mug') => stickerFile(store, designId, type === 'mugblack' ? KINDS.mugblack : KINDS.mug);
 export async function stickerManifest(store, now, fetcher, kind = KINDS.sticker) {
   const row = await store.first('SELECT value FROM commerce_settings WHERE key=?', kind.manifest);
   const cached = row ? JSON.parse(row.value) : null;
@@ -64,11 +67,8 @@ export async function applyStickerArt(store, env, now, deps, {fetcher = (...a) =
         const file = (await deps.api(env, 'POST', '/files', {url: `${kind.site}${designId}.png?v=${v.sha}`, filename: `${kind.name}-${designId}-${v.sha.slice(0, 8)}.png`}, fetcher))?.result;
         if (!Number.isSafeInteger(file?.id)) throw new Error('file_no_id');
         const art = {id: file.id, width: v.w, height: v.h};
-        // The mug artwork goes on the white and the black mug (Nov 3) alike.
-        for (const type of [kind.type, ...(kind.also || [])]) {
-          const product = (await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand:${designId}:${type}`))?.value;
-          if (/^\d+$/.test(product || '')) await deps.remake(store, env, now, designId, product, art, fetcher, type);
-        }
+        const product = (await store.first('SELECT value FROM commerce_settings WHERE key=?', `expand:${designId}:${kind.type}`))?.value;
+        if (/^\d+$/.test(product || '')) await deps.remake(store, env, now, designId, product, art, fetcher, kind.type);
         await setSetting(store, `${kind.file}:${designId}`, JSON.stringify({id: file.id, w: v.w, h: v.h, sha: v.sha}));
         applied[designId] = v.sha;
         await setSetting(store, kind.applied, JSON.stringify(applied));
