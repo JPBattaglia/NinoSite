@@ -104,6 +104,64 @@ def main(root):
     print(f'mugs made={len(made)} failed={len(failed)}')
     print('\n'.join(failed))
     make_black(out_dir, manifest)
+    make_colors(out_dir, manifest)
+
+
+# Which mug color the shop shows first (owner, Nov 3, 2026: "let the black mug be the first display with the option
+# to switch to white and vice versa depending on whichever is better for each design"). Same math as the worker's
+# color check (src/artcolors.mjs): share of the design's pixels (body) and outline pixels (edge) that stand out from
+# the mug color by CIELAB distance 35. Black first, unless the design fails the dark check (no black mug) or reads
+# clearly better on white (its outline is lost on black but stands out on white; see first_color).
+DISTANCE, BODY_MIN, EDGE_MIN, WHITE_MARGIN = 35, 0.75, 0.80, 0.3
+
+
+def _lab(rgb):
+    import numpy as np
+    v = rgb / 255.0
+    v = np.where(v <= 0.04045, v / 12.92, ((v + 0.055) / 1.055) ** 2.4)
+    y = 0.2126 * v[:, 0] + 0.7152 * v[:, 1] + 0.0722 * v[:, 2]
+    x = (0.4124 * v[:, 0] + 0.3576 * v[:, 1] + 0.1805 * v[:, 2]) / 0.95047
+    z = (0.0193 * v[:, 0] + 0.1192 * v[:, 1] + 0.9505 * v[:, 2]) / 1.08883
+    f = lambda t: np.where(t > 0.008856, np.cbrt(t), 7.787 * t + 16 / 116)
+    return np.stack([116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z))], axis=1)
+
+
+def visibility(art):
+    """(body, edge) share standing out on black, and on white, for a design image with transparency."""
+    import numpy as np
+    art = art.convert('RGBA'); art = art.crop(art.getbbox() or (0, 0, 1, 1)); art.thumbnail((220, 220))
+    a = np.asarray(art).astype(float)
+    opaque = a[:, :, 3] >= 128
+    pad = np.pad(opaque, 1, constant_values=False)
+    edge = opaque & ~(pad[1:-1, 2:] & pad[1:-1, :-2] & pad[2:, 1:-1] & pad[:-2, 1:-1])
+    out = {}
+    for name, ground in (('black', [0, 0, 0]), ('white', [255, 255, 255])):
+        g = _lab(np.array([ground], dtype=float))[0]
+        share = lambda m: float((np.linalg.norm(_lab(a[m][:, :3]) - g, axis=1) >= DISTANCE).mean()) if m.any() else 1.0
+        out[name] = (share(opaque), share(edge))
+    return out
+
+
+def first_color(v):
+    """Dark parts of a design simply merge into a black mug, so the outline (edge) decides which mug reads better:
+    white first when the design fails the dark check, or when its outline is lost on black (under 60% stands out)
+    and clearly clearer on white (WHITE_MARGIN more of it stands out there). Otherwise black first."""
+    (bb, be), (wb, we) = v['black'], v['white']
+    if bb < BODY_MIN and be < EDGE_MIN:
+        return 'white'
+    return 'white' if be < 0.6 and we >= be + WHITE_MARGIN else 'black'
+
+
+def make_colors(out_dir, manifest):
+    colors = {}
+    for design in sorted(manifest):
+        try:
+            colors[design] = first_color(visibility(Image.open(os.path.join(out_dir, f'{design}.png'))))
+        except Exception as e:
+            print(f'colors {design}: {e}')
+    with open(os.path.join(out_dir, 'colors.json'), 'w') as f:
+        json.dump(colors, f, indent=1, sort_keys=True)
+    print(f'mug first colors: black={sum(c == "black" for c in colors.values())} white={sum(c == "white" for c in colors.values())}')
 
 
 def make_black(out_dir, manifest):
@@ -139,5 +197,6 @@ if __name__ == '__main__':
     if len(sys.argv) > 2 and sys.argv[2] == '--black-only':
         out = os.path.join(sys.argv[1], 'assets', 'mugs')
         make_black(out, json.load(open(os.path.join(out, 'manifest.json'))))
+        make_colors(out, json.load(open(os.path.join(out, 'manifest.json'))))
     else:
         main(sys.argv[1])

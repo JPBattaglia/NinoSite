@@ -870,20 +870,29 @@
       const match = /^nx-([a-z]+)-(\d+)$/.exec(item.external_id || '');
       if (match && match[2] === String(design.id) && EXTRA_LABELS[match[1]] && [...item.variants.values()].some(variant => variant.purchasable)) found.push({ type: match[1], product: item });
     }
-    return mergeMugs(found).sort((a, b) => EXTRA_ORDER.indexOf(a.type) - EXTRA_ORDER.indexOf(b.type));
+    return mergeMugs(found, mugFirstColor(design.id)).sort((a, b) => EXTRA_ORDER.indexOf(a.type) - EXTRA_ORDER.indexOf(b.type));
   }
   // The black mug (owner, Nov 3, 2026) is its own Printful product (nx-mugblack-<design>), shown as the Black color of
   // the design's one Mug choice: White / Black, then the size. Cart lines keep each mug's own product.
-  function mergeMugs(found) {
+  // Which mug color shows first (owner, Nov 3: black first, white where the design reads better on white):
+  // assets/mugs/colors.json, made with the mug artwork (commerce-api/scripts/make_mugs.py). Missing = black.
+  let mugColors = null;
+  const loadMugColors = () => mugColors || (mugColors = fetch('/assets/mugs/colors.json', { cache: 'no-cache' })
+    .then(response => (response.ok ? response.json() : {})).catch(() => ({})).then(map => (mugColors.value = map && typeof map === 'object' ? map : {}, mugColors.value)));
+  const mugFirstColor = designId => (mugColors?.value?.[String(designId)] === 'white' ? 'White' : 'Black');
+  function mergeMugs(found, first = 'Black') {
     const white = found.find(item => item.type === 'mug'), black = found.find(item => item.type === 'mugblack');
     const rest = found.filter(item => item !== white && item !== black);
     if (!black) return found;
     const variants = new Map();
-    for (const [part, color, hex] of [[white, 'White', '#ffffff'], [black, 'Black', '#111111']]) {
+    const parts = [[white, 'White', '#ffffff'], [black, 'Black', '#111111']];
+    if (first === 'Black') parts.reverse();   // the first color's swatch and photo come first
+    for (const [part, color, hex] of parts) {
       for (const variant of part ? part.product.variants.values() : []) variants.set(variant.id, { ...variant, color: variant.color || color, hex: variant.hex || hex });
     }
     const base = (white || black).product;
-    return [...rest, { type: 'mug', product: { ...base, title: base.title, variants } }];
+    const preferredColor = [...variants.values()].some(variant => variant.color === first && variant.purchasable) ? first : '';
+    return [...rest, { type: 'mug', product: { ...base, title: base.title, variants, preferredColor } }];
   }
   // The pop-up's "From $…" line follows the chosen product (it was written for the shirt when the pop-up opened).
   function setDialogPrice(item) {
@@ -901,7 +910,10 @@
     const options = [{ type: 'tshirt', label: 'T-shirt', target: record, product: design }, ...extras.map(extra => ({ type: extra.type, label: EXTRA_LABELS[extra.type], target: extra.product, product: extra.product }))];
     // Product feed links (Google Shopping, Pinterest) name the product: shop.html?product=<design>&item=hoodie opens
     // the design with that product chosen, so the page shows the price the listing showed.
-    const wanted = (item => item === 'mugblack' ? 'mug' : item)(new URLSearchParams(location.search).get('item'));
+    const requested = new URLSearchParams(location.search).get('item');
+    const wanted = requested === 'mugblack' ? 'mug' : requested;
+    // A black mug feed listing opens the Mug with Black chosen.
+    if (requested === 'mugblack') extras.forEach(extra => { if (extra.type === 'mug' && [...extra.product.variants.values()].some(v => v.color === 'Black')) extra.product.preferredColor = 'Black'; });
     const first = options.find(option => option.type === wanted) || options[0];
     const choose = (option, button) => {
       row.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
@@ -927,6 +939,7 @@
     const { product, container } = event.detail || {};
     if (container) container.replaceChildren(create('p', 'commerce-option-status', 'Loading product options…'));
     try { await loadProducts(); } catch { if (container) mountProduct(product, container); return; }
+    await loadMugColors();
     const design = findProduct(product);
     const extras = extrasFor(design);
     let shown = design;
