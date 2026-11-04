@@ -57,6 +57,9 @@ export const PRODUCT_TYPES = Object.freeze([
   // The shop shows it as the Black color of the design's one Mug choice (commerce.js mergeMugs).
   {type: 'mugblack', label: 'Mug', catalog: 300, file: 'default', fit: 'chest', placement: 'default', technique: 'sublimation', dpi: 300,
     chest: {w: 0.40, h: 0.88, top: 0.06, middle: true, cx: 0.75}, gate: true, darkOnly: '#000000', mugArt: true,
+    // Its own photo, handle on the right like the white mug's (owner, Nov 4, 2026): Printful's store photo of the black
+    // mug has the handle on the left. Mockup style 16778 = "Flat, Handle on Right" for the 11 oz (9323).
+    photos: true, photoVariant: 9323, photoStyle: 16778,
     variants: [9323, 9324], area: {9323: [2250, 925], 9324: [2253, 1084]}},   // Printful printfiles 307 and 308
   // Classic Dad Hat | Yupoong 6245CM, front embroidery (the standard front, no extra charge). Same file type and thread
   // options as the staff merch cap, which orders fine. Threads come from the design's own colors (threadsFor).
@@ -169,6 +172,7 @@ export function photoLayer(spec, design, payload, catalog = []) {
   const pos = variant.files[0].position, in3 = v => Math.round((v / spec.dpi) * 1000) / 1000;
   return {catalog: spec.catalog, placement: spec.placement, technique: spec.technique,
     catalog_variant_ids: spec.photoVariant ? [variant.variant_id] : null,
+    ...(spec.photoStyle ? {mockup_style_ids: [spec.photoStyle]} : {}),
     // The colors this product is made in: the photo job waits until the shop's catalog shows exactly these
     // (after a rebuild, the old catalog copy still lists the colors that were removed).
     colors: [...new Set(payload.sync_variants.map(v => catalog.find(c => c.id === v.variant_id)?.color).filter(Boolean))].sort(),
@@ -239,7 +243,8 @@ async function designPalette(store, design, fetcher, budget) {
 // A product's photo job: queued when EXTRA_PHOTOS is on, else parked (and an old photo stops showing: the shop lists
 // only 'done' photos, so a remade sticker falls back to Printful's image of the new artwork).
 async function queuePhoto(store, productId, layer, now) {
-  const status = EXTRA_PHOTOS ? 'pending' : 'hold', reason = EXTRA_PHOTOS ? null : 'not_needed';
+  const wanted = EXTRA_PHOTOS || Boolean(layer?.mockup_style_ids?.length);   // types with their own photo style (black mug) always
+  const status = wanted ? 'pending' : 'hold', reason = wanted ? null : 'not_needed';
   await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,last_error,updated_at) VALUES(?,?,?,5,?,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status=excluded.status,priority=5,task_id=NULL,attempts=0,last_error=excluded.last_error,updated_at=excluded.updated_at", String(productId), JSON.stringify(layer), status, reason, now);
 }
 

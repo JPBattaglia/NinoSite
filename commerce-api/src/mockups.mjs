@@ -66,7 +66,7 @@ async function submit(store, env, job, now, fetcher) {
   if (!colors.length || !hash) throw new Error('no_variants_or_artwork');
   const raw = JSON.parse(job.layer_json);
   // Stage 14 products (expand.mjs) carry their own catalog product, placement and print area (inches); Printful's
-  // default photo style is used for them.
+  // default photo style is used for them unless the job names one (the black mug: handle on the right).
   if (raw.catalog) {
     // Rebuilt products: wait (status 'hold', looked at again hourly) until the shop's catalog lists the new colors.
     if (Array.isArray(raw.colors) && raw.colors.length && JSON.stringify([...new Set(colors.map(row => row.color))].sort()) !== JSON.stringify(raw.colors)) {
@@ -81,7 +81,7 @@ async function submit(store, env, job, now, fetcher) {
     const p = raw.position_in;
     const placements = [{ placement: raw.placement, technique: raw.technique, layers: [{ type: 'file', url: artworkUrl(hash), position: { width: p.width, height: p.height, top: p.top, left: p.left } }] }];
     const ids = raw.catalog_variant_ids?.length ? raw.catalog_variant_ids : colors.map(row => row.catalog_variant_id);
-    const result = await printful(env, 'POST', '/v2/mockup-tasks', { format: 'jpg', products: [{ source: 'catalog', catalog_product_id: raw.catalog, placements, catalog_variant_ids: ids }] }, fetcher);
+    const result = await printful(env, 'POST', '/v2/mockup-tasks', { format: 'jpg', products: [{ source: 'catalog', catalog_product_id: raw.catalog, ...(raw.mockup_style_ids?.length ? { mockup_style_ids: raw.mockup_style_ids } : {}), placements, catalog_variant_ids: ids }] }, fetcher);
     const taskIds = (result.data || []).map(task => task.id).filter(Boolean);
     if (!taskIds.length) throw new Error('no_task_id');
     await store.run("UPDATE mockup_jobs SET status='submitted',task_id=?,attempts=attempts+1,last_error=NULL,updated_at=? WHERE product_id=?", taskIds.join(','), now, job.product_id);

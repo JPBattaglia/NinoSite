@@ -143,6 +143,11 @@ test('each created product queues model photos with the placement the orders use
   const hoodie = photoLayer(spec('hoodie'), design, buildProduct(spec('hoodie'), design, crewVariants));
   assert.equal(hoodie.catalog_variant_ids, null, 'one photo per color');
   assert.ok(hoodie.position_in.width <= 12.01 && Math.abs(hoodie.position_in.top - 1) < 0.01);
+  // Black mug (owner, Nov 4): its own photo, 11 oz, handle on the right like the white mug.
+  const mugs = [9323, 9324].map(id => ({id, color: 'Black', size: id === 9323 ? '11 oz' : '15 oz', price: 9}));
+  const black = photoLayer(spec('mugblack'), {...design, art: {id: 7, width: 2250, height: 925, full: true}}, buildProduct(spec('mugblack'), {...design, art: {id: 7, width: 2250, height: 925, full: true}}, mugs));
+  assert.deepEqual(black.mockup_style_ids, [16778]); assert.deepEqual(black.catalog_variant_ids, [9323]);
+  assert.equal(hoodie.mockup_style_ids, undefined, 'other types keep Printful\'s default style');
 });
 
 // Owner decision Oct 31: skip a garment color only when the whole design blends in, outline included.
