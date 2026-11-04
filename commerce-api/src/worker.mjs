@@ -5,6 +5,7 @@ import {Store} from './db.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,stripeConfiguration,countries,nowSeconds} from './common.mjs';
 import {createStripeClient,PrintfulClient} from './providers.mjs';
+import {ensureWebhookEvents} from './webhook-events.mjs';
 import {publicCatalog,startCatalogSync,continueCatalogSync,pruneCatalogHistory} from './catalog.mjs';
 // Must match the daily entry in wrangler.jsonc `triggers.crons`.
 export const DAILY_CRON='0 10 * * *';
@@ -228,6 +229,10 @@ export function createApp(dependencies={}) {
             const stripe=dependencies.stripe || await createStripeClient(env);
             for(const order of orders) await fulfillOrder(order.id,store,stripe,printful,env,now);
           }
+        }
+        // The webhook needs checkout.session.expired for the abandoned-checkout reminder: added once, by the shop itself.
+        if(env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {
+          try { await ensureWebhookEvents(store,dependencies.stripe || await createStripeClient(env),env,now); } catch { /* retried later */ }
         }
         // Order emails that failed to send (mailer briefly unavailable) are retried for two days.
         if(env.MAILER) {

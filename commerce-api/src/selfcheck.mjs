@@ -21,7 +21,7 @@ import {typeOf} from './expand.mjs';
 export const SELFCHECK_KEY = 'selfcheck_last';
 export const SELFCHECK_RUN_NOW = 'selfcheck_run_now';
 export const STICKER_MISSING_KEY = 'sticker_missing_seen';
-const WEBHOOK_PATH = '/api/webhooks/stripe';
+export const WEBHOOK_PATH = '/api/webhooks/stripe';
 // A public landmark address: Printful validates draft recipients, and the draft is deleted straight away.
 const DRAFT_RECIPIENT = {name:'Shop self-check', address1:'1 Ferry Building', city:'San Francisco', state_code:'CA', country_code:'US', zip:'94111'};
 

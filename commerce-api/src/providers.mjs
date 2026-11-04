@@ -11,6 +11,7 @@ export async function createStripeClient(env) {
     createCustomer:(params,key) => client.customers.create(params,{idempotencyKey:key}),
     retrieveAccount:() => client.accounts.retrieveCurrent(),
     listWebhookEndpoints:() => client.webhookEndpoints.list({limit:100}),
+    updateWebhookEndpoint:(id,params) => client.webhookEndpoints.update(id,params),
     listEvents:params => client.events.list(params),
     verifyWebhook:(raw,signature,secret) => client.webhooks.constructEventAsync(raw,signature,secret,300,Stripe.createSubtleCryptoProvider())
   };
