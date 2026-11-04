@@ -63,22 +63,46 @@ async function embroideryOptions(store, productId) {
 
 export const GIFT_EXTERNAL_ID = 'gift_sticker';
 export const GIFT_VARIANT = 10163;   // Kiss-cut sticker 3x3in
-async function giftSticker(snapshot, store, printful) {
+// Products whose own print file is the plain design, so it can stand in for the sticker artwork. Mug files are a
+// full wrap and hat files are embroidery: never use those for the sticker.
+const FLAT_ART = new Set(['tshirt', 'sticker', 'tote', 'crewneck', 'hoodie', 'apron']);
+const lineDesign = (store, line) => !line.kind || line.kind === 'tshirt' ? String(line.product_id) : designOfProduct(store, line.product_id);
+const defaultFile = files => (files || []).find(f => (f.type || 'default') === 'default' && f.id) || (files || [])[0] || null;
+// The design's shirt artwork from the active catalog (every design is a shirt first).
+async function shirtFile(store, design) {
+  const row = await store.first("SELECT snapshot_json FROM catalog_variants WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog') AND product_id=? LIMIT 1", String(design)).catch(() => null);
+  try { return row ? defaultFile(JSON.parse(row.snapshot_json).files) : null; } catch { return null; }
+}
+const giftName = line => `Free sticker: ${String(line.title || 'Nino design').replace(/\s+T$/, '')}`;
+// Owner, Nov 3, 2026: the free sticker must work for every design, including ones added later. In order of preference:
+// 1. the one-piece sticker artwork (sticker-art.mjs) of the order's first design that has it;
+// 2. a design's plain artwork: a flat product's own file, else the design's shirt file (a brand-new design before the
+//    sticker-art workflow has made its one-piece file);
+// 3. none found: the order goes to review (409) and the owner is emailed, instead of shipping without the sticker.
+export async function giftSticker(snapshot, store, printful) {
   const off = await store.first("SELECT value FROM commerce_settings WHERE key='free_sticker'").catch(() => null);
   if (String(off?.value || '').toLowerCase() === 'off') return null;
-  const line = snapshot.lines?.[0];
-  const file = (line?.variant?.files || []).find(f => (f.type || 'default') === 'default' && f.id) || line?.variant?.files?.[0];
-  if (!file?.id) return null;
+  const lines = snapshot.lines || [];
+  if (!lines.length) return null;
   const sticker = SPECS.get('sticker');
-  // The design's one-piece sticker artwork when it has one (sticker-art.mjs), else the line's own artwork.
-  const design = line.kind && line.kind !== 'tshirt' ? await designOfProduct(store, line.product_id) : String(line.product_id);
-  const onepiece = design ? await stickerFile(store, design) : null;
-  const fileId = onepiece ? onepiece.id : file.id;
-  const art = onepiece || await printful.getFile(fileId).catch(() => null);
-  const pos = art && position(sticker, sticker.area[GIFT_VARIANT], {width: art.width, height: art.height});
-  if (!pos) return null;
-  return {external_id: GIFT_EXTERNAL_ID, variant_id: GIFT_VARIANT, quantity: 1, retail_price: '0.00',
-    name: `Free sticker: ${String(line.title || 'Nino design').replace(/\s+T$/, '')}`, files: [{type: 'default', id: fileId, position: pos}]};
+  const gift = (line, fileId, art) => {
+    const pos = art && position(sticker, sticker.area[GIFT_VARIANT], {width: art.width, height: art.height});
+    return pos ? {external_id: GIFT_EXTERNAL_ID, variant_id: GIFT_VARIANT, quantity: 1, retail_price: '0.00', name: giftName(line), files: [{type: 'default', id: fileId, position: pos}]} : null;
+  };
+  const designs = [];
+  for (const line of lines) designs.push(await lineDesign(store, line));
+  for (const [i, line] of lines.entries()) {
+    const onepiece = designs[i] ? await stickerFile(store, designs[i]) : null;
+    if (onepiece) { const g = gift(line, onepiece.id, onepiece); if (g) return g; }
+  }
+  for (const [i, line] of lines.entries()) {
+    const file = FLAT_ART.has(line.kind || 'tshirt') ? defaultFile(line.variant?.files) : (designs[i] ? await shirtFile(store, designs[i]) : null);
+    if (!file?.id) continue;
+    const art = await printful.getFile(file.id);   // a provider error retries the order; it is not a missing sticker
+    const g = gift(line, file.id, art);
+    if (g) return g;
+  }
+  fail(409, 'free_sticker_art_missing');
 }
 
 const accepted = new Set(['inreview','pending','waiting','waiting_for_stock','inprocess','onhold','partial','fulfilled']);

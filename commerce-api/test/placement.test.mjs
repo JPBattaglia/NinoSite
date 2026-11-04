@@ -47,3 +47,34 @@ test('every site order gets one free 3in sticker of its first design, at $0, unl
   const without = await placedItems({lines: [line('tshirt', 12634)]}, off, printful);
   assert.deepEqual(without.map(i => i.external_id), ['item_1'], 'free_sticker = off: no gift');
 });
+
+// Owner, Nov 3, 2026: the free sticker must work for every design and every future design.
+const settingsStore = (rows, variants = {}) => ({
+  first: async (sql, ...a) => {
+    if (/free_sticker/.test(sql)) return null;
+    if (/LIKE 'expand:%' AND value=\?/.test(sql)) { const k = Object.keys(rows).find(k => k.startsWith('expand:') && rows[k] === a[0]); return k ? {key: k} : null; }
+    if (/FROM catalog_variants/.test(sql)) return variants[a[0]] ? {snapshot_json: JSON.stringify(variants[a[0]])} : null;
+    if (/WHERE key=\?/.test(sql)) return a[0] in rows ? {value: rows[a[0]]} : null;
+    return null;
+  }});
+const mugLine = {product_id: '900', variant_id: '1', quantity: 1, unit_price_cents: 1500, title: 'Skull Wave Mug', kind: 'mug',
+  variant: {catalog_variant_id: 1320, files: [{type: 'default', id: 555, hash: 'wrap'}]}};
+
+test('free sticker: the design\u2019s one-piece sticker artwork is used, whatever product comes first', async () => {
+  const store = settingsStore({'expand:482794926:mug': '900', 'sticker_file:482794926': JSON.stringify({id: 777, w: 1000, h: 800})});
+  const gift = (await placedItems({lines: [mugLine]}, store, printful)).at(-1);
+  assert.equal(gift.external_id, 'gift_sticker');
+  assert.equal(gift.files[0].id, 777, 'one-piece sticker art, not the mug wrap');
+});
+
+test('free sticker: a brand-new design without sticker art uses its shirt artwork, never a mug wrap or hat embroidery', async () => {
+  const store = settingsStore({'expand:482794926:mug': '900'}, {'482794926': {files: [{type: 'default', id: 1035411289}]}});
+  const gift = (await placedItems({lines: [mugLine]}, store, printful)).at(-1);
+  assert.equal(gift.files[0].id, 1035411289, 'the design\u2019s shirt file');
+  assert.notEqual(gift.files[0].id, 555);
+});
+
+test('free sticker: when no artwork can be found the order goes to review instead of shipping without it', async () => {
+  const store = settingsStore({});
+  await assert.rejects(placedItems({lines: [mugLine]}, store, printful), e => e.status === 409 && e.code === 'free_sticker_art_missing');
+});

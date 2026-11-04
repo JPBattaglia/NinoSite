@@ -2,13 +2,13 @@
 # Printful's kiss-cut makes one sticker instead of one per loose part. Builds assets/stickers/<design>.png and
 # manifest.json (commerce-api/scripts/make_stickers.py); the shop worker picks them up within the hour
 # (src/sticker-art.mjs) and remakes the sticker products.
-# Daily: new designs, from Printful's preview. On demand: "originals" = temporary download links of the full-size
+# Every 6 hours (owner, Nov 3: the free sticker must work for every new design): new designs, from Printful's preview. On demand: "originals" = temporary download links of the full-size
 # originals (Nino's T-Shirt Designs folder); each is matched to its design by picture. Links are single-use.
 name: Sticker art
 
 on:
   schedule:
-    - cron: '50 14 * * *'
+    - cron: '50 2,8,14,20 * * *'
   workflow_dispatch:
     inputs:
       originals:

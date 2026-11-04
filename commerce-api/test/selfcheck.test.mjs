@@ -11,7 +11,7 @@ test('a healthy shop passes every check and leaves no Printful order behind',asy
   const {f,run}=await setup();
   const result=await run();
   assert.equal(result.ok,true,failed(result));
-  assert.equal(result.checks.length,5);
+  assert.equal(result.checks.length,6);
   assert.equal(f.printful.confirmCalls,0,'the test draft is never confirmed');
   assert.deepEqual(f.printful.deleted,['1001']);assert.equal(f.printful.orders.size,0);
   assert.equal((await lastSelfCheck(f.store)).ok,true);
@@ -46,4 +46,16 @@ test('a paid order not sent to Printful within 2 hours fails the check',async()=
 test('a Printful token that cannot create orders fails the check',async()=>{
   const {f,run}=await setup();f.printful.createDraft=async()=>{const e=new Error('POST /orders 401: Unauthorized');e.code='printful_request_failed';throw e;};
   assert.match(failed(await run()),/Printful accepts orders.*401: Unauthorized/);
+});
+
+test('a design without one-piece sticker artwork is allowed 48 hours, then fails the check (Nov 3: free sticker for every design)',async()=>{
+  const {f,now}=await setup();
+  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('expand:777:mug','900')");
+  const first=await runSelfCheck(f.store,f.stripe,f.printful,f.env,now);
+  assert.equal(first.checks.find(c=>c.name==='Every design has its free sticker artwork').ok,true);
+  const later=await runSelfCheck(f.store,f.stripe,f.printful,f.env,now+49*3600);
+  assert.match(failed(later),/1 design\(s\) have had no one-piece sticker artwork for over 48 hours \(777\)/);
+  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('sticker_file:777','{\"id\":5,\"w\":10,\"h\":10}')");
+  const fixed=await runSelfCheck(f.store,f.stripe,f.printful,f.env,now+50*3600);
+  assert.equal(fixed.checks.find(c=>c.name==='Every design has its free sticker artwork').ok,true);
 });

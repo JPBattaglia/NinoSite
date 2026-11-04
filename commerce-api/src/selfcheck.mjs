@@ -8,6 +8,9 @@
 //   4. No paid order has waited more than 2 hours without being sent to Printful.
 //   5. The Printful token can create an order in the website store: a draft is created and deleted at once.
 //      Drafts are never confirmed, so nothing is charged or printed.
+//   6. Every design has its one-piece free-sticker artwork (owner, Nov 3: the free sticker must work for every design,
+//      including new ones). A new design gets it from the sticker-art workflow (every 6 hours); until then its order's sticker
+//      uses the shirt artwork. Fails only when a design has gone 48 hours without it.
 //
 // Runs from the daily cron, or on the next 5-minute run after commerce_settings 'selfcheck_run_now' is set.
 // The result is stored in commerce_settings 'selfcheck_last'; /api/health shows pass/fail and the names of
@@ -17,6 +20,7 @@ import {typeOf} from './expand.mjs';
 
 export const SELFCHECK_KEY = 'selfcheck_last';
 export const SELFCHECK_RUN_NOW = 'selfcheck_run_now';
+export const STICKER_MISSING_KEY = 'sticker_missing_seen';
 const WEBHOOK_PATH = '/api/webhooks/stripe';
 // A public landmark address: Printful validates draft recipients, and the draft is deleted straight away.
 const DRAFT_RECIPIENT = {name:'Shop self-check', address1:'1 Ferry Building', city:'San Francisco', state_code:'CA', country_code:'US', zip:'94111'};
@@ -85,6 +89,19 @@ export async function runSelfCheck(store, stripe, printful, env, now) {
     await printful.deleteOrder(draft.id);
     const placed = (draft.items || []).map(item => `${lines[Number(String(item.external_id).replace('item_', '')) - 1]?.kind || '?'} ${item.files?.find(f => f.position)?.position?.width ?? 'no'}px`).join(', ');
     return `draft ${draft.id} created and deleted (${lines.length} items, placed: ${placed})`;
+  });
+
+  await check('Every design has its free sticker artwork', async () => {
+    const rows = await store.all("SELECT DISTINCT substr(key,8,instr(substr(key,8),':')-1) AS design FROM commerce_settings WHERE key LIKE 'expand:%' AND substr(key,8,instr(substr(key,8),':')-1) NOT IN (SELECT substr(key,14) FROM commerce_settings WHERE key LIKE 'sticker_file:%')");
+    const missing = rows.map(row => row.design).filter(Boolean);
+    const seenRow = await store.first('SELECT value FROM commerce_settings WHERE key=?', STICKER_MISSING_KEY);
+    let seen = {};
+    try { seen = JSON.parse(seenRow?.value || '{}') || {}; } catch {}
+    const next = Object.fromEntries(missing.map(design => [design, seen[design] || now]));
+    await store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value', STICKER_MISSING_KEY, JSON.stringify(next));
+    const late = missing.filter(design => now - next[design] > 48 * 3600);
+    expect(!late.length, `${late.length} design(s) have had no one-piece sticker artwork for over 48 hours (${late.slice(0,5).join(', ')}): run the Sticker art workflow; their free stickers use the shirt artwork until then`);
+    return missing.length ? `${missing.length} new design(s) waiting for the next sticker-art run` : 'all designs';
   });
 
   const result = {ok:checks.every(item => item.ok), checked_at:now, checks};
