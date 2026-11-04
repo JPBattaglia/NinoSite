@@ -14,8 +14,10 @@ Output: assets/mugs/<design id>.png and assets/mugs/manifest.json
 
 Black Glossy Mug (owner, Nov 3, 2026): its print area is narrower (2250 px, 7.5 in round the same mug), so the
 white wrap's 75% point lands left of the front face. Each design also gets assets/mugs/black/<design id>.png
-(2250 x 925, the 11 oz area; the 15 oz area is the same width) with the design centered at BLACK_CX, drawn from the
-design's white wrap, and assets/mugs/black/manifest.json in the same format.
+(2250 x 925, the 11 oz area; the 15 oz area is the same width) drawn from the design's white wrap, and
+assets/mugs/black/manifest.json in the same format. Both sides (owner, Nov 4, 2026): Printful's own photo of the black
+mug shows it with the handle on the LEFT, so a design only on the handle-right face (BLACK_CX) showed as a plain black
+mug on all of them. The design is now printed on both faces, centered at BLACK_CX and at 1 - BLACK_CX.
 """
 import hashlib, io, json, os, sys
 from PIL import Image, ImageDraw
@@ -28,7 +30,7 @@ BOX_W, BOX_H, CENTER_X = 0.40, 0.86, 0.75
 LAYOUT = 'v1-0.40-0.86-0.75'
 BLACK_AREA = (2250, 925)
 BLACK_W, BLACK_H, BLACK_CX = 0.36, 0.86, 0.78   # ~2.7 in wide at most: stays on the front face (mockup check, Nov 3)
-BLACK_LAYOUT = 'b1-0.36-0.86-0.78'
+BLACK_LAYOUT = 'b2-0.36-0.86-0.78-both'   # b2: both sides (Nov 4)
 
 
 def clear_background(art):
@@ -61,6 +63,7 @@ def transparent_outside(canvas):
 
 
 def mug(design_art, area=AREA, box=(BOX_W, BOX_H), cx=CENTER_X):
+    """cx: the design's center as a share of the wrap's width, or a list of centers (one copy at each)."""
     art = clear_background(design_art)
     bbox = art.getbbox()
     if bbox:
@@ -70,7 +73,8 @@ def mug(design_art, area=AREA, box=(BOX_W, BOX_H), cx=CENTER_X):
     size = (max(1, round(art.width * scale)), max(1, round(art.height * scale)))
     art = art.resize(size, Image.LANCZOS)
     canvas = Image.new('RGBA', area, (0, 0, 0, 0))
-    canvas.alpha_composite(art, (round(aw * cx - size[0] / 2), (ah - size[1]) // 2))
+    for c in (cx if isinstance(cx, (list, tuple)) else [cx]):
+        canvas.alpha_composite(art, (round(aw * c - size[0] / 2), (ah - size[1]) // 2))
     return canvas
 
 
@@ -177,7 +181,7 @@ def make_black(out_dir, manifest):
             continue
         try:
             white = Image.open(os.path.join(out_dir, f'{design}.png')).convert('RGBA')
-            wrap = mug(white, BLACK_AREA, (BLACK_W, BLACK_H), BLACK_CX)
+            wrap = mug(white, BLACK_AREA, (BLACK_W, BLACK_H), [1 - BLACK_CX, BLACK_CX])
             if not transparent_outside(wrap):
                 raise ValueError('wrap background is not transparent')
             buf = io.BytesIO(); wrap.save(buf, 'PNG', optimize=True); data = buf.getvalue()
