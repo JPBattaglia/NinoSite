@@ -86,6 +86,8 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     expires_at:order.created_at+3600,
     metadata:{order_id:order.id,cart_hash:order.request_hash,...attributionMetadata(snapshot.attribution)},
     payment_intent_data:{metadata:{order_id:order.id}},
+    // One reminder email can bring a buyer back if this checkout expires unpaid (emails.mjs, sendRecoveryEmail).
+    after_expiration:{recovery:{enabled:true,allow_promotion_codes:false}},
     line_items:snapshot.lines.map(line=>({quantity:line.quantity,price_data:{currency:'usd',unit_amount:line.unit_price_cents,tax_behavior:'exclusive',product_data:{...(lineTaxCode(line,snapshot)?{tax_code:lineTaxCode(line,snapshot)}:{}),name:line.title,description:line.variant.name || undefined,images:line.image?[line.image]:undefined,metadata:{sync_variant_id:line.variant_id,sync_product_id:line.product_id}}}})),
     shipping_options:[{shipping_rate_data:{display_name:snapshot.shipping.name,type:'fixed_amount',fixed_amount:{amount:snapshot.shipping.amount,currency:'usd'},tax_behavior:'exclusive'}}]
   };
@@ -99,7 +101,15 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
       params.customer=customer.id;
     } else params.payment_intent_data.shipping=stripeShipping(snapshot.shipping.recipient);
   } else params.shipping_address_collection={allowed_countries:snapshot.shipping.countries};
-  const session=await stripeCall(store,order,'checkout',()=>stripe.createSession(params,`${order.id}:checkout`),now);
+  const session=await stripeCall(store,order,'checkout',async()=>{
+    try { return await stripe.createSession(params,`${order.id}:checkout`); }
+    catch(error) {
+      // The recovery link is optional: if Stripe ever refuses it for a session, checkout still opens without one.
+      if(error?.type!=='StripeInvalidRequestError' || !/after_expiration/.test(`${error.param || ''} ${error.message || ''}`)) throw error;
+      const {after_expiration,...plain}=params;
+      return await stripe.createSession(plain,`${order.id}:checkout-plain`);
+    }
+  },now);
   if(!session?.id || !session.url || session.livemode!==(env.STRIPE_MODE==='live')) fail(502,'invalid_checkout_session');
   try { const url=new URL(session.url); if(url.protocol!=='https:' || url.hostname!=='checkout.stripe.com') fail(502,'invalid_checkout_session'); } catch { fail(502,'invalid_checkout_session'); }
   await store.run('UPDATE commerce_orders SET stripe_session_id=?,checkout_url=?,checkout_expires_at=?,updated_at=? WHERE id=?',session.id,session.url,session.expires_at || order.created_at+3600,now,order.id);

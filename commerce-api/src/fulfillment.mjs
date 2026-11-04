@@ -2,7 +2,7 @@ import {fail,cents,money,canonical,recipient,countries,stripeConfiguration} from
 import {printFiles,artworkKeys} from './catalog.mjs';
 import {checkedPaidSession} from './checkout.mjs';
 import {resolveShippingCountries} from './countries.mjs';
-import {sendOrderEmails} from './emails.mjs';
+import {sendOrderEmails,sendRecoveryEmail} from './emails.mjs';
 import {PRODUCT_TYPES,position,threadsFor} from './expand.mjs';
 import {stickerFile} from './sticker-art.mjs';
 
@@ -186,6 +186,17 @@ export async function fulfillOrder(id,store,stripe,printful,env,now) {
   }
 }
 
+// A buyer who pays through a reminder's recovery link pays a NEW Checkout Session that Stripe copied from the expired
+// one (same client_reference_id and metadata, recovered_from = the expired session). Point the order at the new
+// session once; checkedPaidSession then verifies it against Stripe exactly like a first-time payment.
+async function recoveredOrder(store,session,now) {
+  if(typeof session?.id!=='string' || typeof session.recovered_from!=='string') return null;
+  const order=await store.orderBySession(session.recovered_from);
+  if(!order || order.payment_status==='paid' || session.client_reference_id!==order.id || session.livemode!==(order.live_mode===1)) return null;
+  await store.run('UPDATE commerce_orders SET stripe_session_id=?,checkout_url=NULL,updated_at=? WHERE id=? AND stripe_session_id=? AND payment_status!=?',session.id,now,order.id,session.recovered_from,'paid');
+  return store.orderBySession(session.id);
+}
+
 export async function stripeWebhook(raw,signature,store,stripe,printful,env,now,ctx) {
   stripeConfiguration(env,true);
   let event;
@@ -202,8 +213,10 @@ export async function stripeWebhook(raw,signature,store,stripe,printful,env,now,
   let order;
   try {
     const supported=['checkout.session.completed','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed'];
+    if(event.type==='checkout.session.expired') await sendRecoveryEmail(store,env,event.data?.object,now);
     if(supported.includes(event.type)) {
       order=await store.orderBySession(event.data?.object?.id);
+      if(!order && event.type==='checkout.session.completed') order=await recoveredOrder(store,event.data?.object,now);
       if(order) {
         if(event.type==='checkout.session.async_payment_failed') await store.run("UPDATE commerce_orders SET payment_status='failed',updated_at=? WHERE id=? AND payment_status!='paid'",now,order.id);
         else {

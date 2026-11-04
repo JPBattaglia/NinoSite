@@ -59,6 +59,7 @@ Configure the Stripe event endpoint as `POST /api/webhooks/stripe` using API ver
 - `checkout.session.completed`
 - `checkout.session.async_payment_succeeded`
 - `checkout.session.async_payment_failed`
+- `checkout.session.expired` (abandoned checkout: one reminder email with Stripe's recovery link, live mode only, when the buyer typed an email and has not paid; see `sendRecoveryEmail` in `src/emails.mjs`. Paying through the link is matched back to the original order by `recovered_from`.)
 
 The server verifies the raw-body signature, retrieves the current Session and expanded payment/charge, and checks paid status, currency, totals, immutable cart metadata, exact line items and refund state. Return pages do not fulfill orders. This follows Stripe's [Checkout fulfillment guidance](https://docs.stripe.com/checkout/fulfillment.md?payment-ui=stripe-hosted) and [event verification guidance](https://docs.stripe.com/events/manage-webhook-endpoints).
 
