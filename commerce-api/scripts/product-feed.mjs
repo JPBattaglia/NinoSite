@@ -18,7 +18,9 @@ import path from 'node:path';
 export const API = 'https://nino-printful-commerce-api.ijpbattaglia.workers.dev';
 export const SITE = 'https://ninobattaglia.com';
 export const CHANNELS = Object.freeze({
-  google: {file: 'feed-google.xml', utm: 'utm_source=google&utm_medium=shopping_feed'},
+  // promotion: the Merchant Center promotion id every Google item is linked to (the standing free sticker on every
+  // site order, support.html). A "specific products" promotion only matches items carrying its g:promotion_id.
+  google: {file: 'feed-google.xml', utm: 'utm_source=google&utm_medium=shopping_feed', promotion: 'free-sticker'},
   pinterest: {file: 'feed-pinterest.xml', utm: 'utm_source=pinterest&utm_medium=product_pin'}
 });
 export const TYPES = Object.freeze({
@@ -96,6 +98,7 @@ export function itemXml(item, channel, shipping) {
   if (item.color) lines.push(['g:color', item.color]);
   if (item.size) lines.push(['g:size', item.size]);
   if (kind.apparel) lines.push(['g:gender', 'unisex'], ['g:age_group', 'adult']);
+  if (CHANNELS[channel].promotion) lines.push(['g:promotion_id', CHANNELS[channel].promotion]);
   let out = '<item>' + lines.map(([tag, value]) => `<${tag}>${xml(value)}</${tag}>`).join('');
   if (Number.isInteger(shipping[item.type])) out += `<g:shipping><g:country>US</g:country><g:service>Standard</g:service><g:price>${money(shipping[item.type])}</g:price></g:shipping>`;
   return out + '</item>';

@@ -57,6 +57,14 @@ test('feed XML carries the required Google / Pinterest fields', () => {
   assert.ok(sticker.includes('<g:size>3″×3″</g:size>'));
 });
 
+test('every Google item is linked to the free-sticker promotion; Pinterest items are not', () => {
+  const items = feedItems(live(), curated, config);
+  const google = feedXml(items, 'google', {}).split('\n').filter(line => line.startsWith('<item>'));
+  assert.equal(google.length, 4);
+  for (const line of google) assert.ok(line.includes('<g:promotion_id>free-sticker</g:promotion_id>'), line);
+  assert.ok(!feedXml(items, 'pinterest', {}).includes('<g:promotion_id>'));
+});
+
 test('text is decoded from the shop and escaped for XML', () => {
   assert.equal(decode('All Hallow&#39;s Eve &amp; more'), "All Hallow's Eve & more");
   const items = feedItems(live(), [{...curated[0], title: 'Fish & <Chips>'}], config);
