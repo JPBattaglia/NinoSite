@@ -1,0 +1,18 @@
+# Every local script and stylesheet a page loads must be in the repo (Nov 5, 2026). The allowlist .gitignore has twice
+# kept a new file out of a commit (signup.js, visit-count.js), and the pages then loaded a file that 404'd live.
+name: Page files present
+on:
+  push:
+    branches: [master]
+    paths: ["*.html", ".gitignore", "*.js", "*.css"]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check every local src= and stylesheet href= exists
+        run: node .github/check-page-files.mjs
