@@ -14,9 +14,6 @@ on:
       originals:
         description: Space-separated temporary download links of original artwork files (optional)
         required: false
-      originals_release:
-        description: Tag of a draft release holding originals.tar (Nino's T-Shirt Designs folder); deleted after use (optional)
-        required: false
 
 concurrency:
   group: sticker-art
@@ -47,16 +44,6 @@ jobs:
             i=$((i+1)); curl -sSfL -m 120 -o "/tmp/originals/$(printf '%03d' $i).png" "$u" || echo "link $i failed"
           done
           echo "downloaded $i"
-      - name: Download originals from a draft release
-        if: inputs.originals_release != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.originals_release }}
-        run: |
-          gh release download "$TAG" -R "${{ github.repository }}" -p originals.tar -D /tmp
-          mkdir -p /tmp/orig_x && tar -xf /tmp/originals.tar -C /tmp/orig_x
-          find /tmp/orig_x -type f -iname '*.png' -exec cp {} /tmp/originals/ \;
-          echo "originals: $(ls /tmp/originals | wc -l)"
       - name: Build sticker artwork
         run: python3 commerce-api/scripts/make_stickers.py . /tmp/originals
       # Mug artwork (owner, Nov 2): each design on the face seen with the handle on the right, on a full-wrap file.
@@ -72,11 +59,6 @@ jobs:
           git pull -q --rebase origin master
           git push -q origin HEAD:master
           echo "changed=true" >> "$GITHUB_OUTPUT"
-      - name: Delete the originals release
-        if: always() && inputs.originals_release != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release delete "${{ inputs.originals_release }}" -R "${{ github.repository }}" --yes --cleanup-tag || true
       - name: Publish the site
         if: steps.commit.outputs.changed == 'true'
         continue-on-error: true
