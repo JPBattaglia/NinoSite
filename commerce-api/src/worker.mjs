@@ -16,7 +16,7 @@ import {runPrintfulProbes} from './probe.mjs';
 import {refreshPalette} from './colors.mjs';
 import {sendOrderEmails} from './emails.mjs';
 import {runSelfCheck,lastSelfCheck,SELFCHECK_RUN_NOW} from './selfcheck.mjs';
-import {processMockups,serveMockup} from './mockups.mjs';
+import {processMockups,processMockupsHd,serveMockup} from './mockups.mjs';
 import {catalogSnapshot,refreshCatalogSnapshot,readinessCatalog,withReadiness} from './catalog-snapshot.mjs';
 import {runMirror} from './mirror.mjs';
 import {runExpansion,retireProducts,api as printfulApi,remakeSticker,remakeMug} from './expand.mjs';
@@ -71,11 +71,11 @@ export function createApp(dependencies={}) {
         // Self-renewing Printful connection (printful-auth.mjs): the owner's one-time connect links.
         if(request.method==='GET' && url.pathname==='/api/printful/connect') return await connectRedirect(env,url.searchParams.get('store'),now);
         if(request.method==='GET' && url.pathname==='/api/printful/callback') return await connectCallback(env,store,url,now);
-        const mockup=request.method==='GET' && url.pathname.match(/^\/api\/mockups\/(\d+)\/([a-z0-9-]+)\.jpg$/);
+        const mockup=request.method==='GET' && url.pathname.match(/^\/api\/mockups(-hd)?\/(\d+)\/([a-z0-9-]+)\.jpg$/);
         if(mockup) {
           const cache=globalThis.caches?.default; const cached=cache && await cache.match(request);
           if(cached) return cached;
-          const response=await serveMockup(env,mockup[1],mockup[2]);
+          const response=await serveMockup(env,mockup[2],mockup[3],undefined,Boolean(mockup[1]));
           if(!response) return new Response('Not found',{status:404,headers:{'Access-Control-Allow-Origin':'*'}});
           if(cache) ctx?.waitUntil?.(cache.put(request,response.clone()));
           return response;
@@ -182,7 +182,7 @@ export function createApp(dependencies={}) {
         env=await withPrintfulTokens(env,store,now);
         if(!env.PRINTFUL_ACCESS_TOKEN || !env.PRINTFUL_STORE_ID) return;
         try { await runPrintfulProbes(store,env,now); } catch { /* research helper must never block sync or fulfillment */ }
-        try { await processMockups(store,env,now); } catch { /* model photos must never block sync or fulfillment */ }
+        try { if(await processMockups(store,env,now)==='idle') await processMockupsHd(store,env,now); } catch { /* model photos must never block sync or fulfillment */ }
         const printful=dependencies.printful || new PrintfulClient(env);
         // New designs made in the source Printful store are copied into the website store before the daily sync,
         // so the same sync publishes them. The owner can also trigger it by setting commerce_settings 'mirror_run_now'.

@@ -60,7 +60,8 @@ export function fitPrintArea({width, height, top, left}) {
 // Alternate men's and women's models across the colors so each shirt shows both.
 export function styleForColor(index) { return index % 2 === 0 ? MEN_STYLE : WOMEN_STYLE; }
 
-async function submit(store, env, job, now, fetcher) {
+// The Printful mockup task body for a job, or null when the job was put on hold (see below).
+async function taskBody(store, job, now, hold = true) {
   const colors = await productColors(store, job.product_id);
   const hash = colors.find(row => row.hash)?.hash;
   if (!colors.length || !hash) throw new Error('no_variants_or_artwork');
@@ -70,22 +71,18 @@ async function submit(store, env, job, now, fetcher) {
   if (raw.catalog) {
     // Rebuilt products: wait (status 'hold', looked at again hourly) until the shop's catalog lists the new colors.
     if (Array.isArray(raw.colors) && raw.colors.length && JSON.stringify([...new Set(colors.map(row => row.color))].sort()) !== JSON.stringify(raw.colors)) {
-      await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_colors',updated_at=? WHERE product_id=?", now, job.product_id);
-      return;
+      if (hold) await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_colors',updated_at=? WHERE product_id=?", now, job.product_id);
+      return null;
     }
     // Remade stickers: wait until the catalog shows the new artwork file.
     if (raw.file_id && !colors.some(row => String(row.file_id) === String(raw.file_id))) {
-      await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_file',updated_at=? WHERE product_id=?", now, job.product_id);
-      return;
+      if (hold) await store.run("UPDATE mockup_jobs SET status='hold',last_error='waiting_for_catalog_file',updated_at=? WHERE product_id=?", now, job.product_id);
+      return null;
     }
     const p = raw.position_in;
     const placements = [{ placement: raw.placement, technique: raw.technique, layers: [{ type: 'file', url: artworkUrl(hash), position: { width: p.width, height: p.height, top: p.top, left: p.left } }] }];
     const ids = raw.catalog_variant_ids?.length ? raw.catalog_variant_ids : colors.map(row => row.catalog_variant_id);
-    const result = await printful(env, 'POST', '/v2/mockup-tasks', { format: 'jpg', products: [{ source: 'catalog', catalog_product_id: raw.catalog, ...(raw.mockup_style_ids?.length ? { mockup_style_ids: raw.mockup_style_ids } : {}), placements, catalog_variant_ids: ids }] }, fetcher);
-    const taskIds = (result.data || []).map(task => task.id).filter(Boolean);
-    if (!taskIds.length) throw new Error('no_task_id');
-    await store.run("UPDATE mockup_jobs SET status='submitted',task_id=?,attempts=attempts+1,last_error=NULL,updated_at=? WHERE product_id=?", taskIds.join(','), now, job.product_id);
-    return;
+    return { format: 'jpg', products: [{ source: 'catalog', catalog_product_id: raw.catalog, ...(raw.mockup_style_ids?.length ? { mockup_style_ids: raw.mockup_style_ids } : {}), placements, catalog_variant_ids: ids }] };
   }
   const layer = fitPrintArea(raw);
   const placements = [{ placement: 'front', technique: 'dtg', layers: [{ type: 'file', url: artworkUrl(hash), position: layer }] }];
@@ -93,24 +90,31 @@ async function submit(store, env, job, now, fetcher) {
     source: 'catalog', catalog_product_id: CATALOG_PRODUCT, mockup_style_ids: [style], placements,
     catalog_variant_ids: colors.filter((_, index) => styleForColor(index) === style).map(row => row.catalog_variant_id)
   })).filter(group => group.catalog_variant_ids.length);
-  const result = await printful(env, 'POST', '/v2/mockup-tasks', { format: 'jpg', products: groups }, fetcher);
+  return { format: 'jpg', products: groups };
+}
+
+async function submit(store, env, job, now, fetcher) {
+  const body = await taskBody(store, job, now);
+  if (!body) return;
+  const result = await printful(env, 'POST', '/v2/mockup-tasks', body, fetcher);
   const taskIds = (result.data || []).map(task => task.id).filter(Boolean);
   if (!taskIds.length) throw new Error('no_task_id');
   await store.run("UPDATE mockup_jobs SET status='submitted',task_id=?,attempts=attempts+1,last_error=NULL,updated_at=? WHERE product_id=?", taskIds.join(','), now, job.product_id);
 }
 
-async function collect(store, env, job, now, fetcher) {
+// Downloads a finished set of Printful mockup tasks into one bundle. Null while any task is still running.
+async function fetchBundle(store, env, productId, taskIdList, fetcher) {
   const tasks = [];
-  for (const id of String(job.task_id).split(',').filter(Boolean)) {
+  for (const id of String(taskIdList).split(',').filter(Boolean)) {
     const result = await printful(env, 'GET', `/v2/mockup-tasks?id=${encodeURIComponent(id)}`, null, fetcher);
     tasks.push(...(result.data || []));
   }
   if (tasks.some(task => task.status === 'failed')) throw new Error('task_failed: ' + JSON.stringify(tasks.map(task => task.failure_reasons)).slice(0, 200));
-  if (!tasks.length || tasks.some(task => task.status !== 'completed')) return false;
+  if (!tasks.length || tasks.some(task => task.status !== 'completed')) return null;
   // Every catalog variant of the product maps to its color, not only the one productColors picks: a stage 14 photo
   // can be made on a chosen size (stickers use the 5.5in variant), which isn't the lowest id for its color.
-  const colorByVariant = await variantColors(store, job.product_id);
-  const parts = []; const header = { colors: {} }; let offset = 0;
+  const colorByVariant = await variantColors(store, productId);
+  const parts = []; const images = []; const header = { colors: {} }; let offset = 0;
   for (const task of tasks) for (const variant of task.catalog_variant_mockups || []) {
     const color = colorByVariant.get(Number(variant.catalog_variant_id));
     const mockup = (variant.mockups || []).find(item => item.placement === 'front' || item.placement === 'default') || variant.mockups?.[0];
@@ -118,7 +122,7 @@ async function collect(store, env, job, now, fetcher) {
     const image = await fetcher(mockup.mockup_url, { signal: AbortSignal.timeout(20000) });
     if (!image.ok) throw new Error(`download ${image.status}`);
     const bytes = new Uint8Array(await image.arrayBuffer());
-    header.colors[color] = [offset, bytes.length]; offset += bytes.length; parts.push(bytes);
+    header.colors[color] = [offset, bytes.length]; offset += bytes.length; parts.push(bytes); images.push([color, bytes]);
   }
   if (!parts.length) throw new Error('no_mockups');
   const headerBytes = new TextEncoder().encode(JSON.stringify(header));
@@ -126,8 +130,15 @@ async function collect(store, env, job, now, fetcher) {
   new DataView(bundle.buffer).setUint32(0, headerBytes.length);
   bundle.set(headerBytes, 4); let position = 4 + headerBytes.length;
   for (const part of parts) { bundle.set(part, position); position += part.length; }
+  return { bundle, images, colors: Object.keys(header.colors) };
+}
+
+async function collect(store, env, job, now, fetcher) {
+  const done = await fetchBundle(store, env, job.product_id, job.task_id, fetcher);
+  if (!done) return false;
+  const { bundle, colors } = done;
   await env.MOCKUPS.put(mockupKey(job.product_id), bundle);
-  await store.run("UPDATE mockup_jobs SET status='done',colors_json=?,last_error=NULL,updated_at=? WHERE product_id=?", JSON.stringify(Object.keys(header.colors)), now, job.product_id);
+  await store.run("UPDATE mockup_jobs SET status='done',colors_json=?,last_error=NULL,updated_at=? WHERE product_id=?", JSON.stringify(colors), now, job.product_id);
   return true;
 }
 
@@ -169,6 +180,54 @@ export async function processMockups(store, env, now, fetcher = (...args) => fet
   }
 }
 
+// Sharp photos for zooming (owner, Nov 5, 2026: model photos looked pixelated when pinch-zoomed on an iPhone).
+// Printful's default 1000px photos stay as they are (thumbnails, cards, cart: small and light to decode); a second
+// 2000px copy of every finished shirt is made in the background, one at a time while the main queue is idle, and
+// stored per color in R2 (env.MOCKUPS_HD, bucket nino-mockups-hd: ~1.5 GB, past the KV free plan's 1 GB). The
+// open-design view loads it and falls back to the 1000px photo until it exists. Only shirts (the model photos).
+// A job whose photos are remade (updated_at moves on) gets a new sharp copy too.
+export const HD_WIDTH = 2000;
+export const mockupHdKey = (productId, slug) => `${productId}/${slug}.jpg`;
+async function hdTable(store) {
+  await store.run(`CREATE TABLE IF NOT EXISTS mockup_hd (product_id TEXT PRIMARY KEY, status TEXT NOT NULL,
+    task_id TEXT, attempts INTEGER NOT NULL DEFAULT 0, source_updated INTEGER, last_error TEXT, updated_at INTEGER NOT NULL)`);
+}
+export async function processMockupsHd(store, env, now, fetcher = (...args) => fetch(...args)) {
+  if (!env.MOCKUPS_HD || !env.PRINTFUL_ACCESS_TOKEN) return 'disabled';
+  await hdTable(store);
+  const fail = async (row, error) => store.run('UPDATE mockup_hd SET status=?,task_id=NULL,last_error=?,updated_at=? WHERE product_id=?',
+    row.attempts < 3 ? 'pending' : 'error', String(error?.message || error).slice(0, 300), now, row.product_id);
+  const submitted = await store.first("SELECT * FROM mockup_hd WHERE status='submitted' ORDER BY updated_at LIMIT 1");
+  if (submitted) {
+    if (now - submitted.updated_at > STALL_SECONDS) { await fail(submitted, 'printful_task_stalled'); return 'stalled'; }
+    try {
+      const done = await fetchBundle(store, env, submitted.product_id, submitted.task_id, fetcher);
+      if (!done) return 'waiting';
+      for (const [color, bytes] of done.images) await env.MOCKUPS_HD.put(mockupHdKey(submitted.product_id, colorSlug(color)), bytes, { httpMetadata: { contentType: 'image/jpeg' } });
+      await store.run("UPDATE mockup_hd SET status='done',task_id=NULL,last_error=NULL,updated_at=? WHERE product_id=?", now, submitted.product_id);
+      return 'collected';
+    } catch (error) { await fail(submitted, error); return 'collect_failed'; }
+  }
+  const job = await store.first(`SELECT j.*, h.attempts AS hd_attempts FROM mockup_jobs j LEFT JOIN mockup_hd h ON h.product_id=j.product_id
+    WHERE j.status='done' AND j.layer_json NOT LIKE '%"catalog":%' AND (h.product_id IS NULL OR h.status='pending' OR (h.status IN ('done','error') AND h.source_updated<j.updated_at))
+    ORDER BY j.priority DESC, j.product_id LIMIT 1`);
+  if (!job) return 'idle';
+  const attempts = job.hd_attempts == null || job.hd_attempts >= 3 ? 0 : job.hd_attempts;
+  const row = { product_id: job.product_id, attempts: attempts + 1 };
+  await store.run(`INSERT INTO mockup_hd(product_id,status,attempts,source_updated,updated_at) VALUES(?,'pending',?,?,?)
+    ON CONFLICT(product_id) DO UPDATE SET status='pending',attempts=excluded.attempts,source_updated=excluded.source_updated,updated_at=excluded.updated_at`,
+    job.product_id, row.attempts, job.updated_at, now);
+  try {
+    const body = await taskBody(store, job, now, false);
+    if (!body) throw new Error('catalog_not_ready');
+    const result = await printful(env, 'POST', '/v2/mockup-tasks', { ...body, mockup_width_px: HD_WIDTH }, fetcher);
+    const taskIds = (result.data || []).map(task => task.id).filter(Boolean);
+    if (!taskIds.length) throw new Error('no_task_id');
+    await store.run("UPDATE mockup_hd SET status='submitted',task_id=?,last_error=NULL,updated_at=? WHERE product_id=?", taskIds.join(','), now, job.product_id);
+    return 'submitted';
+  } catch (error) { await fail(row, error); return 'submit_failed'; }
+}
+
 // Map of product ID -> list of colors with a stored model photo.
 export async function mockupColors(store) {
   try {
@@ -177,8 +236,13 @@ export async function mockupColors(store) {
   } catch { return { version: 'none', map: new Map() }; }
 }
 
-// GET /api/mockups/{productId}/{color-slug}.jpg
-export async function serveMockup(env, productId, slug, ctx) {
+// GET /api/mockups/{productId}/{color-slug}.jpg (and /api/mockups-hd/... for the 2000px copy)
+const IMAGE_HEADERS = { 'Content-Type': 'image/jpeg', 'Cache-Control': 'public, max-age=86400', 'Access-Control-Allow-Origin': '*', 'X-Content-Type-Options': 'nosniff' };
+export async function serveMockup(env, productId, slug, ctx, hd = false) {
+  if (hd) {
+    const object = env.MOCKUPS_HD && await env.MOCKUPS_HD.get(mockupHdKey(productId, slug));
+    return object ? new Response(await object.arrayBuffer(), { headers: IMAGE_HEADERS }) : null;
+  }
   if (!env.MOCKUPS) return null;
   const bundle = await env.MOCKUPS.get(mockupKey(productId), 'arrayBuffer');
   if (!bundle) return null;

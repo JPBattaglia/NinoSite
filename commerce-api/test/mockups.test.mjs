@@ -127,3 +127,21 @@ test('a rebuilt product waits for the catalog to show its new colors before phot
   assert.equal(await processMockups(f.store, f.env, now + 3700, fetcher), 'submitted');
   assert.equal(calls.filter(c => c.method === 'POST').length, 1, 'colors match: photo requested');
 });
+
+test('sharp 2000px shirt photos are made in the background after the normal ones and served per color',async()=>{
+  const {processMockupsHd,serveMockup:serve,HD_WIDTH}=await import('../src/mockups.mjs');
+  const {f,fetcher}=await setup();
+  await processMockups(f.store,f.env,f.now(),fetcher);
+  assert.equal(await processMockups(f.store,f.env,f.now(),fetcher),'collected');
+  const objects=new Map();
+  f.env.MOCKUPS_HD={put:async(key,bytes)=>{objects.set(key,bytes);},get:async key=>objects.has(key)?{arrayBuffer:async()=>objects.get(key).buffer}:null};
+  const bodies=[]; const spy=async(url,init)=>{ if(init?.method==='POST') bodies.push(JSON.parse(init.body)); return fetcher(url,init); };
+  assert.equal(await processMockupsHd(f.store,f.env,f.now(),spy),'submitted');
+  assert.equal(bodies.at(-1).mockup_width_px,HD_WIDTH);
+  assert.equal(await processMockupsHd(f.store,f.env,f.now(),spy),'collected');
+  assert.ok(objects.size>0);
+  const [key]=objects.keys(); const [id,file]=key.split('/');
+  const response=await serve(f.env,id,file.replace(/\.jpg$/,''),undefined,true);
+  assert.equal(response.headers.get('Content-Type'),'image/jpeg');
+  assert.equal(await processMockupsHd(f.store,f.env,f.now(),spy),'idle');
+});

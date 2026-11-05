@@ -201,11 +201,21 @@
   addEventListener('popstate', () => {
     if (dialog?.open && !history.state?.ninoDialog) { closingFromHistory = true; dialog.close(); }
   });
+  // Owner, Nov 5, 2026: model photos looked pixelated when zoomed. The open design shows the usual 1000px photo at once,
+  // then swaps in the 2000px copy (/api/mockups-hd/) once it has loaded; shirts without one yet keep the usual photo.
+  function sharpen(img) {
+    const hd = /\/api\/mockups\/\d+\/[a-z0-9-]+\.jpg$/.test(img.src) && img.src.replace('/api/mockups/', '/api/mockups-hd/');
+    if (!hd) return img;
+    const loader = new Image(); loader.decoding = 'async';
+    loader.onload = () => { if (img.isConnected && !img.dataset.fallback) img.src = hd; };
+    loader.src = hd;
+    return img;
+  }
   function showImage(index) {
     if (!currentGallery.length) return;
     galleryIndex = (index + currentGallery.length) % currentGallery.length;
     const container = document.querySelector('[data-dialog-image]');
-    container.replaceChildren(image(currentGallery[galleryIndex], document.getElementById('dialog-title').textContent, true));
+    container.replaceChildren(sharpen(image(currentGallery[galleryIndex], document.getElementById('dialog-title').textContent, true)));
     document.querySelectorAll('[data-gallery-index]').forEach(button => {
       button.setAttribute('aria-pressed', String(Number(button.dataset.galleryIndex) === galleryIndex));
     });
@@ -293,7 +303,7 @@
     if (added) renderThumbs();
   });
   function showColorPhoto() {
-    document.querySelector('[data-dialog-image]').replaceChildren(image(colorPhoto.image, document.getElementById('dialog-title').textContent + ' in ' + colorPhoto.color, true));
+    document.querySelector('[data-dialog-image]').replaceChildren(sharpen(image(colorPhoto.image, document.getElementById('dialog-title').textContent + ' in ' + colorPhoto.color, true)));
     document.querySelectorAll('[data-gallery-index]').forEach(button => button.setAttribute('aria-pressed', 'false'));
   }
   document.addEventListener('nino:color-image', event => {
