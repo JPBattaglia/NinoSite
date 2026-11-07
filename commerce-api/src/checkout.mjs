@@ -92,8 +92,17 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     shipping_options:[{shipping_rate_data:{display_name:snapshot.shipping.name,type:'fixed_amount',fixed_amount:{amount:snapshot.shipping.amount,currency:'usd'},tax_behavior:'exclusive'}}]
   };
   if(snapshot.tax_mode==='automatic') params.automatic_tax={enabled:true};
+  // The free sticker (owner, Oct 31, 2026) is said on Stripe's page too: Google Merchant Center rejected the
+  // "Free sticker with every order" promotion (Nov 7, 2026) because checkout didn't say the buyer gets it.
+  // Same switch as fulfillment: commerce_settings free_sticker = 'off'.
+  const gift=await giftText(store,snapshot);
+  if(gift) {
+    const first=params.line_items[0]?.price_data?.product_data;
+    if(first) first.description=[first.description,'Free 3-inch sticker of this design included'].filter(Boolean).join(' · ');
+    params.custom_text={submit:{message:gift}};
+  }
   if(snapshot.shipping.mode==='calculated') {
-    params.custom_text={submit:{message:'Delivery uses the address you reviewed on our site before payment.'}};
+    params.custom_text={submit:{message:[gift,'Delivery uses the address you reviewed on our site before payment.'].filter(Boolean).join(' ')}};
     if(snapshot.tax_mode==='automatic') {
       // Stripe refuses automatic tax together with payment_intent_data[shipping]; the quoted
       // address goes on the customer instead, which Stripe Tax uses as the tax location.
@@ -114,6 +123,12 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
   try { const url=new URL(session.url); if(url.protocol!=='https:' || url.hostname!=='checkout.stripe.com') fail(502,'invalid_checkout_session'); } catch { fail(502,'invalid_checkout_session'); }
   await store.run('UPDATE commerce_orders SET stripe_session_id=?,checkout_url=?,checkout_expires_at=?,updated_at=? WHERE id=?',session.id,session.url,session.expires_at || order.created_at+3600,now,order.id);
   return {checkout_url:session.url,order_id:order.id,receipt_token:order.receipt_token,request_id:requestKey};
+}
+async function giftText(store,snapshot) {
+  const off=await store.first("SELECT value FROM commerce_settings WHERE key='free_sticker'").catch(()=>null);
+  if(String(off?.value || '').toLowerCase()==='off' || !snapshot.lines?.length) return '';
+  const design=String(snapshot.lines[0].title || 'your design').replace(/\s+T$/,'');
+  return `Free gift: a 3-inch sticker of ${design} ships with this order at no charge.`;
 }
 export async function checkedPaidSession(order,session,lineItems) {
   const snapshot=JSON.parse(order.snapshot_json);
