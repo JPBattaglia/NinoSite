@@ -92,6 +92,9 @@ test('server calculates price and shipping; rejects client price tampering',asyn
   assert.equal(params.shipping_options[0].shipping_rate_data.fixed_amount.amount,500);
   assert.equal(params.ui_mode,'hosted_page');assert.equal('payment_method_types' in params,false);
   assert.match(params.integration_identifier,/-[a-z]{8}$/);
+  // Google Merchant Center's free-sticker promotion needs the gift said at checkout (rejected Nov 7, 2026).
+  assert.match(params.custom_text.submit.message,/Free gift: a 3-inch sticker of .+ ships with this order at no charge\./);
+  assert.match(params.line_items[0].price_data.product_data.description,/Free 3-inch sticker of this design included$/);
 });
 test('invalid variants, unsynced variants, unavailable stock and changed price never create Checkout',async()=>{
   const f=await fixture();
