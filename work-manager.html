@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#200705"><title>Nino’s Work page</title><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-title" content="Work page">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#200705;--panel:#2b0b09;--line:#521c17;--ink:#f2efe7;--muted:#d0aaa2;--orange:#ff6a1f;--orange-dark:#b8420a;--green:#3fbf6a;--display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;--body:'DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 var(--body)}
+img{display:block;max-width:100%}button,input,select,textarea{font:inherit;color:inherit}[hidden]{display:none!important}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 80px}
+h1{font:800 clamp(40px,9vw,64px)/.95 var(--display);text-transform:uppercase;margin:8px 0 10px;letter-spacing:.01em}h1 span{color:var(--orange)}
+h2{font:800 30px/1 var(--display);text-transform:uppercase;margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 22px;max-width:640px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:12px 22px;border-radius:12px;border:2px solid var(--orange);background:transparent;color:var(--ink);font-weight:700;font-size:18px;cursor:pointer;text-decoration:none}
+.btn-big{width:100%;min-height:68px;font-size:21px;background:var(--orange);color:#200705}
+.btn:disabled{opacity:.5;cursor:default}
+.btn-plain{border-color:var(--line);font-weight:500}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0}
+.field{display:block;margin:0 0 20px}.field>span{display:block;font-weight:700;margin-bottom:8px}.field small{display:block;color:var(--muted);font-size:15px;margin-top:4px}
+input[type=text],input[type=search],textarea{width:100%;min-height:54px;padding:12px 14px;border-radius:10px;border:2px solid var(--orange-dark);background:#1a0504;font-size:18px}
+textarea{min-height:90px;resize:vertical}input:focus,textarea:focus{outline:3px solid var(--orange);outline-offset:2px}
+.picker{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:200px;border:3px dashed var(--orange-dark);border-radius:14px;text-align:center;padding:18px;cursor:pointer}
+.picker img{max-height:320px;border-radius:8px}.picker input{position:absolute;opacity:0;width:1px;height:1px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}.chips label{position:relative}.chips input{position:absolute;opacity:0}
+.chips span{display:inline-flex;align-items:center;min-height:50px;padding:8px 18px;border-radius:999px;border:2px solid var(--line);cursor:pointer}
+.chips input:checked+span{border-color:var(--orange);background:var(--orange);color:#200705;font-weight:700}.chips input:focus-visible+span{outline:3px solid var(--ink)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 12px}.tabs button{min-height:50px;padding:8px 18px;border-radius:999px;border:2px solid var(--line);background:transparent;cursor:pointer}
+.tabs button[aria-pressed=true]{border-color:var(--orange);background:var(--orange);color:#200705;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:16px}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.card .pic{aspect-ratio:4/3;background:#f2efe7;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .pic img{width:100%;height:100%;object-fit:contain}
+.card.off .pic img{opacity:.3;filter:grayscale(1)}
+.card .body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card h3{margin:0;font-size:19px;line-height:1.25}.card .meta{color:var(--muted);font-size:15px;margin:0}
+.status{font-weight:700;font-size:16px;margin:0}.status.on{color:var(--green)}.status.off{color:var(--muted)}
+.badge{display:inline-block;font-size:13px;font-weight:700;background:var(--orange);color:#200705;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}
+.card .btn{width:100%;margin-top:auto}.card .btn.show{background:var(--orange);color:#200705}
+.del{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:15px;cursor:pointer;padding:6px;align-self:center}.del.sure{color:#ff8a6b;font-weight:700}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#200705;padding:14px 22px;border-radius:12px;font-weight:700;box-shadow:0 8px 30px #0008;max-width:92vw;text-align:center;z-index:10}
+.toast.bad{background:#ffb4a1}
+.note{color:var(--muted);font-size:16px}.error{color:#ffb4a1;font-weight:700}
+.howto{margin:0;padding-left:22px}.howto li{margin:6px 0}
+.count{color:var(--muted);margin:0 0 4px}
+.foot{margin-top:50px;border-top:1px solid var(--line);padding-top:24px}
+a{color:var(--orange)}
+</style></head>
+<body><main class="wrap">
+<p class="note" style="margin:0">ninobattaglia.com</p>
+<h1>Your <span>Work</span> page</h1>
+<p class="lead">Choose what people see on your Work page. Add new pictures, hide anything you don’t want shown, and bring it back any time. Changes show on the website within about a minute.</p>
+
+<section id="nolink" class="panel" hidden><h2>This page needs your private link</h2><p>Open the page from the link JP sent you. If that link stopped working, ask JP for the newest one.</p></section>
+<p id="loading" class="note">Loading your work…</p>
+
+<div id="app" hidden>
+  <button class="btn btn-big" type="button" id="open-add">Add a new picture</button>
+
+  <section class="panel" id="add" hidden aria-labelledby="add-title">
+    <h2 id="add-title">Add a new picture</h2>
+    <p class="note">Three quick steps. It goes on the Work page as soon as you tap the button at the bottom.</p>
+    <div class="field"><span>1. Pick the picture</span>
+      <div class="picker" id="picker"><input type="file" id="file" accept="image/*" aria-label="Choose a picture"><div id="picker-empty"><strong style="font-size:20px">Tap here to choose a picture</strong><br><span class="note">From your photos or files</span></div><img id="preview" alt="The picture you picked" hidden><span id="picker-change" class="note" hidden>Tap the picture to choose a different one</span></div>
+    </div>
+    <label class="field"><span>2. Give it a name</span><input type="text" id="title" maxlength="80" placeholder="For example: Molinari Deli logo" autocomplete="off"><small>This shows under the picture on the website.</small></label>
+    <div class="field"><span>3. What kind of work is it?</span><div class="chips" id="categories" role="radiogroup" aria-label="Kind of work"></div></div>
+    <label class="field"><span>A few words about it <span style="font-weight:400" class="note">(you can skip this)</span></span><textarea id="description" maxlength="300" placeholder="For example: A logo for a family deli in North Beach."></textarea></label>
+    <p id="add-error" class="error" role="alert" hidden></p>
+    <button class="btn btn-big" type="button" id="save-add">Put it on my Work page</button>
+    <p style="text-align:center;margin:12px 0 0"><button class="btn btn-plain" type="button" id="cancel-add">Cancel</button></p>
+  </section>
+
+  <div class="tabs" role="group" aria-label="Show">
+    <button type="button" data-filter="all" aria-pressed="true">Everything</button>
+    <button type="button" data-filter="on" aria-pressed="false">On the Work page</button>
+    <button type="button" data-filter="off" aria-pressed="false">Hidden</button>
+    <button type="button" data-filter="mine" aria-pressed="false">Added by you</button>
+  </div>
+  <label class="field" style="margin-bottom:6px"><span class="sr-only" style="position:absolute;left:-9999px">Find a piece</span><input type="search" id="search" placeholder="Find a piece by name" autocomplete="off"></label>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div class="grid" id="grid"></div>
+
+  <section class="foot">
+    <h2>Good to know</h2>
+    <ul class="howto">
+      <li>The Work page shows 20 pieces at a time, in a new mix on every visit. Everything marked <strong>On the Work page</strong> takes turns.</li>
+      <li><strong>Hide it</strong> only takes a piece off the website. Nothing is deleted, and <strong>Show it again</strong> brings it back.</li>
+      <li><strong>Delete for good</strong> only appears on pictures you added here.</li>
+      <li>On an iPhone, tap the Share button at the bottom of Safari, then <strong>Add to Home Screen</strong>, so this page opens like an app.</li>
+    </ul>
+    <p class="note" style="margin-top:22px">Keep this page’s link private: anyone who has it can change your Work page. If it gets out, tap below. JP gets a new link by email and this one stops working.</p>
+    <button class="btn btn-plain" type="button" id="new-link">Send a new private link</button>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+</main>
+<script src="commerce-config.js?v=20261021"></script>
+<script>
+(() => {
+  const API = (window.NINO_COMMERCE_CONFIG && window.NINO_COMMERCE_CONFIG.apiBase) || 'https://nino-printful-commerce-api.ijpbattaglia.workers.dev';
+  const $ = id => document.getElementById(id);
+  let key = new URLSearchParams(location.hash.slice(1)).get('k') || '';
+  try { if (key) localStorage.setItem('workKey', key); else key = localStorage.getItem('workKey') || ''; } catch {}
+  let state = {hidden: [], added: []}, catalog = [], categories = [], filter = 'all', picked = null;
+
+  function toast(text, bad) {
+    const t = $('toast'); t.textContent = text; t.classList.toggle('bad', !!bad); t.hidden = false;
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => { t.hidden = true; }, bad ? 6000 : 3500);
+  }
+  async function api(path, options = {}) {
+    const headers = {Authorization: 'Bearer ' + key, ...(options.json ? {'Content-Type': 'application/json'} : {})};
+    let response;
+    try { response = await fetch(API + path, {method: options.method || 'GET', headers, body: options.json ? JSON.stringify(options.json) : options.form}); }
+    catch { throw new Error('No connection. Check your internet and try again.'); }
+    const data = await response.json().catch(() => ({}));
+    if (response.status === 401) { showNoLink(); throw new Error(data.message || 'This link no longer works.'); }
+    if (!response.ok) throw new Error(data.message || 'That didn’t work. Please try again.');
+    return data;
+  }
+  function showNoLink() { $('app').hidden = true; $('loading').hidden = true; $('nolink').hidden = false; }
+
+  function pieces() {
+    const hidden = new Set(state.hidden), mine = new Set(state.added.map(p => p.id));
+    return [...state.added.map(p => ({...p, mine: true})), ...catalog.filter(p => !mine.has(p.id))].map(p => ({...p, on: !hidden.has(p.id)}));
+  }
+  function render() {
+    const all = pieces(), query = $('search').value.trim().toLowerCase();
+    const list = all.filter(p => (filter === 'all' || (filter === 'on' && p.on) || (filter === 'off' && !p.on) || (filter === 'mine' && p.mine))
+      && (!query || (p.title + ' ' + (p.category || '')).toLowerCase().includes(query)));
+    const on = all.filter(p => p.on).length;
+    $('count').textContent = `${on} of ${all.length} pieces are on your Work page.` + (list.length !== all.length ? ` Showing ${list.length} here.` : '');
+    $('grid').replaceChildren(...list.map(card));
+    if (!list.length) { const p = document.createElement('p'); p.className = 'note'; p.textContent = filter === 'mine' && !query ? 'You haven’t added any pictures yet. Tap Add a new picture at the top.' : 'Nothing here.'; $('grid').append(p); }
+  }
+  function card(p) {
+    const el = document.createElement('article'); el.className = 'card' + (p.on ? '' : ' off');
+    const pic = document.createElement('div'); pic.className = 'pic';
+    const img = document.createElement('img'); img.src = p.image; img.alt = p.title; img.loading = 'lazy'; img.decoding = 'async'; pic.append(img);
+    const body = document.createElement('div'); body.className = 'body';
+    const h = document.createElement('h3'); h.textContent = p.title;
+    if (p.mine) { const b = document.createElement('span'); b.className = 'badge'; b.textContent = 'Added by you'; h.append(b); }
+    const meta = document.createElement('p'); meta.className = 'meta'; meta.textContent = p.category || '';
+    const status = document.createElement('p'); status.className = 'status ' + (p.on ? 'on' : 'off'); status.textContent = p.on ? '● On the Work page' : 'Hidden from the website';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn' + (p.on ? '' : ' show');
+    btn.textContent = p.on ? 'Hide it' : 'Show it again';
+    btn.addEventListener('click', () => setShown(p, !p.on, btn));
+    body.append(h, meta, status, btn);
+    if (p.mine) {
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = 'Delete for good';
+      del.addEventListener('click', () => {
+        if (!del.classList.contains('sure')) { del.classList.add('sure'); del.textContent = 'Tap again to delete it for good'; setTimeout(() => { del.classList.remove('sure'); del.textContent = 'Delete for good'; }, 5000); return; }
+        remove(p, del);
+      });
+      body.append(del);
+    }
+    el.append(pic, body); return el;
+  }
+  async function setShown(p, shown, btn) {
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      state = await api('/api/work/visibility', {method: 'POST', json: {id: p.id, shown}});
+      render(); toast(shown ? `“${p.title}” is back on your Work page.` : `“${p.title}” is hidden from the website.`);
+    } catch (error) { btn.disabled = false; btn.textContent = shown ? 'Show it again' : 'Hide it'; toast(error.message, true); }
+  }
+  async function remove(p, del) {
+    del.disabled = true; del.textContent = 'Deleting…';
+    try { state = await api('/api/work/delete', {method: 'POST', json: {id: p.id}}); render(); toast(`“${p.title}” is deleted.`); }
+    catch (error) { del.disabled = false; del.textContent = 'Delete for good'; toast(error.message, true); }
+  }
+
+  // Pictures are made smaller in the browser before uploading: a sharp copy (up to 2000 px) and a small one for the grid.
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onload = () => resolve(img); img.onerror = () => reject(new Error('This picture can’t be opened here. Please pick a JPG or PNG photo.'));
+      img.src = url;
+    });
+  }
+  function resized(img, maxW, maxH) {
+    const scale = Math.min(1, maxW / img.naturalWidth, maxH / img.naturalHeight);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(img.naturalWidth * scale)); canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+    const ctx = canvas.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return new Promise(resolve => canvas.toBlob(blob => {
+      if (blob && blob.type === 'image/webp') return resolve(blob);
+      canvas.toBlob(resolve, 'image/jpeg', 0.88);
+    }, 'image/webp', 0.86));
+  }
+  function resetAdd() {
+    picked = null; $('file').value = ''; $('preview').hidden = true; $('picker-empty').hidden = false; $('picker-change').hidden = true;
+    $('title').value = ''; $('description').value = ''; $('add-error').hidden = true;
+    document.querySelectorAll('#categories input').forEach(i => { i.checked = false; });
+  }
+  $('open-add').addEventListener('click', () => { resetAdd(); $('add').hidden = false; $('open-add').hidden = true; $('add').scrollIntoView({behavior: 'smooth', block: 'start'}); });
+  $('cancel-add').addEventListener('click', () => { $('add').hidden = true; $('open-add').hidden = false; });
+  $('picker').addEventListener('click', event => { if (event.target !== $('file')) $('file').click(); });
+  $('file').addEventListener('change', async () => {
+    const file = $('file').files[0]; if (!file) return;
+    $('add-error').hidden = true;
+    try { const img = await loadImage(file); picked = img; $('preview').src = img.src; $('preview').hidden = false; $('picker-empty').hidden = true; $('picker-change').hidden = false; }
+    catch (error) { picked = null; $('add-error').textContent = error.message; $('add-error').hidden = false; }
+  });
+  $('save-add').addEventListener('click', async () => {
+    const title = $('title').value.trim(), category = (document.querySelector('#categories input:checked') || {}).value;
+    const problem = !picked ? 'Step 1: please pick a picture.' : !title ? 'Step 2: please give it a name.' : !category ? 'Step 3: please tap the kind of work it is.' : '';
+    if (problem) { $('add-error').textContent = problem; $('add-error').hidden = false; return; }
+    $('add-error').hidden = true; const btn = $('save-add'); btn.disabled = true; btn.textContent = 'Uploading… please wait';
+    try {
+      const full = await resized(picked, 2000, 2000), thumb = await resized(picked, 640, 1280);
+      if (!full || !thumb) throw new Error('This picture can’t be used. Please pick a JPG or PNG photo.');
+      const form = new FormData();
+      form.set('title', title); form.set('category', category); form.set('description', $('description').value.trim());
+      form.set('full', full, 'full'); form.set('thumb', thumb, 'thumb');
+      state = await api('/api/work/add', {method: 'POST', form});
+      $('add').hidden = true; $('open-add').hidden = false; filter = 'all'; syncTabs(); $('search').value = ''; render();
+      window.scrollTo({top: $('grid').offsetTop - 20, behavior: 'smooth'});
+      toast(`Done! “${title}” is on your Work page.`);
+    } catch (error) { $('add-error').textContent = error.message; $('add-error').hidden = false; }
+    finally { btn.disabled = false; btn.textContent = 'Put it on my Work page'; }
+  });
+  function syncTabs() { document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.filter === filter))); }
+  document.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', () => { filter = b.dataset.filter; syncTabs(); render(); }));
+  $('search').addEventListener('input', render);
+  $('new-link').addEventListener('click', async () => {
+    const btn = $('new-link');
+    if (!btn.dataset.sure) { btn.dataset.sure = '1'; btn.textContent = 'Tap again to send a new link (this one will stop working)'; setTimeout(() => { delete btn.dataset.sure; btn.textContent = 'Send a new private link'; }, 6000); return; }
+    btn.disabled = true;
+    try { await api('/api/work/new-link', {method: 'POST'}); try { localStorage.removeItem('workKey'); } catch {} btn.textContent = 'Sent. JP has the new link by email.'; }
+    catch (error) { btn.disabled = false; toast(error.message, true); }
+  });
+
+  async function start() {
+    if (!key) return showNoLink();
+    try {
+      const [mine, cat] = await Promise.all([api('/api/work/manage'), fetch('catalog.json', {cache: 'no-store'}).then(r => r.json())]);
+      state = {hidden: mine.hidden, added: mine.added};
+      categories = mine.categories || ['Branding', 'Illustration', 'Print & layout', 'Typography', 'Drawing', 'Motion', 'Apparel', 'Other'];
+      catalog = (cat.artworks || []).filter(p => p.id && p.title && p.image);
+      $('categories').replaceChildren(...categories.map(name => {
+        const label = document.createElement('label'); const input = document.createElement('input'); input.type = 'radio'; input.name = 'category'; input.value = name;
+        const span = document.createElement('span'); span.textContent = name; label.append(input, span); return label;
+      }));
+      $('loading').hidden = true; $('app').hidden = false; render();
+    } catch (error) { if (!$('nolink').hidden) return; $('loading').textContent = error.message + ' Reload the page to try again.'; $('loading').className = 'error'; }
+  }
+  start();
+})();
+</script></body></html>

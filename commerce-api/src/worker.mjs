@@ -24,6 +24,7 @@ import {applyStickerArt,KINDS as ART_KINDS} from './sticker-art.mjs';
 import {refusedKey,alertRefusedKey} from './key-alert.mjs';
 import {withPrintfulTokens,renewPrintfulTokens,connectRedirect,connectCallback,connectionStatus} from './printful-auth.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
+import {workRoute,ensureManagerLink} from './work.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const productBodies=new WeakMap();
@@ -85,6 +86,9 @@ export function createApp(dependencies={}) {
         if(request.method==='GET' && url.pathname==='/api/subscribe/confirm') return await confirmSubscription(url,store,env,now);
         if(['GET','POST'].includes(request.method) && url.pathname==='/api/unsubscribe') return await unsubscribe(request,url,store,env,now);
         if(['GET','POST'].includes(request.method) && url.pathname.startsWith('/api/newsletter/')) return await newsletterAction(request,url,store,env,now,ctx);
+        // Work page manager (work.mjs): Nino's own changes to the Work page; needs no Printful token.
+        const work=await workRoute(request,url,store,env,now,ctx,cors);
+        if(work) return work;
         // From here on, Printful calls use the app's live token where the app is connected, else the private key.
         env=await withPrintfulTokens(env,store,now);
         if(request.method==='GET' && url.pathname==='/api/health') {
@@ -177,6 +181,8 @@ export function createApp(dependencies={}) {
         if(daily) await pruneCatalogHistory(store,now);
         // Newsletter (newsletter.mjs): drafts on schedule for the owner's approval; sends only approved issues.
         try { await runNewsletter(store,env,now,{daily}); } catch { /* never blocks sync or fulfillment */ }
+        // Work page manager (work.mjs): the first run makes Nino's private link and emails it to the owner. One row read.
+        await ensureManagerLink(store,env);
         // Renew the Printful app's hourly access first, then run everything below on it (private keys as fallback).
         try { await renewPrintfulTokens(store,env,now); } catch { /* falls back to the private keys */ }
         env=await withPrintfulTokens(env,store,now);

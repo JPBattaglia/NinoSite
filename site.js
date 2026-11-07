@@ -616,6 +616,23 @@
     const requested = catalog.artworks.find(item => item.id === new URLSearchParams(location.search).get('art'));
     if (requested) openRecord(requested, 'art');
   }
+  // Nino's own changes from his Work page manager (work-manager.html): pieces he hid, and pictures he added.
+  // Only on pages that show artwork; if the worker is slow or down, the Work page shows catalog.json as before.
+  async function applyWorkChanges() {
+    const base = window.NINO_COMMERCE_CONFIG && window.NINO_COMMERCE_CONFIG.apiBase;
+    if (!base || !document.querySelector('[data-featured-art], [data-art-grid]')) return;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2500);
+    try {
+      const response = await fetch(base + '/api/work/rotation', { signal: controller.signal });
+      if (!response.ok) return;
+      const data = await response.json();
+      const hidden = new Set(Array.isArray(data.hidden) ? data.hidden : []);
+      const added = (Array.isArray(data.added) ? data.added : []).filter(item => item && item.id && item.title && item.image);
+      const ids = new Set(added.map(item => item.id));
+      catalog.artworks = [...added, ...catalog.artworks.filter(item => !ids.has(item.id))].filter(item => !hidden.has(item.id));
+    } catch { /* keep catalog.json as is */ } finally { clearTimeout(timer); }
+  }
   async function initializeCatalog() {
     try {
       const response = await fetch('catalog.json', { cache: 'no-store' });
@@ -626,6 +643,7 @@
         products: (Array.isArray(data.products) ? data.products : []).filter(item => item.id && item.title && item.image),
         artworks: (Array.isArray(data.artworks) ? data.artworks : []).filter(item => item.id && item.title && item.image)
       };
+      await applyWorkChanges();
       document.querySelectorAll('[data-shop-link]').forEach(link => { link.href = catalog.shop.url; });
       if (data.shop?.contactUrl) document.querySelectorAll('[data-contact-instruction]').forEach(item => { item.hidden = true; });
       initializeArt();
