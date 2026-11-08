@@ -57,6 +57,12 @@ test('feed XML carries the required Google / Pinterest fields', () => {
   assert.ok(sticker.includes('<g:size>3″×3″</g:size>'));
 });
 
+test('a search phrase leads the feed title', () => {
+  const items = feedItems(live(), [{...curated[0], search: 'Ocean Wave Skull Surf Art'}], config);
+  const text = feedXml(items, 'google', {tshirt: 495});
+  assert.ok(text.includes('<title>Ocean Wave Skull Surf Art T-Shirt – Skull Wave by Nino Battaglia</title>'));
+});
+
 test('every Google item is linked to the free-sticker promotion; Pinterest items are not', () => {
   const items = feedItems(live(), curated, config);
   const google = feedXml(items, 'google', {}).split('\n').filter(line => line.startsWith('<item>'));

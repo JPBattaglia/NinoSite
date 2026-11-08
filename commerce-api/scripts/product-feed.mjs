@@ -86,7 +86,9 @@ export function landingPage(item, channel) {
 export function itemXml(item, channel, shipping) {
   const kind = TYPES[item.type];
   const name = decode(item.record.title);
-  const title = `${name} ${kind.label} – Original Art by Nino Battaglia`.slice(0, 150);
+  // Shoppers search for what a shirt shows, not the artist's name: lead with the search phrase (search-phrases.json).
+  const phrase = decode(item.record.search || '').trim();
+  const title = (phrase ? `${phrase} ${kind.label} – ${name} by Nino Battaglia` : `${name} ${kind.label} – Original Art by Nino Battaglia`).slice(0, 150);
   const about = decode(item.record.description || '').replace(/\s+/g, ' ').trim();
   const description = `${about ? about + ' ' : ''}Original artwork by San Francisco artist Nino Battaglia on ${kind.noun}, printed to order.`.slice(0, 5000);
   const lines = [
@@ -146,7 +148,9 @@ export async function run({outDir, api = API, fetcher = fetch, root} = {}) {
   root ||= path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
   outDir ||= root;
   const config = JSON.parse(await readFile(path.join(root, 'commerce-api/scripts/feed-designs.json'), 'utf8'));
-  const curated = JSON.parse(await readFile(path.join(root, 'catalog.json'), 'utf8')).products;
+  const phrases = JSON.parse(await readFile(path.join(root, 'search-phrases.json'), 'utf8').catch(() => '{}'));
+  const curated = JSON.parse(await readFile(path.join(root, 'catalog.json'), 'utf8')).products
+    .map(p => phrases[String(p.id)] ? {...p, search: phrases[String(p.id)]} : p);
   const response = await fetcher(`${api}/api/products`, {headers: {Accept: 'application/json'}});
   if (!response.ok) throw new Error(`product list answered ${response.status}`);
   const live = await response.json();
