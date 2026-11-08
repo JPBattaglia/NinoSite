@@ -599,11 +599,15 @@
     // A fresh random order on every visit to the Work page (owner request, Oct 30); it holds while switching categories.
     const order = catalog.artworks.slice();
     for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
-    // "All work" shows a random 20 from the whole pool; a category shows every piece in it.
-    const PER_VISIT = 20;
+    // "All work" shows a random mix from the whole pool; a category shows every piece in it.
+    // 21 fills 7 full rows of 3; at phone width (2 per row, see main.css 760px) 20 fills 10 full rows.
+    const twoColumns = window.matchMedia('(max-width:760px)');
+    const perVisit = () => twoColumns.matches ? 20 : 21;
+    let current = 'all';
     function render(category) {
+      current = category;
       const matching = order.filter(item => category === 'all' || item.category === category);
-      const records = category === 'all' ? matching.slice(0, PER_VISIT) : matching;
+      const records = category === 'all' ? matching.slice(0, perVisit()) : matching;
       grid.replaceChildren(...records.map(record => recordCard(record, 'art')));
       const count = document.querySelector('[data-art-count]');
       if (count) count.textContent = category === 'all' && matching.length > records.length
@@ -613,6 +617,8 @@
     }
     renderFilters(document.querySelector('[data-art-filters]'), [...new Set(catalog.artworks.map(item => item.category).filter(Boolean))], 'artCategory', render);
     render('all');
+    // Same shuffled order, so turning a phone or resizing only adds or drops the last piece.
+    twoColumns.addEventListener('change', () => { if (current === 'all') render('all'); });
     const requested = catalog.artworks.find(item => item.id === new URLSearchParams(location.search).get('art'));
     if (requested) openRecord(requested, 'art');
   }
