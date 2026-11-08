@@ -15,6 +15,8 @@ on:
       - 'commerce-api/scripts/product-feed.mjs'
       - 'commerce-api/scripts/feed-designs.json'
       - '.github/workflows/product-feed.yml'
+      - 'search-phrases.json'
+      - 'tools/apply-search-text.mjs'
 
 concurrency:
   group: product-feed
@@ -35,13 +37,15 @@ jobs:
           node-version: 24
       - name: Build the feeds
         run: node commerce-api/scripts/product-feed.mjs
+      - name: Search-friendly shirt page titles
+        run: node tools/apply-search-text.mjs
       - name: Commit when they changed
         id: commit
         run: |
-          git add feed-google.xml feed-pinterest.xml
+          git add feed-google.xml feed-pinterest.xml shirts/
           if git diff --cached --quiet; then echo "Feeds unchanged."; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           git config user.name github-actions; git config user.email actions@github.com
-          git commit -qm "Product feeds: daily refresh"
+          git commit -qm "Product feeds and shirt page titles: daily refresh"
           git pull -q --rebase origin master
           git push -q origin HEAD:master
           echo "changed=true" >> "$GITHUB_OUTPUT"
