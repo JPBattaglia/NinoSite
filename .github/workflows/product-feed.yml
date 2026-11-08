@@ -15,8 +15,8 @@ on:
       - 'commerce-api/scripts/product-feed.mjs'
       - 'commerce-api/scripts/feed-designs.json'
       - '.github/workflows/product-feed.yml'
-      - 'search-phrases.json'
-      - 'tools/apply-search-text.mjs'
+      - 'commerce-api/scripts/search-phrases.json'
+      - 'commerce-api/scripts/apply-search-text.mjs'
 
 concurrency:
   group: product-feed
@@ -38,7 +38,7 @@ jobs:
       - name: Build the feeds
         run: node commerce-api/scripts/product-feed.mjs
       - name: Search-friendly shirt page titles
-        run: node tools/apply-search-text.mjs
+        run: node commerce-api/scripts/apply-search-text.mjs
       - name: Commit when they changed
         id: commit
         run: |

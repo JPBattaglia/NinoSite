@@ -148,7 +148,7 @@ export async function run({outDir, api = API, fetcher = fetch, root} = {}) {
   root ||= path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
   outDir ||= root;
   const config = JSON.parse(await readFile(path.join(root, 'commerce-api/scripts/feed-designs.json'), 'utf8'));
-  const phrases = JSON.parse(await readFile(path.join(root, 'search-phrases.json'), 'utf8').catch(() => '{}'));
+  const phrases = JSON.parse(await readFile(path.join(root, 'commerce-api/scripts/search-phrases.json'), 'utf8').catch(() => '{}'));
   const curated = JSON.parse(await readFile(path.join(root, 'catalog.json'), 'utf8')).products
     .map(p => phrases[String(p.id)] ? {...p, search: phrases[String(p.id)]} : p);
   const response = await fetcher(`${api}/api/products`, {headers: {Accept: 'application/json'}});
