@@ -951,3 +951,40 @@ body::before{background-image:url("assets/noise.webp")!important;background-size
 body.modal-open::before{display:none}
 body.modal-open .site-header{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 @media(max-width:760px){.product-dialog{box-shadow:none}}
+/* Ideas board (Nov 9, 2026): ideas.html, the website door to the Nino app's ideas board. The form reuses the contact
+   form's card; ideas are cards with a heart to vote. No arrows anywhere (owner rule, Oct 29). */
+.ideas-section{padding-bottom:95px}
+.ideas-layout{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;align-items:start;border-top:1px solid var(--line);padding-top:48px}
+.ideas-post{position:sticky;top:130px;display:grid;gap:26px}
+.ideas-form textarea{min-height:120px}
+.ideas-counter{margin:-12px 0 0;text-align:right;font-size:11px;color:var(--muted)}.ideas-counter.is-near{color:var(--cyan)}
+.ideas-optional{font-weight:400;color:var(--muted)}
+.ideas-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.ideas-status{margin:0;min-height:1.4em;font-size:13px;font-weight:600;line-height:1.5}.ideas-status:empty{display:none}.ideas-status.is-error{color:#ff9c7a}.ideas-status.is-done{color:var(--button-cyan,#35e6eb)}
+.ideas-rules{margin:0;font-size:12px;line-height:1.6;color:var(--muted)}.ideas-rules a{color:var(--cyan)}
+.ideas-mine{border:1px dashed var(--cyan);border-radius:14px;padding:20px 22px}.ideas-mine .eyebrow{margin:0 0 12px;color:var(--cyan)}
+.ideas-mine ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}.ideas-mine li{display:grid;gap:2px;font-size:14px;line-height:1.5}.ideas-mine small{font-size:11px;color:var(--muted)}
+.ideas-mine-note{margin:14px 0 0;font-size:11px;color:var(--muted)}
+.ideas-board-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap}.ideas-board-head .eyebrow{margin-bottom:12px}
+.ideas-board-head h2{font-size:clamp(46px,5vw,72px)}
+.ideas-sort{display:flex;gap:8px}
+.ideas-help{margin:16px 0 0;font-size:13px;color:var(--muted)}
+.ideas-board-status{margin:10px 0 0;font-size:13px;font-weight:600;color:#ff9c7a}.ideas-board-status:empty{display:none}
+.ideas-list{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:14px}
+.idea-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;padding:20px 20px 20px 22px;background:rgba(43,11,9,.72);border:1px solid var(--line);border-radius:14px;transition:border-color .2s,transform .2s}
+.idea-card:hover{border-color:rgba(255,106,31,.5)}
+.idea-rank{font:800 30px/1 var(--display);color:var(--cyan);min-width:36px}
+.idea-text{margin:0;font-size:17px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
+.idea-by{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.idea-vote{display:grid;justify-items:center;gap:2px;min-width:62px;min-height:62px;padding:8px 10px;border:1px solid var(--line-2,#5c211b);border-radius:12px;background:transparent;color:var(--ink);transition:border-color .18s,background-color .18s,color .18s}
+.idea-vote svg{fill:transparent;stroke:currentColor;stroke-width:1.8;transition:fill .18s,transform .18s}
+.idea-vote:hover{border-color:var(--cyan);color:var(--cyan)}
+.idea-vote[aria-pressed=true]{border-color:var(--cyan);background:rgba(255,106,31,.12);color:var(--cyan)}.idea-vote[aria-pressed=true] svg{fill:currentColor;transform:scale(1.08)}
+.idea-vote:disabled{cursor:progress}
+.idea-votes{font-size:13px;font-weight:700;line-height:1}
+.ideas-list .loading-state,.ideas-list .empty-state{padding:36px 0}
+.ideas-empty{border:1px dashed var(--line-2,#5c211b);border-radius:14px;padding:36px 26px!important;text-align:center;font-size:15px}
+.shop-intro-actions .shop-ideas-feature{background:transparent!important;color:var(--ink)!important;border:1px solid var(--cyan)!important;box-shadow:none!important}
+.shop-intro-actions .shop-ideas-feature:hover{background:rgba(255,106,31,.1)!important;color:var(--cyan)!important}
+@media(max-width:980px){.ideas-layout{grid-template-columns:1fr;gap:44px}.ideas-post{position:static}}
+@media(max-width:760px){.ideas-layout{padding-top:32px}.idea-card{grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:16px}.idea-rank{grid-column:1/-1;font-size:24px;margin-bottom:-6px}.idea-text{font-size:16px}.ideas-board-head h2{font-size:48px}.ideas-section{padding-bottom:60px}}
