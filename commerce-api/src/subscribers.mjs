@@ -18,7 +18,7 @@ const SOURCE = /^[a-z0-9][a-z0-9/_.-]{0,59}$/;
 const LOGO = 'https://ninobattaglia.com/assets/email-nino-mark.png';
 
 const esc = value => String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-const dayOf = now => new Date(now * 1000).toISOString().slice(0, 10);
+export const dayOf = now => new Date(now * 1000).toISOString().slice(0, 10);
 const newToken = () => [...crypto.getRandomValues(new Uint8Array(24))].map(b => b.toString(16).padStart(2, '0')).join('');
 
 export function normalizeEmail(value) {
@@ -27,7 +27,8 @@ export function normalizeEmail(value) {
 }
 
 // Adds one to a per-day counter and says whether it is still within the limit. Old days are cleared as it goes.
-async function withinLimit(store, key, limit, day) {
+// Also used by the ideas board (fans.mjs), with its own keys.
+export async function withinLimit(store, key, limit, day) {
   await store.run('DELETE FROM signup_limits WHERE day<>?', day);
   const row = await store.first('SELECT n FROM signup_limits WHERE k=?', key);
   if (row && row.n >= limit) return false;

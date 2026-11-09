@@ -16,16 +16,23 @@
 //    released_at to /api/products). The website hides a design for its first 24 hours unless the visitor came from
 //    the app (site.js); the app shows it at once with an "App first" badge, and Menu-made's worker sends the push.
 // 3. Ideas board: fans post a design idea (shown once Nino OKs it from an emailed link) and vote on others.
+//    One board, two doors (Nov 9, 2026): the app's Ideas tab and ninobattaglia.com/ideas.html (ideas.js). A website
+//    visitor gets their own random key in that browser, kept apart from the app's key so it never counts toward app
+//    rewards; a visitor who came from the app uses the app's key. The site sends source 'site', so error messages and
+//    the owner's email say where the idea came from. Spam guards, because the website form is open to anyone (and the
+//    owner emails go through Menu-made's mail quota): a hidden honeypot field, 3 ideas a day per key, 10 a day per
+//    visitor IP (hashed, never stored raw) and 25 a day in all.
 //
 // Routes (CORS: the app's own origins and the shop):
 //   GET  /api/app/card?member=<key>          the member's shirts, next reward and reward history
 //   GET  /api/ideas?member=<key>             live ideas (most votes first), which ones this member voted for, own pending
-//   POST /api/ideas         {member,text,name?}   a new idea, pending until approved
-//   POST /api/ideas/vote    {member,id}           vote / take back a vote
+//   POST /api/ideas         {member,text,name?,source?}   a new idea, pending until approved (source 'site' or 'app')
+//   POST /api/ideas/vote    {member,id,source?}           vote / take back a vote
 //   GET|POST /api/ideas/review?k=<key>&id=<id>&do=live|hidden   the owner's emailed approve / hide link
 //   GET  /api/releases                       designs that appeared in the last 7 days (the app's "new" list; public)
 import {HttpError,fail,hash,requestJson} from './common.mjs';
 import {position,api as printfulApi,catalogVariants} from './expand.mjs';
+import {withinLimit,dayOf} from './subscribers.mjs';
 
 export const NATIVE_ORIGINS = new Set(['capacitor://localhost', 'https://localhost']);
 export const CANVAS_AT = 3, HOODIE_AT = 6, CYCLE = 6;
@@ -35,6 +42,8 @@ const REVIEW_KEY = 'ideas_review_key';
 const CANVAS_KEY = 'reward_canvas';
 const CANVAS_AUTO = 'reward_canvas_auto';
 const MAX_IDEAS_PER_DAY = 3;
+export const MAX_IDEAS_PER_IP = 10, MAX_IDEAS_IN_ALL = 25;
+const fromSite = body => body?.source === 'site';
 const randomHex = bytes => [...crypto.getRandomValues(new Uint8Array(bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
 const clean = (value, max) => String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -233,36 +242,52 @@ async function sameKey(a, b) {
 const reviewLink = (origin, key, id, action) => `${origin}/api/ideas/review?k=${key}&id=${encodeURIComponent(id)}&do=${action}`;
 const page = (title, body, status = 200) => new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title></head><body style="margin:0;background:#200705;color:#f2efe7;font:17px/1.6 Arial,sans-serif"><main style="max-width:560px;margin:0 auto;padding:32px 20px"><h1 style="font-size:26px">${esc(title)}</h1>${body}</main></body></html>`, {status, headers: {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex'}});
 
+// The board's reads, one page view each (test/fans.test.mjs checks they use indexes).
+export const IDEA_SQL = {
+  live: "SELECT id,name,text,votes,created_at FROM app_ideas WHERE status='live' ORDER BY votes DESC, created_at DESC LIMIT 60",
+  votes: 'SELECT idea_id FROM app_idea_votes WHERE member_hash=? ORDER BY created_at DESC LIMIT 300',
+  pending: "SELECT id,text,status,created_at FROM app_ideas WHERE member_hash=? AND status='pending' ORDER BY created_at DESC LIMIT 5",
+  recent: 'SELECT COUNT(*) AS n FROM app_ideas WHERE member_hash=? AND created_at>?'
+};
 async function listIdeas(store, member) {
-  const ideas = await store.all("SELECT id,name,text,votes,created_at FROM app_ideas WHERE status='live' ORDER BY votes DESC, created_at DESC LIMIT 60");
-  const voted = member ? new Set((await store.all('SELECT idea_id FROM app_idea_votes WHERE member_hash=? ORDER BY created_at DESC LIMIT 300', member)).map(r => r.idea_id)) : new Set();
-  const mine = member ? await store.all("SELECT id,text,status,created_at FROM app_ideas WHERE member_hash=? AND status='pending' ORDER BY created_at DESC LIMIT 5", member) : [];
+  const ideas = await store.all(IDEA_SQL.live);
+  const voted = member ? new Set((await store.all(IDEA_SQL.votes, member)).map(r => r.idea_id)) : new Set();
+  const mine = member ? await store.all(IDEA_SQL.pending, member) : [];
   return {ideas: ideas.map(i => ({...i, voted: voted.has(i.id)})), pending: mine};
 }
 
 async function postIdea(request, url, store, env, now) {
   const body = await requestJson(request, 4096);
-  if (!validMember(body.member)) fail(400, 'member_required', 'Open the Nino app to share an idea.');
+  if (!body || typeof body !== 'object' || Array.isArray(body)) fail(400, 'invalid_idea');
+  const site = fromSite(body);
+  // Honeypot (website form): a hidden field people never fill. Bots get the normal answer; nothing is saved or sent.
+  if (body?.website) return {ok: true, id: `idea_${randomHex(8)}`, status: 'pending'};
+  if (!validMember(body.member)) fail(400, 'member_required', site ? 'Reload the page and try again.' : 'Open the Nino app to share an idea.');
   const member = await memberHash(body.member);
   const text = clean(body.text, 280), name = clean(body.name, 30);
   if (text.length < 8) fail(400, 'idea_too_short', 'Tell Nino a little more about your idea.');
   if (/https?:\/\/|www\./i.test(text)) fail(400, 'no_links', 'Please leave links out of your idea.');
-  const recent = await store.first('SELECT COUNT(*) AS n FROM app_ideas WHERE member_hash=? AND created_at>?', member, now - 86400);
-  if (Number(recent?.n || 0) >= MAX_IDEAS_PER_DAY) fail(429, 'idea_limit', 'That\'s three ideas today. Come back tomorrow with more!');
+  const recent = await store.first(IDEA_SQL.recent, member, now - 86400);
+  const tomorrow = 'That\'s three ideas today. Come back tomorrow with more!';
+  if (Number(recent?.n || 0) >= MAX_IDEAS_PER_DAY) fail(429, 'idea_limit', tomorrow);
+  const day = dayOf(now), ip = request.headers.get('CF-Connecting-IP') || '';
+  if (ip && !await withinLimit(store, `idea-ip:${await hash(`${day}:${ip}`)}`, MAX_IDEAS_PER_IP, day)) fail(429, 'idea_limit', tomorrow);
+  if (!await withinLimit(store, 'ideas-daily', MAX_IDEAS_IN_ALL, day)) fail(429, 'ideas_full', 'Nino has a full stack of ideas to read today. Please come back tomorrow!');
   const id = `idea_${randomHex(8)}`;
   await store.run("INSERT INTO app_ideas(id,member_hash,name,text,status,votes,created_at,updated_at) VALUES(?,?,?,?, 'pending',0,?,?)", id, member, name || null, text, now, now);
   const key = await reviewKey(store);
-  await ownerNote(env, 'New design idea from the Nino app', [
-    `<strong>${esc(name || 'A fan')}</strong> suggested:`,
+  await ownerNote(env, site ? 'New design idea from ninobattaglia.com' : 'New design idea from the Nino app', [
+    `<strong>${esc(name || 'A fan')}</strong> suggested${site ? ' on ninobattaglia.com' : ' in the Nino app'}:`,
     `<em>“${esc(text)}”</em>`,
-    'It shows on the app\'s Ideas board only after you OK it.',
+    'It shows on the Ideas board (on ninobattaglia.com and in the app) only after you OK it.',
     `<a href="${reviewLink(url.origin, key, id, 'live')}">Show it on the Ideas board</a> &nbsp;·&nbsp; <a href="${reviewLink(url.origin, key, id, 'hidden')}">Don't show it</a>`]);
   return {ok: true, id, status: 'pending'};
 }
 
 async function vote(request, store, now) {
   const body = await requestJson(request, 2048);
-  if (!validMember(body.member)) fail(400, 'member_required', 'Open the Nino app to vote.');
+  if (!body || typeof body !== 'object' || Array.isArray(body)) fail(400, 'invalid_vote');
+  if (!validMember(body.member)) fail(400, 'member_required', fromSite(body) ? 'Reload the page and try again.' : 'Open the Nino app to vote.');
   const member = await memberHash(body.member);
   const idea = await store.first("SELECT id FROM app_ideas WHERE id=? AND status='live'", String(body.id || ''));
   if (!idea) fail(404, 'idea_not_found', 'That idea isn\'t on the board any more.');

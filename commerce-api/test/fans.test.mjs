@@ -114,9 +114,9 @@ test('early access: designs remember when they first appeared; the first run mar
   assert.equal(storefrontProducts([], live, true)[0].released_at, 5000, 'the site keeps released_at for its 24-hour check');
 });
 
-async function call(store, e, method, path, body, origin = 'capacitor://localhost', now = 100000) {
+async function call(store, e, method, path, body, origin = 'capacitor://localhost', now = 100000, ip = '') {
   const url = new URL(`https://api.example${path}`);
-  const request = new Request(url, {method, headers: {Origin: origin, ...(body ? {'Content-Type': 'application/json'} : {})}, body: body ? JSON.stringify(body) : undefined});
+  const request = new Request(url, {method, headers: {Origin: origin, ...(ip ? {'CF-Connecting-IP': ip} : {}), ...(body ? {'Content-Type': 'application/json'} : {})}, body: body ? JSON.stringify(body) : undefined});
   return fans.fansRoute(request, url, store, e, now, {'Cache-Control': 'no-store'});
 }
 
@@ -161,4 +161,60 @@ test('the app\'s new-designs list: designs from the last 7 days with their lowes
   assert.equal(res.headers.get('Access-Control-Allow-Origin'), '*');
   const body = await res.json();
   assert.deepEqual(body.designs, [{id: '303', title: 'Fresh Drop', image: 'https://img/x.png', price_cents: 2500, released_at: 1800000000}]);
+});
+
+test('ideas on the website: same board, the site\'s own CORS, and the owner\'s email says where the idea came from', async () => {
+  const {store, mail, env: e} = await setup();
+  const site = 'https://ninobattaglia.com';
+  const pre = await fans.fansRoute(new Request('https://api.example/api/ideas', {method: 'OPTIONS', headers: {Origin: site}}), new URL('https://api.example/api/ideas'), null, e, 0, {});
+  assert.equal(pre.status, 204);
+  assert.equal(pre.headers.get('Access-Control-Allow-Origin'), site);
+  const posted = await call(store, e, 'POST', '/api/ideas', {member: KEY, text: 'A cable car doing a kickflip', source: 'site'}, site);
+  assert.equal(posted.status, 200);
+  assert.equal(posted.headers.get('Access-Control-Allow-Origin'), site);
+  assert.equal(mail[0].subject, 'New design idea from ninobattaglia.com');
+  assert.match(mail[0].html, /suggested on ninobattaglia\.com/);
+  await call(store, e, 'POST', '/api/ideas', {member: OTHER, text: 'A grumpy frog on a Vespa'});
+  assert.equal(mail[1].subject, 'New design idea from the Nino app', 'the app is unchanged');
+  const noKey = await call(store, e, 'POST', '/api/ideas', {text: 'No key from the website', source: 'site'}, site);
+  assert.equal(noKey.status, 400);
+  assert.equal((await noKey.json()).message, 'Reload the page and try again.', 'no "open the app" message on the website');
+  assert.equal((await call(store, e, 'POST', '/api/ideas', [1, 2], site)).status, 400);
+});
+
+test('ideas spam guards: the honeypot saves nothing, and visitors and the whole board have daily caps', async () => {
+  const {store, mail, env: e} = await setup();
+  const site = 'https://ninobattaglia.com';
+  const bot = await call(store, e, 'POST', '/api/ideas', {member: KEY, text: 'Buy cheap followers now', website: 'x', source: 'site'}, site);
+  assert.equal(bot.status, 200, 'bots see the normal answer');
+  assert.equal((await store.first('SELECT COUNT(*) AS n FROM app_ideas')).n, 0);
+  assert.equal(mail.length, 0);
+  // One visitor IP, many fresh keys: stops at the per-IP cap.
+  const key = i => `ip${String(i).padStart(38, '0')}`;
+  for (let i = 0; i < fans.MAX_IDEAS_PER_IP; i++) assert.equal((await call(store, e, 'POST', '/api/ideas', {member: key(i), text: `Idea number ${i} from one place`, source: 'site'}, site, 100000, '203.0.113.9')).status, 200);
+  const over = await call(store, e, 'POST', '/api/ideas', {member: key(99), text: 'One more from the same place', source: 'site'}, site, 100000, '203.0.113.9');
+  assert.equal(over.status, 429);
+  assert.equal((await store.first("SELECT COUNT(*) AS n FROM signup_limits WHERE k LIKE 'idea-ip:%' AND k NOT LIKE '%203.0.113.9%'")).n, 1, 'the IP is stored hashed');
+  // Many places: stops at the board's daily total, which also caps the owner emails.
+  let n = fans.MAX_IDEAS_PER_IP;
+  for (let i = 0; n < fans.MAX_IDEAS_IN_ALL; i++, n++) assert.equal((await call(store, e, 'POST', '/api/ideas', {member: key(200 + i), text: `Idea number ${n} from elsewhere`}, 'capacitor://localhost', 100000, `198.51.100.${i}`)).status, 200);
+  const full = await call(store, e, 'POST', '/api/ideas', {member: key(300), text: 'Too late for today'}, 'capacitor://localhost', 100000, '192.0.2.1');
+  assert.equal(full.status, 429);
+  assert.equal((await full.json()).error, 'ideas_full');
+  assert.equal(mail.length, fans.MAX_IDEAS_IN_ALL);
+  const nextDay = await call(store, e, 'POST', '/api/ideas', {member: key(300), text: 'A new day, a new idea'}, 'capacitor://localhost', 100000 + 86400, '192.0.2.1');
+  assert.equal(nextDay.status, 200, 'the caps reset each day');
+});
+
+test('the ideas page\'s reads use indexes (D1 bills every row a query scans)', async () => {
+  const {readFileSync} = await import('node:fs');
+  const {DatabaseSync} = await import('node:sqlite');
+  const db = new DatabaseSync(':memory:');
+  for (const name of ['0008_app_fans.sql', '0009_idea_votes_member.sql']) db.exec(readFileSync(new URL(`../migrations/${name}`, import.meta.url), 'utf8'));
+  const plan = sql => db.prepare(`EXPLAIN QUERY PLAN ${sql}`).all(...Array((sql.match(/\?/g) || []).length).fill('x')).map(r => r.detail).join(' | ');
+  for (const [name, sql] of Object.entries(fans.IDEA_SQL)) {
+    assert.match(plan(sql), /USING (COVERING )?INDEX/, `${name}: ${plan(sql)}`);
+    assert.doesNotMatch(plan(sql), /SCAN app_/, `${name}: ${plan(sql)}`);
+  }
+  db.close();
 });
