@@ -24,15 +24,15 @@ export const CHANNELS = Object.freeze({
   pinterest: {file: 'feed-pinterest.xml', utm: 'utm_source=pinterest&utm_medium=product_pin'}
 });
 export const TYPES = Object.freeze({
-  tshirt: {label: 'T-Shirt', noun: 'a unisex tee', productType: 'Apparel > T-shirts', apparel: true},
-  hoodie: {label: 'Hoodie', noun: 'a unisex pullover hoodie', productType: 'Apparel > Hoodies', apparel: true},
-  crewneck: {label: 'Crewneck Sweatshirt', noun: 'a unisex crewneck sweatshirt', productType: 'Apparel > Sweatshirts', apparel: true},
-  tote: {label: 'Tote Bag', noun: 'a tote bag', productType: 'Bags > Tote bags', apparel: false},
-  sticker: {label: 'Sticker', noun: 'a vinyl sticker', productType: 'Stickers', apparel: false},
+  tshirt: {label: 'T-Shirt', noun: 'a unisex tee', productType: 'Apparel > T-shirts', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
+  hoodie: {label: 'Hoodie', noun: 'a unisex pullover hoodie', productType: 'Apparel > Hoodies', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
+  crewneck: {label: 'Crewneck Sweatshirt', noun: 'a unisex crewneck sweatshirt', productType: 'Apparel > Sweatshirts', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
+  tote: {label: 'Tote Bag', noun: 'a tote bag', productType: 'Bags > Tote bags', category: 'Luggage & Bags > Shopping Totes', apparel: false},
+  sticker: {label: 'Sticker', noun: 'a vinyl sticker', productType: 'Stickers', category: 'Arts & Entertainment > Hobbies & Creative Arts > Arts & Crafts > Art & Crafting Materials > Embellishments & Trims > Decorative Stickers', apparel: false},
   apron: {label: 'Apron', noun: 'an apron with your pick of strap color', productType: 'Kitchen > Aprons', apparel: true},
-  mug: {label: 'Coffee Mug', noun: 'a white glossy ceramic coffee mug (11 or 15 oz)', productType: 'Kitchen > Drinkware > Mugs', apparel: false},
-  mugblack: {label: 'Black Coffee Mug', noun: 'a black glossy ceramic coffee mug (11 or 15 oz)', productType: 'Kitchen > Drinkware > Mugs', apparel: false},
-  hat: {label: 'Dad Hat', noun: 'an embroidered dad hat', productType: 'Apparel > Hats', apparel: true}
+  mug: {label: 'Coffee Mug', noun: 'a white glossy ceramic coffee mug (11 or 15 oz)', productType: 'Kitchen > Drinkware > Mugs', category: 'Home & Garden > Kitchen & Dining > Tableware > Drinkware > Mugs', apparel: false},
+  mugblack: {label: 'Black Coffee Mug', noun: 'a black glossy ceramic coffee mug (11 or 15 oz)', productType: 'Kitchen > Drinkware > Mugs', category: 'Home & Garden > Kitchen & Dining > Tableware > Drinkware > Mugs', apparel: false},
+  hat: {label: 'Dad Hat', noun: 'an embroidered dad hat', productType: 'Apparel > Hats', category: 'Apparel & Accessories > Clothing Accessories > Hats', apparel: true}
 });
 // A real U.S. address for shipping quotes (San Francisco City Hall); quotes never create orders.
 export const QUOTE_ADDRESS = Object.freeze({name: 'Shipping estimate', address1: '1 Dr Carlton B Goodlett Pl', city: 'San Francisco', state_code: 'CA', country_code: 'US', zip: '94102'});
@@ -97,6 +97,8 @@ export function itemXml(item, channel, shipping) {
     ['g:brand', 'Nino Battaglia'], ['g:condition', 'new'], ['g:identifier_exists', 'no'],
     ['g:item_group_id', item.group], ['g:product_type', kind.productType]
   ];
+  // Google product taxonomy path (Google and Pinterest both read it; Pinterest warned on every item without one, Nov 9).
+  if (kind.category) lines.push(['g:google_product_category', kind.category]);
   if (item.color) lines.push(['g:color', item.color]);
   if (item.size) lines.push(['g:size', item.size]);
   if (kind.apparel) lines.push(['g:gender', 'unisex'], ['g:age_group', 'adult']);
