@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp, writeFile, readFile, mkdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
-import {feedItems, feedXml, landingPage, previousShipping, countItems, quoteShipping, run, decode, typeOf} from '../scripts/product-feed.mjs';
+import {feedItems, feedXml, landingPage, previousShipping, countItems, quoteShipping, run, decode, typeOf, TYPES} from '../scripts/product-feed.mjs';
 
 const curated = [
   {id: '455597876', title: 'Skull Wave', slug: 'skull-wave', description: "Nino's original artwork: a blue ocean wave curling into a skull."},
@@ -55,6 +55,9 @@ test('feed XML carries the required Google / Pinterest fields', () => {
   assert.ok(!sticker.includes('<g:gender>'), 'no apparel fields on stickers');
   assert.ok(!sticker.includes('<g:shipping>'), 'no rate known for stickers');
   assert.ok(sticker.includes('<g:size>3″×3″</g:size>'));
+  assert.ok(shirt.includes('<g:google_product_category>Apparel &amp; Accessories &gt; Clothing &gt; Shirts &amp; Tops</g:google_product_category>'));
+  assert.ok(sticker.includes('Decorative Stickers</g:google_product_category>'));
+  for (const [type, kind] of Object.entries(TYPES)) if (type !== 'apron') assert.ok(kind.category, `${type} has a Google product category`);
 });
 
 test('a search phrase leads the feed title', () => {
