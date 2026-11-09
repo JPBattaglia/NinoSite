@@ -1,6 +1,7 @@
 import {HttpError,fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,productTaxCode,stripeShipping,nowSeconds} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
 import {resolveShippingCountries} from './countries.mjs';
+import {validMember,memberHash} from './fans.mjs';
 
 export async function shippingQuote(body,store,printful,env,now) {
   env=await resolveShippingCountries(env,store,printful,now);
@@ -52,7 +53,9 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
   // Browsing, carts and shipping quotes keep working; only payment is held (e.g. while a Stripe key is replaced).
   if(env.CHECKOUT_PAUSED==='true') fail(503,'checkout_paused','Checkout is paused for a short time. Your cart is saved; please try again later today.');
   const items=normalizeCart(body);
-  if(Object.keys(body).some(key=>!['items','request_id','shipping_quote_id','shipping_rate_id','attribution'].includes(key))) fail(400,'invalid_checkout_fields','Prices and totals are calculated by the server.');
+  if(Object.keys(body).some(key=>!['items','request_id','shipping_quote_id','shipping_rate_id','attribution','app_member'].includes(key))) fail(400,'invalid_checkout_fields','Prices and totals are calculated by the server.');
+  // Nino's Mobile App (fans.mjs): the phone's member key, so this order's shirts count toward the app rewards.
+  const appMember=validMember(body.app_member)?await memberHash(body.app_member):null;
   const attribution=checkoutAttribution(body.attribution);
   const requestKey=request.headers.get('Idempotency-Key') || body.request_id || crypto.randomUUID();
   if(typeof requestKey!=='string' || !/^[A-Za-z0-9_-]{16,100}$/.test(requestKey)) fail(400,'invalid_request_id');
@@ -70,7 +73,7 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     const subtotal=lines.reduce((sum,line)=>sum+line.line_total_cents,0);
     if(subtotal+shipping.amount>1000000) fail(400,'order_total_limit');
     const id=`ord_${(await hash(requestKey)).slice(0,24)}`;
-    const snapshot={lines,subtotal_cents:subtotal,currency:'usd',shipping,tax_mode:env.STRIPE_TAX_MODE,product_tax_code:productTaxCode(env),created_at:now,...(attribution?{attribution}:{})};
+    const snapshot={lines,subtotal_cents:subtotal,currency:'usd',shipping,tax_mode:env.STRIPE_TAX_MODE,product_tax_code:productTaxCode(env),created_at:now,...(attribution?{attribution}:{}),...(appMember?{app_member_hash:appMember}:{})};
     const token=crypto.randomUUID()+crypto.randomUUID();
     await store.run('INSERT OR IGNORE INTO commerce_orders(id,request_key,request_hash,snapshot_json,receipt_token,live_mode,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',id,requestKey,requestHash,JSON.stringify(snapshot),token,env.STRIPE_MODE==='live'?1:0,now,now);
     order=await store.order(id);

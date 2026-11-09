@@ -1,5 +1,14 @@
 (() => {
   'use strict';
+  // Nino's Mobile App (Nov 8, 2026). The app opens shop pages with ?app=<member key>; keeping it here (this browser
+  // only) lets the order count toward the app's rewards (commerce.js sends it with the checkout) and shows designs
+  // that are still in their first 24 hours, which the website otherwise holds back for the app (fans.mjs).
+  const APP_KEY = 'nino-app-member';
+  window.NinoApp = {
+    member() { try { const k = localStorage.getItem(APP_KEY); return /^[A-Za-z0-9_-]{32,64}$/.test(k || '') ? k : ''; } catch { return ''; } },
+    early(product, now = Date.now() / 1000) { return Number.isFinite(product?.released_at) && product.released_at > now - 86400; }
+  };
+  try { const k = new URLSearchParams(location.search).get('app'); if (/^[A-Za-z0-9_-]{32,64}$/.test(k || '')) localStorage.setItem(APP_KEY, k); } catch { /* storage off */ }
   const fallbackShop = 'shop.html';
   const navButton = document.querySelector('.nav-toggle');
   const nav = document.getElementById('site-navigation');
@@ -661,12 +670,13 @@
           (async () => {
             if (!window.NinoCommerce) return null;
             const records = await window.NinoCommerce.loadProducts();
-            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261031gift');
+            const { storefrontProducts } = await import('./catalog-sync.mjs?v=20261108app');
             return storefrontProducts(catalog.products, records, window.NinoCommerce.getCatalogStatus().complete);
           })(),
           new Promise(resolve => { timer = setTimeout(() => resolve(null), 3000); })
         ]);
-        if (synced) catalog.products = synced;
+        // Designs in their first 24 hours are the app's early access: shown here only to visitors who came from the app.
+        if (synced) catalog.products = window.NinoApp.member() ? synced : synced.filter(product => !window.NinoApp.early(product));
       } catch { /* The original collection remains browseable during an outage. */ }
       finally { clearTimeout(timer); }
       initializeProducts();

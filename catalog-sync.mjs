@@ -33,7 +33,9 @@ export function storefrontProducts(existing, live, complete) {
       gallery: previous?.gallery?.some(independentPhoto) ? previous.gallery.filter(independentPhoto) : photo ? [photo] : [],
       category: previous?.category || 'Graphic tees',
       description: previous?.description || '',
-      featured: previous?.featured === true
+      featured: previous?.featured === true,
+      // 24-hour app early access (commerce-api/src/fans.mjs): when the design first appeared in the shop.
+      ...(Number.isFinite(product.released_at) ? { released_at: product.released_at } : {})
     };
     // New designs (not in catalog.json) take their swatch colors from the API's color_hex.
     if (!(Array.isArray(previous?.options?.colors) && previous.options.colors.length)) {
