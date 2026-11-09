@@ -60,7 +60,7 @@
           purchasable: raw.available === true && Boolean(price) && Boolean(size || color || name)
         });
       }
-      products.set(productId, { id: productId, external_id: id(record.external_id), title: label(record.title).replace(/\s+T$/, ''), image: label(record.image), variants });
+      products.set(productId, { id: productId, external_id: id(record.external_id), title: label(record.title).replace(/\s+T$/, ''), image: label(record.image), variants, ...(Number.isFinite(record.released_at) ? { released_at: record.released_at } : {}) });
     }
     return products;
   }
@@ -736,6 +736,8 @@
       const requestId = checkoutRequestId(items);
       const payload = { items, request_id: requestId };
       const attribution = savedAttribution(); if (attribution) payload.attribution = attribution;
+      // Nino's Mobile App (commerce-api/src/fans.mjs): shirts bought from the app count toward its rewards.
+      const appMember = window.NinoApp?.member(); if (appMember) payload.app_member = appMember;
       if (shipping.mode === 'calculated') { payload.shipping_quote_id = shipping.quote.id; payload.shipping_rate_id = shipping.selected; }
       const response = await fetch(apiUrl(config.checkoutPath), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
       let data; try { data = await response.json(); } catch { data = null; }

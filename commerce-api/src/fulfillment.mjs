@@ -5,6 +5,7 @@ import {resolveShippingCountries} from './countries.mjs';
 import {sendOrderEmails,sendRecoveryEmail} from './emails.mjs';
 import {PRODUCT_TYPES,position,threadsFor} from './expand.mjs';
 import {stickerFile} from './sticker-art.mjs';
+import {recordAppStamps} from './fans.mjs';
 
 // Oct 31, 2026: Printful ignores artwork placement on stored (sync) products and prints the file at its own size
 // (about 5in wide for most designs), even though the site's photos show it large. Placement is only honored on
@@ -13,7 +14,7 @@ import {stickerFile} from './sticker-art.mjs';
 // shirts' standard placement; other products: their type's rule (expand.mjs).
 const SHIRT = {fit: 'chest', file: 'default', area: {default: [1800, 2400]}};
 const SPECS = new Map(PRODUCT_TYPES.map(t => [t.type, t]));
-export async function placedItems(snapshot, store, printful) {
+export async function placedItems(snapshot, store, printful, {gift: withGift = true} = {}) {
   const items = [];
   for (const [index, line] of snapshot.lines.entries()) {
     const file = (line.variant.files || []).find(f => (f.type || 'default') === 'default' && f.id) || (line.variant.files || [])[0];
@@ -42,7 +43,7 @@ export async function placedItems(snapshot, store, printful) {
   }
   // Owner decision Oct 31, 2026: a free sticker with every site order (the reason to buy here rather than on Etsy).
   // A 3x3in sticker of the order's first design, at $0. Switch: commerce_settings free_sticker = 'off'.
-  const gift = await giftSticker(snapshot, store, printful);
+  const gift = withGift ? await giftSticker(snapshot, store, printful) : null;
   if (gift) items.push(gift);
   return items;
 }
@@ -225,6 +226,8 @@ export async function stripeWebhook(raw,signature,store,stripe,printful,env,now,
             const paid=await checkedPaidSession(order,session,await stripe.listLineItems(order.stripe_session_id));
             if(paid) {
               await store.run(`UPDATE commerce_orders SET payment_status='paid',fulfillment_status=CASE WHEN fulfillment_status IN ('awaiting_payment','test_paid') THEN ? ELSE fulfillment_status END,stripe_payment_intent_id=?,recipient_json=?,customer_email=?,paid_total_cents=?,paid_tax_cents=?,paid_shipping_cents=?,updated_at=? WHERE id=? AND payment_status!='paid'`,order.live_mode===1?'queued':'test_paid',paid.payment_intent_id,JSON.stringify(paid.recipient),paid.email,paid.total,paid.tax,paid.shipping,now,order.id);
+              // Nino app rewards (fans.mjs): this order's shirts count toward the member's free canvas and hoodie.
+              await recordAppStamps(store,order,now);
             }
           }
         }

@@ -25,6 +25,8 @@ import {refusedKey,alertRefusedKey} from './key-alert.mjs';
 import {withPrintfulTokens,renewPrintfulTokens,connectRedirect,connectCallback,connectionStatus} from './printful-auth.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 import {workRoute,ensureManagerLink} from './work.mjs';
+import {fansRoute,processRewards} from './fans.mjs';
+import {placedItems} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const productBodies=new WeakMap();
@@ -66,6 +68,8 @@ export function createApp(dependencies={}) {
       const publicRead=request.method==='GET' && ['/api/products','/api/commerce-config','/api/health'].includes(url.pathname);
       const cors=publicRead ? {'Access-Control-Allow-Origin':'*'} : origin===env.STOREFRONT_ORIGIN ? {'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Idempotency-Key, Authorization'} : {};
       try {
+        // The Nino app's preflights (fans.mjs) answer with the app's own origins.
+        if(request.method==='OPTIONS' && (url.pathname.startsWith('/api/ideas') || url.pathname.startsWith('/api/app/'))) return await fansRoute(request,url,null,env,0,JSON_HEADERS);
         if(request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
         if(!env.DB) fail(503,'database_not_configured');
         const store=new Store(env.DB); const now=clock();
@@ -89,6 +93,9 @@ export function createApp(dependencies={}) {
         // Work page manager (work.mjs): Nino's own changes to the Work page; needs no Printful token.
         const work=await workRoute(request,url,store,env,now,ctx,cors);
         if(work) return work;
+        // Nino's Mobile App: rewards card and the ideas board (fans.mjs), with the app's own CORS.
+        const fans=await fansRoute(request,url,store,env,now,JSON_HEADERS);
+        if(fans) return fans;
         // From here on, Printful calls use the app's live token where the app is connected, else the private key.
         env=await withPrintfulTokens(env,store,now);
         if(request.method==='GET' && url.pathname==='/api/health') {
@@ -235,6 +242,11 @@ export function createApp(dependencies={}) {
             const stripe=dependencies.stripe || await createStripeClient(env);
             for(const order of orders) await fulfillOrder(order.id,store,stripe,printful,env,now);
           }
+        }
+        // Nino app rewards (fans.mjs): one free canvas or hoodie a run, once its paying order is confirmed at Printful.
+        // One query when there's nothing to send.
+        if(env.FULFILLMENT_ENABLED==='true' && env.STRIPE_MODE==='live') {
+          try { await processRewards(store,env,printful,now,{placedItems}); } catch(error) { console.error('app rewards',error?.message || error); }
         }
         // The webhook needs checkout.session.expired for the abandoned-checkout reminder: added once, by the shop itself.
         if(env.STRIPE_MODE==='live' && env.STRIPE_SECRET_KEY) {

@@ -2,6 +2,7 @@ import {fail,cents,hash,httpsImage} from './common.mjs';
 import {mockupColors,colorSlug} from './mockups.mjs';
 import {loadPalette} from './colors.mjs';
 import {typeOf} from './expand.mjs';
+import {releaseTimes} from './fans.mjs';
 import {STICKER_SITE} from './sticker-art.mjs';
 
 // The catalog syncs once a day; allow two days so one missed or slow sync doesn't close checkout.
@@ -94,12 +95,16 @@ export async function publicCatalog(store,env,now,origin='') {
     const modelPhoto = mockups.map.get(row.product_id)?.has(row.color) ? `${origin}/api/mockups/${row.product_id}/${colorSlug(row.color)}.jpg` : null;
     list.push({id:row.variant_id,name:row.name,size:row.size,color:row.color,color_hex:row.color ? palette[row.color] || null : null,image:modelPhoto || safeImage(row.image),price:{amount:row.price_cents,currency:row.currency},available:fresh,max_quantity:10});
   }
+  // 24-hour app early access (fans.mjs): when each design (not its extra products) first appeared.
+  const releases = await releaseTimes(store, products.filter(p => !/^nx-/.test(String(p.external_id || ''))).map(p => p.id), now).catch(() => new Map());
   const value = {catalog_ready:fresh,catalog_complete:true,products:products.map(product => {
     const variants = byProduct.get(product.id) || [];
+    const released = releases.get(String(product.id));
+    if (released != null) product = {...product, released_at: released};
     const sticker = stickerPicture(stickers, product.external_id);
     if (sticker) { for (const variant of variants) variant.image = sticker; return {id:product.id,external_id:product.external_id,title:product.title,image:sticker,art:artOf.get(product.id) || null,variants}; }
     // art: the design's Printful artwork hash (its 800 px preview is public), for the sticker-art job.
-    return {id:product.id,external_id:product.external_id,title:product.title,image:independentImage(product.image) || variants.map(v => v.image).find(Boolean) || null,art:artOf.get(product.id) || null,variants};
+    return {id:product.id,external_id:product.external_id,title:product.title,image:independentImage(product.image) || variants.map(v => v.image).find(Boolean) || null,art:artOf.get(product.id) || null,...(product.released_at != null ? {released_at:product.released_at} : {}),variants};
   })};
   if (store.db && typeof store.db === 'object') catalogMemos.set(store.db,{key:memoKey,value});
   return value;
