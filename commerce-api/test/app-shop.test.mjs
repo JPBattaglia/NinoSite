@@ -46,6 +46,14 @@ test('the route is public and says so when a design is not in the shop', async (
   const missing = await get('/api/app/design/424242');
   assert.equal(missing.status, 404); assert.equal((await missing.json()).error, 'design_not_found');
   assert.equal((await get('/api/app/design/201')).status, 404, 'an extra product is not a design');
+  // The site's catalog.json knows most designs by their id in Nino's source store, kept as the shop product's external id.
+  await f.store.run("INSERT INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES('initial','301','480532409','Nostalgic Television  T','https://example.com/p.png',1)");
+  await f.store.run("INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES('initial','701','301',2500,'usd',?)", JSON.stringify({id: '701', color: 'Black', size: 'M', image: 'https://example.com/701.png'}));
+  await f.store.run("INSERT INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES('initial','302','nx-sticker-301','Nostalgic Television Sticker','https://example.com/p.png',1)");
+  await f.store.run("INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES('initial','702','302',400,'usd',?)", JSON.stringify({id: '702', color: '', size: '3x3', image: 'https://example.com/702.png'}));
+  const byCatalogId = await (await get('/api/app/design/480532409')).json();
+  assert.equal(byCatalogId.title, 'Nostalgic Television'); assert.equal(byCatalogId.shop_id, '301');
+  assert.deepEqual(byCatalogId.options.map(o => [o.type, o.variants[0].product_id]), [['tshirt', '301'], ['sticker', '302']]);
 });
 
 test('the app can check out: its origin is let in and Stripe returns to the app pages', async () => {
