@@ -1,7 +1,7 @@
 import {HttpError,fail,hash,canonical,cents,normalizeCart,recipient,shippingConfig,checkoutConfiguration,productTaxCode,stripeShipping,nowSeconds} from './common.mjs';
 import {validatedLines} from './catalog.mjs';
 import {resolveShippingCountries} from './countries.mjs';
-import {validMember,memberHash} from './fans.mjs';
+import {validMember,memberHash,NATIVE_ORIGINS} from './fans.mjs';
 
 export async function shippingQuote(body,store,printful,env,now) {
   env=await resolveShippingCountries(env,store,printful,now);
@@ -80,12 +80,15 @@ export async function createCheckout(body,request,store,stripe,printful,env,now)
     if(order.request_hash!==requestHash) fail(409,'request_id_reused');
   }
   const snapshot=JSON.parse(order.snapshot_json);
+  const fromApp=NATIVE_ORIGINS.has(request.headers.get('Origin') || '');
   const integrationSuffix=(await hash(order.id)).slice(0,16).match(/../g).map(pair=>String.fromCharCode(97+parseInt(pair,16)%26)).join('');
   const params={
     mode:'payment',ui_mode:'hosted_page',client_reference_id:order.id,
     integration_identifier:`nino-native-checkout-${integrationSuffix}`,
-    success_url:returnUrl(env,'CHECKOUT_SUCCESS_PATH','/shop.html?checkout=success&session_id={CHECKOUT_SESSION_ID}'),
-    cancel_url:returnUrl(env,'CHECKOUT_CANCEL_PATH','/shop.html?checkout=cancelled'),
+    // A checkout started in Nino's Mobile App (app-shop.mjs) comes back to a page that only says what happened and
+    // to tap Done: the app itself shows the order and empties its cart once the browser closes.
+    success_url:fromApp ? new URL('/app-order-thanks.html',env.STOREFRONT_ORIGIN).href : returnUrl(env,'CHECKOUT_SUCCESS_PATH','/shop.html?checkout=success&session_id={CHECKOUT_SESSION_ID}'),
+    cancel_url:fromApp ? new URL('/app-order-back.html',env.STOREFRONT_ORIGIN).href : returnUrl(env,'CHECKOUT_CANCEL_PATH','/shop.html?checkout=cancelled'),
     expires_at:order.created_at+3600,
     metadata:{order_id:order.id,cart_hash:order.request_hash,...attributionMetadata(snapshot.attribution)},
     payment_intent_data:{metadata:{order_id:order.id}},

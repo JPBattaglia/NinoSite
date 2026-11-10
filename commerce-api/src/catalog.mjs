@@ -10,7 +10,7 @@ import {STICKER_SITE} from './sticker-art.mjs';
 export const CATALOG_MAX_AGE_DEFAULT = 172800;
 export function catalogMaxAge(env) { return Number(env.CATALOG_MAX_AGE_SECONDS || CATALOG_MAX_AGE_DEFAULT); }
 
-function independentImage(value) {
+export function independentImage(value) {
   const image = httpsImage(value);
   if (!image) return null;
   // Printful sends a bare CDN origin as the thumbnail of products it has no thumbnail for.
