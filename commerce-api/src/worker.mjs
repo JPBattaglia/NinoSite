@@ -2,6 +2,7 @@ import {subscribe,confirmSubscription,unsubscribe,subscriberCounts} from './subs
 import {runNewsletter,newsletterAction,newsletterStatus} from './newsletter.mjs';
 import {recordMeasurement,measurementReport} from './measurement.mjs';
 import {Store} from './db.mjs';
+import {appShopRoute} from './app-shop.mjs';
 import {resolveShippingCountries} from './countries.mjs';
 import {HttpError,fail,hash,requestJson,limitedText,checkoutConfiguration,stripeConfiguration,countries,nowSeconds} from './common.mjs';
 import {createStripeClient,PrintfulClient} from './providers.mjs';
@@ -25,7 +26,7 @@ import {refusedKey,alertRefusedKey} from './key-alert.mjs';
 import {withPrintfulTokens,renewPrintfulTokens,connectRedirect,connectCallback,connectionStatus} from './printful-auth.mjs';
 import {stripeWebhook,fulfillOrder} from './fulfillment.mjs';
 import {workRoute,ensureManagerLink} from './work.mjs';
-import {fansRoute,processRewards} from './fans.mjs';
+import {fansRoute,processRewards,NATIVE_ORIGINS} from './fans.mjs';
 import {placedItems} from './fulfillment.mjs';
 
 const JSON_HEADERS={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
@@ -66,10 +67,12 @@ export function createApp(dependencies={}) {
     async fetch(request,env,ctx) {
       const url=new URL(request.url); const origin=request.headers.get('Origin');
       const publicRead=request.method==='GET' && ['/api/products','/api/commerce-config','/api/health'].includes(url.pathname);
-      const cors=publicRead ? {'Access-Control-Allow-Origin':'*'} : origin===env.STOREFRONT_ORIGIN ? {'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Idempotency-Key, Authorization'} : {};
+      // Nino's Mobile App buys inside the app (app-shop.mjs), so its origins get the storefront's access.
+      const shopOrigin=origin===env.STOREFRONT_ORIGIN || NATIVE_ORIGINS.has(origin);
+      const cors=publicRead ? {'Access-Control-Allow-Origin':'*'} : shopOrigin ? {'Access-Control-Allow-Origin':origin,'Vary':'Origin','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Idempotency-Key, Authorization'} : {};
       try {
         // The Nino app's preflights (fans.mjs) answer with the app's own origins.
-        if(request.method==='OPTIONS' && (url.pathname.startsWith('/api/ideas') || url.pathname.startsWith('/api/app/'))) return await fansRoute(request,url,null,env,0,JSON_HEADERS);
+        if(request.method==='OPTIONS' && (url.pathname.startsWith('/api/ideas') || url.pathname.startsWith('/api/app/'))) return await appShopRoute(request,url,null,env,0,JSON_HEADERS) || await fansRoute(request,url,null,env,0,JSON_HEADERS) || new Response(null,{status:204,headers:cors});
         if(request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
         if(!env.DB) fail(503,'database_not_configured');
         const store=new Store(env.DB); const now=clock();
@@ -96,6 +99,9 @@ export function createApp(dependencies={}) {
         // Nino's Mobile App: rewards card and the ideas board (fans.mjs), with the app's own CORS.
         const fans=await fansRoute(request,url,store,env,now,JSON_HEADERS);
         if(fans) return fans;
+        // The app's design screen: one design's products, colors, sizes and prices (app-shop.mjs).
+        const appShop=await appShopRoute(request,url,store,env,now,JSON_HEADERS,dependencies.fetch || ((...args)=>fetch(...args)));
+        if(appShop) return appShop;
         // From here on, Printful calls use the app's live token where the app is connected, else the private key.
         env=await withPrintfulTokens(env,store,now);
         if(request.method==='GET' && url.pathname==='/api/health') {
@@ -125,7 +131,7 @@ export function createApp(dependencies={}) {
           return json(await stripeWebhook(raw,request.headers.get('Stripe-Signature'),store,stripe,printful,env,now,ctx));
         }
         if(request.method==='POST' && ['/api/checkout','/api/shipping-quotes'].includes(url.pathname)) {
-          if(origin!==env.STOREFRONT_ORIGIN) fail(403,'origin_not_allowed');
+          if(!shopOrigin) fail(403,'origin_not_allowed');
           stripeConfiguration(env);
           const printful=dependencies.printful || new PrintfulClient(env);
           const shippingEnv=await resolveShippingCountries(env,store,printful,now);
