@@ -28,6 +28,8 @@
 //   GET  /api/ideas?member=<key>             live ideas (most votes first), which ones this member voted for, own pending
 //   POST /api/ideas         {member,text,name?,source?}   a new idea, pending until approved (source 'site' or 'app')
 //   POST /api/ideas/vote    {member,id,source?}           vote / take back a vote
+//   POST /api/ideas/report  {member,id,reason?,source?}   report an idea: off the board at once (status 'reported'), owner emailed
+//                                                        to restore or keep it off (App Store guideline 1.2, Nov 9, 2026)
 //   GET|POST /api/ideas/review?k=<key>&id=<id>&do=live|hidden   the owner's emailed approve / hide link
 //   GET  /api/releases                       designs that appeared in the last 7 days (the app's "new" list; public)
 import {HttpError,fail,hash,requestJson} from './common.mjs';
@@ -244,13 +246,15 @@ const page = (title, body, status = 200) => new Response(`<!doctype html><html l
 
 // The board's reads, one page view each (test/fans.test.mjs checks they use indexes).
 export const IDEA_SQL = {
-  live: "SELECT id,name,text,votes,created_at FROM app_ideas WHERE status='live' ORDER BY votes DESC, created_at DESC LIMIT 60",
+  live: "SELECT id,member_hash,name,text,votes,created_at FROM app_ideas WHERE status='live' ORDER BY votes DESC, created_at DESC LIMIT 60",
   votes: 'SELECT idea_id FROM app_idea_votes WHERE member_hash=? ORDER BY created_at DESC LIMIT 300',
   pending: "SELECT id,text,status,created_at FROM app_ideas WHERE member_hash=? AND status='pending' ORDER BY created_at DESC LIMIT 5",
   recent: 'SELECT COUNT(*) AS n FROM app_ideas WHERE member_hash=? AND created_at>?'
 };
+// An opaque tag per author (never the member key or its stored hash), so a fan can hide one person's ideas on their device.
+const authorTag = async memberHashValue => (await hash(`nino-idea-author:${memberHashValue || ''}`)).slice(0, 16);
 async function listIdeas(store, member) {
-  const ideas = await store.all(IDEA_SQL.live);
+  const ideas = await Promise.all((await store.all(IDEA_SQL.live)).map(async ({member_hash, ...i}) => ({...i, author: await authorTag(member_hash)})));
   const voted = member ? new Set((await store.all(IDEA_SQL.votes, member)).map(r => r.idea_id)) : new Set();
   const mine = member ? await store.all(IDEA_SQL.pending, member) : [];
   return {ideas: ideas.map(i => ({...i, voted: voted.has(i.id)})), pending: mine};
@@ -301,6 +305,25 @@ async function vote(request, store, now) {
   return {ok: true, id: idea.id, voted: Boolean(added?.meta?.changes), votes: Number(row?.votes || 0)};
 }
 
+const MAX_REPORTS_PER_DAY = 10;
+async function report(request, url, store, env, now) {
+  const body = await requestJson(request, 2048);
+  if (!body || typeof body !== 'object' || Array.isArray(body)) fail(400, 'invalid_report');
+  if (!validMember(body.member)) fail(400, 'member_required', fromSite(body) ? 'Reload the page and try again.' : 'Open the Nino app to report an idea.');
+  const member = await memberHash(body.member);
+  if (!await withinLimit(store, `idea-report:${member}:${dayOf(now)}`, MAX_REPORTS_PER_DAY, dayOf(now))) fail(429, 'report_limit', 'Thanks, we have your reports for today.');
+  const idea = await store.first("SELECT id,name,text,status FROM app_ideas WHERE id=?", String(body.id || ''));
+  if (!idea) fail(404, 'idea_not_found', 'That idea isn\'t on the board any more.');
+  if (idea.status === 'live') await store.run("UPDATE app_ideas SET status='reported',updated_at=? WHERE id=?", now, idea.id);
+  const reason = clean(body.reason, 120);
+  const key = await reviewKey(store);
+  await ownerNote(env, 'An idea on the Ideas board was reported', [
+    `A fan reported this idea${reason ? ` (“${esc(reason)}”)` : ''}. It is off the board until you decide.`,
+    `<strong>${esc(idea.name || 'A fan')}</strong>: <em>“${esc(idea.text)}”</em>`,
+    `<a href="${reviewLink(url.origin, key, idea.id, 'hidden')}">Keep it off the board</a> &nbsp;·&nbsp; <a href="${reviewLink(url.origin, key, idea.id, 'live')}">Put it back</a>`]);
+  return {ok: true, id: idea.id, status: 'reported'};
+}
+
 async function review(request, url, store, now) {
   const key = await setting(store, REVIEW_KEY);
   if (!(await sameKey(url.searchParams.get('k'), key))) return page('This link no longer works', '<p>Ask Claude for a new review link.</p>', 401);
@@ -317,7 +340,7 @@ async function review(request, url, store, now) {
 // Returns a Response for the routes above, or null.
 export async function fansRoute(request, url, store, env, now, headers) {
   const path = url.pathname;
-  if (!['/api/app/card', '/api/ideas', '/api/ideas/vote', '/api/ideas/review', '/api/releases'].includes(path)) return null;
+  if (!['/api/app/card', '/api/ideas', '/api/ideas/vote', '/api/ideas/report', '/api/ideas/review', '/api/releases'].includes(path)) return null;
   const origin = request.headers.get('Origin') || '';
   const cors = NATIVE_ORIGINS.has(origin) || origin === env.STOREFRONT_ORIGIN ? {'Access-Control-Allow-Origin': origin, 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type'} : {};
   const json = (value, status = 200) => Response.json(value, {status, headers: {...headers, ...cors}});
@@ -344,5 +367,6 @@ async function fanApi(request, url, store, env, now, json) {
   }
   if (path === '/api/ideas' && request.method === 'POST') return json(await postIdea(request, url, store, env, now));
   if (path === '/api/ideas/vote' && request.method === 'POST') return json(await vote(request, store, now));
+  if (path === '/api/ideas/report' && request.method === 'POST') return json(await report(request, url, store, env, now));
   fail(405, 'method_not_allowed');
 }

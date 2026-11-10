@@ -218,3 +218,27 @@ test('the ideas page\'s reads use indexes (D1 bills every row a query scans)', a
   }
   db.close();
 });
+
+test('ideas: any fan can report an idea (off the board at once, owner emailed to restore or keep it off) and gets an author tag to hide a person', async () => {
+  const {store, mail, env: e} = await setup();
+  const {id} = await (await call(store, e, 'POST', '/api/ideas', {member: KEY, name: 'Sam', text: 'A skeleton surfing the Golden Gate'})).json();
+  const live = new URL(/href="([^"]+do=live)"/.exec(mail[0].html)[1].replace(/&amp;/g, '&'));
+  await fans.fansRoute(new Request(live, {method: 'POST'}), live, store, e, 1, {});
+  const board = await (await call(store, e, 'GET', `/api/ideas?member=${OTHER}`)).json();
+  const tag = board.ideas[0].author;
+  assert.match(tag, /^[0-9a-f]{16}$/, 'an opaque author tag');
+  assert.equal(board.ideas[0].member_hash, undefined, 'the stored member hash never leaves the server');
+  const r = await call(store, e, 'POST', '/api/ideas/report', {member: OTHER, id, reason: 'Offensive'});
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get('Access-Control-Allow-Origin'), 'capacitor://localhost');
+  assert.equal((await (await call(store, e, 'GET', `/api/ideas?member=${OTHER}`)).json()).ideas.length, 0, 'off the board at once');
+  const note = mail[mail.length - 1];
+  assert.match(note.subject, /reported/);
+  const back = new URL(/href="([^"]+do=live)"/.exec(note.html)[1].replace(/&amp;/g, '&'));
+  await fans.fansRoute(new Request(back, {method: 'POST'}), back, store, e, 2, {});
+  const again = await (await call(store, e, 'GET', `/api/ideas?member=${OTHER}`)).json();
+  assert.equal(again.ideas.length, 1, 'the owner can put it back');
+  assert.equal(again.ideas[0].author, tag, 'the same author keeps the same tag');
+  assert.equal((await call(store, e, 'POST', '/api/ideas/report', {member: 'bad', id})).status, 400);
+  assert.equal((await call(store, e, 'POST', '/api/ideas/report', {member: OTHER, id: 'nope'})).status, 404);
+});
