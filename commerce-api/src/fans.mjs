@@ -220,14 +220,16 @@ export async function releaseTimes(store, productIds, now) {
 
 // The designs that first appeared in the last 7 days, with a photo and their shirt price (lowest), newest first.
 // Small on purpose: Menu-made's worker reads it for the app (most designs come from catalog.json there).
-export async function recentReleases(store, now) {
+// images: product id -> the shop's picture (model photo, sticker or a usable Printful image), from publicCatalog. The
+// catalog row's own image can be an empty Printful address for a brand-new design (Uncanny X-mas, Nov 9, 2026).
+export async function recentReleases(store, now, images = new Map()) {
   const generation = await store.activeGeneration();
   if (!generation) return {designs: [], early_seconds: EARLY_SECONDS};
   const rows = await store.all(`SELECT r.product_id AS id,r.first_seen_at AS released_at,p.title,p.image,
       (SELECT MIN(v.price_cents) FROM catalog_variants v WHERE v.generation=p.generation AND v.product_id=p.id) AS price_cents
     FROM design_releases r JOIN catalog_products p ON p.generation=? AND p.id=r.product_id
     WHERE r.first_seen_at>? ORDER BY r.first_seen_at DESC LIMIT 40`, generation, now - 7 * 86400);
-  return {early_seconds: EARLY_SECONDS, designs: rows.map(r => ({id: String(r.id), title: String(r.title || '').replace(/\s+T$/, ''), image: r.image, price_cents: Number(r.price_cents) || null, released_at: Number(r.released_at)}))};
+  return {early_seconds: EARLY_SECONDS, designs: rows.map(r => ({id: String(r.id), title: String(r.title || '').replace(/\s+T$/, ''), image: images.get(String(r.id)) || r.image, price_cents: Number(r.price_cents) || null, released_at: Number(r.released_at)}))};
 }
 
 // ---- ideas ----
@@ -346,7 +348,12 @@ export async function fansRoute(request, url, store, env, now, headers) {
   const json = (value, status = 200) => Response.json(value, {status, headers: {...headers, ...cors}});
   if (request.method === 'OPTIONS') return new Response(null, {status: 204, headers: cors});
   if (path === '/api/ideas/review') return review(request, url, store, now);
-  if (path === '/api/releases' && request.method === 'GET') return Response.json(await recentReleases(store, now), {headers: {...headers, 'Cache-Control': 'public, max-age=300', 'Access-Control-Allow-Origin': '*'}});
+  if (path === '/api/releases' && request.method === 'GET') {
+    const {publicCatalog} = await import('./catalog.mjs');
+    const shop = await publicCatalog(store, env, now, url.origin).catch(() => null);
+    const images = new Map((shop?.products || []).filter(p => p.image).map(p => [String(p.id), p.image]));
+    return Response.json(await recentReleases(store, now, images), {headers: {...headers, 'Cache-Control': 'public, max-age=300', 'Access-Control-Allow-Origin': '*'}});
+  }
   try { return await fanApi(request, url, store, env, now, json); }
   catch (error) {
     // Errors carry the app's CORS header too, so the app can show the message.

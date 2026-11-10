@@ -242,3 +242,12 @@ test('ideas: any fan can report an idea (off the board at once, owner emailed to
   assert.equal((await call(store, e, 'POST', '/api/ideas/report', {member: 'bad', id})).status, 400);
   assert.equal((await call(store, e, 'POST', '/api/ideas/report', {member: OTHER, id: 'nope'})).status, 404);
 });
+
+test('new-designs list uses the shop\'s picture when one is given (a new design\'s own image can be an empty Printful address)', async () => {
+  const fake = {activeGeneration: async () => 'g1', all: async () => [{id: 491499669, released_at: 1794219024, title: 'Uncanny X-mas T', image: 'https://files.cdn.printful.com/', price_cents: 2500}]};
+  const withShop = await fans.recentReleases(fake, 1794219024 + 60, new Map([['491499669', 'https://api.example/api/mockups/491499669/maroon.jpg']]));
+  assert.equal(withShop.designs[0].image, 'https://api.example/api/mockups/491499669/maroon.jpg');
+  assert.equal(withShop.designs[0].title, 'Uncanny X-mas');
+  const without = await fans.recentReleases(fake, 1794219024 + 60);
+  assert.equal(without.designs[0].image, 'https://files.cdn.printful.com/', 'falls back to the catalog row');
+});
