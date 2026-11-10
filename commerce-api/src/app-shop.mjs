@@ -38,11 +38,15 @@ export async function designOptions(store, env, now, origin, designId, fetcher =
   const run = generation && await store.first("SELECT updated_at FROM catalog_sync_runs WHERE id=? AND status='complete'", generation);
   if (!run) fail(503, 'catalog_not_ready', 'The shop is being updated. Please try again in a moment.');
   const available = now - run.updated_at <= catalogMaxAge(env);
-  const products = (await store.all('SELECT id,external_id,title,image FROM catalog_products WHERE generation=? AND (id=? OR external_id LIKE ?)', generation, designId, `nx-%-${designId}`))
-    .map(p => ({...p, id: String(p.id), type: String(p.id) === designId ? (typeOf(p.external_id) ? null : 'tshirt') : (typeOf(p.external_id)?.design === designId ? typeOf(p.external_id).type : null)}))
-    .filter(p => p.type);
-  const design = products.find(p => p.type === 'tshirt');
+  // The app knows a design by the id in the site's catalog.json, which is the shop product's id for new designs and its
+  // external id (the design's id in Nino's source store) for the rest, exactly as the website matches them (commerce.js
+  // findProduct). The other products hang off the shop product's own id: nx-<type>-<that id>.
+  const found = (await store.all('SELECT id,external_id,title,image FROM catalog_products WHERE generation=? AND (id=? OR external_id=?)', generation, designId, designId)).filter(p => !typeOf(p.external_id));
+  const design = found.find(p => String(p.id) === designId) || found[0];
   if (!design) fail(404, 'design_not_found', 'That design is not in the shop right now.');
+  const shopId = String(design.id);
+  const products = [{...design, id: shopId, type: 'tshirt'}, ...(await store.all('SELECT id,external_id,title,image FROM catalog_products WHERE generation=? AND external_id LIKE ?', generation, `nx-%-${shopId}`))
+    .map(p => ({...p, id: String(p.id), type: typeOf(p.external_id)?.design === shopId ? typeOf(p.external_id).type : null})).filter(p => p.type)];
   const ids = products.map(p => p.id);
   const marks = ids.map(() => '?').join(',');
   const rows = await store.all(`SELECT product_id,json_extract(snapshot_json,'$.id') AS variant_id,json_extract(snapshot_json,'$.size') AS size,json_extract(snapshot_json,'$.color') AS color,json_extract(snapshot_json,'$.image') AS image,price_cents FROM catalog_variants WHERE generation=? AND product_id IN (${marks}) ORDER BY product_id,id`, generation, ...ids);
@@ -53,7 +57,7 @@ export async function designOptions(store, env, now, origin, designId, fetcher =
   } catch { /* no model photos yet */ }
   const palette = await loadPalette(store);
   const stickers = products.some(p => p.type === 'sticker') ? await stickerPictures(store) : null;
-  const first = products.some(p => p.type === 'mugblack') ? await mugFirst(env, designId, fetcher) : 'White';
+  const first = products.some(p => p.type === 'mugblack') ? await mugFirst(env, shopId, fetcher) : 'White';
 
   const byType = new Map();
   for (const product of products) {
@@ -90,7 +94,7 @@ export async function designOptions(store, env, now, origin, designId, fetcher =
       variants: option.variants.map(({hex, ...rest}) => rest)
     };
   });
-  return {ok: true, id: designId, title: String(design.title || '').replace(/\s+T$/, ''), available, max_quantity: 10, max_cart_quantity: 50, max_variants: 20, options};
+  return {ok: true, id: designId, shop_id: shopId, title: String(design.title || '').replace(/\s+T$/, ''), available, max_quantity: 10, max_cart_quantity: 50, max_variants: 20, options};
 }
 
 // Returns a Response for the route above, or null.
