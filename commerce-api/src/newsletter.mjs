@@ -83,6 +83,18 @@ function fallbackCopy(kind) {
     : {subject:'New from Nino', heading:'Fresh from the studio', intro:'A few of Nino’s designs, printed when you order.', cta_label:'See every design'};
 }
 
+export async function appLinks(fetcher = fetch) {
+  try {
+    const response = await fetcher('https://menu-made.com/api/app-links/nino', {headers:{Accept:'application/json'}});
+    if (!response.ok) return null;
+    const links = await response.json();
+    const ok = url => typeof url === 'string' && /^https:\/\/(apps\.apple\.com|play\.google\.com)\//.test(url);
+    const app = {...(ok(links?.apple) ? {apple:links.apple} : {}), ...(ok(links?.google) ? {google:links.google} : {})};
+    return app.apple || app.google ? app : null;
+  } catch { return null; }
+}
+const APP_LINE = 'Get the Nino app: new designs land there 24 hours before the website, your 3rd shirt bought in the app earns a free 8x10 canvas and your 6th a free hoodie.';
+
 export async function draftIssue(store, env, now, kind, {ownerNote = null, fetcher = fetch} = {}) {
   const designs = await pickDesigns(store, kind);
   if (!designs.length) return {skipped:'no_designs'};
@@ -90,6 +102,9 @@ export async function draftIssue(store, env, now, kind, {ownerNote = null, fetch
   const products = await productRange(store, Math.min(...designs.map(d => d.price)));
   const offer = (await setting(store, 'free_sticker')) === 'off' ? null : 'a free sticker of your design with every order on the site';
   const previousSubjects = (await store.all('SELECT subject FROM newsletter_issues ORDER BY created_at DESC LIMIT 6')).map(r => r.subject);
+  // Once the Nino app is public in a store, every issue carries a "Get the app" block (owner, Nov 10, 2026). The
+  // links come from menu-made.com, which gives a store only after it has the app public; the facts are fixed.
+  const app = await appLinks(fetcher);
   let copy = null, writer = 'template';
   if (env.WRITER && typeof env.WRITER.draft === 'function') {
     try {
@@ -99,7 +114,7 @@ export async function draftIssue(store, env, now, kind, {ownerNote = null, fetch
   }
   if (!copy?.subject || !copy?.heading || !copy?.intro) copy = fallbackCopy(kind);
   const id = `nl_${hex(8)}`;
-  const content = {...copy, cta_label:copy.cta_label || fallbackCopy(kind).cta_label, products, offer, writer,
+  const content = {...copy, cta_label:copy.cta_label || fallbackCopy(kind).cta_label, products, offer, writer, ...(app ? {app} : {}),
     designs:designs.map(d => ({id:d.id, title:d.title.replace(/\s+T$/,''), image:d.image, price:d.price}))};
   await store.run("INSERT INTO newsletter_issues(id,kind,status,subject,content_json,design_ids_json,token,owner_note,created_at) VALUES(?,?, 'awaiting', ?,?,?,?,?,?)",
     id, kind, copy.subject, JSON.stringify(content), JSON.stringify(designs.map(d => d.id)), hex(24), ownerNote, now);
@@ -119,11 +134,13 @@ export function renderIssue(content, {address, unsubscribe}) {
 <tr><td style="padding:26px 28px 6px;"><h1 style="margin:0 0 12px;font-size:26px;line-height:1.2;color:#f2efe8;">${esc(content.heading)}</h1><p style="margin:0 0 6px;font-size:16px;line-height:1.6;color:#c9bdb4;">${esc(content.intro)}</p></td></tr>
 <tr><td style="padding:12px 22px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${cards}</tr></table></td></tr>
 <tr><td style="padding:8px 28px 4px;font-size:14px;line-height:1.6;color:#c9bdb4;">Every design also comes as ${esc(content.products.replace(/^shirts[^,]*,\s*/,''))}.${content.offer ? ` Plus ${esc(content.offer)}.` : ''}</td></tr>
+${content.app ? `<tr><td style="padding:14px 28px 4px;font-size:15px;line-height:1.6;color:#f2efe8;">${esc(APP_LINE)}<br>${[[content.app.apple, 'App Store'], [content.app.google, 'Google Play']].filter(([u]) => u).map(([u, t]) => `<a href="${esc(u)}" style="display:inline-block;margin:10px 8px 0 0;padding:10px 18px;border-radius:999px;background-color:#ff6a1f;color:#200705;font-size:14px;font-weight:bold;text-decoration:none;">${t}</a>`).join('')}</td></tr>` : ''}
 <tr><td style="padding:16px 28px 30px;"><a href="${SHOP}/shop.html" style="display:inline-block;padding:13px 22px;border:2px solid #ff6a1f;border-radius:10px;color:#f2efe8;font-size:15px;font-weight:bold;text-decoration:none;">${esc(content.cta_label)}</a></td></tr>
 <tr><td style="padding:18px 28px;border-top:1px solid #3a2a26;font-size:12px;line-height:1.6;color:#8c9995;">You’re getting this because you signed up or ordered at ninobattaglia.com. <a href="${esc(unsubscribe)}" style="color:#c9bdb4;">Unsubscribe</a><br>Nino Battaglia · ${esc(address || '[business mailing address needed]')}</td></tr>
 </table></td></tr></table></body></html>`;
   const text = [content.heading, '', content.intro, '', ...content.designs.map(d => `${d.title}: shirt from ${usd(d.price)} ${SHOP}/shop.html?product=${d.id}`), '',
     `Every design also comes as ${content.products.replace(/^shirts[^,]*,\s*/,'')}.${content.offer ? ` Plus ${content.offer}.` : ''}`, '',
+    ...(content.app ? [APP_LINE, ...(content.app.apple ? [`App Store: ${content.app.apple}`] : []), ...(content.app.google ? [`Google Play: ${content.app.google}`] : []), ''] : []),
     `${content.cta_label}: ${SHOP}/shop.html`, '', `Unsubscribe: ${unsubscribe}`, `Nino Battaglia · ${address || '[business mailing address needed]'}`].join('\n');
   return {html, text};
 }
