@@ -94,3 +94,20 @@ test('U.S. buyers join the list; other countries and unsubscribed addresses do n
   assert.equal(await addBuyerToNewsletter(f.store,order('gone@example.com','US'),1),'exists');
   assert.equal((await f.store.first("SELECT status FROM subscribers WHERE email='gone@example.com'")).status,'unsubscribed');
 });
+
+test('newsletter: a "Get the app" block appears only once a store has the Nino app public', async () => {
+  const {appLinks, renderIssue} = await import('../src/newsletter.mjs');
+  const answer = body => async () => Response.json(body);
+  assert.equal(await appLinks(answer({ok: true, apple: null, google: null})), null, 'nothing before launch');
+  assert.equal(await appLinks(async () => { throw new Error('offline'); }), null, 'and nothing if menu-made.com is unreachable');
+  assert.equal(await appLinks(answer({apple: 'https://evil.example/x'})), null, 'only real store addresses');
+  const app = await appLinks(answer({apple: 'https://apps.apple.com/app/id6832409511', google: null}));
+  assert.deepEqual(app, {apple: 'https://apps.apple.com/app/id6832409511'});
+  const base = {subject: 's', heading: 'h', intro: 'i', cta_label: 'Shop', products: 'shirts, hoodies', offer: null, designs: []};
+  const withApp = renderIssue({...base, app}, {address: '706 Kearny St', unsubscribe: 'https://u'});
+  assert.match(withApp.html, /apps\.apple\.com\/app\/id6832409511/);
+  assert.match(withApp.html, /24 hours before the website/);
+  assert.doesNotMatch(withApp.html, /Google Play/);
+  assert.match(withApp.text, /App Store: https:\/\/apps\.apple\.com/);
+  assert.doesNotMatch(renderIssue(base, {address: 'a', unsubscribe: 'https://u'}).html, /Nino app/);
+});
