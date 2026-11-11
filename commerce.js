@@ -849,6 +849,10 @@
           const test = order.fulfillment_status === 'test_paid';
           const review = order.fulfillment_status === 'review';
           const verifiedTotal = money({ amount: order.total_cents, currency: order.currency });
+          // Google Ads purchase conversion (owner, Nov 10, 2026): real paid orders only, once per order.
+          if (!test && typeof window.gtag === 'function') {
+            try { window.gtag('event', 'conversion', { send_to: 'AW-18554819883/GzWgCJOOhLYdEKuq0I9F', value: (Number(order.total_cents) || 0) / 100, currency: String(order.currency || 'usd').toUpperCase(), transaction_id: String(order.order_id) }); } catch {}
+          }
           const cleared = !test && !review && verifiedTotal && clearUnchangedPurchasedCart(receipt);
           let message = test ? 'This is a test checkout. Your cart has been kept.' : review ? 'Your payment was received. Your order needs review before fulfillment.' : 'Your payment has been confirmed.';
           if (!test && !cleared) message += ' Your current cart has been kept.';
