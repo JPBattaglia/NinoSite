@@ -114,9 +114,10 @@ test('early access: designs remember when they first appeared; the first run mar
   assert.equal(storefrontProducts([], live, true)[0].released_at, 5000, 'the site keeps released_at for its 24-hour check');
 });
 
-async function call(store, e, method, path, body, origin = 'capacitor://localhost', now = 100000, ip = '') {
+async function call(store, e, method, path, body, origin = 'capacitor://localhost', now = 100000, ip = '', asn = 0) {
   const url = new URL(`https://api.example${path}`);
   const request = new Request(url, {method, headers: {Origin: origin, ...(ip ? {'CF-Connecting-IP': ip} : {}), ...(body ? {'Content-Type': 'application/json'} : {})}, body: body ? JSON.stringify(body) : undefined});
+  if (asn) Object.defineProperty(request, 'cf', {value: {asn}});
   return fans.fansRoute(request, url, store, e, now, {'Cache-Control': 'no-store'});
 }
 
@@ -266,4 +267,40 @@ test("the owner's own phone is not held to the daily idea caps; everyone else st
   for (let i = 0; i < 3; i++) assert.equal((await call(store, e, 'POST', '/api/ideas', {member: fanKey, text: `Fan idea number ${i} for the board`}, 'capacitor://localhost', 100000, '198.51.100.7')).status, 200);
   const fourth = await call(store, e, 'POST', '/api/ideas', {member: fanKey, text: 'A fourth idea from the same fan'}, 'capacitor://localhost', 100000, '198.51.100.7');
   assert.equal(fourth.status, 429, 'a fan still stops at three a day');
+});
+
+test("Google's app-testing robots can read the board but can't post, vote or report; phones and home internet can", async () => {
+  const {store, mail, env: e} = await setup();
+  const app = 'capacitor://localhost', fan = `fan${'1'.repeat(37)}`, robot = `bot${'2'.repeat(37)}`;
+  const posted = await (await call(store, e, 'POST', '/api/ideas', {member: fan, text: 'A lighthouse keeper octopus'}, app, 100000, '203.0.113.20', 7922)).json();
+  await store.run("UPDATE app_ideas SET status='live' WHERE id=?", posted.id);
+  // From Google's network number, and from a Test Lab address with no network number at all.
+  for (const [ip, asn] of [['8.8.4.4', 15169], ['34.1.2.3', 396982], ['108.177.6.20', 0], ['70.32.150.200', 0], ['2001:4860:1031::5', 0]]) {
+    const idea = await call(store, e, 'POST', '/api/ideas', {member: robot, text: 'Retro robot racing'}, app, 100000, ip, asn);
+    assert.equal(idea.status, 403, `post from ${ip}`);
+    assert.equal(idea.headers.get('Access-Control-Allow-Origin'), app, 'the app can show the message');
+    assert.equal((await call(store, e, 'POST', '/api/ideas/vote', {member: robot, id: posted.id}, app, 100000, ip, asn)).status, 403, `vote from ${ip}`);
+    assert.equal((await call(store, e, 'POST', '/api/ideas/report', {member: robot, id: posted.id}, app, 100000, ip, asn)).status, 403, `report from ${ip}`);
+  }
+  const row = await store.first('SELECT status,votes FROM app_ideas WHERE id=?', posted.id);
+  assert.deepEqual({...row}, {status: 'live', votes: 0}, 'the idea is untouched');
+  assert.equal((await store.first('SELECT COUNT(*) AS n FROM app_ideas')).n, 1, 'no robot ideas saved');
+  assert.equal(mail.length, 1, 'and the owner got no robot emails');
+  assert.equal((await call(store, e, 'GET', `/api/ideas?member=${robot}`, null, app, 100000, '8.8.4.4', 15169)).status, 200, 'reading is fine');
+  // Real people: a phone company, a home line, Google Fiber, and an address just outside a Test Lab block.
+  for (const [ip, asn, i] of [['203.0.113.30', 21928, 0], ['198.51.100.40', 7018, 1], ['192.0.2.50', 16591, 2], ['108.177.8.1', 0, 3]]) {
+    assert.equal((await call(store, e, 'POST', '/api/ideas/vote', {member: `per${String(i).repeat(37)}`, id: posted.id}, app, 100000, ip, asn)).status, 200, `vote from ${ip}`);
+  }
+  assert.equal((await store.first('SELECT votes FROM app_ideas WHERE id=?', posted.id)).votes, 4);
+});
+
+test("when an owner email can't be sent, the reason is kept where it can be read", async () => {
+  const {store, env: e} = await setup();
+  e.MAILER = {send: async () => { throw new Error('nino_mail_resend_429: You have reached your daily email sending quota'); }};
+  const r = await call(store, e, 'POST', '/api/ideas', {member: `own${'3'.repeat(37)}`, text: 'An idea nobody hears about'});
+  assert.equal(r.status, 200, 'the idea is still saved');
+  const kept = JSON.parse((await store.first("SELECT value FROM commerce_settings WHERE key='owner_note_last_error'")).value);
+  assert.match(kept.error, /daily email sending quota/);
+  assert.equal(kept.subject, 'New design idea from the Nino app');
+  assert.doesNotMatch(JSON.stringify(kept), /nobody hears/, 'no message text is kept');
 });

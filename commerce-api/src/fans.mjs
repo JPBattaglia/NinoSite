@@ -156,13 +156,18 @@ async function canvasItem(store, env, printful, line, now, fetcher) {
   return {external_id: 'reward_canvas', variant_id: canvas.variant_id, quantity: 1, retail_price: '0.00', name: `Free canvas: ${designTitle(line)}`, files: [{type: 'default', id: file.id, position: pos}]};
 }
 
-async function ownerNote(env, subject, lines) {
+async function ownerNote(env, subject, lines, store = null) {
   if (!env.MAILER?.send || !env.OWNER_EMAIL) return;
   try {
     await env.MAILER.send({to: env.OWNER_EMAIL, subject,
       html: `<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#171a1b">${lines.map(l => `<p>${l}</p>`).join('')}</div>`,
       text: lines.map(l => l.replace(/<[^>]+>/g, '')).join('\n\n')});
-  } catch (error) { console.error('owner note not sent', error?.message || error); }
+  } catch (error) {
+    console.error('owner note not sent', error?.message || error);
+    // Kept where it can be read later (owner, Nov 10, 2026: an idea "never emailed me to approve", and the reason
+    // was gone). No address or message text, only the subject and the mail service's answer.
+    if (store) await putSetting(store, 'owner_note_last_error', JSON.stringify({at: new Date().toISOString(), subject, error: String(error?.message || error).slice(0, 300)})).catch(() => {});
+  }
 }
 
 // From the 5-minute run: one waiting reward whose paying order is confirmed at Printful. Returns what it did.
@@ -293,7 +298,7 @@ async function postIdea(request, url, store, env, now) {
     `<strong>${esc(name || 'A fan')}</strong> suggested${site ? ' on ninobattaglia.com' : ' in the Nino app'}:`,
     `<em>“${esc(text)}”</em>`,
     'It shows on the Ideas board (on ninobattaglia.com and in the app) only after you OK it.',
-    `<a href="${reviewLink(url.origin, key, id, 'live')}">Show it on the Ideas board</a> &nbsp;·&nbsp; <a href="${reviewLink(url.origin, key, id, 'hidden')}">Don't show it</a>`]);
+    `<a href="${reviewLink(url.origin, key, id, 'live')}">Show it on the Ideas board</a> &nbsp;·&nbsp; <a href="${reviewLink(url.origin, key, id, 'hidden')}">Don't show it</a>`], store);
   return {ok: true, id, status: 'pending'};
 }
 
@@ -329,7 +334,7 @@ async function report(request, url, store, env, now) {
   await ownerNote(env, 'An idea on the Ideas board was reported', [
     `A fan reported this idea${reason ? ` (“${esc(reason)}”)` : ''}. It is off the board until you decide.`,
     `<strong>${esc(idea.name || 'A fan')}</strong>: <em>“${esc(idea.text)}”</em>`,
-    `<a href="${reviewLink(url.origin, key, idea.id, 'hidden')}">Keep it off the board</a> &nbsp;·&nbsp; <a href="${reviewLink(url.origin, key, idea.id, 'live')}">Put it back</a>`]);
+    `<a href="${reviewLink(url.origin, key, idea.id, 'hidden')}">Keep it off the board</a> &nbsp;·&nbsp; <a href="${reviewLink(url.origin, key, idea.id, 'live')}">Put it back</a>`], store);
   return {ok: true, id: idea.id, status: 'reported'};
 }
 
@@ -368,8 +373,29 @@ export async function fansRoute(request, url, store, env, now, headers) {
     throw error;
   }
 }
+// Google's automatic app-testing robots (Play's pre-launch report, Firebase Test Lab) tap through every Android build
+// that is uploaded. On Nov 10, 2026 they posted nameless "robot" ideas, cast 25 votes on one idea and reported the
+// owner's ideas off the board while he was setting it up. Their devices sit in Google's own data centres, so a post,
+// vote or report coming from Google's network (never a phone company or home internet) is turned away with a plain
+// message. The blocks are from Firebase's "IP addresses used by Test Lab devices" list; the network numbers are
+// Google's (15169), Google Cloud's (396982) and Google's other data-centre networks. Reading the board is not
+// affected, and Google Fiber homes (16591) are real people and are not on the list.
+const TEST_ROBOT_NETWORKS = new Set([15169, 396982, 36492, 19527, 139070, 43515]);
+const TEST_ROBOT_BLOCKS = ['70.32.128.0/19', '108.177.6.0/23', '108.177.18.192/26', '108.177.24.160/27', '108.177.29.0/27', '108.177.29.64/27', '108.177.31.160/27',
+  '199.36.156.8/29', '199.192.115.0/27', '34.68.194.64/29', '34.69.234.64/29', '34.73.34.72/29', '34.73.178.72/29', '34.74.10.72/29', '35.243.2.0/27', '35.245.243.240/29']
+  .map(block => { const [ip, bits] = block.split('/'); return [ip.split('.').reduce((n, part) => n * 256 + Number(part), 0), 2 ** (32 - Number(bits))]; });
+export function fromTestRobot(request) {
+  if (TEST_ROBOT_NETWORKS.has(Number(request.cf?.asn))) return true;
+  const ip = request.headers.get('CF-Connecting-IP') || '';
+  if (/^2001:4860:10[0-9a-f]{2}:/i.test(ip)) return true;
+  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) return false;
+  const n = ip.split('.').reduce((sum, part) => sum * 256 + Number(part), 0);
+  return TEST_ROBOT_BLOCKS.some(([start, size]) => n >= start && n < start + size);
+}
+
 async function fanApi(request, url, store, env, now, json) {
   const path = url.pathname;
+  if (request.method === 'POST' && path.startsWith('/api/ideas') && fromTestRobot(request)) fail(403, 'not_from_here', 'The Ideas board can\'t be used from this connection.');
   if (path === '/api/app/card' && request.method === 'GET') {
     const key = url.searchParams.get('member');
     if (!validMember(key)) fail(400, 'member_required');
