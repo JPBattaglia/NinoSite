@@ -251,3 +251,19 @@ test('new-designs list uses the shop\'s picture when one is given (a new design\
   const without = await fans.recentReleases(fake, 1794219024 + 60);
   assert.equal(without.designs[0].image, 'https://files.cdn.printful.com/', 'falls back to the catalog row');
 });
+
+test("the owner's own phone is not held to the daily idea caps; everyone else still is, and his ideas still wait for his OK", async () => {
+  const {store, mail, env: e} = await setup();
+  const ownerKey = `own${'0'.repeat(37)}`, fanKey = `fan${'0'.repeat(37)}`;
+  await store.run("INSERT INTO commerce_settings(key,value) VALUES('ideas_owner_members',?)", ` ${await fans.memberHash(ownerKey)} , someoneelse`);
+  for (let i = 0; i < 6; i++) {
+    const r = await call(store, e, 'POST', '/api/ideas', {member: ownerKey, text: `Owner idea number ${i} for the board`}, 'capacitor://localhost', 100000, '203.0.113.50');
+    assert.equal(r.status, 200, `owner idea ${i}`);
+    assert.equal((await r.json()).status, 'pending', 'still held until approved');
+  }
+  assert.equal(mail.length, 6, 'each one still asks for his OK');
+  assert.equal((await store.first("SELECT COUNT(*) AS n FROM signup_limits WHERE k='ideas-daily'")).n, 0, "his ideas don't use up the board's daily total");
+  for (let i = 0; i < 3; i++) assert.equal((await call(store, e, 'POST', '/api/ideas', {member: fanKey, text: `Fan idea number ${i} for the board`}, 'capacitor://localhost', 100000, '198.51.100.7')).status, 200);
+  const fourth = await call(store, e, 'POST', '/api/ideas', {member: fanKey, text: 'A fourth idea from the same fan'}, 'capacitor://localhost', 100000, '198.51.100.7');
+  assert.equal(fourth.status, 429, 'a fan still stops at three a day');
+});
