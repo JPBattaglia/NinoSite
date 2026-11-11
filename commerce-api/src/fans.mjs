@@ -44,6 +44,10 @@ const REVIEW_KEY = 'ideas_review_key';
 const CANVAS_KEY = 'reward_canvas';
 const CANVAS_AUTO = 'reward_canvas_auto';
 const MAX_IDEAS_PER_DAY = 3;
+// The owner's own phones (commerce_settings 'ideas_owner_members': member hashes, comma separated) are not held to the
+// daily caps (owner, Nov 10, 2026: "need to add more ideas but it won't let me do more than 3 a day"). His ideas
+// still wait for his own OK like anyone's, so what the board shows and what the reviewer is told stay true.
+const OWNER_MEMBERS = 'ideas_owner_members';
 export const MAX_IDEAS_PER_IP = 10, MAX_IDEAS_IN_ALL = 25;
 const fromSite = body => body?.source === 'site';
 const randomHex = bytes => [...crypto.getRandomValues(new Uint8Array(bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -273,12 +277,15 @@ async function postIdea(request, url, store, env, now) {
   const text = clean(body.text, 280), name = clean(body.name, 30);
   if (text.length < 8) fail(400, 'idea_too_short', 'Tell Nino a little more about your idea.');
   if (/https?:\/\/|www\./i.test(text)) fail(400, 'no_links', 'Please leave links out of your idea.');
-  const recent = await store.first(IDEA_SQL.recent, member, now - 86400);
-  const tomorrow = 'That\'s three ideas today. Come back tomorrow with more!';
-  if (Number(recent?.n || 0) >= MAX_IDEAS_PER_DAY) fail(429, 'idea_limit', tomorrow);
-  const day = dayOf(now), ip = request.headers.get('CF-Connecting-IP') || '';
-  if (ip && !await withinLimit(store, `idea-ip:${await hash(`${day}:${ip}`)}`, MAX_IDEAS_PER_IP, day)) fail(429, 'idea_limit', tomorrow);
-  if (!await withinLimit(store, 'ideas-daily', MAX_IDEAS_IN_ALL, day)) fail(429, 'ideas_full', 'Nino has a full stack of ideas to read today. Please come back tomorrow!');
+  const owner = String(await setting(store, OWNER_MEMBERS) || '').split(',').map(v => v.trim()).filter(Boolean).includes(member);
+  if (!owner) {
+    const recent = await store.first(IDEA_SQL.recent, member, now - 86400);
+    const tomorrow = 'That\'s three ideas today. Come back tomorrow with more!';
+    if (Number(recent?.n || 0) >= MAX_IDEAS_PER_DAY) fail(429, 'idea_limit', tomorrow);
+    const day = dayOf(now), ip = request.headers.get('CF-Connecting-IP') || '';
+    if (ip && !await withinLimit(store, `idea-ip:${await hash(`${day}:${ip}`)}`, MAX_IDEAS_PER_IP, day)) fail(429, 'idea_limit', tomorrow);
+    if (!await withinLimit(store, 'ideas-daily', MAX_IDEAS_IN_ALL, day)) fail(429, 'ideas_full', 'Nino has a full stack of ideas to read today. Please come back tomorrow!');
+  }
   const id = `idea_${randomHex(8)}`;
   await store.run("INSERT INTO app_ideas(id,member_hash,name,text,status,votes,created_at,updated_at) VALUES(?,?,?,?, 'pending',0,?,?)", id, member, name || null, text, now, now);
   const key = await reviewKey(store);
