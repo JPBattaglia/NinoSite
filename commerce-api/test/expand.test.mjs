@@ -149,6 +149,8 @@ test('each created product queues model photos with the placement the orders use
   assert.equal(hoodie.catalog_variant_ids, null, 'one photo per color');
   assert.ok(Math.abs(hoodie.position_in.width - 10.353) < 0.01 && Math.abs(hoodie.position_in.top - 1) < 0.01, 'the shirt\'s 10.35in width');
   assert.deepEqual([spec('hoodie').photos, spec('crewneck').photos, spec('tote').photos], [true, true, undefined], 'hoodies and crewnecks get their own photos');
+  assert.deepEqual(hoodie.model_styles, [1455, 1463], 'shown on people, a man and a woman, like the shirts');
+  assert.equal(sticker.model_styles, undefined);
   // Black mug (owner, Nov 4): its own photo, 11 oz, handle on the right like the white mug.
   const mugs = [9323, 9324].map(id => ({id, color: 'Black', size: id === 9323 ? '11 oz' : '15 oz', price: 9}));
   const black = photoLayer(spec('mugblack'), {...design, art: {id: 7, width: 2250, height: 925, full: true}}, buildProduct(spec('mugblack'), {...design, art: {id: 7, width: 2250, height: 925, full: true}}, mugs));

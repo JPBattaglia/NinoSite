@@ -145,3 +145,16 @@ test('sharp 2000px shirt photos are made in the background after the normal ones
   assert.equal(response.headers.get('Content-Type'),'image/jpeg');
   assert.equal(await processMockupsHd(f.store,f.env,f.now(),spy),'idle');
 });
+
+test('a hoodie or crewneck is photographed on people: the men’s and women’s styles alternate across its colors', async () => {
+  const {f, calls, fetcher} = await setup();
+  const gen = (await f.store.first("SELECT value FROM commerce_settings WHERE key='active_catalog'")).value;
+  const colors = (await f.store.all("SELECT DISTINCT json_extract(snapshot_json,'$.color') AS color FROM catalog_variants WHERE generation=? AND product_id='101'", gen)).map(r => r.color).filter(Boolean).sort();
+  await f.store.run("UPDATE mockup_jobs SET layer_json=? WHERE product_id='101'", JSON.stringify({catalog: 146, placement: 'front', technique: 'dtg', catalog_variant_ids: null, colors, model_styles: [1455, 1463], position_in: {width: 10.353, height: 8.565, top: 1, left: 1.824}}));
+  assert.equal(await processMockups(f.store, f.env, f.now(), fetcher), 'submitted');
+  const body = calls[0].body;
+  assert.equal(body.products.length, Math.min(2, colors.length));
+  assert.deepEqual(body.products.map(p => p.mockup_style_ids[0]), [1455, 1463].slice(0, body.products.length));
+  assert.ok(body.products.every(p => p.catalog_product_id === 146 && p.placements[0].layers[0].position.width === 10.353));
+  assert.equal(body.products.flatMap(p => p.catalog_variant_ids).length, colors.length, 'every color once');
+});

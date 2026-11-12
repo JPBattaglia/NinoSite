@@ -82,6 +82,15 @@ async function taskBody(store, job, now, hold = true) {
     const p = raw.position_in;
     const placements = [{ placement: raw.placement, technique: raw.technique, layers: [{ type: 'file', url: artworkUrl(hash), position: { width: p.width, height: p.height, top: p.top, left: p.left } }] }];
     const ids = raw.catalog_variant_ids?.length ? raw.catalog_variant_ids : colors.map(row => row.catalog_variant_id);
+    // Garments shown on people (expand.mjs modelStyles): the men's and women's photo styles alternate across the
+    // colors, as on the shirts.
+    if (Array.isArray(raw.model_styles) && raw.model_styles.length === 2 && !raw.catalog_variant_ids?.length) {
+      const groups = raw.model_styles.map((style, which) => ({
+        source: 'catalog', catalog_product_id: raw.catalog, mockup_style_ids: [style], placements,
+        catalog_variant_ids: colors.filter((_, index) => index % 2 === which).map(row => row.catalog_variant_id)
+      })).filter(group => group.catalog_variant_ids.length);
+      return { format: 'jpg', products: groups };
+    }
     return { format: 'jpg', products: [{ source: 'catalog', catalog_product_id: raw.catalog, ...(raw.mockup_style_ids?.length ? { mockup_style_ids: raw.mockup_style_ids } : {}), placements, catalog_variant_ids: ids }] };
   }
   const layer = fitPrintArea(raw);
