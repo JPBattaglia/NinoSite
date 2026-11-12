@@ -208,7 +208,12 @@ export async function continueCatalogSync(store,printful,id,now) {
       await store.batch([
         ['INSERT OR REPLACE INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES(?,?,?,?,?,?)',target,productId,row.external_id,row.title,row.image,now],
         ['DELETE FROM catalog_variants WHERE generation=? AND product_id=?',target,productId],
-        ...variants.map(v => ['INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES(?,?,?,?,?,?)',target,v.id,productId,v.price_cents,v.currency,JSON.stringify(v)])
+        ...variants.map(v => ['INSERT INTO catalog_variants(generation,id,product_id,price_cents,currency,snapshot_json) VALUES(?,?,?,?,?,?)',target,v.id,productId,v.price_cents,v.currency,JSON.stringify(v)]),
+        // A new or changed design (anything that isn't itself an extra product, "nx-...") wakes the extra-products
+        // step (expand.mjs). Its 'expand_idle' marker is keyed on the catalog generation, and syncs update the live
+        // generation in place, so without this a design added after the rollout went idle never got its hoodie,
+        // crewneck, tote, mug, hat or sticker (Uncanny X-mas T, Nov 9-11, 2026).
+        ...(/^nx-/.test(row.external_id || '') ? [] : [["DELETE FROM commerce_settings WHERE key='expand_idle'"]])
       ]);
     }
     if (next === ids.length && target !== id) {
