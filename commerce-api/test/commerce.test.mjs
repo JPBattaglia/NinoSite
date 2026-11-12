@@ -282,6 +282,20 @@ test('a changed price is written in place to the live catalog',async()=>{
   const rows=(await f.store.all('SELECT generation,price_cents FROM catalog_variants')).map(r=>({...r}));
   assert.deepEqual(rows,[{generation:'initial',price_cents:3500}]);
 });
+test('a new design arriving in a sync wakes the extra-products step; an extra product arriving does not',async()=>{
+  const f=await fixture();const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
+  const idle=()=>f.store.first("SELECT value FROM commerce_settings WHERE key='expand_idle'");
+  const setIdle=()=>f.store.run("INSERT OR REPLACE INTO commerce_settings(key,value) VALUES('expand_idle','initial|all')");
+  await setIdle();
+  await f.request('/api/admin/catalog/sync',{},auth);
+  assert.ok(await idle(),'an unchanged catalog leaves the step idle');
+  f.printful.products.set('555',{sync_product:{id:555,external_id:'nx-hoodie-101',name:'Fixture Hoodie',thumbnail_url:'https://example.com/h.png'},sync_variants:[rawVariant(1555,555)]});
+  await f.request('/api/admin/catalog/sync',{},auth);
+  assert.ok(await idle(),'its own extra products do not wake it');
+  f.printful.products.set('777',{sync_product:{id:777,external_id:'abc777',name:'Uncanny X-mas T',thumbnail_url:'https://example.com/u.png'},sync_variants:[rawVariant(1777,777)]});
+  await f.request('/api/admin/catalog/sync',{},auth);
+  assert.equal(await idle(),null,'a new design wakes it');
+});
 test('daily schedule prunes old catalog generations a bounded amount at a time and never the live one',async()=>{
   const f=await fixture({PRINTFUL_ACCESS_TOKEN:'',PRINTFUL_STORE_ID:''});
   await f.store.run("INSERT INTO catalog_sync_runs(id,product_ids_json,status,created_at,updated_at) VALUES('old','[101]','complete',0,0)");
