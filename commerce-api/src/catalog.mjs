@@ -189,7 +189,12 @@ export async function continueCatalogSync(store,printful,id,now) {
   const active = await store.activeGeneration();
   const target = active && active !== id && await store.first('SELECT id FROM catalog_sync_runs WHERE id=?',active) ? active : id;
   try {
-    for (const productId of ids.slice(run.cursor,next)) {
+    // A product Printful has not drawn yet: its variants carry no 'preview' file for the first seconds after it is
+    // created, so its picture falls back to the blank catalog photo (Uncanny X-mas Dad hat, Nov 12, 2026: synced 20
+    // seconds after it was made, shown as a plain black cap). It still goes on sale now, and gets one second look
+    // at the end of this same sync, by which time the preview exists. Only for products new to the live catalog.
+    const recheck = [];
+    for (const [k,productId] of ids.slice(run.cursor,next).entries()) {
       const detail = await printful.getProduct(productId);
       const product = detail?.sync_product;
       if (!product || String(product.id) !== productId || product.is_ignored === true) {
@@ -204,6 +209,9 @@ export async function continueCatalogSync(store,printful,id,now) {
         const v = await normalizeVariant(raw,product); if (v) variants.push(v);
       }
       const row = {external_id:product.external_id == null ? null : String(product.external_id),title:String(product.name || '').slice(0,250),image:httpsImage(product.thumbnail_url)};
+      if (target !== id && variants.length && ids.indexOf(productId) === run.cursor+k
+        && (detail.sync_variants || []).some(raw => raw?.synced === true && !(raw.files || []).some(f => f?.type === 'preview' && (f.preview_url || f.url)))
+        && !await store.first('SELECT 1 AS x FROM catalog_products WHERE generation=? AND id=?',target,productId)) recheck.push(productId);
       if (await productUnchanged(store,target,productId,row,variants)) continue;
       await store.batch([
         ['INSERT OR REPLACE INTO catalog_products(generation,id,external_id,title,image,synced_at) VALUES(?,?,?,?,?,?)',target,productId,row.external_id,row.title,row.image,now],
@@ -216,7 +224,9 @@ export async function continueCatalogSync(store,printful,id,now) {
         ...(/^nx-/.test(row.external_id || '') ? [] : [["DELETE FROM commerce_settings WHERE key='expand_idle'"]])
       ]);
     }
-    if (next === ids.length && target !== id) {
+    const total = ids.length + recheck.length;
+    if (recheck.length) await store.run('UPDATE catalog_sync_runs SET product_ids_json=? WHERE id=? AND claim_id=?',JSON.stringify(ids.concat(recheck)),id,claim);
+    if (next === total && target !== id) {
       await store.batch([
         ['DELETE FROM catalog_variants WHERE generation=? AND product_id NOT IN (SELECT value FROM json_each(?))',target,run.product_ids_json],
         ['DELETE FROM catalog_products WHERE generation=? AND id NOT IN (SELECT value FROM json_each(?))',target,run.product_ids_json],
@@ -224,13 +234,13 @@ export async function continueCatalogSync(store,printful,id,now) {
         // The live catalog was just verified against Printful, so it counts as fresh again.
         ['UPDATE catalog_sync_runs SET updated_at=? WHERE id=?',now,target]
       ]);
-    } else if (next === ids.length) {
+    } else if (next === total) {
       await store.batch([
         ["UPDATE catalog_sync_runs SET cursor=?,status='complete',claim_id=NULL,lease_until=0,last_error=NULL,updated_at=? WHERE id=? AND claim_id=?",next,now,id,claim],
         ["INSERT INTO commerce_settings(key,value) SELECT 'active_catalog',id FROM catalog_sync_runs WHERE id=? AND status='complete' ON CONFLICT(key) DO UPDATE SET value=excluded.value",id]
       ]);
     } else await store.run('UPDATE catalog_sync_runs SET cursor=?,claim_id=NULL,lease_until=0,last_error=NULL,updated_at=? WHERE id=? AND claim_id=?',next,now,id,claim);
-    return {sync_id:id,processed:next,total:ids.length,complete:next===ids.length};
+    return {sync_id:id,processed:next,total,complete:next===total};
   } catch (error) {
     await store.run('UPDATE catalog_sync_runs SET claim_id=NULL,lease_until=0,last_error=?,updated_at=? WHERE id=? AND claim_id=?',syncErrorLabel(error),now,id,claim);
     throw error;
