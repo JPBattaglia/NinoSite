@@ -43,7 +43,12 @@ test('artwork keeps its proportions inside the print area', () => {
   assert.equal(chest.top, Math.round(2400 * 0.1473), 'starts at the collar line like the shirts');
   assert.ok(Math.abs(chest.width / chest.height - 1880 / 1555) < 0.01);
   const hoodie = position(spec('hoodie'), [2100, 2100], art);
-  assert.ok(hoodie.top + hoodie.height <= 2100 * 0.6714 + 1, 'clear of the pouch pocket');
+  // Nov 11, 2026 (owner): the hoodie prints the artwork the same size as the shirt and the crewneck, in inches.
+  assert.ok(Math.abs(hoodie.width / 150 - chest.width / 150) < 0.02 && Math.abs(hoodie.height / 150 - chest.height / 150) < 0.02, 'same inches as the shirt');
+  assert.equal(hoodie.top, 150, '1in below the top of the 14in area');
+  assert.ok(hoodie.top + hoodie.height <= 2100, 'inside the print area');
+  const tall = position(spec('hoodie'), [2100, 2100], {width: 900, height: 1800});
+  assert.deepEqual([tall.height, tall.width, tall.top + tall.height <= 2100], [1800, 900, true], 'a tall design is 12in tall, as on the shirt (it was 8.4in)');
   const sticker = position(spec('sticker'), [900, 900], art);
   assert.ok(sticker.width <= 900 && sticker.top > 0 && sticker.left >= 0);
   assert.equal(position(spec('tote'), [1500, 1500], {width: 0, height: 10}), null);
@@ -142,7 +147,8 @@ test('each created product queues model photos with the placement the orders use
   assert.ok(sticker.position_in.width <= 5.5 && sticker.position_in.width > 4.5);
   const hoodie = photoLayer(spec('hoodie'), design, buildProduct(spec('hoodie'), design, crewVariants));
   assert.equal(hoodie.catalog_variant_ids, null, 'one photo per color');
-  assert.ok(hoodie.position_in.width <= 12.01 && Math.abs(hoodie.position_in.top - 1) < 0.01);
+  assert.ok(Math.abs(hoodie.position_in.width - 10.353) < 0.01 && Math.abs(hoodie.position_in.top - 1) < 0.01, 'the shirt\'s 10.35in width');
+  assert.deepEqual([spec('hoodie').photos, spec('crewneck').photos, spec('tote').photos], [true, true, undefined], 'hoodies and crewnecks get their own photos');
   // Black mug (owner, Nov 4): its own photo, 11 oz, handle on the right like the white mug.
   const mugs = [9323, 9324].map(id => ({id, color: 'Black', size: id === 9323 ? '11 oz' : '15 oz', price: 9}));
   const black = photoLayer(spec('mugblack'), {...design, art: {id: 7, width: 2250, height: 925, full: true}}, buildProduct(spec('mugblack'), {...design, art: {id: 7, width: 2250, height: 925, full: true}}, mugs));

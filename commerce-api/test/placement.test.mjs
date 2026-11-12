@@ -25,14 +25,15 @@ test('without a mockup layer the shirt gets the standard placement: about 10.35i
   assert.ok(p.width > 1500, 'not the file’s own 5in size');
 });
 
-test('other products use their own print area: a 4in sticker, a tote, a hoodie clear of the pocket', async () => {
+test('other products use their own print area: a 4in sticker, a tote, a hoodie at the size of the shirt', async () => {
   const items = await placedItems({lines: [line('sticker', 10164), line('tote', 10457), line('hoodie', 5530)]}, store(null), printful);
   assert.equal(items[0].files[0].position.area_width, 1200);
   assert.equal(items[1].files[0].position.area_width, 1500);
   assert.ok(items[1].files[0].position.width >= 1500 * 0.79);
   const h = items[2].files[0].position;
   assert.equal(h.area_width, 2100);
-  assert.ok(h.top + h.height <= 2100 * 0.6714 + 1);
+  assert.equal(h.width, Math.round(1800 * 0.8627), 'the hoodie prints as wide as the shirt: 10.35in');
+  assert.ok(h.top + h.height <= 2100);
   assert.deepEqual(items.map(i => i.external_id), ['item_1', 'item_2', 'item_3', 'gift_sticker']);
 });
 
