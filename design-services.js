@@ -2,9 +2,42 @@
 // Checkout runs through Menu-made's order engine and Stripe account (the shirt shop's checkout stays separate);
 // prices are read from Menu-made's catalog, and the buyer comes back to design-thanks.html after paying.
 // Owner testing: add ?checkout=test to the page address for Stripe test mode.
+// Owner sandbox (owner, Nov 12, 2026): ninobattaglia.com/services.html?sandbox=on keeps test mode on in that browser
+// until ?sandbox=off or the bar's button. It covers this page only; the shirt shop has no test mode and stays live.
 (() => {
   const API = 'https://menu-made.com';
-  const TEST = new URLSearchParams(location.search).get('checkout') === 'test';
+  const KEY = 'nino-owner-sandbox';
+  let SANDBOX = false;
+  try {
+    const asked = new URLSearchParams(location.search).get('sandbox');
+    if (asked === 'on') localStorage.setItem(KEY, '1');
+    if (asked === 'off') localStorage.removeItem(KEY);
+    SANDBOX = localStorage.getItem(KEY) === '1';
+  } catch { SANDBOX = false; }
+  const TEST = SANDBOX || new URLSearchParams(location.search).get('checkout') === 'test';
+  if (SANDBOX) {
+    const show = () => {
+      const bar = document.createElement('div');
+      bar.setAttribute('role', 'status');
+      bar.style.cssText = 'position:sticky;top:0;z-index:1000;background:#ffd84d;color:#1a0605;font-weight:700;text-align:center;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center';
+      const text = document.createElement('span');
+      text.textContent = 'TEST MODE on this device, design services only. Card 4242 4242 4242 4242. The shirt shop is still live.';
+      const leave = document.createElement('button');
+      leave.type = 'button';
+      leave.textContent = 'Leave test mode';
+      leave.style.cssText = 'font:inherit;font-weight:700;color:#ffd84d;background:#1a0605;border:0;border-radius:999px;padding:6px 14px;cursor:pointer';
+      leave.addEventListener('click', () => {
+        try { localStorage.removeItem(KEY); } catch { /* storage blocked: nothing to clear */ }
+        const url = new URL(location.href);
+        url.searchParams.delete('sandbox');
+        url.searchParams.delete('checkout');
+        location.replace(url.toString());
+      });
+      bar.append(text, leave);
+      document.body.prepend(bar);
+    };
+    if (document.body) show(); else document.addEventListener('DOMContentLoaded', show);
+  }
   const money = (c) => '$' + (c / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   let catalog = new Map();
   let chosen = null;
