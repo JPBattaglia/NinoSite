@@ -254,9 +254,11 @@ test('expired shipping quotes and altered shipping destinations cannot reach ful
   await f.webhook();assert.equal(f.printful.confirmCalls,0);assert.equal((await f.store.orderBySession('cs_fixture_1')).fulfillment_status,'review');
   f.advance(901);assert.equal((await f.checkout({shipping_quote_id:quote.quote_id,shipping_rate_id:'STANDARD'})).status,409);
 });
+// A fixture variant Printful has already drawn: it carries its 'preview' file, as store products do once rendered.
+const drawn=(id,product)=>{const v=rawVariant(id,product);v.files.push({id:id+90000,type:'preview',hash:`preview-${id}`,preview_url:`https://files.cdn.printful.com/files/abc/preview-${id}_preview.png`,status:'ok'});return v;};
 test('a partial sync never removes live products; removals happen only when every batch has finished',async()=>{
   const f=await fixture();f.printful.products.clear();
-  for(let i=201;i<=212;i++)f.printful.products.set(String(i),{sync_product:{id:i,external_id:`external-${i}`,name:`Fixture ${i}`,thumbnail_url:'https://example.com/mockup.png'},sync_variants:[rawVariant(i+1000,i)]});
+  for(let i=201;i<=212;i++)f.printful.products.set(String(i),{sync_product:{id:i,external_id:`external-${i}`,name:`Fixture ${i}`,thumbnail_url:'https://example.com/mockup.png'},sync_variants:[drawn(i+1000,i)]});
   const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
   const first=await f.request('/api/admin/catalog/sync',{},auth);assert.equal(first.body.complete,false);assert.equal(first.body.processed,10);
   assert.ok((await f.request('/api/products')).body.products.some(p=>p.id==='101'));
@@ -289,12 +291,28 @@ test('a new design arriving in a sync wakes the extra-products step; an extra pr
   await setIdle();
   await f.request('/api/admin/catalog/sync',{},auth);
   assert.ok(await idle(),'an unchanged catalog leaves the step idle');
-  f.printful.products.set('555',{sync_product:{id:555,external_id:'nx-hoodie-101',name:'Fixture Hoodie',thumbnail_url:'https://example.com/h.png'},sync_variants:[rawVariant(1555,555)]});
+  f.printful.products.set('555',{sync_product:{id:555,external_id:'nx-hoodie-101',name:'Fixture Hoodie',thumbnail_url:'https://example.com/h.png'},sync_variants:[drawn(1555,555)]});
   await f.request('/api/admin/catalog/sync',{},auth);
   assert.ok(await idle(),'its own extra products do not wake it');
-  f.printful.products.set('777',{sync_product:{id:777,external_id:'abc777',name:'Uncanny X-mas T',thumbnail_url:'https://example.com/u.png'},sync_variants:[rawVariant(1777,777)]});
+  f.printful.products.set('777',{sync_product:{id:777,external_id:'abc777',name:'Uncanny X-mas T',thumbnail_url:'https://example.com/u.png'},sync_variants:[drawn(1777,777)]});
   await f.request('/api/admin/catalog/sync',{},auth);
   assert.equal(await idle(),null,'a new design wakes it');
+});
+test('a product synced before Printful has drawn it gets a second look in the same sync and then shows its own picture',async()=>{
+  const f=await fixture();const auth={headers:{Authorization:`Bearer ${f.env.ADMIN_API_TOKEN}`}};
+  const blank='https://files.cdn.printful.com/products/206/7854_1584455281.jpg';
+  const undrawn=rawVariant(1888,888);undrawn.product={image:blank};
+  f.printful.products.set('888',{sync_product:{id:888,external_id:'nx-hat-101',name:'Fixture Dad hat',thumbnail_url:null},sync_variants:[undrawn]});
+  const image=async()=>(await f.store.first("SELECT json_extract(snapshot_json,'$.image') AS image FROM catalog_variants WHERE product_id='888'"))?.image;
+  const first=await f.request('/api/admin/catalog/sync',{},auth);
+  assert.equal(first.body.complete,false,'the sync stays open for the second look');assert.equal(first.body.total,3);
+  assert.equal(await image(),blank,'on sale meanwhile with the blank catalog photo');
+  const ready=drawn(1888,888);ready.product={image:blank};f.printful.products.get('888').sync_variants=[ready];
+  const second=await f.request(`/api/admin/catalog/sync/${first.body.sync_id}`,{},auth);
+  assert.equal(second.body.complete,true);assert.match(await image(),/preview-1888_preview\.png$/);
+  f.printful.products.get('888').sync_variants=[undrawn];f.advance(60);
+  const later=await f.request('/api/admin/catalog/sync',{},auth);
+  assert.equal(later.body.complete,true,'a product already in the catalog is not looked at twice');
 });
 test('daily schedule prunes old catalog generations a bounded amount at a time and never the live one',async()=>{
   const f=await fixture({PRINTFUL_ACCESS_TOKEN:'',PRINTFUL_STORE_ID:''});
