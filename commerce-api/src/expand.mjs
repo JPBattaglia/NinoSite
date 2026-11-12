@@ -35,13 +35,16 @@ export const PRODUCT_TYPES = Object.freeze([
   // Crewnecks and hoodies print the artwork the same size as the shirts (owner, Nov 11, 2026: "they all need to be
   // the same size as they are on the T-shirt displays"): up to 10.35in wide and 12in tall. Both get their own photos
   // (photos: true), because Printful's own product image shows the artwork at the file's small default size.
-  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true,
+  // modelStyles: Printful's "Men's" and "Women's" front photo styles for the product (people wearing it, as the
+  // shirts' photos are), alternated across the colors like the shirts. A flat photo of the whole garment with its
+  // sleeves spread makes the same print look much smaller than it does on a shirt worn by a model.
+  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, modelStyles: [1143, 1174],
     area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
   // The hoodie's front area is a 14in square (Printful printfile 139), all of it above the pouch pocket (Printful's
   // photos show about 2in between the area's bottom edge and the pocket). The shirt's size inside it: 10.353in of 14
   // wide, 12in of 14 tall, from 1in below the top. Until Nov 11, 2026 the art was kept to the top 8.4in, which made
   // tall designs about 30% smaller than on the shirt.
-  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, chest: {w: 0.7395, h: 0.8571, top: 0.0714},
+  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, modelStyles: [1455, 1463], chest: {w: 0.7395, h: 0.8571, top: 0.0714},
     area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
   // Aprons: RETIRED (owner, Nov 2, 2026: "replace all aprons with coffee mugs"). Kept here so their products are still
   // recognised; nothing new is made (retired) and retireProducts() deletes the existing ones from Printful.
@@ -179,6 +182,7 @@ export function photoLayer(spec, design, payload, catalog = []) {
   return {catalog: spec.catalog, placement: spec.placement, technique: spec.technique,
     catalog_variant_ids: spec.photoVariant ? [variant.variant_id] : null,
     ...(spec.photoStyle ? {mockup_style_ids: [spec.photoStyle]} : {}),
+    ...(spec.modelStyles ? {model_styles: spec.modelStyles} : {}),
     // The colors this product is made in: the photo job waits until the shop's catalog shows exactly these
     // (after a rebuild, the old catalog copy still lists the colors that were removed).
     colors: [...new Set(payload.sync_variants.map(v => catalog.find(c => c.id === v.variant_id)?.color).filter(Boolean))].sort(),
