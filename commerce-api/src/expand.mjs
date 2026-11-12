@@ -17,6 +17,7 @@ export const EXPAND_PER_RUN = 2;          // each creation is one Printful call 
 export const MARKUP = 1.5;
 // Model photos (mockups.mjs) only for shirts (owner, Nov 1, 2026): the other products show Printful's own product
 // images. Their photo jobs are kept, parked as 'hold' / 'not_needed', so turning this on later only needs a release.
+// Crewnecks and hoodies have had their own photos since Nov 11, 2026 (photos: true below).
 export const EXTRA_PHOTOS = false;
 
 // variants: Printful catalog variant ids to sell, or a rule picking them from the catalog by the design's shirt colors.
@@ -31,11 +32,16 @@ export const PRODUCT_TYPES = Object.freeze([
     variants: [10163, 10164, 10165, 16362], area: {10163: [900, 900], 10164: [1200, 1200], 10165: [1650, 1650], 16362: [4500, 1125]}},
   {type: 'tote', label: 'Tote bag', catalog: 367, file: 'default', fit: 'contain', margin: 0.1, placement: 'front', technique: 'dtg', dpi: 150,
     variants: [10457, 10458], area: {default: [1500, 1500]}, colorRule: 'tote'},
-  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150,
+  // Crewnecks and hoodies print the artwork the same size as the shirts (owner, Nov 11, 2026: "they all need to be
+  // the same size as they are on the T-shirt displays"): up to 10.35in wide and 12in tall. Both get their own photos
+  // (photos: true), because Printful's own product image shows the artwork at the file's small default size.
+  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true,
     area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
-  // The hoodie's front area is a 14in square (Printful printfile 139) that runs down to the pouch pocket, so the art
-  // stays in the top 60%: up to 12in wide, from 1in below the top.
-  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, chest: {w: 0.8571, h: 0.6, top: 0.0714},
+  // The hoodie's front area is a 14in square (Printful printfile 139), all of it above the pouch pocket (Printful's
+  // photos show about 2in between the area's bottom edge and the pocket). The shirt's size inside it: 10.353in of 14
+  // wide, 12in of 14 tall, from 1in below the top. Until Nov 11, 2026 the art was kept to the top 8.4in, which made
+  // tall designs about 30% smaller than on the shirt.
+  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, chest: {w: 0.7395, h: 0.8571, top: 0.0714},
     area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
   // Aprons: RETIRED (owner, Nov 2, 2026: "replace all aprons with coffee mugs"). Kept here so their products are still
   // recognised; nothing new is made (retired) and retireProducts() deletes the existing ones from Printful.
@@ -242,8 +248,9 @@ async function designPalette(store, design, fetcher, budget) {
 
 // A product's photo job: queued when EXTRA_PHOTOS is on, else parked (and an old photo stops showing: the shop lists
 // only 'done' photos, so a remade sticker falls back to Printful's image of the new artwork).
-async function queuePhoto(store, productId, layer, now) {
-  const wanted = EXTRA_PHOTOS || Boolean(layer?.mockup_style_ids?.length);   // types with their own photo style (black mug) always
+async function queuePhoto(store, productId, layer, now, spec = null) {
+  // Always for types with their own photo style (black mug) and for garments sold by how the print looks (photos: true).
+  const wanted = EXTRA_PHOTOS || Boolean(spec?.photos) || Boolean(layer?.mockup_style_ids?.length);
   const status = wanted ? 'pending' : 'hold', reason = wanted ? null : 'not_needed';
   await store.run("INSERT INTO mockup_jobs(product_id,layer_json,status,priority,last_error,updated_at) VALUES(?,?,?,5,?,?) ON CONFLICT(product_id) DO UPDATE SET layer_json=excluded.layer_json,status=excluded.status,priority=5,task_id=NULL,attempts=0,last_error=excluded.last_error,updated_at=excluded.updated_at", String(productId), JSON.stringify(layer), status, reason, now);
 }
@@ -272,7 +279,7 @@ export async function remakeSticker(store, env, now, designId, productId, art, f
   const payload = buildProduct(spec, {...design, art}, catalogList);
   if (!payload) throw new Error('no_variants');
   await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
-  await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now);
+  await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now, spec);
   return payload;
 }
 
@@ -379,7 +386,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         // Printful replaces the variant list with the one sent (variants not listed are removed).
         await api(env, 'PUT', `/store/products/${productId}`, payload, fetcher);
         await setSetting(store, `expand_v:${d.id}:${spec.type}`, '2');
-        await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now);
+        await queuePhoto(store, productId, photoLayer(spec, design, payload, catalogList), now, spec);
         out.created.push(payload.sync_product.name + ' (rebuilt)');
       } catch (error) { out.errors.push(`${d.title} ${spec.label} rebuild: ${String(error?.message || error).slice(0, 200)}`); }
     }
@@ -403,7 +410,7 @@ export async function runExpansion(store, env, now, {fetcher = (...a) => fetch(.
         const id = created?.result?.id;
         if (!id) throw new Error('create_no_id');
         await setSetting(store, key, String(id));
-        await queuePhoto(store, id, photoLayer(spec, design, payload, catalogList), now);
+        await queuePhoto(store, id, photoLayer(spec, design, payload, catalogList), now, spec);
         out.created.push(payload.sync_product.name);
       } catch (error) {
         // A refused key or a busy Printful is retried next run; anything else is recorded so it isn't retried forever.
