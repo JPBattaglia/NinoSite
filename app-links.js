@@ -1,8 +1,14 @@
 // "Get the app" buttons (owner, Nov 10, 2026). Asks menu-made.com which stores have the Nino app public and adds a
 // button for each to the page footer. Before launch the answer is empty and nothing shows.
+// Inside the Nino app (owner, Nov 13, 2026) nothing shows: the app adds ?app=<member key> to every page it opens, and
+// the in-app browser remembers that for the rest of the visit (session storage, so a phone's normal browser is unaffected).
 (() => {
   'use strict';
   try {
+    const KEY = 'nino-in-app';
+    let inApp = /^[A-Za-z0-9_-]{32,64}$/.test(new URLSearchParams(location.search).get('app') || '');
+    try { if (inApp) sessionStorage.setItem(KEY, '1'); else inApp = sessionStorage.getItem(KEY) === '1'; } catch { /* storage off: this page only */ }
+    if (inApp) return;
     const foot = document.querySelector('footer');
     if (!foot || !window.fetch) return;
     fetch('https://menu-made.com/api/app-links/nino').then(r => r.ok ? r.json() : null).then(links => {
