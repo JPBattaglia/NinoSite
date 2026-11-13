@@ -2,18 +2,23 @@
 // Checkout runs through Menu-made's order engine and Stripe account (the shirt shop's checkout stays separate);
 // prices are read from Menu-made's catalog, and the buyer comes back to design-thanks.html after paying.
 // Owner testing: add ?checkout=test to the page address for Stripe test mode.
-// Owner sandbox (owner, Nov 12, 2026): ninobattaglia.com/services.html?sandbox=on keeps test mode on in that browser
-// until ?sandbox=off or the bar's button. It covers this page only; the shirt shop has no test mode and stays live.
+// Owner sandbox (owner, Nov 12, 2026): keeps test mode on in that browser until ?sandbox=off or the bar's button. It
+// covers this page only; the shirt shop has no test mode and stays live. Locked Nov 13, 2026 (owner: "Lock it"): it
+// turns on only from the link emailed to the owner inbox (services.html?sandbox=<owner pass>), and the pass goes with
+// every test checkout; Menu-made refuses a test checkout without it. The old ?sandbox=on does nothing.
 (() => {
   const API = 'https://menu-made.com';
   const KEY = 'nino-owner-sandbox';
-  let SANDBOX = false;
+  const PASS = /^[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}$/;
+  let TOKEN = '';
   try {
-    const asked = new URLSearchParams(location.search).get('sandbox');
-    if (asked === 'on') localStorage.setItem(KEY, '1');
+    const asked = new URLSearchParams(location.search).get('sandbox') || '';
+    if (PASS.test(asked)) localStorage.setItem(KEY, asked);
     if (asked === 'off') localStorage.removeItem(KEY);
-    SANDBOX = localStorage.getItem(KEY) === '1';
-  } catch { SANDBOX = false; }
+    TOKEN = localStorage.getItem(KEY) || '';
+    if (TOKEN && !PASS.test(TOKEN)) { localStorage.removeItem(KEY); TOKEN = ''; }
+  } catch { TOKEN = ''; }
+  const SANDBOX = !!TOKEN;
   const TEST = SANDBOX || new URLSearchParams(location.search).get('checkout') === 'test';
   if (SANDBOX) {
     const show = () => {
@@ -104,7 +109,7 @@
       try {
         const res = await fetch(API + (TEST ? '/api/create-checkout-test' : '/api/create-checkout'), {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: [{ key: chosen }], return_to: 'nino', ...(chosen === 'NINO_MENU_DESIGN' ? { design_pages: Number(value('pages')) } : {}),
+          body: JSON.stringify({ items: [{ key: chosen }], return_to: 'nino', ...(TEST ? { sandbox_token: TOKEN } : {}), ...(chosen === 'NINO_MENU_DESIGN' ? { design_pages: Number(value('pages')) } : {}),
             customer: { name: value('name'), business: value('business'), email: value('email') }, tracking: designTracking() })
         });
         const data = await res.json().catch(() => ({}));
