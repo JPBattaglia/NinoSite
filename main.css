@@ -992,3 +992,20 @@ body.modal-open .site-header{backdrop-filter:none!important;-webkit-backdrop-fil
 /* Nov 11 2026: collage labels on wide screens. 01 / IMAGE sat under the sign and 02 / IDENTITY ran into the
    bottom caption, so 01 moves above its piece and the bird piece (with its label) lifts clear of the caption. */
 @media(min-width:761px){.studio-canvas .canvas-face>span{bottom:auto;top:-21px}.studio-canvas .canvas-mark{translate:0 -38px}}
+
+/* Nov 14 2026: phone color picker under the shop photo. The owner found picking a color meant scrolling down to the
+   dots and back up to see the model in it, so on phones a copy of the dots sits right under the photo (site.js), in
+   one swipeable row, and the color photo thumbnails become one swipeable row too instead of stacking. */
+.dialog-swatches{display:none}
+@media(max-width:760px){
+  .dialog-swatches:not([hidden]){display:block;margin-top:12px}
+  .dialog-swatches-label{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#d8d2c8}
+  .dialog-swatches-row{display:flex;gap:10px;overflow-x:auto;padding:6px 4px 8px;scroll-behavior:smooth;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .dialog-swatches-row::-webkit-scrollbar{display:none}
+  .dialog-swatch{flex:0 0 auto;width:36px;height:36px;padding:0;border-radius:50%;background:var(--swatch);border:1px solid rgba(255,255,255,.35);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3);cursor:pointer}
+  .dialog-swatch.is-text{width:auto;height:36px;border-radius:999px;padding:0 14px;background:transparent;color:#fff;font-size:13px}
+  .dialog-swatch[aria-pressed=true]{outline:2px solid var(--button-cyan);outline-offset:3px}
+  .gallery-thumbs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;margin-top:12px}
+  .gallery-thumbs::-webkit-scrollbar{display:none}
+  .gallery-thumbs button{flex:0 0 auto}
+}

@@ -320,6 +320,60 @@
     colorPhoto = event.detail;
     if (dialog?.open) showColorPhoto();
   });
+  // Owner, Nov 14, 2026: on phones the color dots sat far below the photo, so shoppers scrolled down to pick a color
+  // and back up to see it. A copy of the dots now sits right under the photo (phones only, main.css); tapping one
+  // taps the real swatch in the purchase options, so the photo, the chosen color and the cart stay in step.
+  (() => {
+    const purchase = document.querySelector('[data-native-purchase]');
+    const imageBox = document.querySelector('[data-dialog-image]');
+    if (!purchase || !imageBox) return;
+    const strip = node('div', 'dialog-swatches');
+    strip.hidden = true;
+    const heading = node('p', 'dialog-swatches-label');
+    const row = node('div', 'dialog-swatches-row');
+    row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Color (also in the options below)');
+    strip.append(heading, row);
+    imageBox.after(strip);
+    let signature = '';
+    let mirrors = [];
+    const originals = () => [...purchase.querySelectorAll('.commerce-swatch, .preview-colors .swatch')].filter(button => !button.closest('[hidden]'));
+    const isOn = button => button.getAttribute('aria-checked') === 'true' || button.getAttribute('aria-pressed') === 'true';
+    function sync() {
+      const found = originals();
+      const next = found.map(button => button.getAttribute('aria-label') || button.title).join('|');
+      if (next !== signature) {
+        signature = next;
+        mirrors = found.map(source => {
+          const name = source.getAttribute('aria-label') || source.title || '';
+          const copy = node('button', 'dialog-swatch');
+          copy.type = 'button'; copy.title = name;
+          copy.setAttribute('aria-label', name);
+          const hex = source.style.getPropertyValue('--swatch');
+          if (hex) copy.style.setProperty('--swatch', hex); else { copy.classList.add('is-text'); copy.textContent = name; }
+          copy.addEventListener('click', () => { const live = originals().find(b => (b.getAttribute('aria-label') || b.title) === name); live?.click(); });
+          return copy;
+        });
+        row.replaceChildren(...mirrors);
+      }
+      strip.hidden = mirrors.length < 2;
+      let chosen = '';
+      found.forEach((source, index) => {
+        const on = isOn(source);
+        mirrors[index]?.setAttribute('aria-pressed', String(on));
+        if (on) { chosen = mirrors[index]?.title || ''; }
+      });
+      heading.textContent = chosen ? 'Color: ' + chosen : 'Tap a color to see it';
+      const active = mirrors.find(copy => copy.getAttribute('aria-pressed') === 'true');
+      if (active && !strip.hidden) row.scrollLeft = Math.max(0, active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2);
+    }
+    let queued = false;
+    new MutationObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; sync(); });
+    }).observe(purchase, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-checked', 'aria-pressed', 'hidden'] });
+    dialog?.addEventListener('close', () => { strip.hidden = true; });
+  })();
   document.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
   // Home hero pieces open in the preview right on the home page, so closing it leaves you on the home page.
   document.querySelectorAll('.studio-canvas .canvas-piece[data-hero-image]').forEach(piece => piece.addEventListener('click', event => {
