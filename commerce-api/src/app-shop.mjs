@@ -53,7 +53,7 @@ export async function designOptions(store, env, now, origin, designId, fetcher =
   // Model photos (mockups.mjs) replace Printful's flat previews for the colors that have one.
   const photos = new Map();
   try {
-    for (const row of await store.all(`SELECT product_id,colors_json FROM mockup_jobs WHERE status='done' AND product_id IN (${marks})`, ...ids)) photos.set(String(row.product_id), new Set(JSON.parse(row.colors_json || '[]')));
+    for (const row of await store.all(`SELECT product_id,colors_json FROM mockup_jobs WHERE (status='done' OR (status IN ('pending','submitted','hold') AND colors_json IS NOT NULL)) AND product_id IN (${marks})`, ...ids)) photos.set(String(row.product_id), new Set(JSON.parse(row.colors_json || '[]')));
   } catch { /* no model photos yet */ }
   const palette = await loadPalette(store);
   const stickers = products.some(p => p.type === 'sticker') ? await stickerPictures(store) : null;
