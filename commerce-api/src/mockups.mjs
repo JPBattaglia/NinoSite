@@ -180,7 +180,9 @@ export async function processMockups(store, env, now, fetcher = (...args) => fet
     }
   }
   // A job waits until its product is in the live catalog (new stage 14 products appear after the next sync).
-  const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' AND (layer_json NOT LIKE '%\"catalog\":%' OR product_id IN (SELECT id FROM catalog_products WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog'))) ORDER BY priority DESC, attempts, product_id LIMIT 1");
+  // Photos being remade (a job with photos already, back to 'pending': the size change of Nov 15, 2026) keep their
+  // old photos showing until the new ones are in (mockupColors); new products, with none yet, go first.
+  const next = await store.first("SELECT * FROM mockup_jobs WHERE status='pending' AND (layer_json NOT LIKE '%\"catalog\":%' OR product_id IN (SELECT id FROM catalog_products WHERE generation=(SELECT value FROM commerce_settings WHERE key='active_catalog'))) ORDER BY colors_json IS NOT NULL, priority DESC, attempts, product_id LIMIT 1");
   if (!next) return collected ? 'collected' : 'idle';
   try { await submit(store, env, next, now, fetcher); return collected ? 'collected' : 'submitted'; }
   catch (error) {
@@ -240,7 +242,7 @@ export async function processMockupsHd(store, env, now, fetcher = (...args) => f
 // Map of product ID -> list of colors with a stored model photo.
 export async function mockupColors(store) {
   try {
-    const rows = await store.all("SELECT product_id,colors_json,updated_at FROM mockup_jobs WHERE status='done'");
+    const rows = await store.all("SELECT product_id,colors_json,updated_at FROM mockup_jobs WHERE status='done' OR (status IN ('pending','submitted','hold') AND colors_json IS NOT NULL)");
     return { version: rows.length + ':' + rows.reduce((max, row) => Math.max(max, row.updated_at), 0), map: new Map(rows.map(row => [row.product_id, new Set(JSON.parse(row.colors_json || '[]'))])) };
   } catch { return { version: 'none', map: new Map() }; }
 }

@@ -32,25 +32,27 @@ test('tote color follows the design; stickers come in three sizes plus the bumpe
   assert.deepEqual(pickVariants(spec('tote'), tote, ['Black', 'White']).map(v => v.color), ['Black', 'Oyster']);
   const stickers = [10163, 10164, 10165, 16362].map(id => ({id, color: 'White', size: String(id), price: 2.5}));
   assert.deepEqual(pickVariants(spec('sticker'), stickers, []).map(v => v.id), [10163, 10164, 10165, 16362], 'with the 15x3.75in bumper sticker (owner, Oct 31)');
-  assert.deepEqual(position(spec('sticker'), spec('sticker').area[16362], {width: 1000, height: 1000}).height, Math.round(1125 * 0.92), 'art fits the bumper height');
+  assert.deepEqual(position(spec('sticker'), spec('sticker').area[16362], {width: 1000, height: 1000}).height, 1121, 'art fills the bumper height');
 });
 
-test('artwork keeps its proportions inside the print area', () => {
+test('artwork keeps its proportions and fills the print area (owner, Nov 15, 2026)', () => {
   const art = {width: 1880, height: 1555};
-  const chest = position(spec('crewneck'), [1800, 2400], art);
-  assert.ok(chest.width <= 1800 * 0.8627 + 1 && chest.height <= 2400 * 0.75 + 1);
-  assert.equal(chest.left, Math.round((1800 - chest.width) / 2));
-  assert.equal(chest.top, Math.round(2400 * 0.1473), 'starts at the collar line like the shirts');
-  assert.ok(Math.abs(chest.width / chest.height - 1880 / 1555) < 0.01);
+  const crew = position(spec('crewneck'), [1800, 2400], art);
+  assert.equal(crew.width, 1796, 'the crewneck is filled edge to edge: 12in wide, 2px inside each edge');
+  assert.deepEqual([crew.left, crew.top], [2, 2], 'from the top of the area');
+  assert.ok(Math.abs(crew.width / crew.height - 1880 / 1555) < 0.01);
+  const tallCrew = position(spec('crewneck'), [1800, 2400], {width: 900, height: 1800});
+  assert.deepEqual([tallCrew.height, tallCrew.width, tallCrew.left], [2396, 1198, 301], 'a tall design is 16in tall, centered');
   const hoodie = position(spec('hoodie'), [2100, 2100], art);
-  // Nov 11, 2026 (owner): the hoodie prints the artwork the same size as the shirt and the crewneck, in inches.
-  assert.ok(Math.abs(hoodie.width / 150 - chest.width / 150) < 0.02 && Math.abs(hoodie.height / 150 - chest.height / 150) < 0.02, 'same inches as the shirt');
-  assert.equal(hoodie.top, 150, '1in below the top of the 14in area');
-  assert.ok(hoodie.top + hoodie.height <= 2100, 'inside the print area');
+  assert.deepEqual([hoodie.width, hoodie.top, hoodie.left], [2096, 2, 2], 'the hoodie is filled across its 14in area');
   const tall = position(spec('hoodie'), [2100, 2100], {width: 900, height: 1800});
-  assert.deepEqual([tall.height, tall.width, tall.top + tall.height <= 2100], [1800, 900, true], 'a tall design is 12in tall, as on the shirt (it was 8.4in)');
+  assert.deepEqual([tall.height, tall.width, tall.top], [2096, 1048, 2], 'a tall design is 14in tall');
   const sticker = position(spec('sticker'), [900, 900], art);
-  assert.ok(sticker.width <= 900 && sticker.top > 0 && sticker.left >= 0);
+  assert.deepEqual([sticker.width, sticker.left], [896, 2], 'the sticker fills its size');
+  const tote = position(spec('tote'), [1500, 1500], {width: 1000, height: 1000});
+  assert.deepEqual([tote.width, tote.height, tote.top, tote.left], [1496, 1496, 2, 2], 'the tote has no border');
+  const shirt = position({fit: 'chest'}, [1800, 2400], art);
+  assert.equal(shirt.width, Math.round(1800 * 0.8627), 'shirts keep their size');
   assert.equal(position(spec('tote'), [1500, 1500], {width: 0, height: 10}), null);
 });
 
@@ -144,10 +146,10 @@ test('each created product queues model photos with the placement the orders use
   const sticker = photoLayer(spec('sticker'), design, buildProduct(spec('sticker'), design, stickers));
   assert.equal(sticker.catalog, 358); assert.equal(sticker.placement, 'default');
   assert.deepEqual(sticker.catalog_variant_ids, [10165], 'one photo, the 5.5in size');
-  assert.ok(sticker.position_in.width <= 5.5 && sticker.position_in.width > 4.5);
+  assert.ok(sticker.position_in.width <= 5.5 && sticker.position_in.width > 5.4);
   const hoodie = photoLayer(spec('hoodie'), design, buildProduct(spec('hoodie'), design, crewVariants));
   assert.equal(hoodie.catalog_variant_ids, null, 'one photo per color');
-  assert.ok(Math.abs(hoodie.position_in.width - 10.353) < 0.01 && Math.abs(hoodie.position_in.top - 1) < 0.01, 'the shirt\'s 10.35in width');
+  assert.ok(hoodie.position_in.width > 13.9 || hoodie.position_in.height > 13.9, 'fills the 14in area');
   assert.deepEqual([spec('hoodie').photos, spec('crewneck').photos, spec('tote').photos], [true, true, undefined], 'hoodies and crewnecks get their own photos');
   assert.deepEqual(hoodie.model_styles, [1455, 1463], 'shown on people, a man and a woman, like the shirts');
   assert.equal(sticker.model_styles, undefined);

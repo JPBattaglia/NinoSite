@@ -23,28 +23,31 @@ export const EXTRA_PHOTOS = false;
 // variants: Printful catalog variant ids to sell, or a rule picking them from the catalog by the design's shirt colors.
 // area: the print file size (px) per catalog variant, from Printful's printfiles for the product.
 // fit: how the artwork sits in the area. 'contain' = as large as fits, centered; 'chest' = like the shirts (up to
-// 86% of the width, from the collar line).
+// 86% of the width, from the collar line), or the box given by chest.
+// Owner, Nov 15, 2026: "Please make sure all designs utilize the full space allotted for all merchandise." Totes,
+// stickers, crewnecks and hoodies fill their whole print area (inset: 2px inside each edge, since Printful refuses
+// art ending exactly on the edge); shirts and mugs keep their size (owner's choice the same day). Hats already filled.
+const FULL = {w: 1, h: 1, top: 0};
 // The cap's standard front embroidery area: 4 x 1.75in at 300 dpi (same box as the staff merch cap mockup).
 const HAT_AREA = [1200, 525];
 export const PRODUCT_TYPES = Object.freeze([
-  {type: 'sticker', label: 'Sticker', catalog: 358, file: 'default', fit: 'contain', margin: 0.04, placement: 'default', technique: 'digital', dpi: 300, photoVariant: 10165,
+  {type: 'sticker', label: 'Sticker', catalog: 358, file: 'default', fit: 'contain', margin: 0, inset: 2, placement: 'default', technique: 'digital', dpi: 300, photoVariant: 10165,
     // 16362 = the 15x3.75in bumper size (owner yes, Oct 31): the art fits the 3.75in height, centered.
     variants: [10163, 10164, 10165, 16362], area: {10163: [900, 900], 10164: [1200, 1200], 10165: [1650, 1650], 16362: [4500, 1125]}},
-  {type: 'tote', label: 'Tote bag', catalog: 367, file: 'default', fit: 'contain', margin: 0.1, placement: 'front', technique: 'dtg', dpi: 150,
+  {type: 'tote', label: 'Tote bag', catalog: 367, file: 'default', fit: 'contain', margin: 0, inset: 2, placement: 'front', technique: 'dtg', dpi: 150,
     variants: [10457, 10458], area: {default: [1500, 1500]}, colorRule: 'tote'},
-  // Crewnecks and hoodies print the artwork the same size as the shirts (owner, Nov 11, 2026: "they all need to be
-  // the same size as they are on the T-shirt displays"): up to 10.35in wide and 12in tall. Both get their own photos
+  // Crewnecks and hoodies fill their whole print area (owner, Nov 15, 2026; until then the shirts' size, Nov 11:
+  // up to 10.35in wide and 12in tall): up to 12in wide and 16in tall on the crewnecks, 14in square on the hoodies,
+  // from the top of the area. Both get their own photos
   // (photos: true), because Printful's own product image shows the artwork at the file's small default size.
   // modelStyles: Printful's "Men's" and "Women's" front photo styles for the product (people wearing it, as the
   // shirts' photos are), alternated across the colors like the shirts. A flat photo of the whole garment with its
   // sleeves spread makes the same print look much smaller than it does on a shirt worn by a model.
-  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, modelStyles: [1143, 1174],
+  {type: 'crewneck', label: 'Crewneck sweatshirt', catalog: 145, file: 'default', fit: 'chest', chest: FULL, inset: 2, placement: 'front', technique: 'dtg', dpi: 150, photos: true, modelStyles: [1143, 1174],
     area: {default: [1800, 2400]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
   // The hoodie's front area is a 14in square (Printful printfile 139), all of it above the pouch pocket (Printful's
-  // photos show about 2in between the area's bottom edge and the pocket). The shirt's size inside it: 10.353in of 14
-  // wide, 12in of 14 tall, from 1in below the top. Until Nov 11, 2026 the art was kept to the top 8.4in, which made
-  // tall designs about 30% smaller than on the shirt.
-  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, modelStyles: [1455, 1463], chest: {w: 0.7395, h: 0.8571, top: 0.0714},
+  // photos show about 2in between the area's bottom edge and the pocket).
+  {type: 'hoodie', label: 'Hoodie', catalog: 146, file: 'default', fit: 'chest', placement: 'front', technique: 'dtg', dpi: 150, photos: true, modelStyles: [1455, 1463], chest: FULL, inset: 2,
     area: {default: [2100, 2100]}, colorRule: 'match', maxColors: 3, sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL']},
   // Aprons: RETIRED (owner, Nov 2, 2026: "replace all aprons with coffee mugs"). Kept here so their products are still
   // recognised; nothing new is made (retired) and retireProducts() deletes the existing ones from Printful.
@@ -131,6 +134,11 @@ export function pickVariants(spec, catalogVariants, shirtColors, art = null) {
 
 // Where the artwork goes in the print area (px), keeping its proportions.
 export function position(spec, area, art) {
+  const inset = spec.inset || 0;
+  if (inset && !art.full) {
+    const p = position({...spec, inset: 0}, [area[0] - 2 * inset, area[1] - 2 * inset], art);
+    return p && {...p, area_width: area[0], area_height: area[1], top: p.top + inset, left: p.left + inset};
+  }
   const [aw, ah] = area;
   const w0 = Number(art.width), h0 = Number(art.height);
   if (!(w0 > 0 && h0 > 0)) return null;

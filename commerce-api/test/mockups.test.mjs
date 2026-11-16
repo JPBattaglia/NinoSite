@@ -158,3 +158,16 @@ test('a hoodie or crewneck is photographed on people: the men’s and women’s 
   assert.ok(body.products.every(p => p.catalog_product_id === 146 && p.placements[0].layers[0].position.width === 10.353));
   assert.equal(body.products.flatMap(p => p.catalog_variant_ids).length, colors.length, 'every color once');
 });
+
+// Nov 15, 2026: designs now fill the hoodie, crewneck and tote print areas; their photos are remade ('redo') while
+// the old ones keep showing, and new products' photos go first.
+test('photos being remade keep showing until the new ones are in', async () => {
+  const {f, fetcher} = await setup();
+  const {mockupColors} = await import('../src/mockups.mjs');
+  await f.store.run("UPDATE mockup_jobs SET status='pending',colors_json='[\"Black\"]' WHERE product_id='101'");
+  assert.ok((await mockupColors(f.store)).map.get('101')?.has('Black'), 'still shown while waiting');
+  assert.equal(await processMockups(f.store, f.env, f.now(), fetcher), 'submitted');
+  const row = await f.store.first("SELECT status,colors_json FROM mockup_jobs WHERE product_id='101'");
+  assert.deepEqual([row.status, row.colors_json], ['submitted', '["Black"]']);
+  assert.ok((await mockupColors(f.store)).map.get('101')?.has('Black'), 'still shown while Printful works');
+});
