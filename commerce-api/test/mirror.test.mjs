@@ -114,3 +114,15 @@ test('keeps excluded designs off the website: skips them and ignores one already
   assert.deepEqual(puts[0].body, {sync_product: {is_ignored: true}});
   assert.equal(calls.filter(c => c.method === 'POST').length, 1);
 });
+
+test('a design already on the site is remembered by ID, so renaming its Etsy listing never copies it again', async () => {
+  const {f, fetcher, sources} = await setup(['Alpha T', 'Pizza Planet T'], ['Alpha T']);
+  const first = await runMirror(f.store, f.env, f.now(), {destination: f.printful, fetcher});
+  assert.deepEqual(first.created, []);
+  assert.equal(first.recorded, 2);
+  sources[0].sync_product.name = 'Vintage Alpha Graphic T-Shirt, Alpha Unisex Tee';
+  sources[1].sync_product.name = 'Space Pizza Graphic T-Shirt';
+  const second = await runMirror(f.store, f.env, f.now(), {destination: f.printful, fetcher});
+  assert.deepEqual(second.created, []);
+  assert.equal(second.missing, 0);
+});
