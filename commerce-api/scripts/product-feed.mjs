@@ -1,6 +1,6 @@
 // Product feeds for Pinterest (catalog → product pins) and Google Merchant Center (free Shopping listings).
 // Marketing plan v2, item 3 (Nov 1, 2026). Run daily by .github/workflows/product-feed.yml, which commits the files
-// to the site root: https://ninobattaglia.com/feed-google.xml and https://ninobattaglia.com/feed-pinterest.xml.
+// to the site root: https://ninobattaglia.com/feed-pinterest.xml (the Google feed was dropped Nov 15, 2026; see PUBLISHED).
 //
 // - Reads only the public product list (GET /api/products, served from the stored snapshot: no extra D1 load).
 // - Only the reviewed original designs in feed-designs.json, on every product made for them (shirt, hoodie,
@@ -23,6 +23,7 @@ export const CHANNELS = Object.freeze({
   google: {file: 'feed-google.xml', utm: 'utm_source=google&utm_medium=shopping_feed', promotion: 'free-sticker'},
   pinterest: {file: 'feed-pinterest.xml', utm: 'utm_source=pinterest&utm_medium=product_pin'}
 });
+export const PUBLISHED = Object.freeze(['pinterest']);
 export const TYPES = Object.freeze({
   tshirt: {label: 'T-Shirt', noun: 'a unisex tee', productType: 'Apparel > T-shirts', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
   hoodie: {label: 'Hoodie', noun: 'a unisex pullover hoodie', productType: 'Apparel > Hoodies', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
@@ -158,11 +159,12 @@ export async function run({outDir, api = API, fetcher = fetch, root} = {}) {
   const live = await response.json();
   if (!live.catalog_ready || !live.catalog_complete) return {written: false, reason: 'catalog_not_current'};
   const items = feedItems(live, curated, config);
-  const previous = await readFile(path.join(outDir, CHANNELS.google.file), 'utf8').catch(() => '');
+  const previous = await readFile(path.join(outDir, CHANNELS.pinterest.file), 'utf8').catch(() => '');
   const before = countItems(previous);
   if (!items.length || (before && items.length < before / 2)) throw new Error(`refusing to write: ${items.length} items (previous feed had ${before})`);
   const shipping = await quoteShipping(items, fetcher, api, previousShipping(previous));
-  for (const [channel, {file}] of Object.entries(CHANNELS)) await writeFile(path.join(outDir, file), feedXml(items, channel, shipping));
+  // Only Pinterest is published: the Nino site has no Google involvement (owner, Nov 15, 2026), so no Google feed is written.
+  for (const [channel, {file}] of Object.entries(CHANNELS).filter(([c]) => PUBLISHED.includes(c))) await writeFile(path.join(outDir, file), feedXml(items, channel, shipping));
   const designs = new Set(items.map(item => item.record.id)).size;
   const types = [...new Set(items.map(item => item.type))];
   return {written: true, items: items.length, designs, types, shipping};

@@ -1,6 +1,6 @@
 # Daily Pinterest / Google Merchant Center product feeds (marketing plan v2, item 3).
-# Builds feed-google.xml and feed-pinterest.xml from the live product list (commerce-api/scripts/product-feed.mjs)
-# and commits them to the site root, so https://ninobattaglia.com/feed-google.xml and /feed-pinterest.xml stay current.
+# Builds feed-pinterest.xml (no Google feed: owner, Nov 15, 2026) from the live product list (commerce-api/scripts/product-feed.mjs)
+# and commits it to the site root, so https://ninobattaglia.com/feed-pinterest.xml stays current.
 # Pinterest and Merchant Center each fetch their file once a day. Read-only for the shop: the only calls are the
 # public product list and one shipping quote per product type (quotes never create orders or payments).
 name: Product feeds
@@ -42,7 +42,7 @@ jobs:
       - name: Commit when they changed
         id: commit
         run: |
-          git add feed-google.xml feed-pinterest.xml shirts/
+          git add feed-pinterest.xml shirts/
           if git diff --cached --quiet; then echo "Feeds unchanged."; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           git config user.name github-actions; git config user.email actions@github.com
           git commit -qm "Product feeds and shirt page titles: daily refresh"
