@@ -125,6 +125,16 @@ export async function runMirror(store, env, now, {destination, fetcher = (...arg
     }
     const have = new Set(destinationProducts.map(p => nameKey(p.name)));
     const copied = new Set((await store.all("SELECT key FROM commerce_settings WHERE key LIKE 'mirror:%'")).map(row => row.key));
+    // Remember every source design that is already on the site (or kept off it) by its Printful ID, not just its name.
+    // Etsy listing titles flow back into the source store's product names, so a renamed listing must never look new.
+    result.recorded = 0;
+    for (const product of sourceProducts) {
+      if (!product || copied.has(settingKey(product.id))) continue;
+      if (have.has(nameKey(product.name)) || excluded.has(nameKey(product.name))) {
+        await setSetting(store, settingKey(product.id), excluded.has(nameKey(product.name)) ? 'excluded' : 'already-on-site');
+        copied.add(settingKey(product.id)); result.recorded++;
+      }
+    }
     // The newest design has the highest ID; copy those first.
     const missing = sourceProducts.filter(p => p && p.is_ignored !== true && !have.has(nameKey(p.name)) && !excluded.has(nameKey(p.name)) && !copied.has(settingKey(p.id))).sort((a, b) => Number(b.id) - Number(a.id));
     result.missing = missing.length;
