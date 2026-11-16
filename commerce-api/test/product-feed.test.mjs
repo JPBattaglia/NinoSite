@@ -107,18 +107,18 @@ async function site(previous) {
   await mkdir(path.join(root, 'commerce-api/scripts'), {recursive: true});
   await writeFile(path.join(root, 'commerce-api/scripts/feed-designs.json'), JSON.stringify(config));
   await writeFile(path.join(root, 'catalog.json'), JSON.stringify({products: curated}));
-  if (previous) await writeFile(path.join(root, 'feed-google.xml'), previous);
+  if (previous) await writeFile(path.join(root, 'feed-pinterest.xml'), previous);
   return root;
 }
 const apiFetcher = body => async (url) => url.endsWith('/api/products') ? Response.json(body) : Response.json({rates: [{id: 'STANDARD', amount: 495}]});
 
-test('run writes both feeds with channel-tagged links', async () => {
+test('run writes only the Pinterest feed (no Google feed on the Nino site)', async () => {
   const root = await site();
   const result = await run({root, api: 'https://api.example', fetcher: apiFetcher(live())});
   assert.equal(result.written, true); assert.equal(result.items, 4); assert.equal(result.designs, 1);
-  const google = await readFile(path.join(root, 'feed-google.xml'), 'utf8');
+  await assert.rejects(readFile(path.join(root, 'feed-google.xml'), 'utf8'));
   const pinterest = await readFile(path.join(root, 'feed-pinterest.xml'), 'utf8');
-  assert.ok(google.includes('utm_source=google') && !google.includes('utm_source=pinterest'));
+  assert.ok(!pinterest.includes('utm_source=google'));
   assert.ok(pinterest.includes('utm_source=pinterest'));
   assert.equal(countItems(pinterest), 4);
 });
@@ -127,7 +127,7 @@ test('run leaves the feed alone when the catalog is not current', async () => {
   const root = await site('<item>old</item>');
   const result = await run({root, api: 'https://api.example', fetcher: apiFetcher(live({catalog_ready: false}))});
   assert.equal(result.written, false);
-  assert.equal(await readFile(path.join(root, 'feed-google.xml'), 'utf8'), '<item>old</item>');
+  assert.equal(await readFile(path.join(root, 'feed-pinterest.xml'), 'utf8'), '<item>old</item>');
 });
 
 test('run refuses to shrink the feed by more than half', async () => {
