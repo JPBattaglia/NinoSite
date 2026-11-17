@@ -54,3 +54,5 @@
 **/*.log
 !.github/
 !.github/**
+!notify/
+!notify/index.html
