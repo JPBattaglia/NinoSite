@@ -1,6 +1,6 @@
 // "Get the app" buttons (owner, Nov 10, 2026). Asks menu-made.com which stores have the Nino app public and adds a
-// button for each to the page footer. Before launch the answer is empty and nothing shows. Buttons read "Apple" and
-// "Android" (owner, Nov 18, 2026).
+// button for each to the page footer. Before launch the answer is empty and nothing shows. Buttons are the stores'
+// official badges (owner, Nov 18, 2026).
 // Inside the Nino app (owner, Nov 13, 2026) nothing shows: the app adds ?app=<member key> to every page it opens, and
 // the in-app browser remembers that for the rest of the visit (session storage, so a phone's normal browser is unaffected).
 (() => {
@@ -21,11 +21,17 @@
       label.textContent = 'Get the Nino app, with new designs 24 hours early:';
       label.style.cssText = 'font-weight:700';
       box.appendChild(label);
-      for (const [url, text] of [[links.apple, 'Apple'], [links.google, 'Android']]) {
+      // The stores' official badges (owner, Nov 18, 2026), from assets/badges.
+      for (const [url, file, label, ratio] of [[links.apple, 'app-store', 'Download on the App Store', 120 / 40], [links.google, 'google-play', 'Get it on Google Play', 180 / 53.333]]) {
         if (!url) continue;
         const a = document.createElement('a');
-        a.href = url; a.textContent = text; a.target = '_blank'; a.rel = 'noopener';
-        a.style.cssText = 'display:inline-block;padding:10px 18px;border-radius:999px;background:#ff6a1f;color:#200705;font-weight:700;text-decoration:none';
+        a.href = url; a.target = '_blank'; a.rel = 'noopener';
+        a.setAttribute('aria-label', `${label} (opens in a new tab)`);
+        a.style.cssText = 'display:inline-block;line-height:0;border-radius:8px';
+        const img = document.createElement('img');
+        img.src = `/assets/badges/${file}.svg`; img.alt = label; img.height = 44; img.width = Math.round(44 * ratio);
+        img.style.cssText = 'height:44px;width:auto;display:block';
+        a.appendChild(img);
         box.appendChild(a);
       }
       foot.insertBefore(box, foot.firstChild);
