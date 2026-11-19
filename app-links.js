@@ -14,13 +14,24 @@
     if (!foot || !window.fetch) return;
     fetch('https://menu-made.com/api/app-links/nino').then(r => r.ok ? r.json() : null).then(links => {
       if (!links || (!links.apple && !links.google)) return;
+      // Footer layout (owner, Nov 18, 2026: "doesn't fit well in the footer for certain screen sizes"): phones and
+      // tablets get the label on its own line with the badges side by side, centred; wider screens put the block on
+      // the left side of the footer.
+      const css = document.createElement('style');
+      css.textContent = '.app-links{display:flex;flex-direction:column;align-items:center;gap:10px;margin:18px auto;padding:0 16px;max-width:1200px;box-sizing:border-box}'
+        + '.app-links-label{font-weight:700;text-align:center}.app-links-row{display:flex;gap:10px;justify-content:center;flex-wrap:nowrap}'
+        + '.app-links-row img{height:40px!important}'
+        + '@media (min-width:900px){.app-links{align-items:flex-start;padding:0 28px}.app-links-label{text-align:left}.app-links-row{justify-content:flex-start}.app-links-row img{height:44px!important}}';
+      document.head.appendChild(css);
       const box = document.createElement('div');
       box.className = 'app-links';
-      box.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:18px auto;padding:0 16px';
       const label = document.createElement('span');
+      label.className = 'app-links-label';
       label.textContent = 'Get the Nino app, with new designs 24 hours early:';
-      label.style.cssText = 'font-weight:700';
       box.appendChild(label);
+      const row = document.createElement('div');
+      row.className = 'app-links-row';
+      box.appendChild(row);
       // The stores' official badges (owner, Nov 18, 2026), from assets/badges.
       for (const [url, file, label, ratio] of [[links.apple, 'app-store', 'Download on the App Store', 120 / 40], [links.google, 'google-play', 'Get it on Google Play', 180 / 53.333]]) {
         if (!url) continue;
@@ -32,7 +43,7 @@
         img.src = `/assets/badges/${file}.svg`; img.alt = label; img.height = 44; img.width = Math.round(44 * ratio);
         img.style.cssText = 'height:44px;width:auto;display:block';
         a.appendChild(img);
-        box.appendChild(a);
+        row.appendChild(a);
       }
       foot.insertBefore(box, foot.firstChild);
     }).catch(() => {});
