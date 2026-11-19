@@ -1,5 +1,6 @@
 // "Get the app" buttons (owner, Nov 10, 2026). Asks menu-made.com which stores have the Nino app public and adds a
-// button for each to the page footer. Before launch the answer is empty and nothing shows.
+// button for each to the page footer. Before launch the answer is empty and nothing shows. Buttons read "Apple" and
+// "Android" (owner, Nov 18, 2026).
 // Inside the Nino app (owner, Nov 13, 2026) nothing shows: the app adds ?app=<member key> to every page it opens, and
 // the in-app browser remembers that for the rest of the visit (session storage, so a phone's normal browser is unaffected).
 (() => {
@@ -20,7 +21,7 @@
       label.textContent = 'Get the Nino app, with new designs 24 hours early:';
       label.style.cssText = 'font-weight:700';
       box.appendChild(label);
-      for (const [url, text] of [[links.apple, 'App Store'], [links.google, 'Google Play']]) {
+      for (const [url, text] of [[links.apple, 'Apple'], [links.google, 'Android']]) {
         if (!url) continue;
         const a = document.createElement('a');
         a.href = url; a.textContent = text; a.target = '_blank'; a.rel = 'noopener';

@@ -107,7 +107,8 @@ test('newsletter: a "Get the app" block appears only once a store has the Nino a
   const withApp = renderIssue({...base, app}, {address: '706 Kearny St', unsubscribe: 'https://u'});
   assert.match(withApp.html, /apps\.apple\.com\/app\/id6832409511/);
   assert.match(withApp.html, /24 hours before the website/);
-  assert.doesNotMatch(withApp.html, /Google Play/);
-  assert.match(withApp.text, /App Store: https:\/\/apps\.apple\.com/);
+  assert.doesNotMatch(withApp.html, />Android</);
+  assert.match(withApp.text, /Apple: https:\/\/apps\.apple\.com/);
+  assert.match(withApp.html, />Apple</);
   assert.doesNotMatch(renderIssue(base, {address: 'a', unsubscribe: 'https://u'}).html, /Nino app/);
 });
