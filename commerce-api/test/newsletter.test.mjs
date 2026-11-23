@@ -82,7 +82,8 @@ test('the template is used when the writer is down, and unanswered drafts expire
   await draft(f,'holiday');
   assert.match(f.MAILER.sent[0].subject,/The Nino holiday drop is here/);
   f.advance(8*86400);await runNewsletter(f.store,f.env,f.now(),{daily:true});
-  assert.equal((await f.store.first('SELECT status FROM newsletter_issues')).status,'expired');
+  // The same daily run may draft the next due issue (e.g. the holiday one in Nov/Dec), so check the original draft by age.
+  assert.equal((await f.store.first('SELECT status FROM newsletter_issues ORDER BY created_at ASC, rowid ASC LIMIT 1')).status,'expired');
 });
 
 test('U.S. buyers join the list; other countries and unsubscribed addresses do not',async()=>{
