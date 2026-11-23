@@ -12,6 +12,8 @@
   try {
     const n = navigator;
     if (n.globalPrivacyControl === true || n.doNotTrack === '1' || window.doNotTrack === '1') return;
+    // Automated browsers (our daily site check, headless crawlers) are not shoppers (Nov 23, 2026).
+    if (n.webdriver === true || /HeadlessChrome|MenuMadeSiteCheck|bot|crawler|spider/i.test(n.userAgent || '')) return;
     const KEY = 'nino-steps';
     const ENDPOINT = 'https://menu-made.com/api/funnel-event';
     const clip = (value, max) => String(value || '').trim().slice(0, max) || null;
