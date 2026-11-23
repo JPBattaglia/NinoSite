@@ -112,13 +112,15 @@ async function site(previous) {
 }
 const apiFetcher = body => async (url) => url.endsWith('/api/products') ? Response.json(body) : Response.json({rates: [{id: 'STANDARD', amount: 495}]});
 
-test('run writes only the Pinterest feed (no Google feed on the Nino site)', async () => {
+test('run writes both feeds with channel-tagged links', async () => {
   const root = await site();
   const result = await run({root, api: 'https://api.example', fetcher: apiFetcher(live())});
   assert.equal(result.written, true); assert.equal(result.items, 4); assert.equal(result.designs, 1);
-  await assert.rejects(readFile(path.join(root, 'feed-google.xml'), 'utf8'));
+  const google = await readFile(path.join(root, 'feed-google.xml'), 'utf8');
   const pinterest = await readFile(path.join(root, 'feed-pinterest.xml'), 'utf8');
+  assert.ok(google.includes('utm_source=google') && !google.includes('utm_source=pinterest'));
   assert.ok(!pinterest.includes('utm_source=google'));
+  assert.equal(countItems(google), 4);
   assert.ok(pinterest.includes('utm_source=pinterest'));
   assert.equal(countItems(pinterest), 4);
 });

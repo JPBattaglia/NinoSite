@@ -1,6 +1,8 @@
 // Product feeds for Pinterest (catalog → product pins) and Google Merchant Center (free Shopping listings).
 // Marketing plan v2, item 3 (Nov 1, 2026). Run daily by .github/workflows/product-feed.yml, which commits the files
-// to the site root: https://ninobattaglia.com/feed-pinterest.xml (the Google feed was dropped Nov 15, 2026; see PUBLISHED).
+// to the site root: https://ninobattaglia.com/feed-google.xml and https://ninobattaglia.com/feed-pinterest.xml.
+// The Google feed is for free Shopping listings only (no Google Ads on the Nino site): dropped Nov 15, 2026,
+// back on Nov 23, 2026 (owner: "Turn free Google Shopping listings back on for the Nino site").
 //
 // - Reads only the public product list (GET /api/products, served from the stored snapshot: no extra D1 load).
 // - Only the reviewed original designs in feed-designs.json, on every product made for them (shirt, hoodie,
@@ -13,6 +15,7 @@
 //   node scripts/product-feed.mjs [outDir]       (API_BASE overrides the API address)
 import {readFile, writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
+import {execFileSync} from 'node:child_process';
 import path from 'node:path';
 
 export const API = 'https://nino-printful-commerce-api.ijpbattaglia.workers.dev';
@@ -23,7 +26,7 @@ export const CHANNELS = Object.freeze({
   google: {file: 'feed-google.xml', utm: 'utm_source=google&utm_medium=shopping_feed', promotion: 'free-sticker'},
   pinterest: {file: 'feed-pinterest.xml', utm: 'utm_source=pinterest&utm_medium=product_pin'}
 });
-export const PUBLISHED = Object.freeze(['pinterest']);
+export const PUBLISHED = Object.freeze(['google', 'pinterest']);
 export const TYPES = Object.freeze({
   tshirt: {label: 'T-Shirt', noun: 'a unisex tee', productType: 'Apparel > T-shirts', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
   hoodie: {label: 'Hoodie', noun: 'a unisex pullover hoodie', productType: 'Apparel > Hoodies', category: 'Apparel & Accessories > Clothing > Shirts & Tops', apparel: true},
@@ -163,7 +166,7 @@ export async function run({outDir, api = API, fetcher = fetch, root} = {}) {
   const before = countItems(previous);
   if (!items.length || (before && items.length < before / 2)) throw new Error(`refusing to write: ${items.length} items (previous feed had ${before})`);
   const shipping = await quoteShipping(items, fetcher, api, previousShipping(previous));
-  // Only Pinterest is published: the Nino site has no Google involvement (owner, Nov 15, 2026), so no Google feed is written.
+  // Google (free Shopping listings, no ads) and Pinterest are published; see PUBLISHED.
   for (const [channel, {file}] of Object.entries(CHANNELS).filter(([c]) => PUBLISHED.includes(c))) await writeFile(path.join(outDir, file), feedXml(items, channel, shipping));
   const designs = new Set(items.map(item => item.record.id)).size;
   const types = [...new Set(items.map(item => item.type))];
@@ -172,6 +175,16 @@ export async function run({outDir, api = API, fetcher = fetch, root} = {}) {
 
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
   run({outDir: process.argv[2] ? path.resolve(process.argv[2]) : undefined, api: process.env.API_BASE || API})
-    .then(result => { console.log(JSON.stringify(result)); if (!result.written) console.log('Feed left unchanged.'); })
+    .then(result => {
+      console.log(JSON.stringify(result));
+      if (!result.written) { console.log('Feed left unchanged.'); return; }
+      // The daily workflow's commit step only stages feed-pinterest.xml and shirts/ (its file was set when the Google feed
+      // was off, and workflow files can't be changed through the owner's Zapier GitHub link). Stage the Google feed here so
+      // that same commit carries it to https://ninobattaglia.com/feed-google.xml.
+      if (process.env.GITHUB_ACTIONS === 'true' && PUBLISHED.includes('google') && !process.argv[2]) {
+        execFileSync('git', ['add', '-f', CHANNELS.google.file], {stdio: 'inherit'});
+        console.log('Staged ' + CHANNELS.google.file + ' for the feed commit.');
+      }
+    })
     .catch(error => { console.error(error.message); process.exitCode = 1; });
 }
