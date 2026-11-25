@@ -237,7 +237,9 @@ export async function listingsRoute(store, env, fetcher = (...a) => fetch(...a))
   if (!c?.shop_id || !c.secret) return {connected: false, listings: []};
   const listings = [];
   for (let offset = 0; offset < 500; offset += 100) {
-    const r = await etsyFetch(fetcher, `${API}/application/shops/${c.shop_id}/listings/active?limit=100&offset=${offset}`, {headers: {'x-api-key': apiKey(env, c.secret)}});
+    // Signed in, so offsets past Etsy's anonymous limit (100) work too.
+    const headers = {'x-api-key': apiKey(env, c.secret), ...(c.access_token ? {Authorization: `Bearer ${c.access_token}`} : {})};
+    const r = await etsyFetch(fetcher, `${API}/application/shops/${c.shop_id}/listings/active?limit=100&offset=${offset}`, {headers});
     if (!r.ok) return {connected: true, error: errorText(r), listings};
     for (const l of r.data?.results || []) listings.push({listing_id: l.listing_id, title: l.title, tags: l.tags || [], url: l.url, views: l.views ?? null, num_favorers: l.num_favorers ?? null});
     if (!(r.data?.results?.length === 100)) break;
