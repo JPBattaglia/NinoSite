@@ -39,13 +39,26 @@ export const productByKey=key=>BY_KEY.get(String(key || ''))||null;
 const CACHE_KEY='merch_logo_products_v2';
 const CACHE_SECONDS=86400;
 
-async function api(env,method,path,body,fetcher){
-  const response=await fetcher(`https://api.printful.com${path}`,{method,body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(20000),
-    headers:{Authorization:`Bearer ${env.PRINTFUL_ACCESS_TOKEN}`,'X-PF-Store-Id':env.PRINTFUL_STORE_ID,'Content-Type':'application/json'}});
-  const text=await response.text();
-  let json=null; try{json=JSON.parse(text);}catch{}
-  if(!response.ok) throw new HttpError(response.status===429?503:502,'printful_request_failed',`${method} ${path.split('?')[0]} ${response.status}: ${String(json?.error?.message || json?.result || text).slice(0,200)}`);
-  return json;
+// Printful rate-limits the catalog and mockup-template endpoints; building all ten products in one go sometimes met a
+// 429 or 5xx part-way and the day's list was cached without some products (self-test failures Nov 26-27, 2026: a
+// different set missing each day). Busy answers are tried again after a short wait.
+const RETRIES=3;
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function api(env,method,path,body,fetcher,sleep=wait){
+  for(let attempt=0;;attempt++){
+    const response=await fetcher(`https://api.printful.com${path}`,{method,body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(20000),
+      headers:{Authorization:`Bearer ${env.PRINTFUL_ACCESS_TOKEN}`,'X-PF-Store-Id':env.PRINTFUL_STORE_ID,'Content-Type':'application/json'}});
+    const text=await response.text();
+    let json=null; try{json=JSON.parse(text);}catch{}
+    if(response.ok) return json;
+    const busy=response.status===429 || response.status>=500;
+    if(busy && attempt<RETRIES){
+      const after=Number(response.headers.get('retry-after'));
+      await sleep(Number.isFinite(after) && after>0?Math.min(after,30)*1000:2000*(attempt+1));
+      continue;
+    }
+    throw new HttpError(response.status===429?503:502,'printful_request_failed',`${method} ${path.split('?')[0]} ${response.status}: ${String(json?.error?.message || json?.result || text).slice(0,200)}`);
+  }
 }
 
 const num=v=>Number.isFinite(Number(v))?Number(v):null;
@@ -59,11 +72,11 @@ export function normalizeTemplate(t){
 }
 
 // Builds the page's product list from Printful (US stock, base prices, mockup templates, print file sizes).
-export async function buildLogoProducts(env,fetcher=(...a)=>fetch(...a)){
+export async function buildLogoProducts(env,fetcher=(...a)=>fetch(...a),sleep=wait){
   const products=[];
   for(const p of LOGO_PRODUCTS){
     try{
-      const catalog=(await api(env,'GET',`/products/${p.id}`,null,fetcher))?.result;
+      const catalog=(await api(env,'GET',`/products/${p.id}`,null,fetcher,sleep))?.result;
       const variants=(catalog?.variants || []).filter(v=>(v.availability_status || []).some(a=>a.region==='US' && a.status==='in_stock')).map(v=>({id:Number(v.id),color:v.color || '',color_code:v.color_code || null,size:v.size || 'One size',base_cents:cents(String(v.price),true),image:v.image || null})).filter(v=>v.base_cents);
       if(!variants.length) continue;
       // Only the templates for the placement that is ordered (a T-shirt has many: chest embroidery, labels...),
@@ -71,7 +84,7 @@ export async function buildLogoProducts(env,fetcher=(...a)=>fetch(...a)){
       let templates=[];
       try{
         for(let offset=0;offset<1000 && !templates.length;offset+=100){
-          const t=await api(env,'GET',`/v2/catalog-products/${p.id}/mockup-templates?placements=${p.mockup}&limit=100&offset=${offset}`,null,fetcher);
+          const t=await api(env,'GET',`/v2/catalog-products/${p.id}/mockup-templates?placements=${p.mockup}&limit=100&offset=${offset}`,null,fetcher,sleep);
           const page=t?.data || [];
           templates=page.map(normalizeTemplate).filter(x=>x && x.placement===p.mockup);
           if(page.length<100) break;
@@ -79,7 +92,7 @@ export async function buildLogoProducts(env,fetcher=(...a)=>fetch(...a)){
       }catch{/* no templates: the page shows the product photo with the logo on it */}
       let printfile=null;
       try{
-        const pf=(await api(env,'GET',`/mockup-generator/printfiles/${p.id}${p.technique==='embroidery'?'?technique=EMBROIDERY':''}`,null,fetcher))?.result;
+        const pf=(await api(env,'GET',`/mockup-generator/printfiles/${p.id}${p.technique==='embroidery'?'?technique=EMBROIDERY':''}`,null,fetcher,sleep))?.result;
         const placements=pf?.variant_printfiles?.find(v=>Number(v.variant_id)===variants[0].id)?.placements || pf?.variant_printfiles?.[0]?.placements || {};
         const id=[p.mockup,p.placement,p.fileType,'front','default'].map(k=>placements[k]).find(v=>v!=null);
         const file=(pf?.printfiles || []).find(f=>f.printfile_id===id);
@@ -90,18 +103,32 @@ export async function buildLogoProducts(env,fetcher=(...a)=>fetch(...a)){
     }catch(error){ console.error(`merch product ${p.key} unavailable: ${error.message}`); }
   }
   if(!products.length) fail(503,'merch_catalog_unavailable','Merch products are not available right now.');
-  return {built_at:Math.floor(Date.now()/1000),products};
+  return {built_at:Math.floor(Date.now()/1000),products,missing:missingKeys(products)};
 }
 
+// A product is usable only with US stock and a mockup template for its placement.
+const complete=p=>Boolean(p?.variants?.length && p?.templates?.length);
+export const missingKeys=products=>LOGO_PRODUCTS.map(p=>p.key).filter(key=>!complete(products.find(x=>x.key===key)));
+
 // Cached once a day in commerce_settings: one small read per page load (Menu-made also caches it at the edge).
-export async function logoProducts(store,env,now,fetcher){
+// A rebuild never drops a product the cache already had: anything Printful didn't give this time is kept from the
+// cache, and a list still missing products is rebuilt again after an hour instead of a day.
+const RETRY_SECONDS=3600;
+export async function logoProducts(store,env,now,fetcher,sleep){
   const row=await store.first('SELECT value FROM commerce_settings WHERE key=?',CACHE_KEY);
   const cached=row?JSON.parse(row.value):null;
-  if(cached && now-cached.built_at<CACHE_SECONDS) return cached;
+  const maxAge=cached && missingKeys(cached.products || []).length?RETRY_SECONDS:CACHE_SECONDS;
+  if(cached && now-cached.built_at<maxAge) return cached;
   try{
-    const fresh=await buildLogoProducts(env,fetcher);
-    await store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value',CACHE_KEY,JSON.stringify(fresh));
-    return fresh;
+    const fresh=await buildLogoProducts(env,fetcher,sleep);
+    const products=LOGO_PRODUCTS.map(({key})=>{
+      const got=fresh.products.find(p=>p.key===key), old=cached?.products?.find(p=>p.key===key);
+      return complete(got)?got:complete(old)?old:(got || old || null);
+    }).filter(Boolean);
+    const merged={built_at:fresh.built_at,products,missing:missingKeys(products)};
+    if(merged.missing.length) console.error(`merch products still missing after rebuild: ${merged.missing.join(', ')}`);
+    await store.run('INSERT INTO commerce_settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value',CACHE_KEY,JSON.stringify(merged));
+    return merged;
   }catch(error){ if(cached) return cached; throw error; }
 }
 
