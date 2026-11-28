@@ -80,7 +80,7 @@ test('the merch sample picks two sizes of one shirt in one colour',async()=>{
 });
 
 // ---------- Logo merch (logo first, Oct 28 9:02 pm) ----------
-import {buildLogoProducts,logoPosition,LOGO_PRODUCTS,productByKey} from '../src/merch-products.mjs';
+import {buildLogoProducts,logoPosition,logoProducts,missingKeys,LOGO_PRODUCTS,productByKey} from '../src/merch-products.mjs';
 
 function printfulApi(){
   const calls=[];
@@ -143,4 +143,46 @@ test('a logo cart is quoted with Printful\'s estimate and ordered with the logo 
   assert.ok(threaded);
   assert.deepEqual(estimated.body.items[0].options[0].value,['#CC3333','#FFFFFF'],'only Printful threads, upper-cased');
   await assert.rejects(merchQuote({logo_items:[{key:'cap',variant_id:2061,quantity:1}],recipient:address},deps(f)),{code:'logo_required'});
+});
+
+test('logo products: a busy Printful answer is tried again instead of dropping the product',async()=>{
+  const {fetcher}=printfulApi();
+  let busy=3; const waits=[];
+  const flaky=async(url,init)=>{
+    if(String(url).includes('/mockup-templates') && busy>0){ busy--; return new Response('Too Many Requests',{status:429,headers:{'retry-after':'1'}}); }
+    return fetcher(url,init);
+  };
+  const built=await buildLogoProducts({PRINTFUL_ACCESS_TOKEN:'x',PRINTFUL_STORE_ID:'1'},flaky,async ms=>{waits.push(ms);});
+  assert.deepEqual(built.missing,[]);
+  assert.equal(built.products.length,LOGO_PRODUCTS.length);
+  assert.deepEqual(waits,[1000,1000,1000]);
+});
+
+test('logo products: a rebuild keeps products the cache had, and an incomplete list is rebuilt after an hour',async()=>{
+  const f=await fixture();
+  const {fetcher}=printfulApi();
+  const env={PRINTFUL_ACCESS_TOKEN:'x',PRINTFUL_STORE_ID:'1'};
+  const good=await buildLogoProducts(env,fetcher,async()=>{});
+  const day=86400, t0=f.now();
+  await f.store.run("INSERT INTO commerce_settings(key,value) VALUES('merch_logo_products_v2',?)",JSON.stringify({...good,built_at:t0-day-1}));
+  // Printful is down for polo, apron, beanie and mug (as on Nov 26): those four come from the old list.
+  const down=new Set([670,297,266,19].map(String));
+  const partial=async(url,init)=>{ const id=String(url).match(/\/(?:products|catalog-products|printfiles)\/(\d+)/)?.[1]; return down.has(id)?new Response('err',{status:500}):fetcher(url,init); };
+  const merged=await logoProducts(f.store,env,t0,partial,async()=>{});
+  assert.deepEqual(merged.missing,[]);
+  assert.deepEqual(merged.products.map(p=>p.key),LOGO_PRODUCTS.map(p=>p.key));
+  // No old copy at all: the list is saved without them, flagged, and rebuilt an hour later rather than a day later.
+  await f.store.run("DELETE FROM commerce_settings WHERE key='merch_logo_products_v2'");
+  const thin=await logoProducts(f.store,env,t0,partial,async()=>{});
+  assert.deepEqual(thin.missing,['polo','apron','beanie','mug']);
+  let rebuilt=0; const counting=async(url,init)=>{ rebuilt++; return fetcher(url,init); };
+  const nowMs=Date.now; Date.now=()=>t0*1000;
+  try{
+    await f.store.run("UPDATE commerce_settings SET value=json_set(value,'$.built_at',?) WHERE key='merch_logo_products_v2'",t0);
+    await logoProducts(f.store,env,t0+1800,counting,async()=>{});
+    assert.equal(rebuilt,0,'not again within the hour');
+    const full=await logoProducts(f.store,env,t0+3601,counting,async()=>{});
+    assert.ok(rebuilt>0); assert.deepEqual(full.missing,[]);
+  } finally { Date.now=nowMs; }
+  assert.deepEqual(missingKeys(good.products),[]);
 });
